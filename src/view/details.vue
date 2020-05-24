@@ -84,7 +84,7 @@ export default {
 
    methods: {
     blog: function (id, sig) {
-      this.$http.post('/api/xianyu/get_user/get_blog_by_id', {id: id, category: this.category}).then(response => {
+      this.$http.post('/api/blog/get_blog/get_blog_by_id', {id: id, category: this.category}).then(response => {
         this.blog_id = id
         this.blog_like = response.data.res.like_number
         this.data = response.data.res
