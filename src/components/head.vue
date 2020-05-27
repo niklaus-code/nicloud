@@ -23,7 +23,7 @@
 -->
       <router-link :to="{path: '/whisper'}">微语</router-link>
       <router-link :to="{path: '/blog'}">关于技术</router-link>
-      <router-link :to="{path: '/read'}">读书&旅行</router-link>
+      <router-link :to="{path: '/read'}">读书&&旅行</router-link>
       <router-link :to="{path: '/about'}">关于</router-link>
     </div> 
 
