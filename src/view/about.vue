@@ -14,7 +14,7 @@
               <span class="name">NiKlaus</span><br/>
               <span class="age">冀州人士</span><br/>
               <span class="Career">写代码的</span><br/>
-              <span class="interest">喜欢  健身，游泳，美剧，打游戏~</span>
+              <span class="interest">喜欢  健身，做饭，美剧~</span>
             </p>
           </div>
         </div>
