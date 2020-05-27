@@ -110,7 +110,9 @@ export default {
 
 </script>
 
+
 <style scoped>
+img {max-height: 300px; width: auto}
 .item-cont {max-height:20px}
 .item-cont p {overflow:hidden}
 .content {
