@@ -58,19 +58,7 @@ export default {
 
   components: {
     headd, foot
-  },
-
-  mounted: function () {
-    this.read()
-    },
-
-  methods: {
-    read: function (id, sig) {
-      this.$http.get('/api/xianyu/get_user/get_blog_read').then(response => {
-        this.data = response.data
-      })
-    }
-   }
+  }
 }
 </script>
 

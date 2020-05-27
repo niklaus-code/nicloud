@@ -41,7 +41,7 @@
                 
                 <div class="cont">
                   <div class="img">
-                    <img src="../../static/imges/header.png" alt="">
+                    <img src="../../static/imges/niklaus.jpg" alt="" height="40px" width="40px">
                   </div>
                   <div class="text">
                     <p class="tit"><span class="name">史塔克</span><span class="data">2018/06/06</span></p>

@@ -19,7 +19,7 @@
           </div>
           <div class="review-version layui-hide">
               <div class="form">
-                <img src="../../static/imges/header2.png">
+                <img src="../../static/imges/niklaus.jpg">
                 <form class="layui-form" action="">
                   <div class="layui-form-item layui-form-text">
                     <div class="layui-input-block">
@@ -36,7 +36,7 @@
               <div class="list-cont">
                 <div class="cont">
                   <div class="img">
-                    <img src="../../static/imges/header.png" alt="">
+                    <img src="../../static/imges/niklaus.jpg" alt="" height="20px" width="20px">
                   </div>
                   <div class="text">
                     <p class="tit"><span class="name">吳亦凡</span><span class="data">2018/06/06</span></p>
