@@ -71,12 +71,12 @@ export default {
     },
   methods: {
     blog: function (id, sig) {
-      this.$http.get('/api/blog/get_user/get_blog_category', {params: {category: 5}}).then(response => {
+      this.$http.get('/api/blog/get_blog/get_blog_category', {params: {category: 5}}).then(response => {
         this.data = response.data
       })
     },
     point_like: function (id) {
-      this.$http.post('/api/blog/get_user/point_like', {id: id}).then(response => {
+      this.$http.post('/api/blog/get_blog/point_like', {id: id}).then(response => {
         this.blog()
       })
     }

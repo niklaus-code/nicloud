@@ -11,7 +11,7 @@
     </h1>
     <div class="nav">
       <!-- <router-link :to="{path: '/'}">文章</router-link>
-      <router-link :to="{path: '/whisper'}">微语</router-link>
+      <router-link :to="{path: '/whisper'}">碎碎念</router-link>
       <router-link :to="{path: '/read'}">书</router-link>
       <a>关于</a>     <ul class="layui-nav header-down-nav">-->
 
@@ -21,7 +21,7 @@
       <a class="layui-nav-item"><router-link :to="{path: '/read'}">读书</route-link></a>
       <a class="layui-nav-item"><router-link :to="{path: '/'}">关于</route-link></a>
 -->
-      <router-link :to="{path: '/whisper'}">碎语</router-link>
+      <router-link :to="{path: '/whisper'}">碎碎念</router-link>
       <router-link :to="{path: '/blog'}">关于技术</router-link>
       <router-link :to="{path: '/read'}">读书&&旅行</router-link>
       <router-link :to="{path: '/about'}">关于</router-link>

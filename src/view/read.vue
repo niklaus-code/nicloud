@@ -56,7 +56,7 @@ export default {
 
   methods: {
     read: function (id, sig) {
-      this.$http.get('/api/blog/get_user/get_blog_read').then(response => {
+      this.$http.get('/api/blog/get_blog/get_blog_read').then(response => {
         this.data = response.data
       })
     }
