@@ -11,7 +11,7 @@
                 <div class="article-cont">
                   <div class="title">
                     <h3>{{data["title"]}}</h3>
-                    <p class="cont-info"><span class="data">{{data["create_time"]}}</span><span class="types">{{data["category"]}}</span></p>
+                    <p class="cont-info"><span class="data">{{data["create_time"]}}</span><span class="types">{{data["category_name"]}}</span></p>
                   </div>
                  <div style="background-color:#f9f9f9" v-html="data.content"></div>
                  <!-- <div class="btn-box">
@@ -84,7 +84,9 @@ export default {
 
    methods: {
     blog: function (id, sig) {
-      this.$http.post('/api/blog/get_blog/get_blog_by_id', {id: id, category: this.category}).then(response => {
+        var apiurl = `/api/blog/get_blog/get_blog_by_id/${id}`
+        //this.$http.post('/api/blog/get_blog/get_blog_by_id', {id: id, category: this.category}).then(response => {
+        this.$http.get(apiurl).then(response => {
         this.blog_id = id
         this.blog_like = response.data.res.like_number
         this.data = response.data.res

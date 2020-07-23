@@ -20,7 +20,7 @@
               <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
                 <div class="item-cont" >
                   <h3><router-link :to="{path:'/details', query:{id: item.id,signature: item.signature}}">{{item["title"]}}<button class="layui-btn layui-btn-danger new-icon">new</button></router-link></h3>
-                  <h5>{{item["category"]}}</h5>
+                  <h5>{{item["category_name"]}}</h5>
                    <h v-html=item.content>{{item["content"]}}</h>
                 </div>
             </div>
@@ -94,7 +94,9 @@ export default {
     },
 
     get_blog: function () {
-      this.$http.get('/api/blog/get_blog/get_blog', {params: {start:this.start, offset:this.offset}}).then(response => {
+      var apiurl = `/api/blog/get_blog/get_blog/${this.start}`
+      this.$http.get(apiurl).then(response => {
+      //this.$http.get('/api/blog/get_blog/get_blog', {params: {start:this.start, offset:this.offset}}).then(response => {
         this.data = response.data.bloglist
          this.totalnumber = response.data.totalnumber
         })
