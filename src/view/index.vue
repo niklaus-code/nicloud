@@ -19,7 +19,7 @@
               </div>
               <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
                 <div class="item-cont" >
-                  <h3><router-link :to="{path:'/details', query:{id: item.id,signature: item.signature}}">{{item["title"]}}<button class="layui-btn layui-btn-danger new-icon">new</button></router-link></h3>
+                  <h3><router-link :to="{name:'details', params:{id: item.id}}">{{item["title"]}}<button class="layui-btn layui-btn-danger new-icon">new</button></router-link></h3>
                   <h5>{{item["category_name"]}}</h5>
                    <h v-html=item.content>{{item["content"]}}</h>
                 </div>

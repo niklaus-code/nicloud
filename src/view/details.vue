@@ -81,8 +81,7 @@ export default {
   },
 
   mounted: function () {
-    this.category = this.$route.query.category
-    this.blogid = this.$route.query.id
+    this.blogid = this.$route.params.id
     this.blog()
     },
 
@@ -90,7 +89,7 @@ export default {
     blog: function () {
         var apiurl = `/api/blog/get_blog/get_blog_by_id/${this.blogid}`
         this.$http.get(apiurl).then(response => {
-        this.blog_like = response.data.res.like_number
+        //this.blog_like = response.data.res.like_number
         this.data = response.data.res
       })
     }
