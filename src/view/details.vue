@@ -11,7 +11,13 @@
                 <div class="article-cont">
                   <div class="title">
                     <h3>{{data["title"]}}</h3>
-                    <p class="cont-info"><span class="data">{{data["create_time"]}}</span><span class="types">{{data["category_name"]}}</span></p>
+                    <p class="cont-info">
+                        <span class="data" style="color:green">
+                            {{data["category_name"]}}
+                        </span>
+                        <span class="types">
+                            {{data["create_time"]}}
+                        </span></p>
                   </div>
                  <div style="background-color:#f9f9f9" v-html="data.content"></div>
                  <!-- <div class="btn-box">
