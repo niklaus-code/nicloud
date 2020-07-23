@@ -82,18 +82,14 @@ export default {
 
   mounted: function () {
     this.category = this.$route.query.category
-    var blogid = this.$route.query.id
-    this.blog_id = blogid
-    var signature = this.$route.query.signature
-    this.blog(blogid, signature)
+    this.blogid = this.$route.query.id
+    this.blog()
     },
 
    methods: {
-    blog: function (id, sig) {
-        var apiurl = `/api/blog/get_blog/get_blog_by_id/${id}`
-        //this.$http.post('/api/blog/get_blog/get_blog_by_id', {id: id, category: this.category}).then(response => {
+    blog: function () {
+        var apiurl = `/api/blog/get_blog/get_blog_by_id/${this.blogid}`
         this.$http.get(apiurl).then(response => {
-        this.blog_id = id
         this.blog_like = response.data.res.like_number
         this.data = response.data.res
       })
