@@ -96,16 +96,9 @@ export default {
     get_blog: function () {
       var apiurl = `/api/blog/get_blog/get_blog/${this.start}`
       this.$http.get(apiurl).then(response => {
-      //this.$http.get('/api/blog/get_blog/get_blog', {params: {start:this.start, offset:this.offset}}).then(response => {
         this.data = response.data.bloglist
-         this.totalnumber = response.data.totalnumber
+        this.totalnumber = response.data.totalnumber
         })
-    },
-
-    top_article: function (id) {
-      this.$http.post('/api/blog/get_blog/top_article_list', {article_id: id, action: "insert"}).then(response => {
-        this.data = response.data
-      })
     }
   }
 }

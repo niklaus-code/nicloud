@@ -35,7 +35,7 @@ export default new Router({
       component: blog
     },
     {
-      path: '/details',
+      path: '/details/',
       name: 'details',
       component: details
     },

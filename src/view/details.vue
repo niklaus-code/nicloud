@@ -19,11 +19,7 @@
                             {{data["create_time"]}}
                         </span></p>
                   </div>
-                 <div style="background-color:#f9f9f9" v-html="data.content"></div>
-                 <!-- <div class="btn-box">
-                    <button class="layui-btn layui-btn-primary">上一篇</button>
-                    <button class="layui-btn layui-btn-primary">下一篇</button>
-                  </div> -->
+                 <div style="background-color:#f9f9f9;padding:5px 10px" v-html="data.content"></div>
                 </div>
                 <div class="form">
                   <form class="layui-form" action="">
@@ -65,39 +61,45 @@
   </div>
 </template>
 <script>
+
 import foot from '@/components/footer'
 import headd from '@/components/head'
 
 export default {
-  data () {
-    return {
-      data: '',
-      category: ''
-    }
-  },
-
-  components: {
-    foot, headd
-  },
-
-  mounted: function () {
-    this.blogid = this.$route.params.id
-    this.blog()
+    data () {
+        return {
+            data: '',
+            category: ''
+        }
     },
 
-   methods: {
-    blog: function () {
-        var apiurl = `/api/blog/get_blog/get_blog_by_id/${this.blogid}`
-        this.$http.get(apiurl).then(response => {
-        //this.blog_like = response.data.res.like_number
-        this.data = response.data.res
-      })
-    }
+    components: {
+        foot, headd
+    },
+
+    mounted: function () {
+           var id = this.$route.params.id
+           if (!id) {
+                this.blogid = window.sessionStorage.getItem('blogid')
+            } else {
+                this.blogid = id
+                window.sessionStorage.setItem('blogid', this.blogid)
+            }
+        this.blog()
+    },
+
+    methods: {
+        blog: function () {
+            var apiurl = `/api/blog/get_blog/get_blog_by_id/${this.blogid}`
+            this.$http.get(apiurl).then(response => {
+            this.data = response.data.res
+            })
+        }
     }
   }
 </script>
 <style>
-.details-content .article-cont p {
-padding:30px 0 0 5px
+    .details-content .article-cont p {
+    padding:30px 0 0 5px
 }
 </style>
