@@ -125,6 +125,6 @@ a {color: black}
 img {max-height: 300px; width: auto}
 .item-cont {max-height:20px}
 .content {
-    padding: 0px 0 160px 0;
+    padding: 0;
 }
 </style>
