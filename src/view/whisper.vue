@@ -10,12 +10,14 @@
               <i class="layui-icon layui-icon-date"></i><span class="date">{{blog["create_time"]}}</span>
             </div>
             <div v-html="blog.content"></div>
+            <!--
             <div class="op-list">
                 <p class="like"><i @click="point_like(blog['id'])" class="layui-icon layui-icon-praise"></i>
                     <span v-if="pointlike < 0 "> {{blog["like_number"]}}</span>
                     <span v-else>{{pointlike}}</span>
                 </p> 
             </div>
+                -->
           </div>
           <div class="review-version layui-hide">
               <div class="form">
