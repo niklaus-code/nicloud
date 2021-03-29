@@ -1,7 +1,7 @@
 package apis
 
 import "github.com/gin-gonic/gin"
-import "github.com/niklaus-code/gogogo/common"
+import "goblog/common"
 import "strconv"
 
 
