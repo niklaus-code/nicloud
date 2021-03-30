@@ -73,7 +73,7 @@ export default {
     },
   methods: {
     blog: function (id, sig) {
-      this.$http.get('/api/blog/get_blog/get_blog_category', {params: {category: 5}}).then(response => {
+      this.$http.get('/api/blog/get_blog/get_blog_thoughts', {params: {category: 5}}).then(response => {
         this.data = response.data
       })
     },

@@ -10,16 +10,16 @@
               <div class="form-box">
                 <div class="article-cont">
                   <div class="title">
-                    <h3>{{data["title"]}}</h3>
+                    <h3>{{data["Title"]}}</h3>
                     <p class="cont-info">
                         <span class="data" style="color:green">
-                            {{data["category_name"]}}
+                            {{data["Category_name"]}}
                         </span>
                         <span class="types">
-                            {{data["create_time"]}}
+                            {{data["Create_time"]}}
                         </span></p>
                   </div>
-                 <div style="background-color:#f9f9f9;padding:5px 10px" v-html="data.content"></div>
+                 <div style="background-color:#f9f9f9;padding:5px 10px" v-html="data.Content"></div>
                 </div>
                 <div class="form">
                   <form class="layui-form" action="">
@@ -78,13 +78,13 @@ export default {
     },
 
     mounted: function () {
-           var id = this.$route.params.id
-           if (!id) {
-                this.blogid = window.sessionStorage.getItem('blogid')
-            } else {
-                this.blogid = id
-                window.sessionStorage.setItem('blogid', this.blogid)
-            }
+        var id = this.$route.params.id
+        if (!id) {
+            this.blogid = window.sessionStorage.getItem('blogid')
+        } else {
+            this.blogid = id
+            window.sessionStorage.setItem('blogid', this.blogid)
+        }
         this.blog()
     },
 
