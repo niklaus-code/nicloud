@@ -16,7 +16,7 @@ type Blog struct {
 func BlogGet(startpage int, offset int) ([]*Blog) {
     //初始化db
     db := db.Db()
-    row := db.Table("myblog_lists m").Select("m.id, m.title, m.create_time, m.content, myblog_caegory_info.category_name").Joins("LEFT JOIN article_class on m.id = article_class.article_id").Joins("left join myblog_caegory_info on myblog_caegory_info.category_id = article_class.category_id where m.status=1").Limit(offset).Offset((startpage-1)*offset)
+    row := db.Order("id desc").Table("myblog_lists m").Select("m.id, m.title, m.create_time, m.content, myblog_caegory_info.category_name").Joins("LEFT JOIN article_class on m.id = article_class.article_id").Joins("left join myblog_caegory_info on myblog_caegory_info.category_id = article_class.category_id where m.status=1").Limit(offset).Offset((startpage-1)*offset)
     /*
     sql := fmt.Sprintf("select id, title, content,  img, group_concat(i.category_name) from myblog_lists as m" +
       "LEFT JOIN article_class a on m.id = a.article_id " +
@@ -42,7 +42,7 @@ func ThoughtsGet() ([]*Myblog_thoughts) {
     var myblog_thoughts []*Myblog_thoughts
     //查询
 
-    db.Find(&myblog_thoughts)
+    db.Order("id desc").Find(&myblog_thoughts)
     return myblog_thoughts
     }
 
