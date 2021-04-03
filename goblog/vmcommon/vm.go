@@ -48,21 +48,40 @@ func (m Mes)Error() string {
   return "vm already exists"
 }
 
-func vmexists(uuid string) (bool, error) {
+func GetVmStatus(uuid string) (bool, error) {
   conn := libvirtconn()
-  _, err := conn.LookupDomainByUUIDString(uuid)
+  vm, err := conn.LookupDomainByUUIDString(uuid)
+
   if err != nil {
     return false, err
   }
-  return true, Mes{}
+
+  state, b , err1  := vm.GetState()
+  if err1 != nil {
+    fmt.Println(err1)
+  }
+  fmt.Println(state, b)
+  return true, err1
+}
+
+func Start(uuid string) (bool,error) {
+  /*start vm*/
+  conn := libvirtconn()
+  vm, err := conn.LookupDomainByUUIDString(uuid)
+  fmt.Println(vm)
+  if err != nil {
+    fmt.Println(err)
+  }
+
+  err1 := vm.Create()
+  if err1 != nil {
+    return false, err1
+  }
+  return true, err1
 }
 
 func Create(uuid string) (bool, error) {
-  exists, err := vmexists(uuid)
-  if exists == true {
-    return false, err
-  }
-
+  /*create a vm*/
   db := vmdb()
   var x Vm_xmls
   db.First(&x, "ostype = ?", "linux")

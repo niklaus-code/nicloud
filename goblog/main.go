@@ -20,6 +20,8 @@ func main() {
 	{
 	  v2.GET("getvmlist", vmapis.Getvmlist)
     v2.GET("createvm", vmapis.Createvm)
+    v2.GET("status", vmapis.GetStatus)
+    v2.GET("start", vmapis.VmStart)
   }
 
 	r.Run("0.0.0.0:1992")
