@@ -1,14 +1,14 @@
 package vmapis
 
 import (
-  "fmt"
   "github.com/gin-gonic/gin"
   "goblog/vmcommon"
+  "strconv"
 )
 
 func Getvmlist(c *gin.Context) {
 
-  vmlist := vmcommon.GetVmList()
+  vmlist := vmcommon.VmList()
   res := make(map[string]interface{})
   res["res"] = vmlist
 
@@ -18,7 +18,6 @@ func Getvmlist(c *gin.Context) {
 func Createvm(c *gin.Context) {
 
   create, err := vmcommon.Create("3ee18210-3761-4fdc-9141-f13879878725")
-  fmt.Println(err)
   res := make(map[string]interface{})
   res["res"] = create
   res["err"] = string(err.Error())
@@ -27,16 +26,27 @@ func Createvm(c *gin.Context) {
 }
 
 func GetStatus(c *gin.Context) {
-  s, _ := vmcommon.GetVmStatus("31a803b2-5f11-4f14-875f-d14347db13fb")
+  s, _ := vmcommon.VmStatus("31a803b2-5f11-4f14-875f-d14347db13fb")
   res := make(map[string]interface{})
   res["res"] = s
   c.JSON(200, res)
 }
 
-func  VmStart(c *gin.Context)  {
-  s, err := vmcommon.Start("31a803b2-5f11-4f14-875f-d14347db13fb")
-  fmt.Println(err)
+func  Operation(c *gin.Context)  {
   res := make(map[string]interface{})
+
+  o, err := strconv.Atoi(c.Param("id"))
+  if err != nil {
+    c.JSON(400, res)
+  }
+
+  var s string
+  switch o {
+  case 1: s, _ = vmcommon.Start("31a803b2-5f11-4f14-875f-d14347db13fb")
+  case 0: s, _ = vmcommon.Shutdown("31a803b2-5f11-4f14-875f-d14347db13fb")
+  }
+
+
   res["res"] = s
   res["err"] = err
   c.JSON(200, res)

@@ -8,14 +8,14 @@ import (
 )
 
 type Vms struct {
-  Uuid string
-  Name string
-  Cpu int8
-  Mem int8
+  Uuid       string
+  Name       string
+  Cpu        int8
+  Mem        int8
   Createtime string
-  Owner string
-  Comment string
-  Status int
+  Owner      string
+  Comment    string
+  Status     string
 }
 
 func vmdb() *gorm.DB {
@@ -40,31 +40,29 @@ func libvirtconn() *libvirt.Connect {
   return conn
 }
 
-type Mes struct {
-  Res bool
-}
+func VmStatus(uuid string) (string, error) {
+  var stats map[libvirt.DomainState]string
+  stats = make(map[libvirt.DomainState]string)
+  stats[5] = "关机"
+  stats[1] = "运行"
 
-func (m Mes)Error() string {
-  return "vm already exists"
-}
-
-func GetVmStatus(uuid string) (bool, error) {
   conn := libvirtconn()
   vm, err := conn.LookupDomainByUUIDString(uuid)
 
   if err != nil {
-    return false, err
+    return "vm not found", err
   }
 
-  state, b , err1  := vm.GetState()
+  state, _ , err1  := vm.GetState()
+
   if err1 != nil {
-    fmt.Println(err1)
+    return "vm not found", err1
   }
-  fmt.Println(state, b)
-  return true, err1
+
+  return stats[state], err1
 }
 
-func Start(uuid string) (bool,error) {
+func Shutdown(uuid string) (string, error) {
   /*start vm*/
   conn := libvirtconn()
   vm, err := conn.LookupDomainByUUIDString(uuid)
@@ -73,11 +71,36 @@ func Start(uuid string) (bool,error) {
     fmt.Println(err)
   }
 
+  err1 := vm.Shutdown()
+  if err1 != nil {
+    return "error", err1
+  }
+  s, err2 := VmStatus(uuid)
+  if err2 != nil {
+    fmt.Println(err2)
+  }
+  return s, err1
+}
+
+func Start(uuid string) (string, error) {
+  /*start vm*/
+  conn := libvirtconn()
+  vm, err := conn.LookupDomainByUUIDString(uuid)
+
+  if err != nil {
+    fmt.Println(err)
+  }
+
   err1 := vm.Create()
   if err1 != nil {
-    return false, err1
+    fmt.Println(err1)
   }
-  return true, err1
+
+  s, err2 := VmStatus(uuid)
+  if err2 != nil {
+    fmt.Println(err2)
+  }
+  return s, err2
 }
 
 func Create(uuid string) (bool, error) {
@@ -95,9 +118,15 @@ func Create(uuid string) (bool, error) {
   return true, err1
 }
 
-func GetVmList() []*Vms {
+func VmList() []*Vms {
   db := vmdb()
   var v []*Vms
   db.Find(&v)
+  //s, _ := VmStatus("31a803b2-5f11-4f14-875f-d14347db13fb")
+  //fmt.Println(s)
+  for _, e := range(v) {
+    s, _ := VmStatus(e.Uuid)
+    e.Status = s
+  }
   return v
 }

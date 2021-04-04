@@ -8,12 +8,18 @@ import about from '@/view/about'
 import datetime from '@/view/datetime'
 import login from '@/view/login'
 import clipboard from '@/view/clipboard'
+import gocloud from '@/view/vm'
 
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/gocloud',
+      name: 'gocloud',
+      component: gocloud
+    },
     {
       path: '/',
       name: 'whisper',
