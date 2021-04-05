@@ -1,6 +1,7 @@
 package vmapis
 
 import (
+  "fmt"
   "github.com/gin-gonic/gin"
   "goblog/vmcommon"
   "strconv"
@@ -33,6 +34,8 @@ func GetStatus(c *gin.Context) {
 }
 
 func  Operation(c *gin.Context)  {
+  uuid := c.Query("uuid")
+  fmt.Println(uuid)
   res := make(map[string]interface{})
 
   o, err := strconv.Atoi(c.Param("id"))
@@ -40,10 +43,10 @@ func  Operation(c *gin.Context)  {
     c.JSON(400, res)
   }
 
-  var s string
+  var s *vmcommon.Vms
   switch o {
-  case 1: s, _ = vmcommon.Start("31a803b2-5f11-4f14-875f-d14347db13fb")
-  case 0: s, _ = vmcommon.Shutdown("31a803b2-5f11-4f14-875f-d14347db13fb")
+  case 1: s, _ = vmcommon.Start(uuid)
+  case 0: s, _ = vmcommon.Shutdown(uuid)
   }
 
 

@@ -62,27 +62,32 @@ func VmStatus(uuid string) (string, error) {
   return stats[state], err1
 }
 
-func Shutdown(uuid string) (string, error) {
+func Shutdown(uuid string) (*Vms, error) {
   /*start vm*/
   conn := libvirtconn()
   vm, err := conn.LookupDomainByUUIDString(uuid)
-  fmt.Println(vm)
   if err != nil {
     fmt.Println(err)
   }
-
-  err1 := vm.Shutdown()
+  err1 := vm.Destroy()
+  //err1 := vm.Shutdown()
   if err1 != nil {
-    return "error", err1
+    fmt.Println(err1)
   }
+
+  db := vmdb()
+  var v = &Vms{}
+  db.Where("uuid = ?", uuid).First(&v)
+
   s, err2 := VmStatus(uuid)
+  v.Status = s
   if err2 != nil {
     fmt.Println(err2)
   }
-  return s, err1
+  return v, err1
 }
 
-func Start(uuid string) (string, error) {
+func Start(uuid string) (*Vms, error) {
   /*start vm*/
   conn := libvirtconn()
   vm, err := conn.LookupDomainByUUIDString(uuid)
@@ -96,11 +101,16 @@ func Start(uuid string) (string, error) {
     fmt.Println(err1)
   }
 
+  db := vmdb()
+  var v = &Vms{}
+  db.Where("uuid = ?", uuid).First(&v)
+
   s, err2 := VmStatus(uuid)
+  v.Status = s
   if err2 != nil {
     fmt.Println(err2)
   }
-  return s, err2
+  return v, err2
 }
 
 func Create(uuid string) (bool, error) {
@@ -122,8 +132,6 @@ func VmList() []*Vms {
   db := vmdb()
   var v []*Vms
   db.Find(&v)
-  //s, _ := VmStatus("31a803b2-5f11-4f14-875f-d14347db13fb")
-  //fmt.Println(s)
   for _, e := range(v) {
     s, _ := VmStatus(e.Uuid)
     e.Status = s

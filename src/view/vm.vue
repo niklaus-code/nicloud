@@ -76,17 +76,17 @@ export default {
             this.data = response.data.res
             })
         },
-        shutdown: function () {
+        shutdown: function (index) {
             var apiurl = `/api/vm/operation/0`
-            this.$http.get(apiurl).then(response => {
-            this.data = response.data.res
+            this.$http.get(apiurl, { params: { uuid: "31a803b2-5f11-4f14-875f-d14347db13fb" } }).then(response => {
+				this.$set(this.data, index , response.data.res)
             })
         },
         start: function (index) {
             var apiurl = `/api/vm/operation/1`
 			
-            this.$http.get(apiurl).then(response => {
-				this.$set(this.data, index , {Status: response.data.res})
+            this.$http.get(apiurl, { params: { uuid: "31a803b2-5f11-4f14-875f-d14347db13fb" } }).then(response => {
+				this.$set(this.data, index , response.data.res)
             })
         },
     }
