@@ -5,7 +5,6 @@ import "goblog/apis"
 import "goblog/apis/vmapis"
 
 func main() {
-
 	r:=gin.Default()
 
 	v1 :=r.Group("/api/blog/get_blog")
@@ -19,7 +18,7 @@ func main() {
 	v2 := r.Group("/api/vm")
 	{
 	  v2.GET("getvmlist", vmapis.Getvmlist)
-    v2.GET("createvm", vmapis.Createvm)
+    v2.GET("create", vmapis.Createvm)
     v2.GET("status", vmapis.GetStatus)
     v2.GET("operation/:id", vmapis.Operation)
   }

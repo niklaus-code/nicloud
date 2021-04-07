@@ -26,7 +26,7 @@
                                 {{item["title"]}}
                                 <button style="margin-left:3px" :class=" classtype[item['category_name']]" class="layui-btn-radius layui-btn-xs">
                                     {{item["category_name"]}}
-                                <!-- <button style="margin-left:3px" class="layui-btn-radius layui-btn-xs layui-btn-danger new-icon">{{item["category_name"]}} -->
+                                	<!-- <button style="margin-left:3px" class="layui-btn-radius layui-btn-xs layui-btn-danger new-icon">{{item["category_name"]}} -->
                                 </button>
                             </h4>
                             <!-- <font>{{item["category_name"]}}</font> -->
@@ -58,7 +58,7 @@
         </div>
     </div>
     </div>
-<foot></foot>
+	<foot></foot>
 </div>
 </template>
 
@@ -99,19 +99,19 @@ export default {
                 }
             },
 
-    add: function () {
+    	add: function () {
             if (this.start > this.totalnumber) {
                 this.start=this.totalnumber
                 }
             },
 
-    change_page: function (page) {
-        this.start = page
-    },
+    	change_page: function (page) {
+        	this.start = page
+    	},
 
-    get_blog: function () {
-        var apiurl = `/api/blog/get_blog/get_blog/${this.start}`
-        this.$http.get(apiurl).then(response => {
+    	get_blog: function () {
+        	var apiurl = `/api/blog/get_blog/get_blog/${this.start}`
+        	this.$http.get(apiurl).then(response => {
             this.data = response.data.bloglist
             this.totalnumber = response.data.totalnumber
         })

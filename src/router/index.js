@@ -9,12 +9,18 @@ import datetime from '@/view/datetime'
 import login from '@/view/login'
 import clipboard from '@/view/clipboard'
 import gocloud from '@/view/vm'
+import createvm from '@/view/createvm'
 
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/createvm',
+      name: 'createvm',
+      component: createvm
+    },
     {
       path: '/gocloud',
       name: 'gocloud',

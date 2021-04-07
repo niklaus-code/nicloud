@@ -1,7 +1,6 @@
 package vmapis
 
 import (
-  "fmt"
   "github.com/gin-gonic/gin"
   "goblog/vmcommon"
   "strconv"
@@ -17,11 +16,15 @@ func Getvmlist(c *gin.Context) {
 }
 
 func Createvm(c *gin.Context) {
+  cpu := c.Query("cpu")
+  mem := c.Query("mem")
 
-  create, err := vmcommon.Create("3ee18210-3761-4fdc-9141-f13879878725")
+  create, err := vmcommon.Create(cpu, mem)
+  if err != nil {
+    c.JSON(500, err)
+  }
   res := make(map[string]interface{})
   res["res"] = create
-  res["err"] = string(err.Error())
 
   c.JSON(200, res)
 }
@@ -35,7 +38,6 @@ func GetStatus(c *gin.Context) {
 
 func  Operation(c *gin.Context)  {
   uuid := c.Query("uuid")
-  fmt.Println(uuid)
   res := make(map[string]interface{})
 
   o, err := strconv.Atoi(c.Param("id"))

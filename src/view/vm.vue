@@ -3,8 +3,11 @@
     <headd></headd>
 
   <div class="content whisper-content leacots-content details-content">
+	<router-link :to="{name:'createvm'}">
+	<button>创建</button>
+	</router-link>
 	
-<table class="table">
+<table class="table" style="margin-top:20px">
     <thead>
       <tr>
         <th>uuid</th>

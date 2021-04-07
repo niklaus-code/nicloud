@@ -4,6 +4,7 @@ import (
   "fmt"
   "github.com/jinzhu/gorm"
   _ "github.com/jinzhu/gorm/dialects/mysql" //这个一定要引入哦！！
+  uuid "github.com/satori/go.uuid"
   libvirt "libvirt.org/libvirt-go"
 )
 
@@ -113,14 +114,23 @@ func Start(uuid string) (*Vms, error) {
   return v, err2
 }
 
-func Create(uuid string) (bool, error) {
+func Createuuid() string {
+  u := uuid.NewV4().String()
+  return u
+}
+
+func Create(cpu string, mem string) (bool, error) {
   /*create a vm*/
+
+  u := Createuuid()
   db := vmdb()
+  
   var x Vm_xmls
   db.First(&x, "ostype = ?", "linux")
 
+  vmxml := fmt.Sprintf(x.Osxml, u, u, string("2048000"), string("2048000"), cpu)
   conn := libvirtconn()
-  _, err1 := conn.DomainDefineXML(x.Osxml)
+  _, err1 := conn.DomainDefineXML(vmxml)
 
   if err1 != nil {
     return false, err1
