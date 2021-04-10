@@ -16,8 +16,8 @@ func Getvmlist(c *gin.Context) {
 }
 
 func Createvm(c *gin.Context) {
-  cpu := c.Query("cpu")
-  mem := c.Query("mem")
+  cpu, _  := strconv.Atoi(c.Query("cpu"))
+  mem, _ := strconv.Atoi(c.Query("mem"))
 
   create, err := vmcommon.Create(cpu, mem)
   if err != nil {
@@ -50,7 +50,6 @@ func  Operation(c *gin.Context)  {
   case 1: s, _ = vmcommon.Start(uuid)
   case 0: s, _ = vmcommon.Shutdown(uuid)
   }
-
 
   res["res"] = s
   res["err"] = err
