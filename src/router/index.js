@@ -5,9 +5,7 @@ import details from '@/view/details'
 import whisper from '@/view/whisper'
 import read from '@/view/read'
 import about from '@/view/about'
-import datetime from '@/view/datetime'
 import login from '@/view/login'
-import clipboard from '@/view/clipboard'
 import gocloud from '@/view/vm'
 import createvm from '@/view/createvm'
 
@@ -30,11 +28,6 @@ export default new Router({
       path: '/',
       name: 'whisper',
       component: whisper
-    },
-    {
-      path: '/clipboard',
-      name: 'whisper',
-      component: clipboard
     },
     {
       path: '/login',
@@ -65,11 +58,6 @@ export default new Router({
       path: '/read',
       name: 'read',
       component: read
-    },
-    {
-      path: '/datetime',
-      name: 'datetime',
-      component: datetime
     }
   ]
 })

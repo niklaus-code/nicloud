@@ -21,6 +21,7 @@ func main() {
     v2.GET("create", vmapis.Createvm)
     v2.GET("status", vmapis.GetStatus)
     v2.GET("operation/:id", vmapis.Operation)
+    v2.GET("delete", vmapis.DeleteVM)
   }
 
 	r.Run("0.0.0.0:1992")

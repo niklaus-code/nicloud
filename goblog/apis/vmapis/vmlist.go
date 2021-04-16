@@ -36,9 +36,22 @@ func GetStatus(c *gin.Context) {
   c.JSON(200, res)
 }
 
+func DeleteVM(c *gin.Context)  {
+  uuid := c.Query("uuid")
+
+  res := make(map[string]interface{})
+  r := vmcommon.Delete(uuid)
+
+  res["res"] = r
+  res["err"] = nil
+  c.JSON(200, res)
+}
+
 func  Operation(c *gin.Context)  {
   uuid := c.Query("uuid")
   res := make(map[string]interface{})
+
+  var err error
 
   o, err := strconv.Atoi(c.Param("id"))
   if err != nil {
@@ -47,8 +60,9 @@ func  Operation(c *gin.Context)  {
 
   var s *vmcommon.Vms
   switch o {
-  case 1: s, _ = vmcommon.Start(uuid)
-  case 0: s, _ = vmcommon.Shutdown(uuid)
+  case 0: s, err = vmcommon.Shutdown(uuid)
+  case 1: s, err = vmcommon.Start(uuid)
+  case 2: s, err = vmcommon.Shutdown(uuid)
   }
 
   res["res"] = s

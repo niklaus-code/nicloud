@@ -24,7 +24,7 @@
                         <div class="item-cont" >
                             <h4 style="line-height:2.4">
                                 {{item["title"]}}
-                                <button style="margin-left:3px" :class=" classtype[item['category_name']]" class="layui-btn-radius layui-btn-xs">
+                                <button style="margin-left:3px" :class="classtype[item['category_name']]" class="layui-btn-radius layui-btn-xs">
                                     {{item["category_name"]}}
                                 	<!-- <button style="margin-left:3px" class="layui-btn-radius layui-btn-xs layui-btn-danger new-icon">{{item["category_name"]}} -->
                                 </button>

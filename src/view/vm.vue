@@ -7,7 +7,7 @@
 	<button>创建</button>
 	</router-link>
 	
-<table class="table" style="margin-top:20px">
+<table class="layui-table" lay-even lay-skin="line" lay-size="lg">
     <thead>
       <tr>
         <th>uuid</th>
@@ -22,16 +22,17 @@
     </thead>
     <tbody v-for="(item, index) in data">
       <tr class="table-dark text-dark" :id="item.Uuid">
-        <td class="default">{{item.Uuid}}</td>
-        <td class="info">{{item.Name}}</td>
-        <td class="active">{{item.Cpu}}</td>
-        <td class="success">{{item.Mem}}</td>
-        <td class="warning">{{item.Owner}}</td>
-        <td class="active">{{item.Status}}</td>
-        <td class="info">{{item.Comment}}</td>
+        <td>{{item.Uuid}}</td>
+        <td>{{item.Name}}</td>
+        <td>{{item.Cpu}}</td>
+        <td>{{item.Mem}}</td>
+        <td>{{item.Owner}}</td>
+        <td>{{item.Status}}</td>
+        <td>{{item.Comment}}</td>
         <td class="default">
-			<button type="button" class="btn btn-success" @click="start(index)">启动</button>
-			<button type="button" class="btn btn-info" @click="shutdown(index)">停止</button>
+			<button type="button" class="btn btn-success" @click="start(item.Uuid,index)">开机</button>
+			<button type="button" class="btn btn-info" @click="shutdown(item.Uuid, index)">关机</button>
+			<button type="button" class="btn btn-info" @click="deletevm(item.Uuid, index)">删除</button>
 		</td>
       </tr>
     </tbody>
@@ -52,7 +53,8 @@ export default {
             data: '',
 			status: {
 				0: "关机",
-				1: "运行"
+				1: "运行",
+				2: "已删除",
 			}
         }
     },
@@ -76,19 +78,28 @@ export default {
         getvm: function () {
             var apiurl = `/api/vm/getvmlist`
             this.$http.get(apiurl).then(response => {
-            this.data = response.data.res
+            	this.data = response.data.res
             })
         },
-        shutdown: function (index) {
-            var apiurl = `/api/vm/operation/0`
-            this.$http.get(apiurl, { params: { uuid: "31a803b2-5f11-4f14-875f-d14347db13fb" } }).then(response => {
+
+        deletevm: function (uuid, index) {
+            var apiurl = `/api/vm/delete`
+            this.$http.get(apiurl, { params: { uuid: uuid} }).then(response => {
 				this.$set(this.data, index , response.data.res)
             })
         },
-        start: function (index) {
+
+        shutdown: function (uuid, index) {
+            var apiurl = `/api/vm/operation/0`
+            this.$http.get(apiurl, { params: { uuid: uuid } }).then(response => {
+				this.$set(this.data, index , response.data.res)
+            })
+        },
+
+        start: function (uuid, index) {
             var apiurl = `/api/vm/operation/1`
 			
-            this.$http.get(apiurl, { params: { uuid: "31a803b2-5f11-4f14-875f-d14347db13fb" } }).then(response => {
+            this.$http.get(apiurl, { params: { uuid: uuid } }).then(response => {
 				this.$set(this.data, index , response.data.res)
             })
         },
@@ -96,7 +107,4 @@ export default {
   }
 </script>
 <style>
-    .details-content .article-cont p {
-    padding:30px 0 0 5px
-}
 </style>
