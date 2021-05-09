@@ -8,7 +8,7 @@ import (
 )
 
 func Db() *gorm.DB {
-  db, errDb:=gorm.Open("mysql","modis:modis@(10.0.90.151:3306)/blog")
+  db, errDb:=gorm.Open("mysql","modis:modis@(127.0.0.1:3306)/myblog")
   if errDb != nil {
     fmt.Println(errDb)
   }
