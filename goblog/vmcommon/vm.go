@@ -76,14 +76,18 @@ var Vmstate = map[libvirt.DomainState]string{
 }
 
 
-func Delete(uuid string) *Vms {
+func Delete(uuid string) ([]*Vms, error) {
   var v = &Vms{}
-
   db := vmdb()
-  db.Model(&v).Update("exist", 0).Where("uuid=?", uuid)
+  db.Model(&v).Where("uuid=?", uuid).Update("exist", 0)
 
-  db.Where("uuid = ?", uuid).First(&v)
-  return v
+  //undefine vm
+  conn, err := libvirtconn()
+  vm, err := conn.LookupDomainByUUIDString(uuid)
+  vm.Undefine()
+
+  vmlist := VmList()
+  return vmlist,err
 }
 
 func Shutdown(uuid string) (*Vms, error) {
@@ -123,12 +127,12 @@ func Start(uuid string) (*Vms, error) {
   vm, err := conn.LookupDomainByUUIDString(uuid)
 
   if err != nil {
-    fmt.Println(err)
+    return nil, err
   }
 
   err1 := vm.Create()
   if err1 != nil {
-    fmt.Println(err1)
+    return nil, err1
   }
 
   db := vmdb()
@@ -208,4 +212,18 @@ func VmList() []*Vms {
     e.Status = s
   }
   return v
+}
+
+type vm_networks struct {
+  Ipv4 string
+  Macaddr string
+  Status bool
+}
+
+func IPlist() []*vm_networks {
+  db := vmdb()
+  var ip []*vm_networks
+  db.Where("status=false").Find(&ip)
+
+  return ip
 }

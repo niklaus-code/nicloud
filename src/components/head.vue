@@ -25,6 +25,7 @@
       <router-link :to="{path: '/blog'}">关于技术</router-link>
       <router-link :to="{path: '/read'}">读书&&旅行</router-link>
       <router-link :to="{path: '/about'}">关于</router-link>
+      <router-link :to="{path: '/gocloud'}">gocloud</router-link>
     </div> 
 
         <ul class="layui-nav header-down-nav">

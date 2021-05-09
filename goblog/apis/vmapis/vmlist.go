@@ -1,10 +1,19 @@
 package vmapis
 
 import (
+  "fmt"
   "github.com/gin-gonic/gin"
   "goblog/vmcommon"
   "strconv"
 )
+
+func GetIplist(c *gin.Context)  {
+  iplist := vmcommon.IPlist()
+  res := make(map[string]interface{})
+  res["res"] = iplist
+
+  c.JSON(200, res)
+}
 
 func Getvmlist(c *gin.Context) {
 
@@ -18,7 +27,9 @@ func Getvmlist(c *gin.Context) {
 func Createvm(c *gin.Context) {
   cpu, _  := strconv.Atoi(c.Query("cpu"))
   mem, _ := strconv.Atoi(c.Query("mem"))
+  ip := c.Query("ip")
 
+  fmt.Println(ip)
   create, err := vmcommon.Create(cpu, mem)
   if err != nil {
     c.JSON(500, err)
@@ -40,7 +51,7 @@ func DeleteVM(c *gin.Context)  {
   uuid := c.Query("uuid")
 
   res := make(map[string]interface{})
-  r := vmcommon.Delete(uuid)
+  r, _ := vmcommon.Delete(uuid)
 
   res["res"] = r
   res["err"] = nil

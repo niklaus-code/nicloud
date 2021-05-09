@@ -17,11 +17,12 @@ func main() {
 
 	v2 := r.Group("/api/vm")
 	{
-	  v2.GET("getvmlist", vmapis.Getvmlist)
+	  v2.GET("getvm", vmapis.Getvmlist)
     v2.GET("create", vmapis.Createvm)
     v2.GET("status", vmapis.GetStatus)
     v2.GET("operation/:id", vmapis.Operation)
     v2.GET("delete", vmapis.DeleteVM)
+    v2.GET("getip", vmapis.GetIplist)
   }
 
 	r.Run("0.0.0.0:1992")

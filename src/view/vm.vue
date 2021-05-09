@@ -4,9 +4,8 @@
 
   <div class="content whisper-content leacots-content details-content">
 	<router-link :to="{name:'createvm'}">
-	<button>创建</button>
+	<button >创建</button>
 	</router-link>
-	
 <table class="layui-table" lay-even lay-skin="line" lay-size="lg">
     <thead>
       <tr>
@@ -76,7 +75,7 @@ export default {
 
     methods: {
         getvm: function () {
-            var apiurl = `/api/vm/getvmlist`
+            var apiurl = `/api/vm/getvm`
             this.$http.get(apiurl).then(response => {
             	this.data = response.data.res
             })
@@ -85,7 +84,8 @@ export default {
         deletevm: function (uuid, index) {
             var apiurl = `/api/vm/delete`
             this.$http.get(apiurl, { params: { uuid: uuid} }).then(response => {
-				this.$set(this.data, index , response.data.res)
+            	this.data = response.data.res
+				//this.$set(this.data, index , response.data.res)
             })
         },
 
@@ -100,11 +100,18 @@ export default {
             var apiurl = `/api/vm/operation/1`
 			
             this.$http.get(apiurl, { params: { uuid: uuid } }).then(response => {
+				if (response.data.err) {
+					alert(response.data.err.Message)
+					}
 				this.$set(this.data, index , response.data.res)
             })
         },
     }
   }
 </script>
+
 <style>
+	 .modal {
+  display: block;
+}
 </style>
