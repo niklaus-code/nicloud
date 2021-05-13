@@ -46,6 +46,20 @@
 				</div>
     		</div>
 		</div>
+		<div  class="col-sm-3 col-sm-offset-4" style="margin-top:20px">
+	 		<div class="form-group">
+				<div class="col-sm-2">
+        			<label>宿主机</label>
+				</div>
+				<div class="col-sm-9">
+        			<select class="col-sm-10" v-model="hostvalue">
+  						<option  v-for="host in hostlist" :value="host.Ipv4">
+							{{ host.Ipv4 }}
+						</option>
+        			</select>
+				</div>
+    		</div>
+		</div>
 
 		<div class="col-sm-3 col-sm-offset-4" style="margin-top:20px">
 			<button class="layui-btn"  @click="createvm()">创建</button>
@@ -61,6 +75,8 @@ import headd from '@/components/head'
 export default {
     data () {
         return {
+			hostvalue: "",
+            hostlist: [],
 			ipvalue: "",
             iplist: [],
 			memvalue: 2,
@@ -96,6 +112,7 @@ export default {
 
     created: function () {
 		this.getip()
+		this.gethost()
         var id = this.$route.params.id
         if (!id) {
             this.blogid = window.sessionStorage.getItem('blogid')
@@ -116,6 +133,15 @@ export default {
 				}
 			})
 			},
+
+        gethost: function () {
+            var apiurl = `/api/vm/gethost`
+            this.$http.get(apiurl).then(response => {
+            this.hostlist = response.data.res
+			this.hostvalue = response.data.res[0].Ipv4
+            })
+        },
+
         getip: function () {
             var apiurl = `/api/vm/getip`
             this.$http.get(apiurl).then(response => {

@@ -20,6 +20,7 @@ type Vms struct {
   Vmxml      string
   Status     interface{}
   Exist       int
+  Ip          string
 }
 
 func vmdb() *gorm.DB {
@@ -45,12 +46,6 @@ func libvirtconn() (*libvirt.Connect, error) {
 }
 
 func VmStatus(uuid string) (string, error) {
-  //var stats map[libvirt.DomainState]string
-  //stats = make(map[libvirt.DomainState]string)
-  //stats[0] = "关机"
-  //stats[1] = "运行"
-  //stats[2] = "已删除"
-
   conn, err := libvirtconn()
   if err != nil {
     return "", err
@@ -76,10 +71,10 @@ var Vmstate = map[libvirt.DomainState]string{
 }
 
 
-func Delete(uuid string) ([]*Vms, error) {
-  var v = &Vms{}
+func Delete(uuid string, ip string) ([]*Vms, error) {
   db := vmdb()
-  db.Model(&v).Where("uuid=?", uuid).Update("exist", 0)
+  db.Model(&Vms{}).Where("uuid=?", uuid).Update("exist", 0)
+  db.Model(&vm_networks{}).Where("ipv4=?", ip ).Update("status", 0)
 
   //undefine vm
   conn, err := libvirtconn()
@@ -152,7 +147,7 @@ func Createuuid() string {
   return u
 }
 
-func savevm(uuid string, cpu int, mem int, vmxml string) bool {
+func savevm(uuid string, cpu int, mem int, vmxml string, ip string) bool {
   db := vmdb()
   vm := &Vms{
     Uuid: uuid,
@@ -163,6 +158,7 @@ func savevm(uuid string, cpu int, mem int, vmxml string) bool {
     Create_time: time.Now(),
     Status: 1,
     Exist: 1,
+    Ip: ip,
   }
   db.Create(vm)
 
@@ -171,7 +167,7 @@ func savevm(uuid string, cpu int, mem int, vmxml string) bool {
   return res
 }
 
-func Create(cpu int, mem int) (bool, error) {
+func Create(cpu int, mem int, ip string) (bool, error) {
   /*create a vm*/
 
   vcpu := cpu
@@ -183,11 +179,14 @@ func Create(cpu int, mem int) (bool, error) {
   var x Vm_xmls
   db.First(&x, "ostype = ?", "linux")
 
+
   vmxml := fmt.Sprintf(x.Osxml, u, u, vmem, vmem, vcpu)
-  err := savevm(u, vcpu, vmem, vmxml)
+  err := savevm(u, vcpu, vmem, vmxml, ip)
+
+  dba := vmdb()
+  dba.Model(&vm_networks{}).Where("ipv4=?", ip).Update("status", 1)
 
   if err == false {
-    fmt.Println("insert sql fail")
     return false, nil
   }
 
@@ -217,13 +216,29 @@ func VmList() []*Vms {
 type vm_networks struct {
   Ipv4 string
   Macaddr string
-  Status bool
+  Status int8
 }
 
 func IPlist() []*vm_networks {
   db := vmdb()
   var ip []*vm_networks
-  db.Where("status=false").Find(&ip)
+  db.Where("status=0").Find(&ip)
 
   return ip
+}
+
+type Vm_hosts struct {
+  Ipv4 string
+  Mem int8
+  Cpu int8
+  Max_vms int8
+  Created_vms int8
+  Status int8
+}
+
+func Hosts() []*Vm_hosts {
+  db := vmdb()
+  var hosts []*Vm_hosts
+  db.Where("status=0").Find(&hosts)
+  return hosts
 }

@@ -10,8 +10,8 @@
     <thead>
       <tr>
         <th>uuid</th>
-        <th>名称</th>
-        <th>cpu</th>
+        <th>IP</th>
+        <th>CPU</th>
         <th>内存</th>
         <th>所属者</th>
         <th>状态</th>
@@ -22,7 +22,7 @@
     <tbody v-for="(item, index) in data">
       <tr class="table-dark text-dark" :id="item.Uuid">
         <td>{{item.Uuid}}</td>
-        <td>{{item.Name}}</td>
+        <td>{{item.Ip}}</td>
         <td>{{item.Cpu}}</td>
         <td>{{item.Mem}}</td>
         <td>{{item.Owner}}</td>
@@ -31,7 +31,7 @@
         <td class="default">
 			<button type="button" class="btn btn-success" @click="start(item.Uuid,index)">开机</button>
 			<button type="button" class="btn btn-info" @click="shutdown(item.Uuid, index)">关机</button>
-			<button type="button" class="btn btn-info" @click="deletevm(item.Uuid, index)">删除</button>
+			<button type="button" class="btn btn-info" @click="deletevm(item.Uuid, item.Ip)">删除</button>
 		</td>
       </tr>
     </tbody>
@@ -81,9 +81,9 @@ export default {
             })
         },
 
-        deletevm: function (uuid, index) {
+        deletevm: function (uuid, ip) {
             var apiurl = `/api/vm/delete`
-            this.$http.get(apiurl, { params: { uuid: uuid} }).then(response => {
+            this.$http.get(apiurl, { params: { uuid: uuid, ip: ip} }).then(response => {
             	this.data = response.data.res
 				//this.$set(this.data, index , response.data.res)
             })
