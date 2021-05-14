@@ -7,6 +7,7 @@ import (
   uuid "github.com/satori/go.uuid"
   libvirt "libvirt.org/libvirt-go"
   "time"
+  "errors"
 )
 
 type Vms struct {
@@ -21,6 +22,13 @@ type Vms struct {
   Status     interface{}
   Exist       int
   Ip          string
+  Host        string
+}
+
+
+func (v Vms) Error(info string) error {
+  errorinfo := fmt.Sprintf("%s", info)
+  return errors.New(errorinfo)
 }
 
 func vmdb() *gorm.DB {
@@ -37,16 +45,16 @@ type Vm_xmls struct {
   Osxml string
 }
 
-func libvirtconn() (*libvirt.Connect, error) {
-  conn, err := libvirt.NewConnect("qemu:///system")
+func libvirtconn(host string) (*libvirt.Connect, error) {
+  conn, err := libvirt.NewConnect(fmt.Sprintf("qemu+ssh://%s/system", host))
   if err != nil {
     fmt.Println(err)
   }
   return conn, err
 }
 
-func VmStatus(uuid string) (string, error) {
-  conn, err := libvirtconn()
+func VmStatus(uuid string, host string) (string, error) {
+  conn, err := libvirtconn(host)
   if err != nil {
     return "", err
   }
@@ -65,35 +73,62 @@ func VmStatus(uuid string) (string, error) {
 }
 
 var Vmstate = map[libvirt.DomainState]string{
-  1: "开机",
+  1: "运行",
   5: "关机",
   2: "deleted",
 }
 
+type Error struct {
+  Code    int16
+  Message string
+}
 
-func Delete(uuid string, ip string) ([]*Vms, error) {
+func (err Error) Error() string {
+  return fmt.Sprintf("vm is running, con't delete")
+}
+
+func Delete(uuid string, ip string, host string) ([]*Vms, error) {
+  vmstat, err := VmStatus(uuid, host)
+  if err != nil {
+    return nil, err
+  }
+
+  if vmstat == "开机" {
+    //e.Message := fmt.Sprintf("domain is runnin, con't delete")
+    return nil, Error{
+      Code: 501,
+      Message: "vm is running, con't delete",
+    }
+  }
+
   db := vmdb()
-  db.Model(&Vms{}).Where("uuid=?", uuid).Update("exist", 0)
-  db.Model(&vm_networks{}).Where("ipv4=?", ip ).Update("status", 0)
 
   //undefine vm
-  conn, err := libvirtconn()
-  vm, err := conn.LookupDomainByUUIDString(uuid)
+  conn, err := libvirtconn(host)
+  if err !=nil {
+    return nil, err
+  }
+
+  vm, err1 := conn.LookupDomainByUUIDString(uuid)
+  if err1 != nil {
+    return nil, err1
+  }
   vm.Undefine()
 
-  vmlist := VmList()
+  db.Model(&Vms{}).Where("uuid=?", uuid).Update("exist", 0)
+  db.Model(&vm_networks{}).Where("ipv4=?", ip ).Update("status", 0)
+  vmlist := VmList(host)
   return vmlist,err
 }
 
-func Shutdown(uuid string) (*Vms, error) {
+func Shutdown(uuid string, host string) (*Vms, error) {
   /*start vm*/
-  conn, err := libvirtconn()
+  conn, err := libvirtconn(host)
   if err != nil {
     return nil, err
   }
   vm, err4 := conn.LookupDomainByUUIDString(uuid)
   if err4 != nil {
-    fmt.Println(err4)
     return nil, err4
   }
   err1 := vm.Destroy()
@@ -105,7 +140,7 @@ func Shutdown(uuid string) (*Vms, error) {
   var v = &Vms{}
   db.Where("uuid = ?", uuid).First(&v)
 
-  s, err2 := VmStatus(uuid)
+  s, err2 := VmStatus(uuid, host)
   v.Status = s
   if err2 != nil {
     fmt.Println(err2)
@@ -113,9 +148,9 @@ func Shutdown(uuid string) (*Vms, error) {
   return v, err2
 }
 
-func Start(uuid string) (*Vms, error) {
+func Start(uuid string, host string) (*Vms, error) {
   /*start vm*/
-  conn, connerr := libvirtconn()
+  conn, connerr := libvirtconn(host)
   if connerr != nil {
     return nil, connerr
   }
@@ -134,10 +169,10 @@ func Start(uuid string) (*Vms, error) {
   var v = &Vms{}
   db.Where("uuid = ?", uuid).First(&v)
 
-  s, err2 := VmStatus(uuid)
+  s, err2 := VmStatus(uuid, host)
   v.Status = s
   if err2 != nil {
-    fmt.Println(err2)
+    return nil, err2
   }
   return v, err2
 }
@@ -147,7 +182,7 @@ func Createuuid() string {
   return u
 }
 
-func savevm(uuid string, cpu int, mem int, vmxml string, ip string) bool {
+func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string) bool {
   db := vmdb()
   vm := &Vms{
     Uuid: uuid,
@@ -159,6 +194,7 @@ func savevm(uuid string, cpu int, mem int, vmxml string, ip string) bool {
     Status: 1,
     Exist: 1,
     Ip: ip,
+    Host: host,
   }
   db.Create(vm)
 
@@ -167,7 +203,7 @@ func savevm(uuid string, cpu int, mem int, vmxml string, ip string) bool {
   return res
 }
 
-func Create(cpu int, mem int, ip string) (bool, error) {
+func Create(cpu int, mem int, ip string, host string) (bool, error) {
   /*create a vm*/
 
   vcpu := cpu
@@ -181,7 +217,7 @@ func Create(cpu int, mem int, ip string) (bool, error) {
 
 
   vmxml := fmt.Sprintf(x.Osxml, u, u, vmem, vmem, vcpu)
-  err := savevm(u, vcpu, vmem, vmxml, ip)
+  err := savevm(u, vcpu, vmem, vmxml, ip, host)
 
   dba := vmdb()
   dba.Model(&vm_networks{}).Where("ipv4=?", ip).Update("status", 1)
@@ -190,7 +226,7 @@ func Create(cpu int, mem int, ip string) (bool, error) {
     return false, nil
   }
 
-  conn, connerr := libvirtconn()
+  conn, connerr := libvirtconn(host)
   if connerr != nil {
     return false, connerr
   }
@@ -202,12 +238,12 @@ func Create(cpu int, mem int, ip string) (bool, error) {
   return true, err1
 }
 
-func VmList() []*Vms {
+func VmList(host string) []*Vms {
   db := vmdb()
   var v []*Vms
   db.Where("exist=1").Find(&v)
   for _, e := range(v) {
-    s, _ := VmStatus(e.Uuid)
+    s, _ := VmStatus(e.Uuid, host)
     e.Status = s
   }
   return v

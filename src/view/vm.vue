@@ -11,6 +11,7 @@
       <tr>
         <th>uuid</th>
         <th>IP</th>
+        <th>宿主机</th>
         <th>CPU</th>
         <th>内存</th>
         <th>所属者</th>
@@ -23,15 +24,16 @@
       <tr class="table-dark text-dark" :id="item.Uuid">
         <td>{{item.Uuid}}</td>
         <td>{{item.Ip}}</td>
+        <td>{{item.Host}}</td>
         <td>{{item.Cpu}}</td>
         <td>{{item.Mem}}</td>
         <td>{{item.Owner}}</td>
-        <td>{{item.Status}}</td>
+        <td><button type="button" :class=stat[item.Status]>{{item.Status}}</button></td>
         <td>{{item.Comment}}</td>
         <td class="default">
-			<button type="button" class="btn btn-success" @click="start(item.Uuid,index)">开机</button>
-			<button type="button" class="btn btn-info" @click="shutdown(item.Uuid, index)">关机</button>
-			<button type="button" class="btn btn-info" @click="deletevm(item.Uuid, item.Ip)">删除</button>
+			<button type="button" class="btn btn-info btn-sm" @click="start(item.Uuid, index, item.host)">开机</button>
+			<button type="button" class="btn btn-info btn-sm" @click="shutdown(item.Uuid, index, item.host)">关机</button>
+			<button type="button" class="btn btn-info btn-sm" @click="deletevm(item.Uuid, item.Ip, item.Host)">删除</button>
 		</td>
       </tr>
     </tbody>
@@ -49,7 +51,12 @@ import headd from '@/components/head'
 export default {
     data () {
         return {
-            data: '',
+			stat: {
+				"运行": "btn btn-success btn-sm", 
+				"关机": "btn btn-warning btn-sm", 
+				},
+			statclass: "btn btn-danger",
+            data: [],
 			status: {
 				0: "关机",
 				1: "运行",
@@ -81,29 +88,32 @@ export default {
             })
         },
 
-        deletevm: function (uuid, ip) {
+        deletevm: function (uuid, ip, host) {
             var apiurl = `/api/vm/delete`
-            this.$http.get(apiurl, { params: { uuid: uuid, ip: ip} }).then(response => {
-            	this.data = response.data.res
-				//this.$set(this.data, index , response.data.res)
+            this.$http.get(apiurl, { params: { uuid: uuid, ip: ip, host: host} }).then(response => {
+				if (response.data.err == null) {
+            		this.data = response.data.res
+					} else {
+						alert(response.data.err.Message)
+					}
             })
         },
 
-        shutdown: function (uuid, index) {
+        shutdown: function (uuid, index, host) {
             var apiurl = `/api/vm/operation/0`
-            this.$http.get(apiurl, { params: { uuid: uuid } }).then(response => {
-				this.$set(this.data, index , response.data.res)
+            this.$http.get(apiurl, { params: { uuid: uuid, host: host } }).then(response => {
+				this.$set(this.data, index, response.data.res)
             })
         },
 
-        start: function (uuid, index) {
+        start: function (uuid, index, host) {
             var apiurl = `/api/vm/operation/1`
 			
-            this.$http.get(apiurl, { params: { uuid: uuid } }).then(response => {
+            this.$http.get(apiurl, { params: { uuid: uuid, host: host } }).then(response => {
 				if (response.data.err) {
 					alert(response.data.err.Message)
 					}
-				this.$set(this.data, index , response.data.res)
+				this.$set(this.data, index,  response.data.res)
             })
         },
     }
@@ -111,7 +121,10 @@ export default {
 </script>
 
 <style>
-	 .modal {
+.modal {
   display: block;
 }
+
+
+
 </style>

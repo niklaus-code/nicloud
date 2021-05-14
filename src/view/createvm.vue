@@ -124,13 +124,14 @@ export default {
 
     methods: {
 		createvm: function () {
-			alert(this.ipvalue)
             var apiurl = `/api/vm/create`
-            this.$http.get(apiurl, { params: { cpu: this.cpuvalue, mem: this.memvalue, ip: this.ipvalue} }).then(response => {
+            this.$http.get(apiurl, { params: { cpu: this.cpuvalue, mem: this.memvalue, ip: this.ipvalue, host: this.hostvalue} }).then(response => {
 				if (response.data.res) {
 					alert("创建成功! 是否查看虚拟机列表")
 					this.$router.push('/gocloud')
-				}
+				} else {
+					alert(response.data.res.err.Message)
+					}
 			})
 			},
 

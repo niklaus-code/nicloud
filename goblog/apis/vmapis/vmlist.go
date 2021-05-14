@@ -24,8 +24,8 @@ func GetIplist(c *gin.Context)  {
 }
 
 func Getvmlist(c *gin.Context) {
-
-  vmlist := vmcommon.VmList()
+  host := c.Query("host")
+  vmlist := vmcommon.VmList(host)
   res := make(map[string]interface{})
   res["res"] = vmlist
 
@@ -36,19 +36,19 @@ func Createvm(c *gin.Context) {
   cpu, _  := strconv.Atoi(c.Query("cpu"))
   mem, _ := strconv.Atoi(c.Query("mem"))
   ip := c.Query("ip")
+  host := c.Query("host")
 
-  create, err := vmcommon.Create(cpu, mem, ip)
-  if err != nil {
-    c.JSON(500, err)
-  }
+  create, err := vmcommon.Create(cpu, mem, ip, host)
   res := make(map[string]interface{})
   res["res"] = create
+  res["err"] = err
 
   c.JSON(200, res)
 }
 
 func GetStatus(c *gin.Context) {
-  s, _ := vmcommon.VmStatus("31a803b2-5f11-4f14-875f-d14347db13fb")
+  host := c.Query("host")
+  s, _ := vmcommon.VmStatus("31a803b2-5f11-4f14-875f-d14347db13fb", host)
   res := make(map[string]interface{})
   res["res"] = s
   c.JSON(200, res)
@@ -57,17 +57,19 @@ func GetStatus(c *gin.Context) {
 func DeleteVM(c *gin.Context)  {
   uuid := c.Query("uuid")
   ip := c.Query("ip")
+  host := c.Query("host")
 
   res := make(map[string]interface{})
-  r, _ := vmcommon.Delete(uuid, ip)
+  r, err := vmcommon.Delete(uuid, ip, host)
 
   res["res"] = r
-  res["err"] = nil
+  res["err"] = err
   c.JSON(200, res)
 }
 
 func  Operation(c *gin.Context)  {
   uuid := c.Query("uuid")
+  host := c.Query("host")
   res := make(map[string]interface{})
 
   var err error
@@ -77,10 +79,11 @@ func  Operation(c *gin.Context)  {
     c.JSON(400, res)
   }
 
+
   var s *vmcommon.Vms
   switch o {
-  case 0: s, err = vmcommon.Shutdown(uuid)
-  case 1: s, err = vmcommon.Start(uuid)
+  case 0: s, err = vmcommon.Shutdown(uuid, host)
+  case 1: s, err = vmcommon.Start(uuid, host)
   }
 
   res["res"] = s
