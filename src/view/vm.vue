@@ -102,7 +102,10 @@ export default {
         shutdown: function (uuid, index, host) {
             var apiurl = `/api/vm/operation/0`
             this.$http.get(apiurl, { params: { uuid: uuid, host: host } }).then(response => {
-				this.$set(this.data, index, response.data.res)
+				if (response.data.err == null) {
+					this.$set(this.data, index, response.data.res)
+					}
+				alert(response.data.err.Message)
             })
         },
 
@@ -110,10 +113,10 @@ export default {
             var apiurl = `/api/vm/operation/1`
 			
             this.$http.get(apiurl, { params: { uuid: uuid, host: host } }).then(response => {
-				if (response.data.err) {
-					alert(response.data.err.Message)
+				if (response.data.err == null) {
+					this.$set(this.data, index, response.data.res)
 					}
-				this.$set(this.data, index,  response.data.res)
+				alert(response.data.err.Message)
             })
         },
     }
