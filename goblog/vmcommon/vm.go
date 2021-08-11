@@ -20,9 +20,9 @@ type Vms struct {
   Comment    string
   Vmxml      string
   Status     interface{}
-  Exist       int
-  Ip          string
-  Host        string
+  Exist      int
+  Ip         string
+  Host       string
 }
 
 
@@ -48,13 +48,14 @@ type Vm_xmls struct {
 func libvirtconn(host string) (*libvirt.Connect, error) {
   conn, err := libvirt.NewConnect(fmt.Sprintf("qemu+ssh://%s/system", host))
   if err != nil {
-    fmt.Println(err)
+    return nil, err
   }
   return conn, err
 }
 
 func VmStatus(uuid string, host string) (string, error) {
   conn, err := libvirtconn(host)
+
   if err != nil {
     return "", err
   }
@@ -243,8 +244,13 @@ func VmList(host string) []*Vms {
   var v []*Vms
   db.Where("exist=1").Find(&v)
   for _, e := range(v) {
-    s, _ := VmStatus(e.Uuid, host)
-    e.Status = s
+    s, err := VmStatus(e.Uuid, host)
+    if err != nil {
+      fmt.Println(string(err.Error()))
+      e.Status = err.Error()
+    } else {
+      e.Status = s
+    }
   }
   return v
 }

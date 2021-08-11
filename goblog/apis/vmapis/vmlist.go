@@ -47,10 +47,15 @@ func Createvm(c *gin.Context) {
 }
 
 func GetStatus(c *gin.Context) {
-  host := c.Query("host")
-  s, _ := vmcommon.VmStatus("31a803b2-5f11-4f14-875f-d14347db13fb", host)
   res := make(map[string]interface{})
+  host := c.Query("host")
+  s, err := vmcommon.VmStatus("31a803b2-5f11-4f14-875f-d14347db13fb", host)
   res["res"] = s
+  res["err"] = err
+  if err != nil {
+    c.JSON(200, res)
+  }
+
   c.JSON(200, res)
 }
 
