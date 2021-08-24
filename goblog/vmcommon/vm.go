@@ -1,13 +1,15 @@
 package vmcommon
 
 import (
+  "errors"
   "fmt"
+  "github.com/ceph/go-ceph/rados"
+  "github.com/ceph/go-ceph/rbd"
   "github.com/jinzhu/gorm"
   _ "github.com/jinzhu/gorm/dialects/mysql" //这个一定要引入哦！！
   uuid "github.com/satori/go.uuid"
   libvirt "libvirt.org/libvirt-go"
   "time"
-  "errors"
 )
 
 type Vms struct {
@@ -283,4 +285,25 @@ func Hosts() []*Vm_hosts {
   var hosts []*Vm_hosts
   db.Where("status=0").Find(&hosts)
   return hosts
+}
+
+func Rbd() (bool, error)  {
+  conn, err := rados.NewConn()
+  if err != nil {
+    return false, err
+  }
+  err = conn.ReadDefaultConfigFile()
+  err = conn.Connect()
+
+  ioctx, _ := conn.OpenIOContext("vm")
+
+  img := rbd.GetImage(ioctx, "0000_demo_centos7")
+
+  _, e := img.Clone("20210806_095737", ioctx, "mys_centos7", rbd.RbdFeatureLayeringz, 0)
+  fmt.Println(img)
+
+  if e != nil {
+    return false, e
+  }
+  return true, nil
 }

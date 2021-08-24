@@ -1,6 +1,7 @@
 package vmapis
 
 import (
+  "fmt"
   "github.com/gin-gonic/gin"
   "goblog/vmcommon"
   "strconv"
@@ -32,18 +33,28 @@ func Getvmlist(c *gin.Context) {
   c.JSON(200, res)
 }
 
-func Createvm(c *gin.Context) {
-  cpu, _  := strconv.Atoi(c.Query("cpu"))
-  mem, _ := strconv.Atoi(c.Query("mem"))
-  ip := c.Query("ip")
-  host := c.Query("host")
-
-  create, err := vmcommon.Create(cpu, mem, ip, host)
+func RbdVm(c *gin.Context)  {
+  createvm, err := vmcommon.Rbd()
+  if err != nil {
+    fmt.Println(err)
+  }
   res := make(map[string]interface{})
-  res["res"] = create
-  res["err"] = err
-
+  res["res"] = createvm
   c.JSON(200, res)
+}
+
+func Createvm(c *gin.Context) {
+ cpu, _  := strconv.Atoi(c.Query("cpu"))
+ mem, _ := strconv.Atoi(c.Query("mem"))
+ ip := c.Query("ip")
+ host := c.Query("host")
+
+ create, err := vmcommon.Create(cpu, mem, ip, host)
+ res := make(map[string]interface{})
+ res["res"] = create
+ res["err"] = err
+
+ c.JSON(200, res)
 }
 
 func GetStatus(c *gin.Context) {
@@ -83,7 +94,6 @@ func  Operation(c *gin.Context)  {
   if err != nil {
     c.JSON(400, res)
   }
-
 
   var s *vmcommon.Vms
   switch o {
