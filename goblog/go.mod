@@ -1,9 +1,13 @@
-module github.com/niklaus-code/gogogo
+module goblog
 
-go 1.13
+go 1.16
 
 require (
-	github.com/gin-gonic/gin v1.6.3
-	github.com/go-ini/ini v1.57.0
-	github.com/go-sql-driver/mysql v1.5.0
+	github.com/beevik/etree v1.1.0 // indirect
+	github.com/ceph/go-ceph v0.10.0 // indirect
+	github.com/dotnwat/go-ceph v0.2.0 // indirect
+	github.com/gin-gonic/gin v1.7.3
+	github.com/jinzhu/gorm v1.9.16
+	github.com/satori/go.uuid v1.2.0
+	libvirt.org/libvirt-go v7.4.0+incompatible
 )

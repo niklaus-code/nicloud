@@ -25,7 +25,6 @@ func main() {
     v2.GET("delete", vmapis.DeleteVM)
     v2.GET("getip", vmapis.GetIplist)
     v2.GET("gethost", vmapis.GetHosts)
-	  v2.GET("getrbd", vmapis.RbdVm)
   }
 
 	r.Run("0.0.0.0:1992")

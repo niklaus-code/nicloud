@@ -1,7 +1,6 @@
 package vmapis
 
 import (
-  "fmt"
   "github.com/gin-gonic/gin"
   "goblog/vmcommon"
   "strconv"
@@ -30,16 +29,6 @@ func Getvmlist(c *gin.Context) {
   res := make(map[string]interface{})
   res["res"] = vmlist
 
-  c.JSON(200, res)
-}
-
-func RbdVm(c *gin.Context)  {
-  createvm, err := vmcommon.Rbd()
-  if err != nil {
-    fmt.Println(err)
-  }
-  res := make(map[string]interface{})
-  res["res"] = createvm
   c.JSON(200, res)
 }
 

@@ -3,11 +3,11 @@ package vmcommon
 import (
   "errors"
   "fmt"
-  "github.com/ceph/go-ceph/rados"
   "github.com/ceph/go-ceph/rbd"
   "github.com/jinzhu/gorm"
   _ "github.com/jinzhu/gorm/dialects/mysql" //这个一定要引入哦！！
   uuid "github.com/satori/go.uuid"
+  "goblog/ceph"
   libvirt "libvirt.org/libvirt-go"
   "time"
 )
@@ -109,7 +109,10 @@ func Delete(uuid string, ip string, host string) ([]*Vms, error) {
   //undefine vm
   conn, err := libvirtconn(host)
   if err !=nil {
-    return nil, err
+    return nil, Error{
+      Code: 502,
+      Message: err.Error(),
+    }
   }
 
   vm, err1 := conn.LookupDomainByUUIDString(uuid)
@@ -118,7 +121,7 @@ func Delete(uuid string, ip string, host string) ([]*Vms, error) {
   }
   vm.Undefine()
 
-  db.Model(&Vms{}).Where("uuid=?", uuid).Update("exist", 0)
+  db.Model(&Vms{}).Where("uuid=?", uuid).Delete(&Vms{})
   db.Model(&vm_networks{}).Where("ipv4=?", ip ).Update("status", 0)
   vmlist := VmList(host)
   return vmlist,err
@@ -208,7 +211,6 @@ func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string)
 
 func Create(cpu int, mem int, ip string, host string) (bool, error) {
   /*create a vm*/
-
   vcpu := cpu
   vmem := mem*1024*1024
 
@@ -218,27 +220,35 @@ func Create(cpu int, mem int, ip string, host string) (bool, error) {
   var x Vm_xmls
   db.First(&x, "ostype = ?", "linux")
 
-
-  vmxml := fmt.Sprintf(x.Osxml, u, u, vmem, vmem, vcpu)
-  err := savevm(u, vcpu, vmem, vmxml, ip, host)
-
-  dba := vmdb()
-  dba.Model(&vm_networks{}).Where("ipv4=?", ip).Update("status", 1)
-
-  if err == false {
-    return false, nil
-  }
+  f, err := ceph.Xml(vcpu, vmem, u)
 
   conn, connerr := libvirtconn(host)
   if connerr != nil {
     return false, connerr
   }
-  _, err1 := conn.DomainDefineXML(vmxml)
 
-  if err1 != nil {
-    return false, err1
+  _, err = updateipstatus(ip)
+  if err != nil {
+    return false, err
   }
-  return true, err1
+
+  _, err = conn.DomainDefineXML(f)
+  if err != nil {
+    return false, err
+  }
+
+  savevm(u, cpu, mem, f, ip, host)
+  if err != nil {
+    return false, err
+  }
+  return true, err
+}
+
+
+func updateipstatus(ipv4 string) (bool, error) {
+  db := vmdb()
+  db.Model(&vm_networks{}).Where("ipv4=?", ipv4).Update("status", 1)
+  return true, nil
 }
 
 func VmList(host string) []*Vms {
@@ -287,20 +297,16 @@ func Hosts() []*Vm_hosts {
   return hosts
 }
 
-func Rbd() (bool, error)  {
-  conn, err := rados.NewConn()
+func Rbd_fun() (bool, error)  {
+
+  conn, err := CephConn()
   if err != nil {
     return false, err
   }
-  err = conn.ReadDefaultConfigFile()
-  err = conn.Connect()
 
   ioctx, _ := conn.OpenIOContext("vm")
-
   img := rbd.GetImage(ioctx, "0000_demo_centos7")
-
-  _, e := img.Clone("20210806_095737", ioctx, "mys_centos7", rbd.RbdFeatureLayeringz, 0)
-  fmt.Println(img)
+  _, e := img.Clone("20210806_095737", ioctx, "mys_centos7", rbd.RbdFeatureLayering, 0)
 
   if e != nil {
     return false, e

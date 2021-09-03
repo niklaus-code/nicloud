@@ -130,7 +130,7 @@ export default {
 					alert("创建成功! 是否查看虚拟机列表")
 					this.$router.push('/gocloud')
 				} else {
-					alert(response.data.res.err.Message)
+					alert(response.data.err.Message)
 					}
 			})
 			},
