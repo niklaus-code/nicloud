@@ -3,10 +3,17 @@ package ceph
 import (
   "fmt"
   "github.com/beevik/etree"
+  "github.com/go-ini/ini"
+  "strings"
 )
 
 
 func Xml(vcpu int, vmem int, uuid string) (string, error) {
+
+  var cfg, _ = ini.Load("conf/setting.ini")
+  var port = cfg.Section("ceph").Key("port").String()
+  ips := strings.Split(cfg.Section("ceph").Key("ip").String(), ",")
+
   f := "/home/ysman/niklaus-blog/goblog/conf/vm.xml"
 
   doc := etree.NewDocument()
@@ -35,13 +42,11 @@ func Xml(vcpu int, vmem int, uuid string) (string, error) {
         if v.Tag == "source" {
           v.CreateAttr("name", "vm/x_20210810befb2bf3b7c3453eb2bd99906a7f6c5f")
 
-          v.CreateElement("host")
-          v.ChildElements()[0].CreateAttr("name", "10.0.82.153")
-          v.ChildElements()[0].CreateAttr("port", "6789")
-
-          v.CreateElement("host")
-          v.ChildElements()[1].CreateAttr("name", "10.0.82.152")
-          v.ChildElements()[1].CreateAttr("port", "6789")
+          for ip_k, ip := range ips {
+            v.CreateElement("host")
+            v.ChildElements()[ip_k].CreateAttr("name", string(ip))
+            v.ChildElements()[ip_k].CreateAttr("port", port)
+          }
         }
       }
     }

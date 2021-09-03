@@ -46,10 +46,9 @@ func Createvm(c *gin.Context) {
  c.JSON(200, res)
 }
 
-func GetStatus(c *gin.Context) {
+func GetFlavor(c *gin.Context) {
   res := make(map[string]interface{})
-  host := c.Query("host")
-  s, err := vmcommon.VmStatus("31a803b2-5f11-4f14-875f-d14347db13fb", host)
+  s, err := vmcommon.Flavor()
   res["res"] = s
   res["err"] = err
   if err != nil {

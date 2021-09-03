@@ -227,12 +227,11 @@ func Create(cpu int, mem int, ip string, host string) (bool, error) {
     return false, connerr
   }
 
-  _, err = updateipstatus(ip)
+  _, err = conn.DomainDefineXML(f)
   if err != nil {
     return false, err
   }
-
-  _, err = conn.DomainDefineXML(f)
+  _, err = updateipstatus(ip)
   if err != nil {
     return false, err
   }
@@ -295,6 +294,18 @@ func Hosts() []*Vm_hosts {
   var hosts []*Vm_hosts
   db.Where("status=0").Find(&hosts)
   return hosts
+}
+
+type Vm_flavors struct {
+  Cpu int
+  Mem int
+}
+
+func Flavor() ([]*Vm_flavors,error)  {
+  db := vmdb()
+  var f []*Vm_flavors
+  db.Find(&f)
+  return f, nil
 }
 
 func Rbd_fun() (bool, error)  {
