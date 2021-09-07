@@ -23,7 +23,7 @@
 				</div>
 				<div class="col-sm-9">
         			<select class="col-sm-10" v-model="ipvalue">
-  						<option  v-for="ip in iplist" :value="ip.Ipv4">
+  						<option  v-for="ip in iplist" :value="ip">
 							{{ ip.Ipv4 }}
 						</option>
         			</select>
@@ -100,7 +100,7 @@ export default {
     methods: {
 		createvm: function () {
             var apiurl = `/api/vm/create`
-            this.$http.get(apiurl, { params: { cpu: this.flavorvalue.Cpu, mem:this.flavorvalue.Mem, ip: this.ipvalue, host: this.hostvalue} }).then(response => {
+            this.$http.get(apiurl, { params: { cpu: this.flavorvalue.Cpu, mem:this.flavorvalue.Mem, ip: this.ipvalue.Ipv4, mac: this.ipvalue, host: this.hostvalue} }).then(response => {
 				if (response.data.res) {
 					alert("创建成功! 是否查看虚拟机列表")
 					this.$router.push('/gocloud')
@@ -122,7 +122,7 @@ export default {
             var apiurl = `/api/vm/getip`
             this.$http.get(apiurl).then(response => {
             this.iplist = response.data.res
-			this.ipvalue = response.data.res[0].Ipv4
+			this.ipvalue = response.data.res[0]
             })
         },
 
