@@ -208,9 +208,8 @@ func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string)
 	return res
 }
 
-func Create(cpu int, mem int, ip string, host string) (bool, error) {
+func Create(cpu int, mem int, ip string, mac string, host string) (bool, error) {
 	/*create a vm*/
-	fmt.Println(ip)
 	vcpu := cpu
 	vmem := mem * 1024 * 1024
 
@@ -220,7 +219,7 @@ func Create(cpu int, mem int, ip string, host string) (bool, error) {
 	var x Vm_xmls
 	db.First(&x, "ostype = ?", "linux")
 
-	f, err := ceph.Xml(vcpu, vmem, u)
+	f, err := ceph.Xml(vcpu, vmem, u, mac)
 
 	conn, connerr := libvirtconn(host)
 	if connerr != nil {

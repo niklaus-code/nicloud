@@ -8,12 +8,12 @@ import (
 	"github.com/go-ini/ini"
 )
 
-func Xml(vcpu int, vmem int, uuid string) (string, error) {
+func Xml(vcpu int, vmem int, uuid string, mac string) (string, error) {
 	var cfg, _ = ini.Load("conf/setting.ini")
 	var port = cfg.Section("ceph").Key("port").String()
 
 	ips := strings.Split(cfg.Section("ceph").Key("ip").String(), ",")
-	br := strings.Split(cfg.Section("bridge").Key("br").String(), ",")
+	br := cfg.Section("bridge").Key("br").String()
 
 	f := "/home/ysman/niklaus-blog/goblog/conf/vm.xml"
 
@@ -37,8 +37,14 @@ func Xml(vcpu int, vmem int, uuid string) (string, error) {
 	currentMemory := doc.FindElement("./domain/currentMemory")
 	currentMemory.CreateText(fmt.Sprintf("%d", vmem))
 
+	fmt.Println("!!!!!!!!!!")
+	fmt.Println(br)
+
 	bridge := doc.FindElement("./domain/devices/interface/source")
-	bridge.CreateAttr("bridge", fmt.Sprintf("%d", br))
+	bridge.CreateAttr("bridge", fmt.Sprintf("%s", br))
+
+  macaddr := doc.FindElement("./domain/devices/interface/mac")
+  macaddr.CreateAttr("address", fmt.Sprintf("%s", mac))
 
 	for _, e := range doc.FindElements("./domain/devices[1]/*") {
 		if e.Tag == "disk" {

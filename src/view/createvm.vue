@@ -100,7 +100,7 @@ export default {
     methods: {
 		createvm: function () {
             var apiurl = `/api/vm/create`
-            this.$http.get(apiurl, { params: { cpu: this.flavorvalue.Cpu, mem:this.flavorvalue.Mem, ip: this.ipvalue.Ipv4, mac: this.ipvalue, host: this.hostvalue} }).then(response => {
+            this.$http.get(apiurl, { params: { cpu: this.flavorvalue.Cpu, mem:this.flavorvalue.Mem, ip: this.ipvalue.Ipv4, mac: this.ipvalue.Macaddr, host: this.hostvalue} }).then(response => {
 				if (response.data.res) {
 					alert("创建成功! 是否查看虚拟机列表")
 					this.$router.push('/gocloud')

@@ -36,9 +36,10 @@ func Createvm(c *gin.Context) {
 	cpu, _ := strconv.Atoi(c.Query("cpu"))
 	mem, _ := strconv.Atoi(c.Query("mem"))
 	ip := c.Query("ip")
+	mac := c.Query("mac")
 	host := c.Query("host")
 
-	create, err := vmcommon.Create(cpu, mem, ip, host)
+	create, err := vmcommon.Create(cpu, mem, ip, mac, host)
 	res := make(map[string]interface{})
 	res["res"] = create
 	res["err"] = err
