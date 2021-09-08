@@ -34,9 +34,9 @@ func (v Vms) Error(info string) error {
 }
 
 func vmdb() *gorm.DB {
-	db, errDb := gorm.Open("mysql", "modis:modis@(127.0.0.1:3306)/gocloud?parseTime=true")
+	db, errDb := gorm.Open("mysql", "modis:modis@(127.0.0.1:3306)/nicloud?parseTime=true")
 	if errDb != nil {
-		fmt.Println(errDb)
+		return  nil
 	}
 	return db
 }
@@ -148,7 +148,7 @@ func Shutdown(uuid string, host string) (*Vms, error) {
 	s, err2 := VmStatus(uuid, host)
 	v.Status = s
 	if err2 != nil {
-		fmt.Println(err2)
+		return nil, err2
 	}
 	return v, err2
 }
@@ -255,7 +255,6 @@ func VmList(host string) []*Vms {
 	for _, e := range v {
 		s, err := VmStatus(e.Uuid, host)
 		if err != nil {
-			fmt.Println(string(err.Error()))
 			e.Status = err.Error()
 		} else {
 			e.Status = s

@@ -6,7 +6,7 @@ import whisper from '@/view/whisper'
 import read from '@/view/read'
 import about from '@/view/about'
 import login from '@/view/login'
-import gocloud from '@/view/vm'
+import nicloud from '@/view/vm'
 import createvm from '@/view/createvm'
 
 
@@ -20,9 +20,9 @@ export default new Router({
       component: createvm
     },
     {
-      path: '/gocloud',
-      name: 'gocloud',
-      component: gocloud
+      path: '/nicloud',
+      name: 'nicloud',
+      component: nicloud
     },
     {
       path: '/',

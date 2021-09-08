@@ -128,6 +128,14 @@ export default {
   display: block;
 }
 
+.layui-table th {
+	padding:10px 30px;
+}
+
+.layui-table td {
+	padding:10px 30px;
+}
+
 th {
 	text-align: center;
 }

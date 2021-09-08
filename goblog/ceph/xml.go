@@ -37,9 +37,6 @@ func Xml(vcpu int, vmem int, uuid string, mac string) (string, error) {
 	currentMemory := doc.FindElement("./domain/currentMemory")
 	currentMemory.CreateText(fmt.Sprintf("%d", vmem))
 
-	fmt.Println("!!!!!!!!!!")
-	fmt.Println(br)
-
 	bridge := doc.FindElement("./domain/devices/interface/source")
 	bridge.CreateAttr("bridge", fmt.Sprintf("%s", br))
 
