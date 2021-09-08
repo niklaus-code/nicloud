@@ -6,7 +6,7 @@
 	<router-link :to="{name:'createvm'}">
 	<button >创建</button>
 	</router-link>
-<table class="layui-table" lay-even lay-skin="line" lay-size="lg">
+<table class="layui-table" lay-even lay-skin="line" lay-size="lg" style="text-align: center;"  style="text-align: center;">
     <thead>
       <tr>
         <th>uuid</th>
@@ -123,11 +123,12 @@ export default {
   }
 </script>
 
-<style>
+<style scoped>
 .modal {
   display: block;
 }
 
-
-
+th {
+	text-align: center;
+}
 </style>
