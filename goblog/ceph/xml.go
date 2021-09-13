@@ -8,7 +8,7 @@ import (
 	"github.com/go-ini/ini"
 )
 
-func Xml(vcpu int, vmem int, uuid string, mac string) (string, error) {
+func Xml(vcpu int, vmem int, uuid string, mac string, image_name string) (string, error) {
 	var cfg, _ = ini.Load("conf/setting.ini")
 	var port = cfg.Section("ceph").Key("port").String()
 
@@ -47,7 +47,7 @@ func Xml(vcpu int, vmem int, uuid string, mac string) (string, error) {
 		if e.Tag == "disk" {
 			for _, v := range e.ChildElements() {
 				if v.Tag == "source" {
-					v.CreateAttr("name", "vm/x_20210806095906_d90834be30f346f58e02e656927c9122")
+					v.CreateAttr("name", fmt.Sprintf("vm/%s", image_name))
 
 					for ip_k, ip := range ips {
 						v.CreateElement("host")

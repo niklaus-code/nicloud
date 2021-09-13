@@ -110,7 +110,7 @@ export default {
 					alert("创建成功! 是否查看虚拟机列表")
 					this.$router.push('/nicloud')
 				} else {
-					alert(response.data.err.Message)
+					alert("创建失败("+response.data.err+")")
 					}
 			})
 			},

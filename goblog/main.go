@@ -29,5 +29,5 @@ func main() {
 		v2.GET("getflavor", vmapis.GetFlavor)
 	}
 
-	r.Run("0.0.0.0:1992")
+	r.Run("127.0.0.1:1992")
 }

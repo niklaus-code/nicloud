@@ -1,10 +1,10 @@
 package vmapis
 
 import (
-	"goblog/vmcommon"
-	"strconv"
+  "goblog/vmcommon"
+  "strconv"
 
-	"github.com/gin-gonic/gin"
+  "github.com/gin-gonic/gin"
 )
 
 func GetHosts(c *gin.Context) {
@@ -40,9 +40,14 @@ func Createvm(c *gin.Context) {
 	host := c.Query("host")
 
 	create, err := vmcommon.Create(cpu, mem, ip, mac, host)
-	res := make(map[string]interface{})
+  res := make(map[string]interface{})
+	if err != nil {
+    res["err"] = string(err.Error())
+    res["res"] = create
+  }
+
 	res["res"] = create
-	res["err"] = err
+  res["err"] = err
 
 	c.JSON(200, res)
 }

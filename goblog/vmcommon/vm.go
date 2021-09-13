@@ -95,8 +95,7 @@ func Delete(uuid string, ip string, host string) ([]*Vms, error) {
 		return nil, err
 	}
 
-	if vmstat == "开机" {
-		//e.Message := fmt.Sprintf("domain is runnin, con't delete")
+	if vmstat == "运行" {
 		return nil, Error{
 			Code:    501,
 			Message: "vm is running, con't delete",
@@ -119,6 +118,10 @@ func Delete(uuid string, ip string, host string) ([]*Vms, error) {
 		return nil, err1
 	}
 	vm.Undefine()
+	err = ceph.Rm_image(uuid)
+  if err != nil {
+    return nil, err
+  }
 
 	db.Model(&Vms{}).Where("uuid=?", uuid).Delete(&Vms{})
 	db.Model(&vm_networks{}).Where("ipv4=?", ip).Update("status", 0)
@@ -183,11 +186,13 @@ func Start(uuid string, host string) (*Vms, error) {
 }
 
 func Createuuid() string {
+  /*create uuid*/
 	u := uuid.NewV4().String()
 	return u
 }
 
 func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string) bool {
+  /*save config to db*/
 	db := vmdb()
 	vm := &Vms{
 		Uuid:        uuid,
@@ -215,11 +220,12 @@ func Create(cpu int, mem int, ip string, mac string, host string) (bool, error) 
 
 	u := Createuuid()
 
-	db := vmdb()
-	var x Vm_xmls
-	db.First(&x, "ostype = ?", "linux")
+	imge_name, err := RbdClone(u)
+	if err != nil {
+	 return false, err
+  }
 
-	f, err := ceph.Xml(vcpu, vmem, u, mac)
+	f, err := ceph.Xml(vcpu, vmem, u, mac, imge_name)
 
 	conn, connerr := libvirtconn(host)
 	if connerr != nil {
@@ -305,19 +311,19 @@ func Flavor() ([]*Vm_flavors, error) {
 	return f, nil
 }
 
-func Rbd_fun() (bool, error) {
+func RbdClone(id string) (string, error) {
 
-	conn, err := CephConn()
+	conn, err := ceph.CephConn()
 	if err != nil {
-		return false, err
+		return "", err
 	}
 
 	ioctx, _ := conn.OpenIOContext("vm")
 	img := rbd.GetImage(ioctx, "0000_demo_centos7")
-	_, e := img.Clone("20210806_095737", ioctx, "mys_centos7", rbd.RbdFeatureLayering, 0)
+	_, e := img.Clone("20210806_095737", ioctx, id, rbd.RbdFeatureLayering, 0)
 
 	if e != nil {
-		return false, e
+		return "", e
 	}
-	return true, nil
+	return id, nil
 }
