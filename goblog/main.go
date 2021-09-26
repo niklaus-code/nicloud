@@ -27,6 +27,7 @@ func main() {
 		v2.GET("getip", vmapis.GetIplist)
 		v2.GET("gethost", vmapis.GetHosts)
 		v2.GET("getflavor", vmapis.GetFlavor)
+    v2.GET("vnc", vmapis.Vnc)
 	}
 
 	r.Run("127.0.0.1:1992")

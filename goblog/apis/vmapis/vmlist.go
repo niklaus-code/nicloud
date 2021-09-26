@@ -1,11 +1,18 @@
 package vmapis
 
 import (
+  "fmt"
   "goblog/vmcommon"
   "strconv"
 
   "github.com/gin-gonic/gin"
 )
+
+func Vnc(c *gin.Context)  {
+  uuid := c.Query("uuid")
+  res := fmt.Sprintf("http://127.0.0.1/novnc/vnc.html?path=websockify/?token=%s", uuid)
+  c.JSON(200, res)
+}
 
 func GetHosts(c *gin.Context) {
 	hostlist := vmcommon.Hosts()

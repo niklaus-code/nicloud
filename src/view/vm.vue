@@ -34,6 +34,7 @@
 			<button type="button" class="btn btn-info btn-sm" @click="start(item.Uuid, index, item.host)">开机</button>
 			<button type="button" class="btn btn-info btn-sm" @click="shutdown(item.Uuid, index, item.host)">关机</button>
 			<button type="button" class="btn btn-info btn-sm" @click="deletevm(item.Uuid, item.Ip, item.Host)">删除</button>
+			<button type="button" class="btn btn-info btn-sm" @click="vnc(item.Uuid)">VNC</button>
 		</td>
       </tr>
     </tbody>
@@ -81,6 +82,14 @@ export default {
     },
 
     methods: {
+        vnc: function (uuid) {
+            var apiurl = `/api/vm/vnc`
+            this.$http.get(apiurl, { params: { uuid: uuid} } ).then(response => {
+				var	url = response.data
+				window.open(url, '_blank');
+            })
+		},
+
         getvm: function () {
             var apiurl = `/api/vm/getvm`
             this.$http.get(apiurl).then(response => {
