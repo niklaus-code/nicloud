@@ -1,17 +1,17 @@
 <template>
 <div>
-    <headd></headd>
+    <nicloudhead></nicloudhead>
 
   <div class="content whisper-content leacots-content details-content">
 	<router-link :to="{name:'createvm'}">
 	<button >创建</button>
 	</router-link>
-<table class="layui-table" lay-even lay-skin="line" lay-size="lg" style="text-align: center;"  style="text-align: center;">
+<table class="table table-striped" style="text-align: center;" style="text-align: center;">
     <thead>
       <tr>
-        <th>uuid</th>
-        <th>IP</th>
-        <th>宿主机</th>
+        <th>实例名称</th>
+        <th>IP地址</th>
+        <th>所属宿主机</th>
         <th>CPU</th>
         <th>内存</th>
         <th>所属者</th>
@@ -31,10 +31,10 @@
         <td><button type="button" :class=stat[item.Status]>{{item.Status}}</button></td>
         <td>{{item.Comment}}</td>
         <td class="default">
-			<button type="button" class="btn btn-info btn-sm" @click="start(item.Uuid, index, item.host)">开机</button>
-			<button type="button" class="btn btn-info btn-sm" @click="shutdown(item.Uuid, index, item.host)">关机</button>
+			<button type="button" class="btn btn-info btn-sm" @click="start(item.Uuid, index, item.Host)">开机</button>
+			<button type="button" class="btn btn-info btn-sm" @click="shutdown(item.Uuid, index, item.Host)">关机</button>
 			<button type="button" class="btn btn-info btn-sm" @click="deletevm(item.Uuid, item.Ip, item.Host)">删除</button>
-			<button type="button" class="btn btn-info btn-sm" @click="vnc(item.Uuid)">VNC</button>
+			<button type="button" class="btn btn-info btn-sm" @click="vnc(item.Uuid, item.Host)">VNC</button>
 		</td>
       </tr>
     </tbody>
@@ -47,7 +47,7 @@
 <script>
 
 import foot from '@/components/footer'
-import headd from '@/components/head'
+import nicloudhead from '@/components/nicloudhead'
 
 export default {
     data () {
@@ -67,7 +67,7 @@ export default {
     },
 
     components: {
-        foot, headd
+        foot, nicloudhead
     },
 
     mounted: function () {
@@ -82,9 +82,9 @@ export default {
     },
 
     methods: {
-        vnc: function (uuid) {
+        vnc: function (uuid, host) {
             var apiurl = `/api/vm/vnc`
-            this.$http.get(apiurl, { params: { uuid: uuid} } ).then(response => {
+            this.$http.get(apiurl, { params: { uuid: uuid, host: host} } ).then(response => {
 				var	url = response.data
 				window.open(url, '_blank');
             })
@@ -138,11 +138,13 @@ export default {
 }
 
 .layui-table th {
-	padding:10px 30px;
+	font-weight:bold;
+	color: black;
+	padding: 10px 30px;
 }
 
 .layui-table td {
-	padding:10px 30px;
+	padding:8px 30px;
 }
 
 th {

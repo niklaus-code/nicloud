@@ -1,16 +1,16 @@
 package vmcommon
 
 import (
-	"errors"
-	"fmt"
-	"goblog/ceph"
-	"time"
+  "errors"
+  "fmt"
+  "goblog/ceph"
+  "time"
 
-	"github.com/ceph/go-ceph/rbd"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql" //这个一定要引入哦！！
-	uuid "github.com/satori/go.uuid"
-	libvirt "libvirt.org/libvirt-go"
+  "github.com/ceph/go-ceph/rbd"
+  "github.com/jinzhu/gorm"
+  _ "github.com/jinzhu/gorm/dialects/mysql" //这个一定要引入哦！！
+  uuid "github.com/satori/go.uuid"
+  libvirt "libvirt.org/libvirt-go"
 )
 
 type Vms struct {
@@ -205,6 +205,7 @@ func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string)
 		Exist:       1,
 		Ip:          ip,
 		Host:        host,
+		Owner:       "Niklaus",
 	}
 	db.Create(vm)
 
@@ -213,13 +214,33 @@ func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string)
 	return res
 }
 
+func Ipresource(ip string, mac string) bool {
+  db := vmdb()
+  var ipnet []*vm_networks
+  db.Where("ipv4=?", ip).Where("macaddr=?", mac).Find(&ipnet)
+  for _, v := range ipnet {
+    if v.Status == 0 {
+      return false
+    }
+  }
+  return true
+}
+
+
 func Create(cpu int, mem int, ip string, mac string, host string) (bool, error) {
+  if Ipresource(ip, mac) {
+    return false, nil
+  }
+
+
 	/*create a vm*/
 	vcpu := cpu
 	vmem := mem * 1024 * 1024
 
+	//create a uuid
 	u := Createuuid()
 
+	//create baseimage
 	imge_name, err := RbdClone(u)
 	if err != nil {
 	 return false, err
@@ -245,6 +266,7 @@ func Create(cpu int, mem int, ip string, mac string, host string) (bool, error) 
 	if err != nil {
 		return false, err
 	}
+
 	return true, err
 }
 

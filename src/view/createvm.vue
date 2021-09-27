@@ -1,6 +1,6 @@
 <template>
 	<div>
-	<headd></headd>
+	<nicloudhead></nicloudhead>
   	<div class="content whisper-content leacots-content details-content">
 		<div  class="col-sm-3 col-sm-offset-4" style="margin-top:20px">
 	 		<div class="form-group">
@@ -52,9 +52,9 @@
 	</div>		
 </template>
 <script>
-
 import foot from '@/components/footer'
-import headd from '@/components/head'
+import nicloudhead from '@/components/nicloudhead'
+
 
 export default {
     data () {
@@ -81,7 +81,7 @@ export default {
 	},
 
     components: {
-        foot, headd
+        foot, nicloudhead
     },
 
     created: function () {

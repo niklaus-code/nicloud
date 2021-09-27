@@ -2,15 +2,15 @@ package vmapis
 
 import (
   "fmt"
+  "github.com/gin-gonic/gin"
   "goblog/vmcommon"
   "strconv"
-
-  "github.com/gin-gonic/gin"
 )
 
 func Vnc(c *gin.Context)  {
   uuid := c.Query("uuid")
-  res := fmt.Sprintf("http://127.0.0.1/novnc/vnc.html?path=websockify/?token=%s", uuid)
+  host := c.Query("host")
+  res := fmt.Sprintf("http://%s/novnc/vnc.html?path=websockify/?token=%s", host, uuid)
   c.JSON(200, res)
 }
 
@@ -45,7 +45,6 @@ func Createvm(c *gin.Context) {
 	ip := c.Query("ip")
 	mac := c.Query("mac")
 	host := c.Query("host")
-
 	create, err := vmcommon.Create(cpu, mem, ip, mac, host)
   res := make(map[string]interface{})
 	if err != nil {
