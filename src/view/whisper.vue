@@ -15,7 +15,7 @@
                 <p class="like"><i @click="point_like(blog['id'])" class="layui-icon layui-icon-praise"></i>
                     <span v-if="pointlike < 0 "> {{blog["like_number"]}}</span>
                     <span v-else>{{pointlike}}</span>
-                </p> 
+                </p>
             </div>
                 -->
           </div>
@@ -70,7 +70,7 @@ export default {
   },
   mounted: function () {
     this.blog()
-    },
+  },
   methods: {
     blog: function (id, sig) {
       this.$http.get('/api/blog/get_blog/get_blog_thoughts', {params: {category: 5}}).then(response => {

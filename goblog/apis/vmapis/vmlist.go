@@ -14,6 +14,15 @@ func Vnc(c *gin.Context)  {
   c.JSON(200, res)
 }
 
+func Search(c *gin.Context)  {
+  ct := c.Query("content")
+  vms := vmcommon.SearchVm(ct)
+  res := make(map[string]interface{})
+  res["res"] = vms
+
+  c.JSON(200, res)
+}
+
 func GetHosts(c *gin.Context) {
 	hostlist := vmcommon.Hosts()
 	res := make(map[string]interface{})

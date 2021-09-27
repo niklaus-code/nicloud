@@ -232,7 +232,6 @@ func Create(cpu int, mem int, ip string, mac string, host string) (bool, error) 
     return false, nil
   }
 
-
 	/*create a vm*/
 	vcpu := cpu
 	vmem := mem * 1024 * 1024
@@ -281,7 +280,7 @@ func VmList(host string) []*Vms {
 	var v []*Vms
 	db.Where("exist=1").Find(&v)
 	for _, e := range v {
-		s, err := VmStatus(e.Uuid, host)
+		s, err := VmStatus(e.Uuid, e.Host)
 		if err != nil {
 			e.Status = err.Error()
 		} else {
@@ -348,4 +347,20 @@ func RbdClone(id string) (string, error) {
 		return "", e
 	}
 	return id, nil
+}
+
+func SearchVm(c string) []*Vms {
+  db := vmdb()
+  var v []*Vms
+  i := fmt.Sprintf("ip like %s", "'"+c+"%'")
+  db.Where(i).Find(&v)
+  for _, e := range v {
+    s, err := VmStatus(e.Uuid, e.Host)
+    if err != nil {
+      e.Status = err.Error()
+    } else {
+      e.Status = s
+    }
+  }
+  return v
 }

@@ -3,10 +3,20 @@
     <nicloudhead></nicloudhead>
 
   <div class="content whisper-content leacots-content details-content">
-	<router-link :to="{name:'createvm'}">
-	<button >创建</button>
-	</router-link>
-<table class="table table-striped" style="text-align: center;" style="text-align: center;">
+	
+	<div class="btn-group col-md-3 col-md-offset-9" >
+			<input class="col-md-5" type="text" id="name" placeholder="" v-model="content">
+			<button class="btn btn-default btn-sm" style="margin-right:5px" @click="search()">
+				 <span class="glyphicon glyphicon-search"></span>筛选
+			</button>
+		<router-link :to="{name:'createvm'}">
+			<button class="btn btn-default btn-sm">
+				 <span class="glyphicon glyphicon-cog"></span>创建实例
+			</button>
+		</router-link>
+	</div>
+<div style="margin-top:80px">
+	<table class="table table-striped" style="text-align: center;" style="text-align: center;">
     <thead>
       <tr>
         <th>实例名称</th>
@@ -34,12 +44,12 @@
 			<button type="button" class="btn btn-info btn-sm" @click="start(item.Uuid, index, item.Host)">开机</button>
 			<button type="button" class="btn btn-info btn-sm" @click="shutdown(item.Uuid, index, item.Host)">关机</button>
 			<button type="button" class="btn btn-info btn-sm" @click="deletevm(item.Uuid, item.Ip, item.Host)">删除</button>
-			<button type="button" class="btn btn-info btn-sm" @click="vnc(item.Uuid, item.Host)">VNC</button>
+			<button type="button" class="btn btn-info btn-sm" @click="vnc(item.Uuid, item.Host)"> <span class="glyphicon glyphicon-facetime-video"></span></button>
 		</td>
       </tr>
     </tbody>
 </table>
-
+	<div>
   </div>
 	<foot></foot>
   </div>
@@ -52,6 +62,7 @@ import nicloudhead from '@/components/nicloudhead'
 export default {
     data () {
         return {
+			content: "",
 			stat: {
 				"运行": "btn btn-success btn-sm", 
 				"关机": "btn btn-warning btn-sm", 
@@ -82,6 +93,13 @@ export default {
     },
 
     methods: {
+        search: function (content) {
+            var apiurl = `/api/vm/search`
+            this.$http.get(apiurl, { params: { content: this.content} } ).then(response => {
+            	this.data = response.data.res
+            })
+		},
+
         vnc: function (uuid, host) {
             var apiurl = `/api/vm/vnc`
             this.$http.get(apiurl, { params: { uuid: uuid, host: host} } ).then(response => {
@@ -133,18 +151,26 @@ export default {
 </script>
 
 <style scoped>
+input{
+	margin-right: 5px;
+	border-color: #adadad;
+	height: 30px;
+}
+
 .modal {
   display: block;
 }
 
 .layui-table th {
-	font-weight:bold;
+	font-weight: bold;
 	color: black;
 	padding: 10px 30px;
 }
 
 .layui-table td {
-	padding:8px 30px;
+	display: table-cell;
+	vertical-align: "middle";
+	padding: 8px 30px;
 }
 
 th {
