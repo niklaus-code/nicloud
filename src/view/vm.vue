@@ -16,9 +16,12 @@
 		</router-link>
 	</div>
 <div style="margin-top:80px">
-	<table class="table table-striped" style="text-align: center;" style="text-align: center;">
+	<table class="table table-striped" style="text-align: center;">
     <thead>
       <tr>
+		<label class="checkbox-inline" style="text-align: center; width: 50px">
+  			<input type="checkbox" v-model="checkvalue" @click="checkbox()"> 
+		</label>
         <th>实例名称</th>
         <th>IP地址</th>
         <th>所属宿主机</th>
@@ -32,6 +35,9 @@
     </thead>
     <tbody v-for="(item, index) in data">
       <tr class="table-dark text-dark" :id="item.Uuid">
+		<label class="checkbox-inline">
+  			<input type="checkbox" v-model="item.Checkout"> 
+		</label>
         <td>{{item.Uuid}}</td>
         <td>{{item.Ip}}</td>
         <td>{{item.Host}}</td>
@@ -48,7 +54,7 @@
 		</td>
       </tr>
     </tbody>
-</table>
+	</table>
 	<div>
   </div>
 	<foot></foot>
@@ -62,6 +68,7 @@ import nicloudhead from '@/components/nicloudhead'
 export default {
     data () {
         return {
+			checkvalue: false,
 			content: "",
 			stat: {
 				"运行": "btn btn-success btn-sm", 
@@ -93,6 +100,19 @@ export default {
     },
 
     methods: {
+		checkbox: function () {
+			if (this.checkvalue) {
+				for (var k in this.data) {
+					this.checkvalue = true
+					this.data[k].Checkout = false
+					}
+				} else {
+				this.checkvalue = false
+				for (var k in this.data) {
+					this.data[k].Checkout = true
+					}
+				}
+			},
         search: function (content) {
             var apiurl = `/api/vm/search`
             this.$http.get(apiurl, { params: { content: this.content} } ).then(response => {
