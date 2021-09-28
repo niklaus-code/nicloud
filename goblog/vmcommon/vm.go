@@ -26,6 +26,7 @@ type Vms struct {
 	Exist       int
 	Ip          string
 	Host        string
+	Checkout    bool
 }
 
 func (v Vms) Error(info string) error {
@@ -279,14 +280,15 @@ func VmList(host string) []*Vms {
 	db := vmdb()
 	var v []*Vms
 	db.Where("exist=1").Find(&v)
-	for _, e := range v {
-		s, err := VmStatus(e.Uuid, e.Host)
-		if err != nil {
-			e.Status = err.Error()
-		} else {
-			e.Status = s
-		}
-	}
+	//for _, e := range v {
+	//	s, err := VmStatus(e.Uuid, e.Host)
+	//	e.Checkout = false
+	//	if err != nil {
+	//		e.Status = err.Error()
+	//	} else {
+	//		e.Status = s
+	//	}
+	//}
 	return v
 }
 
@@ -354,13 +356,13 @@ func SearchVm(c string) []*Vms {
   var v []*Vms
   i := fmt.Sprintf("ip like %s", "'"+c+"%'")
   db.Where(i).Find(&v)
-  for _, e := range v {
-    s, err := VmStatus(e.Uuid, e.Host)
-    if err != nil {
-      e.Status = err.Error()
-    } else {
-      e.Status = s
-    }
-  }
+  //for _, e := range v {
+  //  s, err := VmStatus(e.Uuid, e.Host)
+  //  if err != nil {
+  //    e.Status = err.Error()
+  //  } else {
+  //    e.Status = s
+  //  }
+  //}
   return v
 }

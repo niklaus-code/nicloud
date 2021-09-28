@@ -39,6 +39,21 @@ func GetIplist(c *gin.Context) {
 	c.JSON(200, res)
 }
 
+func GetVmStatus(c *gin.Context) {
+  host := c.Query("host")
+  uuid := c.Query("uuid")
+
+  res := make(map[string]interface{})
+  vmstate, err := vmcommon.VmStatus(uuid, host)
+
+  if err != nil {
+    res["res"] = vmstate
+  }
+
+  res["res"] = vmstate
+  c.JSON(200, res)
+}
+
 func Getvmlist(c *gin.Context) {
 	host := c.Query("host")
 	vmlist := vmcommon.VmList(host)

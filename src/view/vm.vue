@@ -68,6 +68,7 @@ import nicloudhead from '@/components/nicloudhead'
 export default {
     data () {
         return {
+			a : "",
 			checkvalue: false,
 			content: "",
 			stat: {
@@ -128,10 +129,24 @@ export default {
             })
 		},
 
+		getvmstatus: function (uuid, host) {
+            var apiurl = `/api/vm/getstatus`
+            return this.$http.get(apiurl, { params: { uuid: uuid, host: host} } ).then(response => {
+            	return response.data.res
+            	})
+			},
+	
         getvm: function () {
             var apiurl = `/api/vm/getvm`
             this.$http.get(apiurl).then(response => {
-            	this.data = response.data.res
+				this.data = response.data.res
+				for (let v in this.data) {
+					var r = this.getvmstatus(this.data[v].Uuid, this.data[v].Host)
+					r.then(value => {
+						this.data[v].Status = value
+						},
+					)
+				}
             })
         },
 
