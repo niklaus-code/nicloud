@@ -16,10 +16,13 @@ func Vnc(c *gin.Context)  {
 
 func Search(c *gin.Context)  {
   ct := c.Query("content")
-  vms := vmcommon.SearchVm(ct)
+  vms, err := vmcommon.SearchVm(ct)
   res := make(map[string]interface{})
-  res["res"] = vms
+  if err != nil {
+    c.JSON(200, res)
+  }
 
+  res["res"] = vms
   c.JSON(200, res)
 }
 
@@ -69,7 +72,8 @@ func Createvm(c *gin.Context) {
 	ip := c.Query("ip")
 	mac := c.Query("mac")
 	host := c.Query("host")
-	create, err := vmcommon.Create(cpu, mem, ip, mac, host)
+  image := c.Query("image")
+	create, err := vmcommon.Create(cpu, mem, ip, mac, host, image)
   res := make(map[string]interface{})
 	if err != nil {
     res["err"] = string(err.Error())
@@ -80,6 +84,16 @@ func Createvm(c *gin.Context) {
   res["err"] = err
 
 	c.JSON(200, res)
+}
+
+func GetImage(c *gin.Context) {
+
+  res := make(map[string]interface{})
+  r, err := vmcommon.GetImages()
+
+  res["res"] = r
+  res["err"] = err
+  c.JSON(200, res)
 }
 
 func GetFlavor(c *gin.Context) {

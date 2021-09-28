@@ -45,6 +45,20 @@
     		</div>
 		</div>
 
+		<div  class="col-sm-3 col-sm-offset-4" style="margin-top:20px">
+	 		<div class="form-group">
+				<div class="col-sm-3">
+        			<label>镜像</label>
+				</div>
+				<div class="col-sm-9">
+        			<select class="col-sm-10" v-model="imagevalue">
+  						<option  v-for="image in imagelist" :value="image.Osname">
+							{{ image.Osname }}
+						</option>
+        			</select>
+				</div>
+    		</div>
+		</div>
 		<div class="col-sm-3 col-sm-offset-4" style="margin-top:20px">
 			<button class="layui-btn"  @click="createvm()">创建</button>
 		</div>
@@ -59,6 +73,9 @@ import nicloudhead from '@/components/nicloudhead'
 export default {
     data () {
         return {
+			imagevalue: "",
+            imagelist: [],
+
 			hostvalue: "",
             hostlist: [],
 
@@ -88,6 +105,7 @@ export default {
 		this.getflavor()
 		this.getip()
 		this.gethost()
+		this.getimage()
         var id = this.$route.params.id
         if (!id) {
             this.blogid = window.sessionStorage.getItem('blogid')
@@ -105,7 +123,7 @@ export default {
 				alert("缺少信息!")
 				return
 			}
-            this.$http.get(apiurl, { params: { cpu: this.flavorvalue.Cpu, mem:this.flavorvalue.Mem, ip: this.ipvalue.Ipv4, mac: this.ipvalue.Macaddr, host: this.hostvalue} }).then(response => {
+            this.$http.get(apiurl, { params: { cpu: this.flavorvalue.Cpu, mem:this.flavorvalue.Mem, ip: this.ipvalue.Ipv4, mac: this.ipvalue.Macaddr, host: this.hostvalue, image: this.imagevalue} }).then(response => {
 				if (response.data.res) {
 					alert("创建成功! 是否查看虚拟机列表")
 					this.$router.push('/nicloud')
@@ -114,6 +132,14 @@ export default {
 					}
 			})
 			},
+
+        getimage: function () {
+            var apiurl = `/api/vm/getimage`
+            this.$http.get(apiurl).then(response => {
+            this.imagelist = response.data.res
+			this.imagevalue = response.data.res[0].Osname
+            })
+        },
 
         gethost: function () {
             var apiurl = `/api/vm/gethost`

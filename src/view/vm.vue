@@ -25,6 +25,7 @@
 		</label>
 		</th>
         <th>实例名称</th>
+        <th>镜像</th>
         <th>IP地址</th>
         <th>所属宿主机</th>
         <th>CPU</th>
@@ -41,6 +42,7 @@
   			<input type="checkbox" v-model="item.Checkout"> 
 		</label>
         <td>{{item.Uuid}}</td>
+        <td>{{item.Os}}</td>
         <td>{{item.Ip}}</td>
         <td>{{item.Host}}</td>
         <td>{{item.Cpu}}</td>
@@ -157,6 +159,13 @@ export default {
             this.$http.get(apiurl, { params: { uuid: uuid, ip: ip, host: host} }).then(response => {
 				if (response.data.err == null) {
             		this.data = response.data.res
+					for (let v in this.data) {
+						var r = this.getvmstatus(this.data[v].Uuid, this.data[v].Host)
+						r.then(value => {
+							this.data[v].Status = value
+							},
+							)
+						}
 					} else {
 						alert(response.data.err.Message)
 					}

@@ -26,7 +26,7 @@ type Vms struct {
 	Exist       int
 	Ip          string
 	Host        string
-	Checkout    bool
+	Os          string
 }
 
 func (v Vms) Error(info string) error {
@@ -192,7 +192,7 @@ func Createuuid() string {
 	return u
 }
 
-func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string) bool {
+func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string, image string) bool {
   /*save config to db*/
 	db := vmdb()
 	vm := &Vms{
@@ -207,6 +207,7 @@ func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string)
 		Ip:          ip,
 		Host:        host,
 		Owner:       "Niklaus",
+		Os:          image,
 	}
 	db.Create(vm)
 
@@ -228,7 +229,7 @@ func Ipresource(ip string, mac string) bool {
 }
 
 
-func Create(cpu int, mem int, ip string, mac string, host string) (bool, error) {
+func Create(cpu int, mem int, ip string, mac string, host string, image string) (bool, error) {
   if Ipresource(ip, mac) {
     return false, nil
   }
@@ -262,8 +263,10 @@ func Create(cpu int, mem int, ip string, mac string, host string) (bool, error) 
 		return false, err
 	}
 
-	savevm(u, cpu, mem, f, ip, host)
+	savevm(u, cpu, mem, f, ip, host, image)
 	if err != nil {
+	  fmt.Println(1111111)
+	  fmt.Println(err)
 		return false, err
 	}
 
@@ -280,15 +283,7 @@ func VmList(host string) []*Vms {
 	db := vmdb()
 	var v []*Vms
 	db.Where("exist=1").Find(&v)
-	//for _, e := range v {
-	//	s, err := VmStatus(e.Uuid, e.Host)
-	//	e.Checkout = false
-	//	if err != nil {
-	//		e.Status = err.Error()
-	//	} else {
-	//		e.Status = s
-	//	}
-	//}
+
 	return v
 }
 
@@ -351,18 +346,23 @@ func RbdClone(id string) (string, error) {
 	return id, nil
 }
 
-func SearchVm(c string) []*Vms {
+func SearchVm(c string) ([]*Vms, error) {
   db := vmdb()
   var v []*Vms
   i := fmt.Sprintf("ip like %s", "'"+c+"%'")
   db.Where(i).Find(&v)
-  //for _, e := range v {
-  //  s, err := VmStatus(e.Uuid, e.Host)
-  //  if err != nil {
-  //    e.Status = err.Error()
-  //  } else {
-  //    e.Status = s
-  //  }
-  //}
-  return v
+
+  return v, nil
+}
+
+type Vms_os struct {
+  Osname string
+  Snapimage string
+}
+
+func GetImages() ([]*Vms_os, error) {
+  db := vmdb()
+  var v []*Vms_os
+  db.Find(&v)
+  return v, nil
 }
