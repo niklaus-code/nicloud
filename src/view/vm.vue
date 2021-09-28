@@ -19,9 +19,11 @@
 	<table class="table table-striped" style="text-align: center;">
     <thead>
       <tr>
-		<label class="checkbox-inline" style="text-align: center; width: 50px">
+		<th>
+		<label class="checkbox-inline" style="border:red 1px">
   			<input type="checkbox" v-model="checkvalue" @click="checkbox()"> 
 		</label>
+		</th>
         <th>实例名称</th>
         <th>IP地址</th>
         <th>所属宿主机</th>
@@ -186,6 +188,10 @@ export default {
 </script>
 
 <style scoped>
+.checkbox-inline {
+	margin-bottom: 30px;
+}
+
 input{
 	margin-right: 5px;
 	border-color: #adadad;
@@ -199,13 +205,11 @@ input{
 .layui-table th {
 	font-weight: bold;
 	color: black;
-	padding: 10px 30px;
 }
 
 .layui-table td {
 	display: table-cell;
 	vertical-align: "middle";
-	padding: 8px 30px;
 }
 
 th {
