@@ -31,6 +31,7 @@ func main() {
     v2.GET("vnc", vmapis.Vnc)
     v2.GET("search", vmapis.Search)
     v2.GET("getstatus", vmapis.GetVmStatus)
+    v2.GET("addcomment", vmapis.Addcomment)
 	}
 
 	r.Run("127.0.0.1:1992")

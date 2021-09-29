@@ -192,7 +192,7 @@ func Createuuid() string {
 	return u
 }
 
-func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string, image string) bool {
+func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string, image string) (bool, error) {
   /*save config to db*/
 	db := vmdb()
 	vm := &Vms{
@@ -202,18 +202,20 @@ func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string,
 		Mem:         mem,
 		Vmxml:       vmxml,
 		Create_time: time.Now(),
-		Status:      1,
 		Exist:       1,
 		Ip:          ip,
 		Host:        host,
 		Owner:       "Niklaus",
 		Os:          image,
 	}
-	db.Create(vm)
+	err := db.Create(*vm)
+	if err != nil {
+	    return false, err.Error
+  }
 
 	//return bool
 	res := db.NewRecord(&vm)
-	return res
+	return res, err.Error
 }
 
 func Ipresource(ip string, mac string) bool {
@@ -258,17 +260,16 @@ func Create(cpu int, mem int, ip string, mac string, host string, image string) 
 	if err != nil {
 		return false, err
 	}
-	_, err = updateipstatus(ip)
-	if err != nil {
-		return false, err
-	}
 
-	savevm(u, cpu, mem, f, ip, host, image)
+	svm, err := savevm(u, cpu, mem, f, ip, host, image)
 	if err != nil {
-	  fmt.Println(1111111)
-	  fmt.Println(err)
-		return false, err
-	}
+	  return svm, err
+  }
+
+  _, err = updateipstatus(ip)
+  if err != nil {
+    return false, err
+  }
 
 	return true, err
 }
@@ -365,4 +366,10 @@ func GetImages() ([]*Vms_os, error) {
   var v []*Vms_os
   db.Find(&v)
   return v, nil
+}
+
+func Updatecomments(uuid string, comment string) (bool, error) {
+  db := vmdb()
+  db.Model(&Vms{}).Where("uuid=?", uuid).Update("comment", comment)
+  return true, nil
 }

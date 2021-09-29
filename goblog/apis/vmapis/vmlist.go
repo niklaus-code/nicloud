@@ -96,6 +96,17 @@ func GetImage(c *gin.Context) {
   c.JSON(200, res)
 }
 
+func Addcomment(c *gin.Context) {
+  uuid := c.Query("uuid")
+  comment := c.Query("comment")
+  res := make(map[string]interface{})
+  r, err := vmcommon.Updatecomments(uuid, comment)
+
+  res["res"] = r
+  res["err"] = err
+  c.JSON(200, res)
+}
+
 func GetFlavor(c *gin.Context) {
 	res := make(map[string]interface{})
 	s, err := vmcommon.Flavor()

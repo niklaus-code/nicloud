@@ -222,7 +222,14 @@ export default {
             var apiurl = `/api/vm/operation/0`
             this.$http.get(apiurl, { params: { uuid: uuid, host: host } }).then(response => {
 				if (response.data.err == null) {
-					this.$set(this.data, index, response.data.res)
+					this.data[index].Status = response.data.res.Status
+					//this.$set(this.data, index, response.data.res)
+					if (response.data.res.Comment.length > 0) {
+						this.data[index].flag2 = true
+						}
+					if (response.data.res.Comment.length == 0) {
+						this.data[index].flag = true
+						}
 					}
 				alert(response.data.err.Message)
             })
@@ -232,8 +239,14 @@ export default {
             var apiurl = `/api/vm/operation/1`
 			
             this.$http.get(apiurl, { params: { uuid: uuid, host: host } }).then(response => {
-				if (response.data.err == null) {
-					this.$set(this.data, index, response.data.res)
+				if (response.data.err === null) {
+					this.data[index].Status = response.data.res.Status
+					if (response.data.res.Comment.length > 0) {
+						this.data[index].flag2 = true
+						}
+					if (response.data.res.Comment.length == 0) {
+						this.data[index].flag = true
+						}
 					}
 				alert(response.data.err.Message)
             })
