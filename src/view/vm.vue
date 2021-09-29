@@ -49,12 +49,22 @@
         <td>{{item.Mem}}</td>
         <td>{{item.Owner}}</td>
         <td><button type="button" :class=stat[item.Status]>{{item.Status}}</button></td>
-        <td>{{item.Comment}}</td>
+        <td>
+		     <span v-if='item.flag2' @click="c(index)">
+                {{item.Comment}}
+            </span>
+
+			<li v-if='item.flag'><span class="glyphicon glyphicon-calendar" @click="edit(index)"></span></li>
+			<div v-if='item.flag1'>
+				<input type="text" v-model="comment">
+				<span  @click="input(index, item.Uuid)" class="glyphicon glyphicon-calendar"></span>
+			</div>
+		</td>
         <td class="default">
-			<button type="button" class="btn btn-info btn-sm" @click="start(item.Uuid, index, item.Host)">开机</button>
-			<button type="button" class="btn btn-info btn-sm" @click="shutdown(item.Uuid, index, item.Host)">关机</button>
-			<button type="button" class="btn btn-info btn-sm" @click="deletevm(item.Uuid, item.Ip, item.Host)">删除</button>
-			<button type="button" class="btn btn-info btn-sm" @click="vnc(item.Uuid, item.Host)"> <span class="glyphicon glyphicon-facetime-video"></span></button>
+			<button type="button" class="btn btn-info btn-xs" @click="start(item.Uuid, index, item.Host)">开机</button>
+			<button type="button" class="btn btn-info btn-xs" @click="shutdown(item.Uuid, index, item.Host)">关机</button>
+			<button type="button" class="btn btn-info btn-xs" @click="deletevm(item.Uuid, item.Ip, item.Host)">删除</button>
+			<button type="button" class="btn btn-info btn-xs" @click="vnc(item.Uuid, item.Host)"> <span class="glyphicon glyphicon-facetime-video"></span></button>
 		</td>
       </tr>
     </tbody>
@@ -72,12 +82,11 @@ import nicloudhead from '@/components/nicloudhead'
 export default {
     data () {
         return {
-			a : "",
 			checkvalue: false,
 			content: "",
 			stat: {
-				"运行": "btn btn-success btn-sm", 
-				"关机": "btn btn-warning btn-sm", 
+				"运行": "btn btn-success btn-xs", 
+				"关机": "btn btn-warning btn-xs", 
 				},
 			statclass: "btn btn-danger",
             data: [],
@@ -105,6 +114,29 @@ export default {
     },
 
     methods: {
+		c: function (index) {
+			this.data[index].flag2 = false
+			this.data[index].flag1 = true
+			this.comment = this.data[index].Comment
+			},
+
+		edit: function (index) {
+			this.data[index].flag = false
+            this.data[index].flag1 = true
+			},
+
+		input: function (index, uuid) {
+            var apiurl = `/api/vm/addcomment`
+            this.$http.get(apiurl, { params: { uuid: uuid, comment: this.comment} } ).then(response => {
+                if (response.data) {
+                    this.data[index].Comment = this.comment
+                    }
+            })
+			this.data[index].flag = false
+            this.data[index].flag1 = false
+            this.data[index].flag2 = true
+			},
+
 		checkbox: function () {
 			if (this.checkvalue) {
 				for (var k in this.data) {
@@ -143,6 +175,20 @@ export default {
         getvm: function () {
             var apiurl = `/api/vm/getvm`
             this.$http.get(apiurl).then(response => {
+                var d = new Array()
+                for (var v in response.data.res) {
+                    if (response.data.res[v]["Comment"].length > 0) {
+                        response.data.res[v]["flag"] = false
+                        response.data.res[v]["flag2"] = true
+                        } else {
+                        	response.data.res[v]["flag2"] = false
+                            response.data.res[v]["flag"] = true
+                        }
+                    response.data.res[v]["flag1"] = false
+                    d.push(response.data.res[v])
+                    }
+                this.data = d
+
 				this.data = response.data.res
 				for (let v in this.data) {
 					var r = this.getvmstatus(this.data[v].Uuid, this.data[v].Host)
@@ -211,13 +257,13 @@ input{
   display: block;
 }
 
-.layui-table th {
+th {
 	font-weight: bold;
 	color: black;
 }
 
-.layui-table td {
-	display: table-cell;
+.table tbody tr td {
+	padding: 12px;
 	vertical-align: "middle";
 }
 
