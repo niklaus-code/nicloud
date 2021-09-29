@@ -11,6 +11,7 @@ import (
 func Xml(vcpu int, vmem int, uuid string, mac string, image_name string) (string, error) {
 	var cfg, _ = ini.Load("conf/setting.ini")
 	var port = cfg.Section("ceph").Key("port").String()
+  var ceph_secret = cfg.Section("ceph").Key("ceph_secret").String()
 
 	ips := strings.Split(cfg.Section("ceph").Key("ip").String(), ",")
 	br := cfg.Section("bridge").Key("br").String()
@@ -22,6 +23,9 @@ func Xml(vcpu int, vmem int, uuid string, mac string, image_name string) (string
 		return doc.Text(), err
 	}
 
+	cephsecret := doc.FindElement("./domain/devices/disk/auth/secret")
+	cephsecret.CreateAttr("uuid", ceph_secret)
+	
 	cpu := doc.FindElement("./domain/vcpu")
 	cpu.CreateText(fmt.Sprintf("%d", vcpu))
 

@@ -50,7 +50,7 @@
         <td>{{item.Owner}}</td>
         <td><button type="button" :class=stat[item.Status]>{{item.Status}}</button></td>
         <td>
-		     <span v-if='item.flag2' @click="c(index)">
+		    <span v-if='item.flag2' @click="c(index)">
                 {{item.Comment}}
             </span>
 

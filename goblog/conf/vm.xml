@@ -32,7 +32,7 @@
     <disk type="network" device="disk">
       <driver name="qemu"  type='raw'/>
       <auth username='admin'>
-        <secret type='ceph' uuid='7d2f511a-b00c-4901-895c-ff540340ce49'/>
+        <secret type='ceph' />
       </auth>
       <source protocol="rbd">
       </source>
