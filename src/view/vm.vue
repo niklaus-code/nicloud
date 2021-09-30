@@ -3,11 +3,7 @@
     <nicloudhead></nicloudhead>
 	<div  class="col-md-1" style="float:left">
 		<ul class="list-group col-md-11 col-md-offset-1">
-    		<li class="list-group-item" @mouseover="mouseOver" @mouseleave="mouseLeave" :style="active">云主机</li>
-    		<li class="list-group-item" @mouseover="mouseOver" @mouseleave="mouseLeave" :style="active">云硬盘</li>
-    		<li class="list-group-item" @mouseover="mouseOver" @mouseleave="mouseLeave" :style="active">镜像</li>
-    		<li class="list-group-item" @mouseover="mouseOver" @mouseleave="mouseLeave" :style="active">网络</li>
-    		<li class="list-group-item" @mouseover="mouseOver" @mouseleave="mouseLeave" :style="active">统计</li>
+    		<li v-for="(item, index) in daohang" class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)" :style="item.active">{{item.name}}</li>
 		</ul>
 	</div>
 
@@ -90,6 +86,13 @@ import nicloudhead from '@/components/nicloudhead'
 export default {
     data () {
         return {
+			daohang: [
+				{"name": "云主机", "active": ""}, 
+				{"name": "云硬盘", "active": ""},
+				{"name": "镜像", "active": ""},
+				{"name": "网络", "active": ""},
+				{"name": "统计", "active": ""},
+				],
 			active: "",
 			checkvalue: false,
 			content: "",
@@ -123,12 +126,12 @@ export default {
     },
 
     methods: {
-		mouseOver: function () {
-			this.active = "background-color: red";
+		mouseOver: function (index) {
+			this.daohang[index].active = "background-color: red";
 			},
 
-		mouseLeave: function () {
-			this.active = "background-color: #e3e3e3";
+		mouseLeave: function (index) {
+			this.daohang[index].active = "background-color: #e3e3e3";
 			},
 
 		c: function (index) {
