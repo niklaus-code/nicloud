@@ -92,6 +92,8 @@ export default {
 				{"name": "镜像", "active": ""},
 				{"name": "网络", "active": ""},
 				{"name": "统计", "active": ""},
+				{"name": "宿主机", "active": ""},
+				{"name": "ceph", "active": ""},
 				],
 			active: "",
 			checkvalue: false,
@@ -288,8 +290,9 @@ export default {
 	box-shadow: 0 0 10px rgba(0,0,0,8);
   	border-radius: 10px/10px;
   	z-index: -1;
-	padding: 10px 0px 0px 0px;
+	padding: 20px 0px 0px 0px;
 	margin-left: 0px;
+	margin-TOP: 50px;
 }
 .breadcrumb {
     background-color: #5B5B5B
