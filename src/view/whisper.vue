@@ -3,7 +3,7 @@
     <headd></headd>
   <div class="content whisper-content">
     <div class="cont">
-      <div class="whisper-list" v-for="blog in data">
+      <div class="whisper-list" v-for="(blog, index) in data">
         <div class="item-box">
           <div class="item">
             <div class="whisper-title">

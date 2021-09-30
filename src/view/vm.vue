@@ -1,8 +1,17 @@
 <template>
 <div>
     <nicloudhead></nicloudhead>
+	<div  class="col-md-1" style="float:left">
+		<ul class="list-group col-md-11 col-md-offset-1">
+    		<li class="list-group-item" @mouseover="mouseOver" @mouseleave="mouseLeave" :style="active">云主机</li>
+    		<li class="list-group-item" @mouseover="mouseOver" @mouseleave="mouseLeave" :style="active">云硬盘</li>
+    		<li class="list-group-item" @mouseover="mouseOver" @mouseleave="mouseLeave" :style="active">镜像</li>
+    		<li class="list-group-item" @mouseover="mouseOver" @mouseleave="mouseLeave" :style="active">网络</li>
+    		<li class="list-group-item" @mouseover="mouseOver" @mouseleave="mouseLeave" :style="active">统计</li>
+		</ul>
+	</div>
 
-  <div class="content whisper-content leacots-content details-content">
+  	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 	
 	<div class="btn-group col-md-3 col-md-offset-9" >
 			<input class="col-md-5" type="text" id="name" placeholder="" v-model="content">
@@ -15,8 +24,8 @@
 			</button>
 		</router-link>
 	</div>
-<div style="margin-top:80px">
-	<table class="table table-striped" style="text-align: center;">
+<div style="margin-top:40px">
+	<table class="table table-hover" style="text-align: center;">
     <thead>
       <tr>
 		<th>
@@ -71,7 +80,6 @@
 	</table>
 	<div>
   </div>
-	<foot></foot>
   </div>
 </template>
 <script>
@@ -82,6 +90,7 @@ import nicloudhead from '@/components/nicloudhead'
 export default {
     data () {
         return {
+			active: "",
 			checkvalue: false,
 			content: "",
 			stat: {
@@ -89,7 +98,7 @@ export default {
 				"关机": "btn btn-warning btn-xs", 
 				},
 			statclass: "btn btn-danger",
-            data: [],
+            data: "",
 			status: {
 				0: "关机",
 				1: "运行",
@@ -114,6 +123,14 @@ export default {
     },
 
     methods: {
+		mouseOver: function () {
+			this.active = "background-color: red";
+			},
+
+		mouseLeave: function () {
+			this.active = "background-color: #e3e3e3";
+			},
+
 		c: function (index) {
 			this.data[index].flag2 = false
 			this.data[index].flag1 = true
@@ -175,28 +192,26 @@ export default {
         getvm: function () {
             var apiurl = `/api/vm/getvm`
             this.$http.get(apiurl).then(response => {
-                var d = new Array()
-                for (var v in response.data.res) {
-                    if (response.data.res[v]["Comment"].length > 0) {
-                        response.data.res[v]["flag"] = false
-                        response.data.res[v]["flag2"] = true
-                        } else {
-                        	response.data.res[v]["flag2"] = false
-                            response.data.res[v]["flag"] = true
-                        }
-                    response.data.res[v]["flag1"] = false
-                    d.push(response.data.res[v])
+            var d = new Array()
+            for (var v in response.data.res) {
+                if (response.data.res[v]["Comment"].length > 0) {
+                    response.data.res[v]["flag"] = false
+                    response.data.res[v]["flag2"] = true
+                    } else {
+                    	response.data.res[v]["flag2"] = false
+                        response.data.res[v]["flag"] = true
                     }
-                this.data = d
+                response.data.res[v]["flag1"] = false
+                d.push(response.data.res[v])
+                }
 
-				this.data = response.data.res
-				for (let v in this.data) {
-					var r = this.getvmstatus(this.data[v].Uuid, this.data[v].Host)
-					r.then(value => {
-						this.data[v].Status = value
-						},
-					)
-				}
+			this.data = d
+			for (let v in this.data) {
+				var r = this.getvmstatus(this.data[v].Uuid, this.data[v].Host)
+				r.then(value => {
+					this.data[v].Status = value
+					},
+				)}
             })
         },
 
@@ -255,7 +270,28 @@ export default {
   }
 </script>
 
+
 <style scoped>
+.list-group {
+	margin-top:100px;
+}
+
+.list-group-item {
+	background-color: #e3e3e3;
+	border: none;
+	color: blue;
+}
+.content {
+	box-shadow: 0 0 10px rgba(0,0,0,8);
+  	border-radius: 10px/10px;
+  	z-index: -1;
+	padding: 10px 0px 0px 0px;
+	margin-left: 0px;
+}
+.breadcrumb {
+    background-color: #5B5B5B
+}
+
 .checkbox-inline {
 	margin-bottom: 30px;
 }
