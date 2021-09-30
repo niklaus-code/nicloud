@@ -2,7 +2,8 @@ package main
 
 import (
 	"goblog/apis"
-	"goblog/apis/vmapis"
+  "goblog/apis/machineapis"
+  "goblog/apis/vmapis"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,6 +34,11 @@ func main() {
     v2.GET("getstatus", vmapis.GetVmStatus)
     v2.GET("addcomment", vmapis.Addcomment)
 	}
+
+  v3 := r.Group("/api/machine")
+  {
+    v3.GET("getmachinelist", machineapis.Getmachinelist)
+  }
 
 	r.Run("127.0.0.1:1992")
 }

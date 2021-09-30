@@ -8,6 +8,7 @@ import about from '@/view/about'
 import login from '@/view/login'
 import nicloud from '@/view/vm'
 import createvm from '@/view/createvm'
+import machine from '@/view/machine'
 
 
 Vue.use(Router)
@@ -15,9 +16,9 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/createvm',
-      name: 'createvm',
-      component: createvm
+      path: '/machine',
+      name: 'machine',
+      component: machine
     },
     {
       path: '/nicloud',
