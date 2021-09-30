@@ -10,7 +10,12 @@
 </template>
 
 <style scoped>
+a {
+color : #FFF;
+}
+
 .breadcrumb {
+	color: #FFF;
 	background-color: #5B5B5B;
 }
 .abc {
