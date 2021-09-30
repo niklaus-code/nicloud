@@ -9,12 +9,18 @@ import login from '@/view/login'
 import nicloud from '@/view/vm'
 import createvm from '@/view/createvm'
 import machine from '@/view/machine'
+import createmachine from '@/view/createmachine'
 
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/createmachine',
+      name: 'createmachine',
+      component: createmachine
+    },
     {
       path: '/machine',
       name: 'machine',
