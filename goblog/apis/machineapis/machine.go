@@ -6,6 +6,16 @@ import (
   "strconv"
 )
 
+func Delmachine(c *gin.Context) {
+  id, _ := strconv.Atoi(c.Query("id"))
+  res := make(map[string]interface{})
+  data, err := machinecommon.Delmachine(id)
+
+  res["res"] = data
+  res["err"] = err
+  c.JSON(200, res)
+}
+
 func Getmachinelist(c *gin.Context) {
 
   res := make(map[string]interface{})
@@ -32,19 +42,18 @@ func Addmachine(c *gin.Context) {
   jiguizichanbiaoqian := c.Query("jiguizichanbiaoqian")
   weizhi := c.Query("weizhi")
   gaodu  := c.Query("gaodu")
-  shebeizhuangtai := c.Query("shebeizhuangtai")
+  shebeizhuangtai, _ := strconv.Atoi(c.Query("shebeizhuangtai"))
   edinggonglv := c.Query("edinggonglv")
   yongdiandengji := c.Query("yongdiandengji")
   guanliip := c.Query("guanliip")
   yewuip := c.Query("yewuip")
   beizhu  := c.Query("beizhu ")
-  status, _ := strconv.Atoi(c.Query("status"))
 
 
   res := make(map[string]interface{})
   err := machinecommon.Addmacine(zichanmingcheng, pingpai, Xinghao, Xuliehao, zichanbiaoqian,danwei,suoshubumen,
     zichanzerenbumen, zerenren,  suoshujifang,jiguizichanbiaoqian, weizhi, jigui, gaodu, shebeizhuangtai, edinggonglv, yongdiandengji,
-    guanliip, yewuip, beizhu, status)
+    guanliip, yewuip, beizhu)
 
   res["res"] = true
   res["err"] = err

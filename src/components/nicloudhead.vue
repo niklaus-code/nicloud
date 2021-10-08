@@ -4,12 +4,12 @@
     	<li>
 			<router-link :to="{name:'nicloud'}">
 				<span>NICLOUD</span>
-			<router-link>
+			</router-link>
 		</li>
     	<li>
 			<router-link :to="{name:'serveroom'}">
 				<span>SERVEROOM</span>
-			<router-link>
+			</router-link>
 		</li>
 	</ul>
 </div>

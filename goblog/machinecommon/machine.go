@@ -5,6 +5,7 @@ import (
 )
 
 type Machineroom struct {
+  Id  int
   Zichanmingcheng string
   Pinpai string
   Xinghao string
@@ -19,7 +20,7 @@ type Machineroom struct {
   Jiguizichanbiaoqian string
   Weizhi string
   Gaodu string
-  Shebeizhuangtai string
+  Shebeizhuangtai int
   Edinggonglv string
   Yongdiandengji string
   Guanliip string
@@ -37,10 +38,17 @@ func mcdb() *gorm.DB {
   return db
 }
 
+func Delmachine(id int) ([]*Machineroom, error)  {
+  db := mcdb()
+  db.Model(&Machineroom{}).Where("id=?", id).Update("status", 0)
+
+  return Machinelist()
+}
+
 func Machinelist() ([]*Machineroom, error)  {
   db := mcdb()
   var v []*Machineroom
-  db.Find(&v)
+  db.Where("status=1").Find(&v)
 
   return v, nil
 }
@@ -48,8 +56,8 @@ func Machinelist() ([]*Machineroom, error)  {
 func Addmacine(zichangmingcheng string, pingpai string,  Xinghao string, Xuliehao string,
   zichanbiaoqian string, danwei string, suoshubumen string,  zichanzerenbumen string, zerenren string,
   suoshujifang string, jigui string,  jiguizichanbiaoqian string, weizhi string,  gaodu string,
-  shebeizhuangtai string, edinggonglv string, yongdiandengji string, guanliip string, yewuip string,
-  beizhu string, status int) error {
+  shebeizhuangtai int, edinggonglv string, yongdiandengji string, guanliip string, yewuip string,
+  beizhu string) error {
 
   m := &Machineroom{
     Zichanmingcheng: zichangmingcheng,
@@ -72,11 +80,11 @@ func Addmacine(zichangmingcheng string, pingpai string,  Xinghao string, Xulieha
     Guanliip: guanliip,
     Yewuip: yewuip,
     Beizhu: beizhu,
-    Status: status,
+    Status: 1,
   }
 
   db := mcdb()
-  err := db.Create(*m)
+  err := db.Create(&m)
   if err != nil {
     return nil
   }
