@@ -1,9 +1,16 @@
 <template>
 <div class="abc">
 	<ul class="breadcrumb">
-    	<li><a href="#/nicloud">NICLOUD</a></li>
-    	<li>项目</a></li>
-    	<li>实例</li>
+    	<li>
+			<router-link :to="{name:'nicloud'}">
+				<span>NICLOUD</span>
+			<router-link>
+		</li>
+    	<li>
+			<router-link :to="{name:'serveroom'}">
+				<span>SERVEROOM</span>
+			<router-link>
+		</li>
 	</ul>
 </div>
 

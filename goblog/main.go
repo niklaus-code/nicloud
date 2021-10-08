@@ -1,3 +1,4 @@
+//+build linux
 package main
 
 import (
@@ -38,6 +39,7 @@ func main() {
   v3 := r.Group("/api/machine")
   {
     v3.GET("getmachinelist", machineapis.Getmachinelist)
+    v3.GET("addmachine", machineapis.Addmachine)
   }
 
 	r.Run("127.0.0.1:1992")

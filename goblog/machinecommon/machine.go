@@ -1,6 +1,8 @@
 package machinecommon
 
-import "github.com/jinzhu/gorm"
+import (
+  "github.com/jinzhu/gorm"
+)
 
 type Machineroom struct {
   Zichanmingcheng string
@@ -23,7 +25,7 @@ type Machineroom struct {
   Guanliip string
   Yewuip string
   Beizhu string
-  Status string
+  Status int
 }
 
 
@@ -41,4 +43,44 @@ func Machinelist() ([]*Machineroom, error)  {
   db.Find(&v)
 
   return v, nil
+}
+
+func Addmacine(zichangmingcheng string, pingpai string,  Xinghao string, Xuliehao string,
+  zichanbiaoqian string, danwei string, suoshubumen string,  zichanzerenbumen string, zerenren string,
+  suoshujifang string, jigui string,  jiguizichanbiaoqian string, weizhi string,  gaodu string,
+  shebeizhuangtai string, edinggonglv string, yongdiandengji string, guanliip string, yewuip string,
+  beizhu string, status int) error {
+
+  m := &Machineroom{
+    Zichanmingcheng: zichangmingcheng,
+    Pinpai: pingpai,
+    Xinghao: Xinghao,
+    Xuliehao: Xuliehao,
+    Zichanbiaoqian: zichanbiaoqian,
+    Danwei: danwei,
+    Suoshubumen: suoshubumen,
+    Zichanzerenbumen: zichanzerenbumen,
+    Zerenren: zerenren,
+    Suoshujifang: suoshujifang,
+    Jigui: jigui,
+    Jiguizichanbiaoqian: jiguizichanbiaoqian,
+    Weizhi: weizhi,
+    Gaodu: gaodu,
+    Shebeizhuangtai: shebeizhuangtai,
+    Edinggonglv: edinggonglv,
+    Yongdiandengji: yongdiandengji,
+    Guanliip: guanliip,
+    Yewuip: yewuip,
+    Beizhu: beizhu,
+    Status: status,
+  }
+
+  db := mcdb()
+  err := db.Create(*m)
+  if err != nil {
+    return nil
+  }
+
+  db.NewRecord(&m)
+  return nil
 }

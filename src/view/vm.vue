@@ -224,17 +224,31 @@ export default {
             var apiurl = `/api/vm/delete`
             this.$http.get(apiurl, { params: { uuid: uuid, ip: ip, host: host} }).then(response => {
 				if (response.data.err == null) {
-            		this.data = response.data.res
-					for (let v in this.data) {
-						var r = this.getvmstatus(this.data[v].Uuid, this.data[v].Host)
-						r.then(value => {
-							this.data[v].Status = value
-							},
-							)
-						}
-					} else {
-						alert(response.data.err.Message)
-					}
+            		var d = new Array()
+            		for (var v in response.data.res) {
+                		if (response.data.res[v]["Comment"].length > 0) {
+                   	 		response.data.res[v]["flag"] = false
+                    		response.data.res[v]["flag2"] = true
+                    		} else {
+                    		response.data.res[v]["flag2"] = false
+                        	response.data.res[v]["flag"] = true
+                    		}
+                		response.data.res[v]["flag1"] = false
+                		d.push(response.data.res[v])
+                		}
+
+						this.data = d
+            			this.data = response.data.res
+						for (let v in this.data) {
+							var r = this.getvmstatus(this.data[v].Uuid, this.data[v].Host)
+							r.then(value => {
+								this.data[v].Status = value
+								},
+								)
+							}
+				} else {
+					alert(response.data.err.Message)
+				}
             })
         },
 
