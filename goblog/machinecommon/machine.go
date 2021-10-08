@@ -1,6 +1,7 @@
 package machinecommon
 
 import (
+  "fmt"
   "github.com/jinzhu/gorm"
 )
 
@@ -38,19 +39,28 @@ func mcdb() *gorm.DB {
   return db
 }
 
-func Delmachine(id int) ([]*Machineroom, error)  {
+func Delmachine(id int, start int, offset int) ([]*Machineroom, error)  {
   db := mcdb()
   db.Model(&Machineroom{}).Where("id=?", id).Update("status", 0)
 
-  return Machinelist()
+  return Machinelist(start, offset)
 }
 
-func Machinelist() ([]*Machineroom, error)  {
+func Machinelist(start int, offset int) ([]*Machineroom, error)  {
+  db := mcdb()
+  var v []*Machineroom
+  db.Where("status=1").Limit(100).Offset(1).Find(&v)
+
+  return v, nil
+}
+
+func Allpage() (int, error)  {
   db := mcdb()
   var v []*Machineroom
   db.Where("status=1").Find(&v)
-
-  return v, nil
+  fmt.Println(len(v))
+  allpage := len(v)/100+1
+  return allpage, nil
 }
 
 func Addmacine(zichangmingcheng string, pingpai string,  Xinghao string, Xuliehao string,

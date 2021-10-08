@@ -6,10 +6,21 @@ import (
   "strconv"
 )
 
+func Getpage(c *gin.Context) {
+  res := make(map[string]interface{})
+  pagenumber, err := machinecommon.Allpage()
+
+  res["res"] = pagenumber
+  res["err"] = err
+  c.JSON(200, res)
+}
+
 func Delmachine(c *gin.Context) {
   id, _ := strconv.Atoi(c.Query("id"))
+  start, _ := strconv.Atoi(c.Query("start"))
+  offset, _ := strconv.Atoi(c.Query("offset"))
   res := make(map[string]interface{})
-  data, err := machinecommon.Delmachine(id)
+  data, err := machinecommon.Delmachine(id, start, offset)
 
   res["res"] = data
   res["err"] = err
@@ -17,9 +28,10 @@ func Delmachine(c *gin.Context) {
 }
 
 func Getmachinelist(c *gin.Context) {
-
+  start, _ := strconv.Atoi(c.Query("start"))
+  offset, _ := strconv.Atoi(c.Query("offset"))
   res := make(map[string]interface{})
-  r, err := machinecommon.Machinelist()
+  r, err := machinecommon.Machinelist(start, offset)
 
   res["res"] = r
   res["err"] = err
