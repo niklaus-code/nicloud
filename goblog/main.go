@@ -42,6 +42,7 @@ func main() {
     v3.GET("addmachine", machineapis.Addmachine)
     v3.GET("delmachine", machineapis.Delmachine)
     v3.GET("getpage", machineapis.Getpage)
+    v3.GET("search", machineapis.Search)
   }
 
 	r.Run("127.0.0.1:1992")

@@ -105,6 +105,12 @@ export default {
 		},
 
 	methods: {
+		search: function () {
+			var apiurl = `/api/machine/search`
+			this.$http.get(apiurl, { params: { content: this.content }} ).then(response => {
+				this.data = response.data.res
+            })
+			},
 		getpagenumber: function () {
 			var apiurl = `/api/machine/getpage`
 			this.$http.get(apiurl).then(response => {

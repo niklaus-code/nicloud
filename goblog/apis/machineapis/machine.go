@@ -6,6 +6,16 @@ import (
   "strconv"
 )
 
+func Search(c *gin.Context) {
+  res := make(map[string]interface{})
+  content := c.Query("content")
+  r, err := machinecommon.Searchmachine(content)
+
+  res["res"] = r
+  res["err"] = err
+  c.JSON(200, res)
+}
+
 func Getpage(c *gin.Context) {
   res := make(map[string]interface{})
   totalnumber, pagenumber,  err := machinecommon.Allpage()

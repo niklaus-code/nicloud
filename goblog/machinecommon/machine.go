@@ -1,6 +1,7 @@
 package machinecommon
 
 import (
+  "fmt"
   "github.com/jinzhu/gorm"
 )
 
@@ -36,6 +37,16 @@ func mcdb() *gorm.DB {
     return  nil
   }
   return db
+}
+func Searchmachine(content string) ([]*Machineroom, error)  {
+  db := mcdb()
+  var v []*Machineroom
+  i := fmt.Sprintf("yewuip like %s", "'%"+content+"%'")
+  fmt.Println(i)
+  fmt.Println(content)
+  db.Where(i).Find(&v)
+
+  return v, nil
 }
 
 func Delmachine(id int, start int, offset int) ([]*Machineroom, error)  {
