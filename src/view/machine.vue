@@ -46,7 +46,7 @@
       				</tr>
     			</thead>
 				<tbody v-for="(item, index) in data">
-					<tr>
+					<tr v-if="item.Status">
 						<td>{{item.Zichanmingcheng}}</td>
 						<td>{{item.Pinpai}}</td>
 						<td>{{item.Xinghao}}</td>
@@ -69,7 +69,7 @@
 						<td>{{item.Beizhu}}</td>
 						<td>
 							<button type="button" class="btn btn-primary btn-xs">修改</button>
-							<button type="button" @click="delmachine(item.Id)" class="btn btn-primary btn-xs">删除</button>
+							<button type="button" @click="delmachine(item.Id, index)" class="btn btn-primary btn-xs">删除</button>
 						</td>
 					</tr>
 				</tbody>
@@ -92,6 +92,7 @@ export default {
         return {
 			total: 0,
 			allpage: 0,
+			onpage: 1,
 			data: [],
 			}
 		},
@@ -113,15 +114,17 @@ export default {
 			},
 
 		getmachinelist: function (startpage, offset) {
+			this.onpage = startpage
 			var apiurl = `/api/machine/getmachinelist`
 			this.$http.get(apiurl, { params: { startpage: startpage, offset: offset }} ).then(response => {
                 this.data = response.data.res
             })
 			},
 
-		delmachine: function (mid) {
+		delmachine: function (mid, index) {
+			this.data[index].Status = false
 			var apiurl = `/api/machine/delmachine`
-			this.$http.get(apiurl, { params: { id: mid }} ).then(response => {
+			this.$http.get(apiurl, { params: { id: mid, startpage: this.onpage, offset: 100}} ).then(response => {
                 this.data = response.data.res
             })
 			},

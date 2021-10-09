@@ -50,7 +50,7 @@ func Machinelist(startpage int, offset int) ([]*Machineroom, error)  {
 
   db := mcdb()
   var v []*Machineroom
-  db.Where("status=1").Limit(offset).Offset(offsetpage).Find(&v)
+  db.Where("status=1").Order("suoshujifang").Limit(offset).Offset(offsetpage).Find(&v)
 
   return v, nil
 }

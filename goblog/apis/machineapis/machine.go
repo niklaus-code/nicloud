@@ -18,7 +18,7 @@ func Getpage(c *gin.Context) {
 
 func Delmachine(c *gin.Context) {
   id, _ := strconv.Atoi(c.Query("id"))
-  start, _ := strconv.Atoi(c.Query("start"))
+  start, _ := strconv.Atoi(c.Query("startpage"))
   offset, _ := strconv.Atoi(c.Query("offset"))
   res := make(map[string]interface{})
   data, err := machinecommon.Delmachine(id, start, offset)
