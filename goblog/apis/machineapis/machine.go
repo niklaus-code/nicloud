@@ -28,8 +28,9 @@ func Delmachine(c *gin.Context) {
 }
 
 func Getmachinelist(c *gin.Context) {
-  start, _ := strconv.Atoi(c.Query("start"))
+  start, _ := strconv.Atoi(c.Query("startpage"))
   offset, _ := strconv.Atoi(c.Query("offset"))
+
   res := make(map[string]interface{})
   r, err := machinecommon.Machinelist(start, offset)
 
