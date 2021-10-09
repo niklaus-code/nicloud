@@ -8,9 +8,10 @@ import (
 
 func Getpage(c *gin.Context) {
   res := make(map[string]interface{})
-  pagenumber, err := machinecommon.Allpage()
+  totalnumber, pagenumber,  err := machinecommon.Allpage()
 
-  res["res"] = pagenumber
+  res["pagenumber"] = pagenumber
+  res["totalnumber"] = totalnumber
   res["err"] = err
   c.JSON(200, res)
 }

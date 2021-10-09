@@ -107,14 +107,14 @@ export default {
 		getpagenumber: function () {
 			var apiurl = `/api/machine/getpage`
 			this.$http.get(apiurl).then(response => {
-				this.allpage = response.data.res
+				this.allpage = response.data.pagenumber
+				this.total = response.data.totalnumber
             })
 			},
 
 		getmachinelist: function (startpage, offset) {
 			var apiurl = `/api/machine/getmachinelist`
 			this.$http.get(apiurl, { params: { startpage: startpage, offset: offset }} ).then(response => {
-				this.total = response.data.res.length
                 this.data = response.data.res
             })
 			},

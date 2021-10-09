@@ -55,12 +55,12 @@ func Machinelist(startpage int, offset int) ([]*Machineroom, error)  {
   return v, nil
 }
 
-func Allpage() (int, error)  {
+func Allpage() (int, int, error)  {
   db := mcdb()
   var v []*Machineroom
   db.Where("status=1").Find(&v)
   allpage := len(v)/100+1
-  return allpage, nil
+  return len(v), allpage, nil
 }
 
 func Addmacine(zichangmingcheng string, pingpai string,  Xinghao string, Xuliehao string,
