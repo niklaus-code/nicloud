@@ -20,28 +20,28 @@
 			<table class="table table-bordered">
 			   <thead>
       				<tr>
-        				<th>资产名称</th>
-        				<th>品牌</th>
-        				<th>型号</th>
-        				<th>原厂序列号</th>
-        				<th>资产标签</th>
-        				<th>单位</th>
-        				<th>所属部门</th>
-        				<th>责任部门</th>
-        				<th>责任人</th>
-        				<th>机房</th>
-        				<th>机柜</th>
-        				<th>机柜资产标签</th>
-        				<th>机柜位置</th>
-        				<th>高度</th>
-        				<th>设备状态</th>
-        				<th>额定功率</th>
-        				<th>用电等级</th>
-        				<th>管理IP</th>
-        				<th>业务IP</th>
-        				<th>备注</th>
-        				<th>
-							<span>操作</span>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp资产名称</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp品牌</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp型号</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp原厂序列号</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp资产标签</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp单位</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp所属部门</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp责任部门</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp责任人</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp机房</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp机柜</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp机柜资产标签</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp机柜位置</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp高度</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp设备状态</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp额定功率</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp用电等级</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp管理IP</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp业务IP</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp备注</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>
+							<span>&nbsp操作</span>
 						</th>
       				</tr>
     			</thead>

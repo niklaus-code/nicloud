@@ -42,8 +42,6 @@ func Searchmachine(content string) ([]*Machineroom, error)  {
   db := mcdb()
   var v []*Machineroom
   i := fmt.Sprintf("yewuip like %s", "'%"+content+"%'")
-  fmt.Println(i)
-  fmt.Println(content)
   db.Where(i).Find(&v)
 
   return v, nil
