@@ -124,6 +124,7 @@ export default {
 			},
 		dblclick: function (index) {
 			this.data[index].cm = true
+			this.comment = this.data[index].Beizhu
 			},
 		search: function () {
 			var apiurl = `/api/machine/search`
