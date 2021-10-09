@@ -47,6 +47,13 @@ func Searchmachine(content string) ([]*Machineroom, error)  {
   return v, nil
 }
 
+func Updatemachine(id string, content string) (error)  {
+  db := mcdb()
+  db.Model(&Machineroom{}).Where("id=?", id).Update("beizhu", content)
+
+  return nil
+}
+
 func Delmachine(id int, start int, offset int) ([]*Machineroom, error)  {
   db := mcdb()
   db.Model(&Machineroom{}).Where("id=?", id).Update("status", 0)

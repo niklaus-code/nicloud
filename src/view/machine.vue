@@ -66,10 +66,17 @@
 						<td>{{item.Yongdiandengji}}</td>
 						<td>{{item.Guanliip}}</td>
 						<td>{{item.Yewuip}}</td>
-						<td>{{item.Beizhu}}</td>
+						<td @dblclick="dblclick(index)">
+							<div v-if="item.cm">
+                				<input type="text" v-model="comment">
+            				</div>
+							<div v-else>
+								{{item.Beizhu}}
+							</div>
+						</td>
 						<td>
-							<button type="button" class="btn btn-primary btn-xs">修改</button>
-							<button type="button" @click="delmachine(item.Id, index)" class="btn btn-primary btn-xs">删除</button>
+							<button  v-if="item.cm" type="button" class="btn btn-primary btn-xs" @click="save(item.Id, index)">保存</button>
+							<button v-else type="button" @click="delmachine(item.Id, index)" class="btn btn-primary btn-xs">删除</button>
 						</td>
 					</tr>
 				</tbody>
@@ -90,6 +97,7 @@ import nicloudhead from '@/components/nicloudhead'
 export default {
     data () {
         return {
+			comment: "",
 			total: 0,
 			allpage: 0,
 			onpage: 1,
@@ -105,6 +113,18 @@ export default {
 		},
 
 	methods: {
+		save: function (id, index) {
+			var apiurl = `/api/machine/update`
+            this.$http.get(apiurl, { params: { id: id, c: this.comment } } ).then(response => {
+                if (response.data.res) {
+					this.data[index].cm = false
+                    this.data[index].Beizhu = this.comment
+                    }
+            })
+			},
+		dblclick: function (index) {
+			this.data[index].cm = true
+			},
 		search: function () {
 			var apiurl = `/api/machine/search`
 			this.$http.get(apiurl, { params: { content: this.content }} ).then(response => {
@@ -123,7 +143,12 @@ export default {
 			this.onpage = startpage
 			var apiurl = `/api/machine/getmachinelist`
 			this.$http.get(apiurl, { params: { startpage: startpage, offset: offset }} ).then(response => {
-                this.data = response.data.res
+				var d = new Array()
+                for (var i in response.data.res) {
+					response.data.res[i]["cm"] = false
+					d.push(response.data.res[i])
+					}
+				this.data = d
             })
 			},
 

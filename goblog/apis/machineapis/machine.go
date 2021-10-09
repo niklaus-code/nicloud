@@ -6,6 +6,22 @@ import (
   "strconv"
 )
 
+func Update(c *gin.Context) {
+
+  id := c.Query("id")
+  content := c.Query("c")
+
+  res := make(map[string]interface{})
+  err := machinecommon.Updatemachine(id, content)
+  if err != nil {
+    res["res"] = true
+  }
+
+  res["res"] = true
+  c.JSON(200, res)
+}
+
+
 func Search(c *gin.Context) {
   res := make(map[string]interface{})
   content := c.Query("content")
