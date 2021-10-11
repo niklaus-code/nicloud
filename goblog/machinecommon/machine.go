@@ -2,7 +2,7 @@ package machinecommon
 
 import (
   "fmt"
-  "github.com/jinzhu/gorm"
+  "goblog/dbs"
 )
 
 type Machineroom struct {
@@ -30,16 +30,11 @@ type Machineroom struct {
   Status int
 }
 
-
-func mcdb() *gorm.DB {
-  db, errDb := gorm.Open("mysql", "modis:modis@(127.0.0.1:3306)/nicloud?parseTime=true")
-  if errDb != nil {
-    return  nil
-  }
-  return db
-}
 func Searchmachine(content string) ([]*Machineroom, error)  {
-  db := mcdb()
+  db, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
   var v []*Machineroom
   i := fmt.Sprintf("yewuip like %s", "'%"+content+"%'")
   db.Where(i).Find(&v)
@@ -48,14 +43,20 @@ func Searchmachine(content string) ([]*Machineroom, error)  {
 }
 
 func Updatemachine(id string, content string) (error)  {
-  db := mcdb()
+  db, err := db.NicloudDb()
+  if err != nil {
+    return nil
+  }
   db.Model(&Machineroom{}).Where("id=?", id).Update("beizhu", content)
 
   return nil
 }
 
 func Delmachine(id int, start int, offset int) ([]*Machineroom, error)  {
-  db := mcdb()
+  db, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
   db.Model(&Machineroom{}).Where("id=?", id).Update("status", 0)
 
   return Machinelist(start, offset)
@@ -64,7 +65,10 @@ func Delmachine(id int, start int, offset int) ([]*Machineroom, error)  {
 func Machinelist(startpage int, offset int) ([]*Machineroom, error)  {
   offsetpage := (startpage-1)*offset
 
-  db := mcdb()
+  db, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
   var v []*Machineroom
   db.Where("status=1").Order("suoshujifang").Limit(offset).Offset(offsetpage).Find(&v)
 
@@ -72,7 +76,10 @@ func Machinelist(startpage int, offset int) ([]*Machineroom, error)  {
 }
 
 func Allpage() (int, int, error)  {
-  db := mcdb()
+  db, err := db.NicloudDb()
+  if err != nil {
+    return 0, 0, err
+  }
   var v []*Machineroom
   db.Where("status=1").Find(&v)
   allpage := len(v)/100+1
@@ -109,9 +116,12 @@ func Addmacine(zichangmingcheng string, pingpai string,  Xinghao string, Xulieha
     Status: 1,
   }
 
-  db := mcdb()
-  err := db.Create(&m)
+  db, err := db.NicloudDb()
   if err != nil {
+    return nil
+  }
+  err1 := db.Create(&m)
+  if err1 != nil {
     return nil
   }
 

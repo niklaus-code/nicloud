@@ -7,9 +7,9 @@ import (
   "time"
 
   "github.com/ceph/go-ceph/rbd"
-  "github.com/jinzhu/gorm"
   _ "github.com/jinzhu/gorm/dialects/mysql" //这个一定要引入哦！！
   uuid "github.com/satori/go.uuid"
+  "goblog/dbs"
   libvirt "libvirt.org/libvirt-go"
 )
 
@@ -32,14 +32,6 @@ type Vms struct {
 func (v Vms) Error(info string) error {
 	errorinfo := fmt.Sprintf("%s", info)
 	return errors.New(errorinfo)
-}
-
-func vmdb() *gorm.DB {
-	db, errDb := gorm.Open("mysql", "modis:modis@(127.0.0.1:3306)/nicloud?parseTime=true")
-	if errDb != nil {
-		return  nil
-	}
-	return db
 }
 
 type Vm_xmls struct {
@@ -103,7 +95,10 @@ func Delete(uuid string, ip string, host string) ([]*Vms, error) {
 		}
 	}
 
-	db := vmdb()
+  db, err := db.NicloudDb()
+  if err != nil {
+    return  nil, err
+  }
 
 	//undefine vm
 	conn, err := libvirtconn(host)
@@ -145,7 +140,10 @@ func Shutdown(uuid string, host string) (*Vms, error) {
 		return nil, err1
 	}
 
-	db := vmdb()
+  db, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
 	var v = &Vms{}
 	db.Where("uuid = ?", uuid).First(&v)
 
@@ -174,7 +172,10 @@ func Start(uuid string, host string) (*Vms, error) {
 		return nil, err1
 	}
 
-	db := vmdb()
+  db, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
 	var v = &Vms{}
 	db.Where("uuid = ?", uuid).First(&v)
 
@@ -194,7 +195,10 @@ func Createuuid() string {
 
 func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string, image string) (bool, error) {
   /*save config to db*/
-	db := vmdb()
+  db, err := db.NicloudDb()
+  if err != nil {
+    return false, err
+  }
 	vm := &Vms{
 		Uuid:        uuid,
 		Name:        uuid,
@@ -209,18 +213,21 @@ func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string,
 		Owner:       "Niklaus",
 		Os:          image,
 	}
-	err := db.Create(*vm)
-	if err != nil {
-	    return false, err.Error
+	err1 := db.Create(*vm)
+	if err1 != nil {
+	    return false, err1.Error
   }
 
 	//return bool
 	res := db.NewRecord(&vm)
-	return res, err.Error
+	return res, err1.Error
 }
 
 func Ipresource(ip string, mac string) bool {
-  db := vmdb()
+  db, err := db.NicloudDb()
+  if err != nil {
+    return false
+  }
   var ipnet []*vm_networks
   db.Where("ipv4=?", ip).Where("macaddr=?", mac).Find(&ipnet)
   for _, v := range ipnet {
@@ -250,7 +257,8 @@ func Create(cpu int, mem int, ip string, mac string, host string, image string) 
 	 return false, err
   }
 
-	f, err := ceph.Xml(vcpu, vmem, u, mac, imge_name)
+
+	f, err := ceph.Xml(vcpu, vmem, u, mac, imge_name, image)
 
 	conn, connerr := libvirtconn(host)
 	if connerr != nil {
@@ -276,13 +284,19 @@ func Create(cpu int, mem int, ip string, mac string, host string, image string) 
 }
 
 func updateipstatus(ipv4 string) (bool, error) {
-	db := vmdb()
+  db, err := db.NicloudDb()
+  if err != nil {
+    return false, err
+  }
 	db.Model(&vm_networks{}).Where("ipv4=?", ipv4).Update("status", 1)
 	return true, nil
 }
 
 func VmList(host string) []*Vms {
-	db := vmdb()
+  db, err := db.NicloudDb()
+  if err != nil {
+    return nil
+  }
 	var v []*Vms
 	db.Where("exist=1").Find(&v)
 
@@ -296,7 +310,10 @@ type vm_networks struct {
 }
 
 func IPlist() []*vm_networks {
-	db := vmdb()
+  db, err := db.NicloudDb()
+  if err != nil {
+    return nil
+  }
 	var ip []*vm_networks
 	db.Where("status=0").Find(&ip)
 
@@ -313,7 +330,10 @@ type Vm_hosts struct {
 }
 
 func Hosts() []*Vm_hosts {
-	db := vmdb()
+  db, err := db.NicloudDb()
+  if err != nil {
+    return nil
+  }
 	var hosts []*Vm_hosts
 	db.Where("status=0").Find(&hosts)
 	return hosts
@@ -325,7 +345,10 @@ type Vm_flavors struct {
 }
 
 func Flavor() ([]*Vm_flavors, error) {
-	db := vmdb()
+  db, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
 	var f []*Vm_flavors
 	db.Find(&f)
 	return f, nil
@@ -349,7 +372,10 @@ func RbdClone(id string) (string, error) {
 }
 
 func SearchVm(c string) ([]*Vms, error) {
-  db := vmdb()
+  db, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
   var v []*Vms
   i := fmt.Sprintf("ip like %s", "'"+c+"%'")
   db.Where(i).Find(&v)
@@ -363,14 +389,20 @@ type Vms_os struct {
 }
 
 func GetImages() ([]*Vms_os, error) {
-  db := vmdb()
+  db, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
   var v []*Vms_os
   db.Find(&v)
   return v, nil
 }
 
 func Updatecomments(uuid string, comment string) (bool, error) {
-  db := vmdb()
+  db, err := db.NicloudDb()
+  if err != nil {
+    return true, err
+  }
   db.Model(&Vms{}).Where("uuid=?", uuid).Update("comment", comment)
   return true, nil
 }
