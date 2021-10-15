@@ -43,6 +43,7 @@
         				<th><span class="glyphicon glyphicon-edit"> </span>
 							<span>&nbsp操作</span>
 						</th>
+        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp状态</th>
       				</tr>
     			</thead>
 				<tbody v-for="(item, index) in data">
@@ -77,6 +78,9 @@
 						<td>
 							<button  v-if="item.cm" type="button" class="btn btn-primary btn-xs" @click="save(item.Id, index)">保存</button>
 							<button v-else type="button" @click="delmachine(item.Id, index)" class="btn btn-primary btn-xs">删除</button>
+						</td>
+						<td>
+							{{item.Status}}
 						</td>
 					</tr>
 				</tbody>
@@ -122,21 +126,31 @@ export default {
                     }
             })
 			},
+
 		dblclick: function (index) {
 			this.data[index].cm = true
 			this.comment = this.data[index].Beizhu
 			},
+
 		search: function () {
 			var apiurl = `/api/machine/search`
 			this.$http.get(apiurl, { params: { content: this.content }} ).then(response => {
 				this.data = response.data.res
             })
 			},
+
 		getpagenumber: function () {
 			var apiurl = `/api/machine/getpage`
 			this.$http.get(apiurl).then(response => {
 				this.allpage = response.data.pagenumber
 				this.total = response.data.totalnumber
+            })
+			},
+
+		ping: function (ip) {
+			var apiurl = `/api/machine/ping`
+			return this.$http.get(apiurl, { params: { ip: ip }} ).then(response => {
+				return response.data.res
             })
 			},
 
@@ -147,9 +161,17 @@ export default {
 				var d = new Array()
                 for (var i in response.data.res) {
 					response.data.res[i]["cm"] = false
+
 					d.push(response.data.res[i])
 					}
+
 				this.data = d
+				for (let b in this.data) {
+					var r = this.ping(this.data[b].Yewuip)
+					r.then(value => {
+						this.data[b].Status = value
+						},
+					)}
             })
 			},
 

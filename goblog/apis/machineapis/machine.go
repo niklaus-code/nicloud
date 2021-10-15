@@ -6,6 +6,17 @@ import (
   "strconv"
 )
 
+func Ping(c *gin.Context) {
+  ip := c.Query("ip")
+  res := make(map[string]interface{})
+
+  r := machinecommon.Ping(ip)
+
+  res["res"] = r
+  c.JSON(200, res)
+}
+
+
 func Update(c *gin.Context) {
 
   id := c.Query("id")

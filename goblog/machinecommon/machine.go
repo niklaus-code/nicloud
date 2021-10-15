@@ -2,7 +2,9 @@ package machinecommon
 
 import (
   "fmt"
+  "github.com/go-ping/ping"
   "goblog/dbs"
+  "time"
 )
 
 type Machineroom struct {
@@ -127,4 +129,25 @@ func Addmacine(zichangmingcheng string, pingpai string,  Xinghao string, Xulieha
 
   db.NewRecord(&m)
   return nil
+}
+
+
+func Ping(ip string) bool {
+    if ip[0: 2] != "10" {
+      return false
+    }
+    pinger, err := ping.NewPinger(ip)
+    pinger.Count = 3
+    pinger.Timeout = 3 * time.Second
+    err = pinger.Run()
+    if err != nil {
+      return false
+    }
+    stats := pinger.Statistics()
+
+    if stats.PacketsRecv > 0 {
+      return true
+    } else {
+      return false
+    }
 }

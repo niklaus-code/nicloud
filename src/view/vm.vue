@@ -3,7 +3,41 @@
     <nicloudhead></nicloudhead>
 	<div  class="col-md-1" style="float:left">
 		<ul class="list-group col-md-11 col-md-offset-1">
-    		<li v-for="(item, index) in daohang" class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)" :style="item.active">{{item.name}}</li>
+    		<li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave()">
+				<router-link :to="{name:'nicloud'}">
+					<span>云主机</span>
+				</router-link>
+			</li>
+    		<li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
+				<router-link :to="{name:'nicloud'}">
+				<span>云硬盘</span>
+				</router-link>
+			</li>
+    		<li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
+				<router-link :to="{name:'nicloud'}">
+				<span>镜像</span>
+				</router-link>
+			</li>
+    		<li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
+				<router-link :to="{name:'nicloud'}">
+				<span>网络</span>
+				</router-link>
+			</li>
+    		<li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
+				<router-link :to="{name:'nicloud'}">
+				<span>统计</span>
+				</router-link>
+			</li>
+    		<li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
+				<router-link :to="{name:'nicloud'}">
+				<span>宿主机</span>
+				</router-link>
+			</li>
+    		<li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
+				<router-link :to="{name:'nicloud'}">
+				<span>ceph</span>
+				</router-link>
+			</li>
 		</ul>
 	</div>
 
@@ -86,15 +120,6 @@ import nicloudhead from '@/components/nicloudhead'
 export default {
     data () {
         return {
-			daohang: [
-				{"name": "云主机", "active": ""}, 
-				{"name": "云硬盘", "active": ""},
-				{"name": "镜像", "active": ""},
-				{"name": "网络", "active": ""},
-				{"name": "统计", "active": ""},
-				{"name": "宿主机", "active": ""},
-				{"name": "ceph", "active": ""},
-				],
 			active: "",
 			checkvalue: false,
 			content: "",

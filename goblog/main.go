@@ -2,15 +2,14 @@
 package main
 
 import (
-	"goblog/apis"
+  "github.com/gin-gonic/gin"
+  "goblog/apis"
   "goblog/apis/machineapis"
   "goblog/apis/vmapis"
-
-	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	r := gin.Default()
+  r := gin.Default()
 
 	v1 := r.Group("/api/blog/get_blog")
 	{
@@ -44,6 +43,7 @@ func main() {
     v3.GET("getpage", machineapis.Getpage)
     v3.GET("search", machineapis.Search)
     v3.GET("update", machineapis.Update)
+    v3.GET("ping", machineapis.Ping)
   }
 
 	r.Run("127.0.0.1:1992")
