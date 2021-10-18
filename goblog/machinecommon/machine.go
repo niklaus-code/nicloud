@@ -59,7 +59,7 @@ func Delmachine(id int, start int, offset int) ([]*Machineroom, error)  {
   if err != nil {
     return nil, err
   }
-  db.Model(&Machineroom{}).Where("id=?", id).Update("status", 0)
+  db.Where("id = ?", id).Delete(&Machineroom{})
 
   return Machinelist(start, offset)
 }
@@ -72,7 +72,7 @@ func Machinelist(startpage int, offset int) ([]*Machineroom, error)  {
     return nil, err
   }
   var v []*Machineroom
-  db.Where("status=1").Order("suoshujifang").Limit(offset).Offset(offsetpage).Find(&v)
+  db.Order("suoshujifang").Limit(offset).Offset(offsetpage).Find(&v)
 
   return v, nil
 }
@@ -83,8 +83,8 @@ func Allpage() (int, int, error)  {
     return 0, 0, err
   }
   var v []*Machineroom
-  db.Where("status=1").Find(&v)
-  allpage := len(v)/100+1
+  db.Find(&v)
+  allpage := len(v)/50+1
   return len(v), allpage, nil
 }
 
@@ -137,8 +137,8 @@ func Ping(ip string) bool {
       return false
     }
     pinger, err := ping.NewPinger(ip)
-    pinger.Count = 3
-    pinger.Timeout = 3 * time.Second
+    pinger.Count = 2
+    pinger.Timeout = 2 * time.Second
     err = pinger.Run()
     if err != nil {
       return false

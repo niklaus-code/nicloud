@@ -47,7 +47,7 @@
       				</tr>
     			</thead>
 				<tbody v-for="(item, index) in data">
-					<tr v-if="item.Status">
+					<tr>
 						<td>{{item.Zichanmingcheng}}</td>
 						<td>{{item.Pinpai}}</td>
 						<td>{{item.Xinghao}}</td>
@@ -80,7 +80,8 @@
 							<button v-else type="button" @click="delmachine(item.Id, index)" class="btn btn-primary btn-xs">删除</button>
 						</td>
 						<td>
-							{{item.Status}}
+							<button  v-if="item.Status" type="button" class="btn btn-success btn-xs">运行</button>
+							<button v-else type="button" class="btn btn-warning btn-xs">未知</button>
 						</td>
 					</tr>
 				</tbody>
@@ -89,7 +90,7 @@
 		<div class="btn-group col-md-2  col-md-offset-5" style="margin-top:10px; padding-left:0">
 			<ul class="pagination">
     			<li><a>&laquo;</a></li>
-    			<li v-for="(item, index) in allpage"><a @click="getmachinelist(item, 100)" >{{item}}</a></li>
+    			<li v-for="(item, index) in allpage"><a @click="getmachinelist(item, 50)" >{{item}}</a></li>
     			<li><a>&raquo;</a></li>
 			</ul>
 		</div>
@@ -112,7 +113,7 @@ export default {
         nicloudhead
     },
 	mounted: function () {
-		this.getmachinelist(1, 100)
+		this.getmachinelist(1, 50)
 		this.getpagenumber()
 		},
 
@@ -178,7 +179,7 @@ export default {
 		delmachine: function (mid, index) {
 			this.data[index].Status = false
 			var apiurl = `/api/machine/delmachine`
-			this.$http.get(apiurl, { params: { id: mid, startpage: this.onpage, offset: 100}} ).then(response => {
+			this.$http.get(apiurl, { params: { id: mid, startpage: this.onpage, offset: 50}} ).then(response => {
                 this.data = response.data.res
             })
 			},
