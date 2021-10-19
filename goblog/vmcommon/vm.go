@@ -70,6 +70,7 @@ func VmStatus(uuid string, host string) (string, error) {
 var Vmstate = map[libvirt.DomainState]string{
 	1: "运行",
 	5: "关机",
+  3: "暂停",
 	2: "deleted",
 }
 
@@ -157,6 +158,7 @@ func Shutdown(uuid string, host string) (*Vms, error) {
 
 func Start(uuid string, host string) (*Vms, error) {
 	/*start vm*/
+
 	conn, connerr := libvirtconn(host)
 	if connerr != nil {
 		return nil, connerr
@@ -167,24 +169,37 @@ func Start(uuid string, host string) (*Vms, error) {
 		return nil, err
 	}
 
-	err1 := vm.Create()
+  vm1, err1 := VmStatus(uuid, host)
 	if err1 != nil {
-		return nil, err1
-	}
+	  return nil, err1
+  }
 
-  db, err := db.NicloudDb()
-  if err != nil {
-    return nil, err
+  if vm1 == "暂停" {
+    eer := vm.Resume()
+    if eer != nil {
+      return nil, eer
+    }
+  } else {
+    err2 := vm.Create()
+    if err2 != nil {
+      return nil, err2
+    }
+  }
+
+  db, err3 := db.NicloudDb()
+  if err3 != nil {
+    return nil, err3
   }
 	var v = &Vms{}
 	db.Where("uuid = ?", uuid).First(&v)
 
-	s, err2 := VmStatus(uuid, host)
+	s, err4 := VmStatus(uuid, host)
 	v.Status = s
-	if err2 != nil {
-		return nil, err2
+	if err4 != nil {
+		return nil, err4
 	}
-	return v, err2
+
+	return v, err4
 }
 
 func Createuuid() string {
