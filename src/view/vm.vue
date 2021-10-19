@@ -102,10 +102,17 @@
 				<span  @click="input(index, item.Uuid)" class="glyphicon glyphicon-calendar"></span>
 			</div>
 		</td>
-        <td class="default">
-			<button type="button" class="btn btn-info btn-xs" @click="start(item.Uuid, index, item.Host)">开机</button>
-			<button type="button" class="btn btn-info btn-xs" @click="shutdown(item.Uuid, index, item.Host)">关机</button>
-			<button type="button" class="btn btn-info btn-xs" @click="deletevm(item.Uuid, item.Ip, item.Host)">删除</button>
+        <td class="dropdown">
+			<button class="btn btn-info btn-xs dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
+				操作<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" role="menu" aria-labelledby="menu1" style="">
+      			<li @click="start(item.Uuid, index, item.Host)" style="background-color: green" role="presentation"><a role="menuitem" tabindex="-1">开机</a></li>
+      			<li @click="shutdown(item.Uuid, index, item.Host)" style="background-color: #e56b6b"  role="presentation"><a role="menuitem" tabindex="-1">关机</a></li>
+      			<li @click="pause(item.Uuid, index, item.Host)" style="background-color: rgb(255, 211, 0)" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
+      			<li style="background-color: green"  role="presentation"><a role="menuitem" tabindex="-1">迁移</a></li>
+      			<li @click="deletevm(item.Uuid, item.Ip, item.Host)" style="background-color: #808080" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
+    		</ul>
 			<button type="button" class="btn btn-info btn-xs" @click="vnc(item.Uuid, item.Host)"> <span class="glyphicon glyphicon-facetime-video"></span></button>
 		</td>
       </tr>
@@ -286,6 +293,23 @@ export default {
 				if (response.data.err == null) {
 					this.data[index].Status = response.data.res.Status
 					//this.$set(this.data, index, response.data.res)
+					if (response.data.res.Comment.length > 0) {
+						this.data[index].flag2 = true
+						}
+					if (response.data.res.Comment.length == 0) {
+						this.data[index].flag = true
+						}
+					}
+				alert(response.data.err.Message)
+            })
+        },
+
+        pause: function (uuid, index, host) {
+            var apiurl = `/api/vm/operation/3`
+			
+            this.$http.get(apiurl, { params: { uuid: uuid, host: host } }).then(response => {
+				if (response.data.err === null) {
+					this.data[index].Status = response.data.res.Status
 					if (response.data.res.Comment.length > 0) {
 						this.data[index].flag2 = true
 						}

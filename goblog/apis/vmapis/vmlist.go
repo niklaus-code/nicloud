@@ -150,6 +150,8 @@ func Operation(c *gin.Context) {
 		s, err = vmcommon.Shutdown(uuid, host)
 	case 1:
 		s, err = vmcommon.Start(uuid, host)
+  case 3:
+    s, err = vmcommon.PauseVm(uuid, host)
 	}
 
 	res["res"] = s

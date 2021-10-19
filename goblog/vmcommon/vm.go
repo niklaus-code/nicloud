@@ -126,6 +126,36 @@ func Delete(uuid string, ip string, host string) ([]*Vms, error) {
 	return vmlist, err
 }
 
+func PauseVm(uuid string, host string) (*Vms, error) {
+  conn, err := libvirtconn(host)
+  if err != nil {
+    return nil, err
+  }
+  vm, err1 := conn.LookupDomainByUUIDString(uuid)
+  if err1 != nil {
+    return nil, err1
+  }
+
+  err = vm.Suspend()
+  if err != nil {
+    return nil, err
+  }
+
+  db, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  var v = &Vms{}
+  db.Where("uuid = ?", uuid).First(&v)
+
+  s, err := VmStatus(uuid, host)
+  v.Status = s
+  if err != nil {
+    return nil, err
+  }
+  return v, err
+}
+
 func Shutdown(uuid string, host string) (*Vms, error) {
 	/*start vm*/
 	conn, err := libvirtconn(host)
