@@ -1,45 +1,7 @@
 <template>
 <div>
     <nicloudhead></nicloudhead>
-	<div  class="col-md-1" style="float:left">
-		<ul class="list-group col-md-11 col-md-offset-1">
-    		<li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave()">
-				<router-link :to="{name:'nicloud'}">
-					<span>云主机</span>
-				</router-link>
-			</li>
-    		<li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
-				<router-link :to="{name:'nicloud'}">
-				<span>云硬盘</span>
-				</router-link>
-			</li>
-    		<li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
-				<router-link :to="{name:'nicloud'}">
-				<span>镜像</span>
-				</router-link>
-			</li>
-    		<li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
-				<router-link :to="{name:'nicloud'}">
-				<span>网络</span>
-				</router-link>
-			</li>
-    		<li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
-				<router-link :to="{name:'nicloud'}">
-				<span>统计</span>
-				</router-link>
-			</li>
-    		<li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
-				<router-link :to="{name:'nicloud'}">
-				<span>宿主机</span>
-				</router-link>
-			</li>
-    		<li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
-				<router-link :to="{name:'nicloud'}">
-				<span>ceph</span>
-				</router-link>
-			</li>
-		</ul>
-	</div>
+	<vmleft></vmleft>
 
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 	
@@ -126,6 +88,7 @@
 
 import foot from '@/components/footer'
 import nicloudhead from '@/components/nicloudhead'
+import vmleft from '@/components/vmleft'
 
 export default {
     data () {
@@ -148,7 +111,7 @@ export default {
     },
 
     components: {
-        foot, nicloudhead
+        foot, nicloudhead, vmleft
     },
 
     mounted: function () {
@@ -343,15 +306,6 @@ export default {
 
 
 <style scoped>
-.list-group {
-	margin-top:100px;
-}
-
-.list-group-item {
-	background-color: #e3e3e3;
-	border: none;
-	color: blue;
-}
 .content {
 	box-shadow: 0 0 10px rgba(0,0,0,8);
   	border-radius: 10px/10px;
@@ -359,9 +313,6 @@ export default {
 	padding: 20px 0px 0px 0px;
 	margin-left: 0px;
 	margin-TOP: 50px;
-}
-.breadcrumb {
-    background-color: #5B5B5B
 }
 
 .checkbox-inline {
