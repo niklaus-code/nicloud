@@ -80,7 +80,7 @@
 							<button v-else type="button" @click="delmachine(item.Id, index)" class="btn btn-primary btn-xs">删除</button>
 						</td>
 						<td>
-							<button  v-if="item.Status" type="button" class="btn btn-success btn-xs">{{item.Status}}</button>
+							<button  v-if="item.Status === '运行'" type="button" class="btn btn-success btn-xs">{{item.Status}}</button>
 							<button v-else type="button" class="btn btn-warning btn-xs">{{item.Status}}</button>
 						</td>
 					</tr>
