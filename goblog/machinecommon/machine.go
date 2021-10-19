@@ -29,7 +29,7 @@ type Machineroom struct {
   Guanliip string
   Yewuip string
   Beizhu string
-  Status int
+  Status string
 }
 
 func Searchmachine(content string) ([]*Machineroom, error)  {
@@ -115,7 +115,7 @@ func Addmacine(zichangmingcheng string, pingpai string,  Xinghao string, Xulieha
     Guanliip: guanliip,
     Yewuip: yewuip,
     Beizhu: beizhu,
-    Status: 1,
+    Status: "",
   }
 
   db, err := db.NicloudDb()
@@ -132,22 +132,23 @@ func Addmacine(zichangmingcheng string, pingpai string,  Xinghao string, Xulieha
 }
 
 
-func Ping(ip string) bool {
+func Ping(ip string) string {
     if ip[0: 2] != "10" {
-      return false
+      return "未知"
     }
     pinger, err := ping.NewPinger(ip)
+    pinger.Privileged()
     pinger.Count = 2
     pinger.Timeout = 2 * time.Second
     err = pinger.Run()
     if err != nil {
-      return false
+      return "未知"
     }
     stats := pinger.Statistics()
 
     if stats.PacketsRecv > 0 {
-      return true
+      return "运行"
     } else {
-      return false
+      return "未知"
     }
 }

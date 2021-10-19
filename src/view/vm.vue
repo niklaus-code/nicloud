@@ -87,8 +87,11 @@
         <td>{{item.Cpu}}</td>
         <td>{{item.Mem}}</td>
         <td>{{item.Owner}}</td>
-        <td><button type="button" :class=stat[item.Status]>{{item.Status}}</button></td>
-        <td>
+		<td>
+			<button  v-if="item.Status" type="button" class="btn btn-success btn-xs">{{item.Status}}</button>
+        	<button v-else type="button" class="btn btn-warning btn-xs">{{item.Status}}</button>
+        </td>
+		<td>
 		    <span v-if='item.flag2' @click="c(index)">
                 {{item.Comment}}
             </span>

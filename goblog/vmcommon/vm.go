@@ -22,7 +22,7 @@ type Vms struct {
 	Owner       string
 	Comment     string
 	Vmxml       string
-	Status      interface{}
+	Status      string
 	Exist       int
 	Ip          string
 	Host        string
