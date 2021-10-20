@@ -132,6 +132,18 @@ func DeleteVM(c *gin.Context) {
 	c.JSON(200, res)
 }
 
+func Createhost(c *gin.Context) {
+  cpu, _ := strconv.Atoi(c.Query("cpu"))
+  mem, _ := strconv.Atoi(c.Query("mem"))
+  ip := c.Query("ip")
+  num,_ := strconv.Atoi(c.Query("mem"))
+
+  res := make(map[string]interface{})
+  err := vmcommon.Createhost(cpu, mem, ip, num)
+  res["res"] = err
+  c.JSON(200, res)
+}
+
 func Operation(c *gin.Context) {
 	uuid := c.Query("uuid")
 	host := c.Query("host")

@@ -27,7 +27,7 @@
                 </router-link>
             </li>
             <li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
-                <router-link :to="{name:'nicloud'}">
+                <router-link :to="{name:'createhost'}">
                 <span>宿主机</span>
                 </router-link>
             </li>

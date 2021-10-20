@@ -259,7 +259,7 @@ func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string,
 		Os:          image,
 	}
 	err1 := db.Create(*vm)
-	if err1 != nil {
+	if err1.Error != nil {
 	    return false, err1.Error
   }
 
@@ -367,10 +367,10 @@ func IPlist() []*vm_networks {
 
 type Vm_hosts struct {
 	Ipv4        string
-	Mem         int8
-	Cpu         int8
-	Max_vms     int8
-	Created_vms int8
+	Mem         int
+	Cpu         int
+	Max_vms     int
+	Created_vms int
 	Status      int8
 }
 
@@ -382,6 +382,30 @@ func Hosts() []*Vm_hosts {
 	var hosts []*Vm_hosts
 	db.Where("status=0").Find(&hosts)
 	return hosts
+}
+
+func Createhost(cpu int, mem int, ip string, num int) bool {
+  db, err := db.NicloudDb()
+  if err != nil {
+    return false
+  }
+  h := &Vm_hosts{
+    Cpu: cpu,
+    Mem: mem,
+    Ipv4: ip,
+    Max_vms: num,
+  }
+
+  err1 := db.Create(*h)
+  if err1.Error != nil {
+    return false
+  }
+
+  //return bool
+  res := db.NewRecord(&h)
+  fmt.Println(111111111111)
+  fmt.Println(res)
+  return res
 }
 
 type Vm_flavors struct {

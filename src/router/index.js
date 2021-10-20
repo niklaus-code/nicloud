@@ -10,12 +10,18 @@ import nicloud from '@/view/vm'
 import createvm from '@/view/createvm'
 import serveroom from '@/view/machine'
 import createmachine from '@/view/createmachine'
+import createhost from '@/view/createhost'
 
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/createhost',
+      name: 'createhost',
+      component: createhost
+    },
     {
       path: '/createvm',
       name: 'createvm',
