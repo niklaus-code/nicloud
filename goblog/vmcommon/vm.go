@@ -29,6 +29,17 @@ type Vms struct {
 	Os          string
 }
 
+func GetVmByUuid(uuid string) *Vms {
+  fmt.Println(uuid)
+  db, err := db.NicloudDb()
+  v := &Vms{}
+  if err != nil {
+    return nil
+  }
+  db.Where("uuid = ?", uuid).First(v)
+  return v
+}
+
 func (v Vms) Error(info string) error {
 	errorinfo := fmt.Sprintf("%s", info)
 	return errors.New(errorinfo)
@@ -315,6 +326,11 @@ func Create(cpu int, mem int, ip string, mac string, host string, image string) 
 		return false, err
 	}
 
+  hosterr := Updatehost(host, cpu, mem)
+  if hosterr == false {
+    return hosterr, nil
+  }
+
 	svm, err := savevm(u, cpu, mem, f, ip, host, image)
 	if err != nil {
 	  return svm, err
@@ -432,3 +448,4 @@ func Updatecomments(uuid string, comment string) (bool, error) {
   db.Model(&Vms{}).Where("uuid=?", uuid).Update("comment", comment)
   return true, nil
 }
+

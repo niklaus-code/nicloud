@@ -35,6 +35,8 @@ func main() {
     v2.GET("addcomment", vmapis.Addcomment)
     v2.GET("createhost", vmapis.Createhost)
     v2.GET("delhost", vmapis.Delhost)
+    v2.GET("getvminfo", vmapis.GetVminfo)
+    v2.GET("gethostinfo", vmapis.Gethostinfo)
 	}
 
   v3 := r.Group("/api/machine")

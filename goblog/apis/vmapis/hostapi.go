@@ -35,4 +35,13 @@ func Delhost(c *gin.Context) {
   c.JSON(200, res)
 }
 
+func Gethostinfo(c *gin.Context) {
+  ip := c.Query("ip")
+  r := vmcommon.Gethostinfo(ip)
+  res := make(map[string]interface{})
+  res["res"] = r
+
+  c.JSON(200, res)
+}
+
 

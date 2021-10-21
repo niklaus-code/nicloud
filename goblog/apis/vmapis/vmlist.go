@@ -26,6 +26,14 @@ func Search(c *gin.Context)  {
   c.JSON(200, res)
 }
 
+func GetVminfo(c *gin.Context) {
+  uuid := c.Query("uuid")
+  iplist := vmcommon.GetVmByUuid(uuid)
+  res := make(map[string]interface{})
+  res["res"] = iplist
+
+  c.JSON(200, res)
+}
 
 func GetIplist(c *gin.Context) {
 	iplist := vmcommon.IPlist()

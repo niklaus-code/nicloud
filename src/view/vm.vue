@@ -72,7 +72,11 @@
       			<li @click="start(item.Uuid, index, item.Host)" style="background-color: green" role="presentation"><a role="menuitem" tabindex="-1">开机</a></li>
       			<li @click="shutdown(item.Uuid, index, item.Host)" style="background-color: #e56b6b"  role="presentation"><a role="menuitem" tabindex="-1">关机</a></li>
       			<li @click="pause(item.Uuid, index, item.Host)" style="background-color: rgb(255, 211, 0)" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
-      			<li style="background-color: green"  role="presentation"><a role="menuitem" tabindex="-1">迁移</a></li>
+      				<li style="background-color: greenyellow"  role="presentation">
+				<router-link :to="{name:'migratevm', query: { uuid: item.Uuid, host: item.Host }}">
+						<a role="menuitem" tabindex="-1">迁移</a>
+				</router-link>
+					</li>
       			<li @click="deletevm(item.Uuid, item.Ip, item.Host)" style="background-color: #808080" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
     		</ul>
 			<button type="button" class="btn btn-info btn-xs" @click="vnc(item.Uuid, item.Host)"> <span class="glyphicon glyphicon-facetime-video"></span></button>
