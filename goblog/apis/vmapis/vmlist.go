@@ -26,13 +26,6 @@ func Search(c *gin.Context)  {
   c.JSON(200, res)
 }
 
-func GetHosts(c *gin.Context) {
-	hostlist := vmcommon.Hosts()
-	res := make(map[string]interface{})
-	res["res"] = hostlist
-
-	c.JSON(200, res)
-}
 
 func GetIplist(c *gin.Context) {
 	iplist := vmcommon.IPlist()
@@ -130,18 +123,6 @@ func DeleteVM(c *gin.Context) {
 	res["res"] = r
 	res["err"] = err
 	c.JSON(200, res)
-}
-
-func Createhost(c *gin.Context) {
-  cpu, _ := strconv.Atoi(c.Query("cpu"))
-  mem, _ := strconv.Atoi(c.Query("mem"))
-  ip := c.Query("ip")
-  num,_ := strconv.Atoi(c.Query("mem"))
-
-  res := make(map[string]interface{})
-  err := vmcommon.Createhost(cpu, mem, ip, num)
-  res["res"] = err
-  c.JSON(200, res)
 }
 
 func Operation(c *gin.Context) {

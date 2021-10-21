@@ -27,7 +27,7 @@
                 </router-link>
             </li>
             <li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
-                <router-link :to="{name:'createhost'}">
+                <router-link :to="{name:'hosts'}">
                 <span>宿主机</span>
                 </router-link>
             </li>
@@ -45,6 +45,7 @@
 export default {
     data () {
         return {
+			daohang: "",
             active: "",
             checkvalue: false,
             content: "",
@@ -64,11 +65,11 @@ export default {
 
 	methods: {
         mouseOver: function (index) {
-            this.daohang[index].active = "background-color: red";
+            //this.daohang[index].active = "background-color: red";
             },
 
         mouseLeave: function (index) {
-            this.daohang[index].active = "background-color: #e3e3e3";
+            //this.daohang[index].active = "background-color: #e3e3e3";
             }
 	}
 }

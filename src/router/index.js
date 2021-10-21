@@ -11,12 +11,18 @@ import createvm from '@/view/createvm'
 import serveroom from '@/view/machine'
 import createmachine from '@/view/createmachine'
 import createhost from '@/view/createhost'
+import hosts from '@/view/hosts'
 
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/hosts',
+      name: 'hosts',
+      component: hosts
+    },
     {
       path: '/createhost',
       name: 'createhost',

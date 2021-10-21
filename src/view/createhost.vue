@@ -89,7 +89,7 @@ export default {
             this.$http.get(apiurl, { params: { cpu: this.cpu, mem:this.mem, ip: this.ip, num: this.num} }).then(response => {
 				if (response.data.res) {
 					alert("创建成功! 是否查看宿主机列表")
-					this.$router.push('/host')
+					this.$router.push('/hosts')
 				} else {
 					alert("创建失败")
 					}
@@ -99,7 +99,7 @@ export default {
         }
   }
 </script>
-<style>
+<style scoped>
 
 select{
     font-family: "微软雅黑";

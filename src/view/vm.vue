@@ -329,17 +329,14 @@ input{
   display: block;
 }
 
-th {
-	font-weight: bold;
-	color: black;
-}
-
 .table tbody tr td {
 	padding: 12px;
 	vertical-align: "middle";
 }
 
 th {
+	font-weight: bold;
+	color: black;
 	text-align: center;
 }
 </style>

@@ -4,7 +4,7 @@
 	<vmleft></vmleft>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div  class="col-sm-3 col-sm-offset-4" style="margin-top:20px">
-	 		<div class="form-group">
+	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
         			<label>cpu/内存</label>
 				</div>
@@ -16,9 +16,7 @@
         			</select>
 				</div>
     		</div>
-		</div>
-		<div  class="col-sm-3 col-sm-offset-4" style="margin-top:20px">
-	 		<div class="form-group">
+	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
         			<label>IP</label>
 				</div>
@@ -30,9 +28,7 @@
         			</select>
 				</div>
     		</div>
-		</div>
-		<div  class="col-sm-3 col-sm-offset-4" style="margin-top:20px">
-	 		<div class="form-group">
+	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
         			<label>宿主机</label>
 				</div>
@@ -44,10 +40,7 @@
         			</select>
 				</div>
     		</div>
-		</div>
-
-		<div  class="col-sm-3 col-sm-offset-4" style="margin-top:20px">
-	 		<div class="form-group">
+	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
         			<label>镜像</label>
 				</div>
@@ -59,9 +52,11 @@
         			</select>
 				</div>
     		</div>
-		</div>
-		<div class="col-sm-3 col-sm-offset-4" style="margin-top:20px">
-			<button class="layui-btn"  @click="createvm()">创建</button>
+	 		<div class="col-sm-12 form-group">
+				<div class="col-sm-2 col-sm-offset-4">
+					<button class="btn btn-success btn-sm"  @click="createvm()">创建</button>
+				</div>
+    		</div>
 		</div>
 	</div>		
 	</div>		
@@ -169,7 +164,11 @@ export default {
     }
   }
 </script>
-<style>
+<style scoped>
+label {
+    font-weight : 400;
+    margin-top: 2px;
+}
 
 select{
     font-family: "微软雅黑";
@@ -181,7 +180,7 @@ select{
     box-shadow: 0 0 10px rgba(0,0,0,8);
     border-radius: 10px/10px;
     z-index: -1;
-    padding: 100px 0px 100px 0px;
+    padding: 70px 0px 70px 0px;
     margin-left: 0px;
     margin-TOP: 50px;
 }
