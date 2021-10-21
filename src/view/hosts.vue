@@ -29,8 +29,8 @@
         				<label class="checkbox-inline">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
-        				<td>{{item.Cpu}}</td>
-        				<td>{{item.Mem}}</td>
+        				<td>{{item.Usedcpu}}/{{item.Cpu}}</td>
+        				<td>{{item.Usedmem}}/{{item.Mem}}</td>
         				<td>{{item.Ipv4}}</td>
         				<td>{{item.Max_vms}}</td>
         				<td>test</td>

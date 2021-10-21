@@ -108,7 +108,7 @@ func Gethostinfo(ip string) []*Vm_hosts {
     return nil
   }
   var v []*Vm_hosts
-  db.Where("status=1 and ipv4 != ?", ip).Select("cpu, mem, ipv4").Find(&v)
+  db.Where("status=1 and ipv4 != ?", ip).Select("cpu, mem, ipv4, max_vms").Find(&v)
 
   return v
 }
