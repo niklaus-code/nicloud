@@ -41,3 +41,20 @@ func Rm_image(uuid string) (error) {
 
   return nil
 }
+
+func RbdClone(id string) (string, error) {
+
+  conn, err := CephConn()
+  if err != nil {
+    return "", err
+  }
+
+  ioctx, _ := conn.OpenIOContext("vm")
+  img := rbd.GetImage(ioctx, "0000_demo_centos7")
+  _, e := img.Clone("20210806_095737", ioctx, id, rbd.RbdFeatureLayering, 0)
+
+  if e != nil {
+    return "", e
+  }
+  return id, nil
+}

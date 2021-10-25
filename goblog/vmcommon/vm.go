@@ -3,14 +3,12 @@ package vmcommon
 import (
   "errors"
   "fmt"
-  "goblog/ceph"
-  "time"
-
-  "github.com/ceph/go-ceph/rbd"
   _ "github.com/jinzhu/gorm/dialects/mysql" //这个一定要引入哦！！
   uuid "github.com/satori/go.uuid"
+  "goblog/ceph"
   "goblog/dbs"
-  libvirt "libvirt.org/libvirt-go"
+  "goblog/libvirtd"
+  "time"
 )
 
 type Vms struct {
@@ -30,7 +28,6 @@ type Vms struct {
 }
 
 func GetVmByUuid(uuid string) *Vms {
-  fmt.Println(uuid)
   db, err := db.NicloudDb()
   v := &Vms{}
   if err != nil {
@@ -50,16 +47,9 @@ type Vm_xmls struct {
 	Osxml  string
 }
 
-func libvirtconn(host string) (*libvirt.Connect, error) {
-	conn, err := libvirt.NewConnect(fmt.Sprintf("qemu+ssh://%s/system", host))
-	if err != nil {
-		return nil, err
-	}
-	return conn, err
-}
 
 func VmStatus(uuid string, host string) (string, error) {
-	conn, err := libvirtconn(host)
+	conn, err := libvirtd.Libvirtconn(host)
 
 	if err != nil {
 		return "", err
@@ -75,15 +65,9 @@ func VmStatus(uuid string, host string) (string, error) {
 		return "vm not found", err1
 	}
 
-	return Vmstate[state], err1
+	return libvirtd.Vmstate[state], err1
 }
 
-var Vmstate = map[libvirt.DomainState]string{
-	1: "运行",
-	5: "关机",
-  3: "暂停",
-	2: "deleted",
-}
 
 type Error struct {
 	Code    int16
@@ -113,7 +97,7 @@ func Delete(uuid string, ip string, host string) ([]*Vms, error) {
   }
 
 	//undefine vm
-	conn, err := libvirtconn(host)
+	conn, err := libvirtd.Libvirtconn(host)
 	if err != nil {
 		return nil, Error{
 			Code:    502,
@@ -138,7 +122,7 @@ func Delete(uuid string, ip string, host string) ([]*Vms, error) {
 }
 
 func PauseVm(uuid string, host string) (*Vms, error) {
-  conn, err := libvirtconn(host)
+  conn, err := libvirtd.Libvirtconn(host)
   if err != nil {
     return nil, err
   }
@@ -169,7 +153,7 @@ func PauseVm(uuid string, host string) (*Vms, error) {
 
 func Shutdown(uuid string, host string) (*Vms, error) {
 	/*start vm*/
-	conn, err := libvirtconn(host)
+	conn, err := libvirtd.Libvirtconn(host)
 	if err != nil {
 		return nil, err
 	}
@@ -200,7 +184,7 @@ func Shutdown(uuid string, host string) (*Vms, error) {
 func Start(uuid string, host string) (*Vms, error) {
 	/*start vm*/
 
-	conn, connerr := libvirtconn(host)
+	conn, connerr := libvirtd.Libvirtconn(host)
 	if connerr != nil {
 		return nil, connerr
 	}
@@ -294,6 +278,28 @@ func Ipresource(ip string, mac string) bool {
   return true
 }
 
+func MigrateVm(uuid string, migrate_host string) error {
+  vm := GetVmByUuid(uuid)
+  err := libvirtd.DefineVm(vm.Vmxml, migrate_host)
+  if err != nil {
+    return err
+  }
+  db, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+  err1 := db.Model(&Vms{}).Where("uuid=?", uuid).Update("host", migrate_host)
+  if err1.Error != nil {
+      return err1.Error
+  }
+
+  _, err = Delete(uuid, vm.Ip, vm.Host)
+  if err != nil {
+    return err
+  }
+
+  return err
+}
 
 func Create(cpu int, mem int, ip string, mac string, host string, image string) (bool, error) {
   if Ipresource(ip, mac) {
@@ -308,23 +314,17 @@ func Create(cpu int, mem int, ip string, mac string, host string, image string) 
 	u := Createuuid()
 
 	//create baseimage
-	imge_name, err := RbdClone(u)
+	imge_name, err := ceph.RbdClone(u)
 	if err != nil {
 	 return false, err
   }
 
-
 	f, err := ceph.Xml(vcpu, vmem, u, mac, imge_name, image)
 
-	conn, connerr := libvirtconn(host)
-	if connerr != nil {
-		return false, connerr
-	}
-
-	_, err = conn.DomainDefineXML(f)
+	err = libvirtd.DefineVm(f, host)
 	if err != nil {
-		return false, err
-	}
+	  return false, err
+  }
 
   hosterr := Updatehost(host, cpu, mem)
   if hosterr == false {
@@ -394,23 +394,6 @@ func Flavor() ([]*Vm_flavors, error) {
 	var f []*Vm_flavors
 	db.Find(&f)
 	return f, nil
-}
-
-func RbdClone(id string) (string, error) {
-
-	conn, err := ceph.CephConn()
-	if err != nil {
-		return "", err
-	}
-
-	ioctx, _ := conn.OpenIOContext("vm")
-	img := rbd.GetImage(ioctx, "0000_demo_centos7")
-	_, e := img.Clone("20210806_095737", ioctx, id, rbd.RbdFeatureLayering, 0)
-
-	if e != nil {
-		return "", e
-	}
-	return id, nil
 }
 
 func SearchVm(c string) ([]*Vms, error) {

@@ -101,7 +101,7 @@ export default {
     created: function () {
 		this.getflavor()
 		this.getip()
-		this.gethost()
+		this.gethosts()
 		this.getimage()
         var id = this.$route.params.id
         if (!id) {
@@ -138,8 +138,8 @@ export default {
             })
         },
 
-        gethost: function () {
-            var apiurl = `/api/vm/gethost`
+        gethosts: function () {
+            var apiurl = `/api/vm/gethosts`
             this.$http.get(apiurl).then(response => {
             this.hostlist = response.data.res
 			this.hostvalue = response.data.res[0].Ipv4

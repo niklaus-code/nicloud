@@ -67,6 +67,17 @@ func Getvmlist(c *gin.Context) {
 	c.JSON(200, res)
 }
 
+func MigrateVm(c *gin.Context) {
+  uuid := c.Query("uuid")
+  migratehost := c.Query("migratehost")
+
+  vmlist := vmcommon.MigrateVm(uuid, migratehost)
+  res := make(map[string]interface{})
+  res["res"] = vmlist
+
+  c.JSON(200, res)
+}
+
 func Createvm(c *gin.Context) {
 	cpu, _ := strconv.Atoi(c.Query("cpu"))
 	mem, _ := strconv.Atoi(c.Query("mem"))

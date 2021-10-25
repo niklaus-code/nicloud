@@ -2,6 +2,7 @@ package vmcommon
 
 import (
   db "goblog/dbs"
+  "reflect"
 )
 
 type Vm_hosts struct {
@@ -15,15 +16,46 @@ type Vm_hosts struct {
   Status      int8
 }
 
-func Hosts() []*Vm_hosts {
+func Allhosts(obj []Vm_hosts) []map[string]interface{}  {
+  var mapc []map[string]interface{}
+
+  for _, v := range obj {
+    c := make(map[string]interface{})
+    c["count"] = CountHosts(v.Ipv4)
+
+    m := reflect.TypeOf(v)
+    n := reflect.ValueOf(v)
+    for i := 0; i < m.NumField(); i++ {
+      c[m.Field(i).Name] = n.Field(i).Interface()
+    }
+    mapc = append(mapc, c)
+  }
+  return mapc
+}
+
+func Hosts() []map[string]interface{} {
   db, err := db.NicloudDb()
   if err != nil {
     return nil
   }
-  var hosts []*Vm_hosts
+  var hosts []Vm_hosts
   db.Where("status=1").Find(&hosts)
-  return hosts
+
+  res := Allhosts(hosts)
+  return res
 }
+
+func CountHosts(ip string) int {
+  db, err := db.NicloudDb()
+  if err != nil {
+    return 0
+  }
+  var c int
+  db.Model(&Vms{}).Where("host=?", ip).Count(&c)
+  return c
+}
+
+
 
 func Createhost(cpu int, mem int, ip string, num int) bool {
   db, err := db.NicloudDb()
@@ -102,13 +134,13 @@ func Delhost(ip string) bool {
   return true
 }
 
-func Gethostinfo(ip string) []*Vm_hosts {
+func Gethostinfo(ip string) []map[string]interface{} {
   db, err := db.NicloudDb()
   if err != nil {
     return nil
   }
-  var v []*Vm_hosts
-  db.Where("status=1 and ipv4 != ?", ip).Select("cpu, mem, ipv4, max_vms").Find(&v)
-
-  return v
+  var v []Vm_hosts
+  db.Where("status=1 and ipv4 != ?", ip).Find(&v)
+  res := Allhosts(v)
+  return res
 }

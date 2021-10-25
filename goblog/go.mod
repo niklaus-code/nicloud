@@ -12,6 +12,7 @@ require (
 	github.com/go-ping/ping v0.0.0-20210911151512-381826476871
 	github.com/jinzhu/gorm v1.9.16
 	github.com/karalabe/xgo v0.0.0-20191115072854-c5ccff8648a7 // indirect
+	github.com/libvirt/libvirt-go v7.4.0+incompatible // indirect
 	github.com/mattn/go-isatty v0.0.12 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/shirou/gopsutil v3.21.9+incompatible // indirect

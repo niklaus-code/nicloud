@@ -3,7 +3,7 @@
 	<nicloudhead></nicloudhead>
 	<vmleft></vmleft>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
-		<div  class="col-sm-4 col-sm-offset-4" style="margin-top:20px">
+		<div  class="col-sm-5 col-sm-offset-3" style="margin-top:20px">
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
         			<label>uuid</label>
@@ -65,17 +65,17 @@
         			<label>备注</label>
 				</div>
 				<div class="col-sm-9">
-					{{ data.Comment }}
+			a		{{ data.Comment }}
 				</div>
     		</div>
 	 		<div class="col-sm-12 form-group" style="margin-top:20px">
 				<div class="col-sm-3">
-        			<button class="btn btn-primary btn-sm">迁移</button>
+        			<button class="btn btn-primary btn-sm" @click="migratevm(data.Uuid)">迁移</button>
 				</div>
 				<div class="col-sm-9">
-				    <select class="col-sm-10">
-                        <option  v-for="h in host" >
-                            {{h.Ipv4}}(cpu:{{h.Cpu}} &nbsp mem:{{h.Mem}})
+				    <select class="form-select col-sm-10" v-model="hostvalue">
+                        <option  v-for="h in host"  :value="h.Ipv4" >
+                            {{h.Ipv4}}&nbsp(cpu:{{h.Usedcpu}}/{{h.Cpu}}， &nbsp mem:{{h.Usedmem}}/{{h.Mem}}， &nbsp 数量:{{h.count}}/{{h.Max_vms}})
                         </option>
                     </select>
 				</div>
@@ -93,6 +93,7 @@ import vmleft from '@/components/vmleft'
 export default {
     data () {
         return {
+			hostvalue: "",
 			data: {},
 			host: [],
         }
@@ -114,6 +115,16 @@ export default {
     },
 
     methods: {
+        migratevm: function (uuid) {
+            var apiurl = `/api/vm/migratevm`
+            this.$http.get(apiurl, { params: { uuid: uuid , migratehost: this.hostvalue} } ).then(response => {
+            	if (response.data.res) {
+						alert("迁移失败("+response.data.res.Message+")")
+					} else {
+						alert("迁移成功")
+					}
+            })
+        },
         getvminfo: function () {
 			var uuid = this.$route.query.uuid
             var apiurl = `/api/vm/getvminfo`

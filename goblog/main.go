@@ -27,7 +27,7 @@ func main() {
 		v2.GET("delete", vmapis.DeleteVM)
 		v2.GET("getip", vmapis.GetIplist)
 		v2.GET("getimage", vmapis.GetImage)
-		v2.GET("gethost", vmapis.GetHosts)
+    v2.GET("gethosts", vmapis.GetHosts)
 		v2.GET("getflavor", vmapis.GetFlavor)
     v2.GET("vnc", vmapis.Vnc)
     v2.GET("search", vmapis.Search)
@@ -37,6 +37,7 @@ func main() {
     v2.GET("delhost", vmapis.Delhost)
     v2.GET("getvminfo", vmapis.GetVminfo)
     v2.GET("gethostinfo", vmapis.Gethostinfo)
+    v2.GET("migratevm", vmapis.MigrateVm)
 	}
 
   v3 := r.Group("/api/machine")

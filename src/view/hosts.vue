@@ -32,7 +32,7 @@
         				<td>{{item.Usedcpu}}/{{item.Cpu}}</td>
         				<td>{{item.Usedmem}}/{{item.Mem}}</td>
         				<td>{{item.Ipv4}}</td>
-        				<td>{{item.Max_vms}}</td>
+        				<td>{{item.count}}/{{item.Max_vms}}</td>
         				<td>test</td>
 		    			<td>
 							<button class="btn btn-info btn-xs" type="button" @click="delhost(item.Ipv4, index)">
@@ -83,7 +83,7 @@ export default {
         },
 
 		gethost: function (ip) {
-            var apiurl = `/api/vm/gethost`
+            var apiurl = `/api/vm/gethosts`
             this.$http.get(apiurl).then(response => {
             	this.data = response.data.res
             })
