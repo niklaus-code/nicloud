@@ -18,6 +18,18 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
+        			<label>VLAN</label>
+				</div>
+				<div class="col-sm-9">
+        			<select class="col-sm-10" v-model="ipvalue">
+  						<option  v-for="ip in iplist" :value="ip">
+							{{ ip.Ipv4 }}
+						</option>
+        			</select>
+				</div>
+    		</div>
+	 		<div class="col-sm-12 form-group">
+				<div class="col-sm-3">
         			<label>IP</label>
 				</div>
 				<div class="col-sm-9">

@@ -89,5 +89,8 @@ export default {
 .breadcrumb {
     background-color: #5B5B5B
 }
+span {
+	font-weight: 600;
+}
 
 </style>
