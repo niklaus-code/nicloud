@@ -133,11 +133,9 @@ func GetFlavor(c *gin.Context) {
 
 func DeleteVM(c *gin.Context) {
 	uuid := c.Query("uuid")
-	ip := c.Query("ip")
-	host := c.Query("host")
 
 	res := make(map[string]interface{})
-	r, err := vmcommon.Delete(uuid, ip, host)
+	r, err := vmcommon.Delete(uuid)
 
 	res["res"] = r
 	res["err"] = err

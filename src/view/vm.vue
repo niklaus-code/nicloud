@@ -77,7 +77,7 @@
 						<a role="menuitem" tabindex="-1">迁移</a>
 				</router-link>
 					</li>
-      			<li @click="deletevm(item.Uuid, item.Ip, item.Host)" style="background-color: #808080" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
+      			<li @click="deletevm(item.Uuid)" style="background-color: #808080" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
     		</ul>
 			<button type="button" class="btn btn-info btn-xs" @click="vnc(item.Uuid, item.Host)"> <span class="glyphicon glyphicon-facetime-video"></span></button>
 		</td>
@@ -222,9 +222,9 @@ export default {
             })
         },
 
-        deletevm: function (uuid, ip, host) {
+        deletevm: function (uuid) {
             var apiurl = `/api/vm/delete`
-            this.$http.get(apiurl, { params: { uuid: uuid, ip: ip, host: host} }).then(response => {
+            this.$http.get(apiurl, { params: { uuid: uuid} }).then(response => {
 				if (response.data.err == null) {
             		var d = new Array()
             		for (var v in response.data.res) {

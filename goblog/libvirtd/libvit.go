@@ -32,3 +32,18 @@ func DefineVm(xml string, host string) error {
   }
   return err
 }
+
+func Undefine(host string, uuid string) error {
+  //undefine vm
+  conn, err :=  Libvirtconn(host)
+  if err != nil {
+    return err
+  }
+
+  vm, err := conn.LookupDomainByUUIDString(uuid)
+  if err != nil {
+    return err
+  }
+  vm.Undefine()
+  return nil
+}

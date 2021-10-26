@@ -28,12 +28,12 @@ type Vms struct {
 }
 
 func GetVmByUuid(uuid string) *Vms {
-  db, err := db.NicloudDb()
+  dbs, err := db.NicloudDb()
   v := &Vms{}
   if err != nil {
     return nil
   }
-  db.Where("uuid = ?", uuid).First(v)
+  dbs.Where("uuid = ?", uuid).First(v)
   return v
 }
 
@@ -78,7 +78,19 @@ func (err Error) Error() string {
 	return fmt.Sprintf("vm is running, con't delete")
 }
 
-func Delete(uuid string, ip string, host string) ([]*Vms, error) {
+type Vms_archive struct {
+  Uuid string
+  Create_time time.Time
+  Owner string
+  Comment string
+  Vmxml string
+  Ip string
+}
+
+func Delete(uuid string) ([]*Vms, error) {
+  vminfo := GetVmByUuid(uuid)
+  host := vminfo.Host
+
 	vmstat, err := VmStatus(uuid, host)
 	if err != nil {
 		return nil, err
@@ -91,32 +103,34 @@ func Delete(uuid string, ip string, host string) ([]*Vms, error) {
 		}
 	}
 
-  db, err := db.NicloudDb()
+  dbs, err := db.NicloudDb()
   if err != nil {
     return  nil, err
   }
 
-	//undefine vm
-	conn, err := libvirtd.Libvirtconn(host)
-	if err != nil {
-		return nil, Error{
-			Code:    502,
-			Message: err.Error(),
-		}
-	}
+  err = libvirtd.Undefine(host, uuid)
+  if err != nil {
+    return nil, err
+  }
 
-	vm, err1 := conn.LookupDomainByUUIDString(uuid)
-	if err1 != nil {
-		return nil, err1
-	}
-	vm.Undefine()
 	err = ceph.Rm_image(uuid)
   if err != nil {
     return nil, err
   }
 
-	db.Model(&Vms{}).Where("uuid=?", uuid).Delete(&Vms{})
-	db.Model(&vm_networks{}).Where("ipv4=?", ip).Update("status", 0)
+	dbs.Model(&Vms{}).Where("uuid=?", uuid).Delete(&Vms{})
+	dbs.Model(&vm_networks{}).Where("ipv4=?", vminfo.Ip).Update("status", 0)
+	v := &Vms_archive{
+	  Uuid: vminfo.Uuid,
+	  Owner: vminfo.Owner,
+	  Comment: vminfo.Comment,
+	  Ip: vminfo.Ip,
+	  Vmxml: vminfo.Vmxml,
+  }
+  err2 := dbs.Create(*v)
+  if err2.Error != nil {
+    return nil, err2.Error
+  }
 	vmlist := VmList(host)
 	return vmlist, err
 }
@@ -166,12 +180,12 @@ func Shutdown(uuid string, host string) (*Vms, error) {
 		return nil, err1
 	}
 
-  db, err := db.NicloudDb()
+  dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
 	var v = &Vms{}
-	db.Where("uuid = ?", uuid).First(&v)
+	dbs.Where("uuid = ?", uuid).First(&v)
 
 	s, err2 := VmStatus(uuid, host)
 	v.Status = s
@@ -211,12 +225,12 @@ func Start(uuid string, host string) (*Vms, error) {
     }
   }
 
-  db, err3 := db.NicloudDb()
+  dbs, err3 := db.NicloudDb()
   if err3 != nil {
     return nil, err3
   }
 	var v = &Vms{}
-	db.Where("uuid = ?", uuid).First(&v)
+	dbs.Where("uuid = ?", uuid).First(&v)
 
 	s, err4 := VmStatus(uuid, host)
 	v.Status = s
@@ -235,7 +249,7 @@ func Createuuid() string {
 
 func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string, image string) (bool, error) {
   /*save config to db*/
-  db, err := db.NicloudDb()
+  dbs, err := db.NicloudDb()
   if err != nil {
     return false, err
   }
@@ -253,23 +267,23 @@ func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string,
 		Owner:       "Niklaus",
 		Os:          image,
 	}
-	err1 := db.Create(*vm)
+	err1 := dbs.Create(*vm)
 	if err1.Error != nil {
 	    return false, err1.Error
   }
 
 	//return bool
-	res := db.NewRecord(&vm)
+	res := dbs.NewRecord(&vm)
 	return res, err1.Error
 }
 
 func Ipresource(ip string, mac string) bool {
-  db, err := db.NicloudDb()
+  dbs, err := db.NicloudDb()
   if err != nil {
     return false
   }
   var ipnet []*vm_networks
-  db.Where("ipv4=?", ip).Where("macaddr=?", mac).Find(&ipnet)
+  dbs.Where("ipv4=?", ip).Where("macaddr=?", mac).Find(&ipnet)
   for _, v := range ipnet {
     if v.Status == 0 {
       return false
@@ -284,16 +298,16 @@ func MigrateVm(uuid string, migrate_host string) error {
   if err != nil {
     return err
   }
-  db, err := db.NicloudDb()
+  dbs, err := db.NicloudDb()
   if err != nil {
     return err
   }
-  err1 := db.Model(&Vms{}).Where("uuid=?", uuid).Update("host", migrate_host)
+  err1 := dbs.Model(&Vms{}).Where("uuid=?", uuid).Update("host", migrate_host)
   if err1.Error != nil {
       return err1.Error
   }
 
-  _, err = Delete(uuid, vm.Ip, vm.Host)
+  err = libvirtd.Undefine(vm.Host, vm.Uuid)
   if err != nil {
     return err
   }
@@ -345,21 +359,21 @@ func Create(cpu int, mem int, ip string, mac string, host string, image string) 
 }
 
 func updateipstatus(ipv4 string) (bool, error) {
-  db, err := db.NicloudDb()
+  dbs, err := db.NicloudDb()
   if err != nil {
     return false, err
   }
-	db.Model(&vm_networks{}).Where("ipv4=?", ipv4).Update("status", 1)
+	dbs.Model(&vm_networks{}).Where("ipv4=?", ipv4).Update("status", 1)
 	return true, nil
 }
 
 func VmList(host string) []*Vms {
-  db, err := db.NicloudDb()
+  dbs, err := db.NicloudDb()
   if err != nil {
     return nil
   }
 	var v []*Vms
-	db.Where("exist=1").Find(&v)
+	dbs.Where("exist=1").Find(&v)
 
 	return v
 }
@@ -371,12 +385,12 @@ type vm_networks struct {
 }
 
 func IPlist() []*vm_networks {
-  db, err := db.NicloudDb()
+  dbs, err := db.NicloudDb()
   if err != nil {
     return nil
   }
 	var ip []*vm_networks
-	db.Where("status=0").Find(&ip)
+	dbs.Where("status=0").Find(&ip)
 
 	return ip
 }
@@ -387,23 +401,23 @@ type Vm_flavors struct {
 }
 
 func Flavor() ([]*Vm_flavors, error) {
-  db, err := db.NicloudDb()
+  dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
 	var f []*Vm_flavors
-	db.Find(&f)
+	dbs.Find(&f)
 	return f, nil
 }
 
 func SearchVm(c string) ([]*Vms, error) {
-  db, err := db.NicloudDb()
+  dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
   var v []*Vms
   i := fmt.Sprintf("ip like %s", "'"+c+"%'")
-  db.Where(i).Find(&v)
+  dbs.Where(i).Find(&v)
 
   return v, nil
 }
@@ -414,21 +428,21 @@ type Vms_os struct {
 }
 
 func GetImages() ([]*Vms_os, error) {
-  db, err := db.NicloudDb()
+  dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
   var v []*Vms_os
-  db.Find(&v)
+  dbs.Find(&v)
   return v, nil
 }
 
 func Updatecomments(uuid string, comment string) (bool, error) {
-  db, err := db.NicloudDb()
+  dbs, err := db.NicloudDb()
   if err != nil {
     return true, err
   }
-  db.Model(&Vms{}).Where("uuid=?", uuid).Update("comment", comment)
+  dbs.Model(&Vms{}).Where("uuid=?", uuid).Update("comment", comment)
   return true, nil
 }
 
