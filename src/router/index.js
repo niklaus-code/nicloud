@@ -13,12 +13,24 @@ import createmachine from '@/view/createmachine'
 import createhost from '@/view/createhost'
 import hosts from '@/view/hosts'
 import migratevm from '@/view/migratevm'
+import network from '@/view/network'
+import createvlan from '@/view/createvlan'
 
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/createvlan',
+      name: 'createvlan',
+      component: createvlan
+    },
+    {
+      path: '/network',
+      name: 'network',
+      component: network
+    },
     {
       path: '/migratevm',
       name: 'migratevm',

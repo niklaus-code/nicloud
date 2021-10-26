@@ -5,6 +5,7 @@ import (
   "github.com/gin-gonic/gin"
   "goblog/apis"
   "goblog/apis/machineapis"
+  "goblog/apis/networkapis"
   "goblog/apis/vmapis"
 )
 
@@ -51,5 +52,10 @@ func main() {
     v3.GET("ping", machineapis.Ping)
   }
 
+  v4 := r.Group("/api/networks")
+  {
+    v4.GET("createvlan", networkapis.Add)
+    v4.GET("getvlan", networkapis.Get)
+  }
 	r.Run("127.0.0.1:1992")
 }

@@ -17,13 +17,8 @@
                 </router-link>
             </li>
             <li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
-                <router-link :to="{name:'nicloud'}">
+                <router-link :to="{name:'network'}">
                 <span>网络</span>
-                </router-link>
-            </li>
-            <li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
-                <router-link :to="{name:'nicloud'}">
-                <span>统计</span>
                 </router-link>
             </li>
             <li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
@@ -34,6 +29,11 @@
             <li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
                 <router-link :to="{name:'nicloud'}">
                 <span>ceph</span>
+                </router-link>
+            </li>
+            <li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
+                <router-link :to="{name:'nicloud'}">
+                <span>统计</span>
                 </router-link>
             </li>
         </ul>
