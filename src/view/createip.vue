@@ -41,14 +41,14 @@
     					<label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
     					<div class="input-group"  style="width:100%" >
       						<div class="input-group-addon">结束IP</div>
-      						<input type="text" class="form-control"  placeholder="10.0.0.1">
+      						<input type="text" class="form-control"  placeholder="10.0.0.254">
     					</div>
   					</div>
 				</form>
 			</div>
 			<div  class="col-sm-2">
   					<button type="submit" class="btn btn-sm btn-primary">生成IP</button>
-  					<button type="submit" class="btn btn-sm btn-primary">倒入IP</button>
+  					<button type="submit" class="btn btn-sm btn-primary">导入数据库</button>
 			</div>
 		</div>
 	</div>		
@@ -159,7 +159,7 @@ select{
     box-shadow: 0 0 10px rgba(0,0,0,8);
     border-radius: 10px/10px;
     z-index: -1;
-    padding: 20px 0px 20px 0px;
+    padding: 80px 0px 80px 0px;
     margin-left: 0px;
     margin-TOP: 50px;
 }
