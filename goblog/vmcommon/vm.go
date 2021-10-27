@@ -384,17 +384,6 @@ type vm_networks struct {
 	Status  int8
 }
 
-func IPlist() []*vm_networks {
-  dbs, err := db.NicloudDb()
-  if err != nil {
-    return nil
-  }
-	var ip []*vm_networks
-	dbs.Where("status=0").Find(&ip)
-
-	return ip
-}
-
 type Vm_flavors struct {
 	Cpu int
 	Mem int
@@ -446,3 +435,13 @@ func Updatecomments(uuid string, comment string) (bool, error) {
   return true, nil
 }
 
+func IPlist() []*vm_networks {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil
+  }
+  var ip []*vm_networks
+  dbs.Where("status=0").Find(&ip)
+
+  return ip
+}

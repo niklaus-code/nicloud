@@ -22,7 +22,7 @@
 		</div>
 		<div class="col-sm-8 col-sm-offset-2" >
 			<div class="col-sm-12">
-			<span class="createip">生成IP</span>
+			<span class="createip">生成IP & MAC</span>
 			</div>
 			<div class="col-sm-5 startip">
 				<form class="form-inline" style="width:100%" >
@@ -30,7 +30,7 @@
     					<label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
     					<div class="input-group" style="width:100%" >
       						<div class="input-group-addon">起始IP</div>
-      						<input style="width:100%" type="text" class="form-control"  placeholder="10.0.0.1">
+      						<input style="width:100%" type="text" class="form-control" v-model="startip" placeholder="10.0.0.1">
     					</div>
   					</div>
 				</form>
@@ -41,13 +41,13 @@
     					<label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
     					<div class="input-group"  style="width:100%" >
       						<div class="input-group-addon">结束IP</div>
-      						<input type="text" class="form-control"  placeholder="10.0.0.254">
+      						<input type="text" class="form-control" v-model="endip" placeholder="10.0.0.254">
     					</div>
   					</div>
 				</form>
 			</div>
 			<div  class="col-sm-2">
-  					<button type="submit" class="btn btn-sm btn-primary">生成IP</button>
+  					<button type="submit" class="btn btn-sm btn-primary" @click="create">生成IP</button>
   					<button type="submit" class="btn btn-sm btn-primary">导入数据库</button>
 			</div>
 		</div>
@@ -64,6 +64,8 @@ export default {
     data () {
         return {
 			vlan: {},
+			startip: "",
+			endip: "",
         }
     },
 
@@ -77,9 +79,26 @@ export default {
 
 
     methods: {
+		create: function () {
+			if (typeof this.startip === 'undefined' || this.startip === null || this.startip === ''|| typeof this.endip === 'undefined' || this.endip === null || this.endip === '') {
+				alert("输入为空")
+				return
+				}
+
+            var apiurl = `/api/networks/createip`
+            this.$http.get(apiurl, { params: {startip: this.startip, endip: this.endip} }).then(response => {
+				if (response.data.res) {
+					alert("创建成功")
+					} else {
+					alert("创建失败")
+					}
+				})
+			},
+
 		vlaninfo: function () {
 			this.vlan = JSON.parse(this.$route.query.vlan)
 			},
+
 		check: function (vlan, bridge, network, prefix, gateway) {
 			if (typeof vlan === 'undefined' || vlan === null || vlan === ''|| typeof bridge === 'undefined' || bridge === null || bridge === '' || typeof network === 'undefined' || network === null || network === '' ||typeof prefix === 'undefined' || prefix === null || prefix === ''|| typeof gateway === 'undefined' || gateway === null || gateway === '' ) {
 				alert("缺少信息")

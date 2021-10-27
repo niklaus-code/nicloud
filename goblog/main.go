@@ -26,7 +26,6 @@ func main() {
 		v2.GET("create", vmapis.Createvm)
 		v2.GET("operation/:id", vmapis.Operation)
 		v2.GET("delete", vmapis.DeleteVM)
-		v2.GET("getip", vmapis.GetIplist)
 		v2.GET("getimage", vmapis.GetImage)
     v2.GET("gethosts", vmapis.GetHosts)
 		v2.GET("getflavor", vmapis.GetFlavor)
@@ -56,6 +55,8 @@ func main() {
   {
     v4.GET("createvlan", networkapis.Add)
     v4.GET("getvlan", networkapis.Get)
+    v4.GET("getip", networkapis.GetIplist)
+    v4.GET("createip", networkapis.CreateIp)
   }
 	r.Run("127.0.0.1:1992")
 }

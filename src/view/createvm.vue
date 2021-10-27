@@ -152,7 +152,7 @@ export default {
         },
 
         getip: function () {
-            var apiurl = `/api/vm/getip`
+            var apiurl = `/api/networks/getip`
             this.$http.get(apiurl).then(response => {
             this.iplist = response.data.res
 			this.ipvalue = response.data.res[0]

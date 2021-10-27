@@ -3,6 +3,7 @@ package networkapis
 import (
   "github.com/gin-gonic/gin"
   "goblog/networks"
+  "goblog/vmcommon"
   "strconv"
 )
 
@@ -37,5 +38,23 @@ func Get(c *gin.Context) {
   vlans, err := networks.Getvlan()
   res["res"] = vlans
   res["err"] = err
+  c.JSON(200, res)
+}
+
+func CreateIp(c *gin.Context) {
+  startip := c.Query("startip")
+  endip := c.Query("endip")
+  res := make(map[string]interface{})
+
+  b := networks.Createip(startip, endip)
+  res["res"] = b
+  c.JSON(200, res)
+}
+
+func GetIplist(c *gin.Context) {
+  iplist := vmcommon.IPlist()
+  res := make(map[string]interface{})
+  res["res"] = iplist
+
   c.JSON(200, res)
 }
