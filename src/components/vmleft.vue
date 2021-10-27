@@ -1,39 +1,9 @@
 <template>
     <div  class="col-md-1" style="float:left">
         <ul class="list-group col-md-11 col-md-offset-1">
-            <li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave()">
-                <router-link :to="{name:'nicloud'}">
-                    <span>云主机</span>
-                </router-link>
-            </li>
-            <li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
-                <router-link :to="{name:'nicloud'}">
-                <span>云硬盘</span>
-                </router-link>
-            </li>
-            <li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
-                <router-link :to="{name:'nicloud'}">
-                <span>镜像</span>
-                </router-link>
-            </li>
-            <li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
-                <router-link :to="{name:'network'}">
-                <span>网络</span>
-                </router-link>
-            </li>
-            <li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
-                <router-link :to="{name:'hosts'}">
-                <span>宿主机</span>
-                </router-link>
-            </li>
-            <li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
-                <router-link :to="{name:'nicloud'}">
-                <span>ceph</span>
-                </router-link>
-            </li>
-            <li class="list-group-item" @mouseover="mouseOver(index)" @mouseleave="mouseLeave(index)">
-                <router-link :to="{name:'nicloud'}">
-                <span>统计</span>
+            <li class="list-group-item" v-for="(item, index) in routelist" :class='{bg:index==isactive}'>
+                <router-link :to="{name: item.router}">
+                    <span @click="mouseOver(index)" >{{item.name}}</span>
                 </router-link>
             </li>
         </ul>
@@ -45,43 +15,67 @@
 export default {
     data () {
         return {
-			daohang: "",
-            active: "",
-            checkvalue: false,
-            content: "",
-            stat: {
-                "运行": "btn btn-success btn-xs", 
-                "关机": "btn btn-warning btn-xs", 
-                },
-            statclass: "btn btn-danger",
-            data: "",
-            status: {
-                0: "关机",
-                1: "运行",
-                2: "已删除",
-            }
+			routelist: [
+				{
+				name: "云主机",
+				router: "nicloud"
+					},
+				{
+				name: "云盘",
+				router: "nicloud"
+					},
+				{
+				name: "镜像",
+				router: "os"
+					},
+				{
+				name: "网络",
+				router: "network"
+					},
+				{
+				name: "宿主机",
+				router: "hosts"
+					},
+				{
+				name: "ceph",
+				router: "ceph"
+					},
+				{
+				name: "统计",
+				router: "count"
+					},
+				],
+			isactive:8,
         }
     },
 
 	methods: {
         mouseOver: function (index) {
-            //this.daohang[index].active = "background-color: red";
+            this.isactive = index;
             },
 
         mouseLeave: function (index) {
-            //this.daohang[index].active = "background-color: #e3e3e3";
+            this.isactive = index;
             }
 	}
 }
 </script>
 
 <style scoped>
-	.list-group {
+li {
+	text-align: center 
+}
+
+.bg {
+	background-color: red;
+}
+
+.list-group {
     margin-top:100px;
 	}
 
 .list-group-item {
-    background-color: #e3e3e3;
+    background-color: transparent;
     border: none;
     color: blue;
 }

@@ -120,13 +120,6 @@ export default {
 
     mounted: function () {
 		this.getvm()
-        var id = this.$route.params.id
-        if (!id) {
-            this.blogid = window.sessionStorage.getItem('blogid')
-        } else {
-            this.blogid = id
-            window.sessionStorage.setItem('blogid', this.blogid)
-        }
     },
 
     methods: {

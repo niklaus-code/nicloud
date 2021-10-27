@@ -35,7 +35,7 @@
         				<td>{{item.Gateway}}</td>
         				<td>{{item.Status}}</td>
 		    			<td>
-							<button class="btn btn-success btn-xs" type="button" @click="">
+							<button class="btn btn-success btn-xs" type="button" @click="addip(item)">
                 				增加IP
             				</button>
 							<button class="btn btn-success btn-xs" type="button" @click="">
@@ -78,6 +78,15 @@ export default {
 		},
 
     methods: {
+		addip: function (vlan) {
+			let vlanObj = JSON.stringify(vlan)
+			this.$router.push({
+    		path: '/createip',
+    			query: { 
+        			'vlan': vlanObj
+    			}
+			}) 
+			},
 		delhost: function (ip, index) {
 			this.data[index].Status = 0
             var apiurl = `/api/vm/delhost`
