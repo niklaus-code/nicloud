@@ -8,6 +8,7 @@ import (
   "goblog/ceph"
   "goblog/dbs"
   "goblog/libvirtd"
+  "goblog/networks"
   "time"
 )
 
@@ -119,7 +120,10 @@ func Delete(uuid string) ([]*Vms, error) {
   }
 
 	dbs.Model(&Vms{}).Where("uuid=?", uuid).Delete(&Vms{})
-	dbs.Model(&vm_networks{}).Where("ipv4=?", vminfo.Ip).Update("status", 0)
+	err = networks.Updateipstatus(vminfo.Ip)
+	if err != nil {
+	  return nil, err
+  }
 	v := &Vms_archive{
 	  Uuid: vminfo.Uuid,
 	  Owner: vminfo.Owner,
@@ -277,20 +281,6 @@ func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string,
 	return res, err1.Error
 }
 
-func Ipresource(ip string, mac string) bool {
-  dbs, err := db.NicloudDb()
-  if err != nil {
-    return false
-  }
-  var ipnet []*vm_networks
-  dbs.Where("ipv4=?", ip).Where("macaddr=?", mac).Find(&ipnet)
-  for _, v := range ipnet {
-    if v.Status == 0 {
-      return false
-    }
-  }
-  return true
-}
 
 func MigrateVm(uuid string, migrate_host string) error {
   vm := GetVmByUuid(uuid)
@@ -316,7 +306,7 @@ func MigrateVm(uuid string, migrate_host string) error {
 }
 
 func Create(cpu int, mem int, ip string, mac string, host string, image string) (bool, error) {
-  if Ipresource(ip, mac) {
+  if networks.Ipresource(ip, mac) {
     return false, nil
   }
 
@@ -350,7 +340,7 @@ func Create(cpu int, mem int, ip string, mac string, host string, image string) 
 	  return svm, err
   }
 
-  _, err = updateipstatus(ip)
+  err = networks.Updateipstatus(ip)
   if err != nil {
     return false, err
   }
@@ -358,14 +348,6 @@ func Create(cpu int, mem int, ip string, mac string, host string, image string) 
 	return true, err
 }
 
-func updateipstatus(ipv4 string) (bool, error) {
-  dbs, err := db.NicloudDb()
-  if err != nil {
-    return false, err
-  }
-	dbs.Model(&vm_networks{}).Where("ipv4=?", ipv4).Update("status", 1)
-	return true, nil
-}
 
 func VmList(host string) []*Vms {
   dbs, err := db.NicloudDb()
@@ -376,12 +358,6 @@ func VmList(host string) []*Vms {
 	dbs.Where("exist=1").Find(&v)
 
 	return v
-}
-
-type vm_networks struct {
-	Ipv4    string
-	Macaddr string
-	Status  int8
 }
 
 type Vm_flavors struct {
@@ -435,13 +411,3 @@ func Updatecomments(uuid string, comment string) (bool, error) {
   return true, nil
 }
 
-func IPlist() []*vm_networks {
-  dbs, err := db.NicloudDb()
-  if err != nil {
-    return nil
-  }
-  var ip []*vm_networks
-  dbs.Where("status=0").Find(&ip)
-
-  return ip
-}

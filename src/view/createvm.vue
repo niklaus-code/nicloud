@@ -21,9 +21,9 @@
         			<label>VLAN</label>
 				</div>
 				<div class="col-sm-9">
-        			<select class="col-sm-10" v-model="ipvalue">
-  						<option  v-for="ip in iplist" :value="ip">
-							{{ ip.Ipv4 }}
+        			<select class="col-sm-10" v-model="vlanvalue" @change="getip">
+  						<option  v-for="v in vlanlist" :value="v">
+							{{ v.Vlan }}
 						</option>
         			</select>
 				</div>
@@ -33,9 +33,9 @@
         			<label>IP</label>
 				</div>
 				<div class="col-sm-9">
-        			<select class="col-sm-10" v-model="ipvalue">
-  						<option  v-for="ip in iplist" :value="ip">
-							{{ ip.Ipv4 }}
+	                <select class="col-sm-10" v-model="ipvalue">
+                    	<option  v-for="ip in iplist" :value="ip">
+                        	{{ ip.Ipv4 }}
 						</option>
         			</select>
 				</div>
@@ -82,6 +82,9 @@ import vmleft from '@/components/vmleft'
 export default {
     data () {
         return {
+			vlanvalue: "",
+			vlanlist: [],
+
 			imagevalue: "",
             imagelist: [],
 
@@ -112,9 +115,9 @@ export default {
 
     created: function () {
 		this.getflavor()
-		this.getip()
 		this.gethosts()
 		this.getimage()
+		this.getvlan()
     },
 
     methods: {
@@ -151,9 +154,17 @@ export default {
             })
         },
 
+        getvlan: function () {
+            var apiurl = `/api/networks/getvlan`
+            this.$http.get(apiurl).then(response => {
+            this.vlanlist = response.data.res
+			this.vlanvalue = response.data.res[0]
+            })
+        },
+
         getip: function () {
             var apiurl = `/api/networks/getip`
-            this.$http.get(apiurl).then(response => {
+            this.$http.get(apiurl, { params: { vlan: this.vlanvalue.Vlan}}).then(response => {
             this.iplist = response.data.res
 			this.ipvalue = response.data.res[0]
             })

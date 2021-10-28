@@ -3,8 +3,10 @@ package networks
 import (
   "fmt"
   "goblog/dbs"
+  "math/rand"
   "strconv"
   "strings"
+  "time"
 )
 
 type Vms_vlans struct {
@@ -59,7 +61,52 @@ func split(item string) (bool, []string) {
   return true, l
 }
 
-func Createip(startip string, endip string) bool {
+
+type Vms_ips struct {
+  Ipv4 string
+  Macaddr string
+  Status int8
+  Vlan string
+}
+
+
+func IPlist(vlan string) []*Vms_ips {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil
+  }
+  var ip []*Vms_ips
+  dbs.Where("status=0 and vlan=?", vlan).Find(&ip)
+
+  return ip
+}
+
+func Ipresource(ip string, mac string) bool {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return false
+  }
+  var ipnet []*Vms_ips
+  dbs.Where("ipv4=?", ip).Where("macaddr=?", mac).Find(&ipnet)
+  for _, v := range ipnet {
+    if v.Status == 0 {
+      return false
+    }
+  }
+  return true
+}
+
+func Updateipstatus(ipv4 string) (error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+  dbs.Model(&Vms_ips{}).Where("ipv4=?", ipv4).Update("status", 1)
+  return nil
+}
+
+
+func Createip(startip string, endip string, vlan string) bool {
   b, l := split(startip)
 
   if b == false {
@@ -88,10 +135,48 @@ func Createip(startip string, endip string) bool {
 
   startnum, _ := strconv.Atoi(l[3])
   endnum, _ := strconv.Atoi(d[3])
-  for i:= startnum; i <= endnum ; i++ {
-    fmt.Println(l[0]+"."+l[1]+"."+l[2]+"."+strconv.Itoa(i))
+
+  if startnum > endnum {
+    return false
   }
 
-
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return false
+  }
+  for i:= startnum; i <= endnum ; i++ {
+    i := &Vms_ips{
+      Ipv4: l[0]+"."+l[1]+"."+l[2]+"."+strconv.Itoa(i),
+      Macaddr: NewRandomMac().String(),
+      Vlan: vlan,
+      Status: 0,
+    }
+    err := dbs.Create(*i)
+    if err.Error != nil {
+      return false
+    }
+    dbs.NewRecord(*i)
+  }
   return true
+}
+
+
+type Mac [6]byte
+
+func (m Mac) String() string {
+  return fmt.Sprintf("%02x:%02x:%02x:%02x:%02x:%02x",m[0],m[1],m[2],m[3],m[4],m[5])
+}
+
+func NewRandomMac() Mac{
+  var m [6]byte
+
+  rand.Seed(time.Now().UnixNano())
+  for i:=0;i<6;i++ {
+    mac_byte := rand.Intn(256)
+    m[i] = byte(mac_byte)
+
+    rand.Seed(int64(mac_byte))
+  }
+
+  return Mac(m)
 }
