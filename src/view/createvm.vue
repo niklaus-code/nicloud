@@ -118,6 +118,7 @@ export default {
 		this.gethosts()
 		this.getimage()
 		this.getvlan()
+		this.getip()
     },
 
     methods: {
@@ -163,8 +164,14 @@ export default {
         },
 
         getip: function () {
+			var v = ""
+			if (typeof this.vlanvalue.Vlan === 'undefined' || this.vlanvalue.Vlan == null || this.vlanvalue.Vlan === '') {
+				v = "vlan82"
+				} else {
+				v = this.vlanvalue.Vlan
+				}
             var apiurl = `/api/networks/getip`
-            this.$http.get(apiurl, { params: { vlan: this.vlanvalue.Vlan}}).then(response => {
+            this.$http.get(apiurl, { params: { vlan: v}}).then(response => {
             this.iplist = response.data.res
 			this.ipvalue = response.data.res[0]
             })

@@ -15,6 +15,7 @@ type Vm_hosts struct {
   Usedmem     int
   Usedcpu     int
   Status      int8
+  Vlan        string
 }
 
 func Allhosts(obj []Vm_hosts) []map[string]interface{}  {
@@ -47,7 +48,7 @@ func CountHosts(ip string) int {
 
 
 
-func Createhost(cpu int, mem int, ip string, num int) bool {
+func Createhost(cpu int, mem int, ip string, num int, vlan string) bool {
   db, err := db.NicloudDb()
   if err != nil {
     return false
@@ -60,6 +61,7 @@ func Createhost(cpu int, mem int, ip string, num int) bool {
     Status: 1,
     Usedcpu: 0,
     Usedmem: 0,
+    Vlan: vlan,
   }
 
   err1 := db.Create(*h)
@@ -151,7 +153,7 @@ func Hosts() []map[string]interface{} {
     var hosts []Vm_hosts
     db.Where("status=1").Find(&hosts)
 
-      res := Allhosts(hosts)
+    res := Allhosts(hosts)
     return res
   }
 

@@ -19,9 +19,10 @@ func Createhost(c *gin.Context) {
   mem, _ := strconv.Atoi(c.Query("mem"))
   ip := c.Query("ip")
   num,_ := strconv.Atoi(c.Query("mem"))
+  vlan := c.Query("vlan")
 
   res := make(map[string]interface{})
-  err := vmcommon.Createhost(cpu, mem, ip, num)
+  err := vmcommon.Createhost(cpu, mem, ip, num, vlan)
   res["res"] = err
   c.JSON(200, res)
 }

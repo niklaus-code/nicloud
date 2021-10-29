@@ -15,9 +15,10 @@
             					<input type="checkbox" v-model="checkvalue" @click="checkbox()">
         					</label>
         				</th>
+        				<th>ip地址</th>
         				<th>cpu</th>
         				<th>内存</th>
-        				<th>ip地址</th>
+        				<th>网络</th>
         				<th>可创建数量</th>
 						<th>备注</th>
 						<th>操作</th>
@@ -29,9 +30,10 @@
         				<label class="checkbox-inline">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
+        				<td>{{item.Ipv4}}</td>
         				<td>{{item.Usedcpu}}/{{item.Cpu}}</td>
         				<td>{{item.Usedmem}}/{{item.Mem}}</td>
-        				<td>{{item.Ipv4}}</td>
+        				<td>{{item.Vlan}}</td>
         				<td>{{item.count}}/{{item.Max_vms}}</td>
         				<td>test</td>
 		    			<td>

@@ -52,8 +52,20 @@
 					</form>
 				</div>
     		</div>
-		<div class="form-group" style="margin-top:20px" >
-			<div class="col-sm-3 col-sm-offset-3">
+	 		<div class="form-group">
+				<div class="col-sm-3">
+        			<label>网络</label>
+				</div>
+				<div class="col-sm-9">
+				    <select class="col-sm-10" v-model="vlanvalue">
+                        <option  v-for="v in vlanlist" :value="v">
+                            {{ v.Vlan }}
+                        </option>
+                    </select>
+				</div>
+    		</div>
+		<div class="form-group">
+			<div class="col-sm-3 col-sm-offset-3" style="margin-top:20px" >
   				<button type="submit" @click="createhost" class="btn btn-default btn-sm">提交</button>
 			</div>
 		</div>
@@ -70,6 +82,9 @@ import vmleft from '@/components/vmleft'
 export default {
     data () {
         return {
+            vlanvalue: "",
+            vlanlist: [],
+
 			cpu: "",
 			mem: "",
 			ip: "",
@@ -81,12 +96,23 @@ export default {
         foot, nicloudhead, vmleft
     },
 
+	mounted: function () {
+		this.getvlan()
+		},
 
     methods: {
+        getvlan: function () {
+            var apiurl = `/api/networks/getvlan`
+            this.$http.get(apiurl).then(response => {
+            this.vlanlist = response.data.res
+            this.vlanvalue = response.data.res[0]
+            })
+        },
+
 		createhost: function () {
             var apiurl = `/api/vm/createhost`
 
-            this.$http.get(apiurl, { params: { cpu: this.cpu, mem:this.mem, ip: this.ip, num: this.num} }).then(response => {
+            this.$http.get(apiurl, { params: { cpu: this.cpu, mem:this.mem, ip: this.ip, num: this.num, vlan: this.vlanvalue.Vlan} }).then(response => {
 				if (response.data.res) {
 					alert("创建成功! 是否查看宿主机列表")
 					this.$router.push('/hosts')
@@ -99,14 +125,19 @@ export default {
         }
   }
 </script>
-<style scoped>
 
-select{
+<style scoped>
+.form-control {
+	height:30px;
     font-family: "微软雅黑";
     border: 1px #1a1a1a solid;
     border-radius: 5px;
 }
 
+select {
+	width: 100%;
+	height:	30px;
+}
 .content {
     box-shadow: 0 0 10px rgba(0,0,0,8);
     border-radius: 10px/10px;
