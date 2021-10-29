@@ -3,7 +3,7 @@
 	<nicloudhead></nicloudhead>
 	<vmleft></vmleft>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
-		<div  class="col-sm-3 col-sm-offset-4" style="margin-top:20px">
+		<div  class="col-sm-4 col-sm-offset-4" style="margin-top:20px">
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
         			<label>cpu/内存</label>
@@ -47,7 +47,7 @@
 				<div class="col-sm-9">
         			<select class="col-sm-10" v-model="hostvalue">
   						<option  v-for="host in hostlist" :value="host.Ipv4">
-							{{ host.Ipv4 }}
+							{{host.Usedcpu}}核/{{host.Cpu}}核 &nbsp {{host.Usedmem}}G/{{host.Mem}}G &nbsp{{ host.Ipv4 }}
 						</option>
         			</select>
 				</div>
