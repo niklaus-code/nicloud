@@ -159,33 +159,33 @@ func Createip(startip string, endip string, vlan string) error {
     }
   }
   for i:= startnum; i <= endnum ; i++ {
-    i := &Vms_ips{
+    ips := &Vms_ips{
       Ipv4: l[0]+"."+l[1]+"."+l[2]+"."+strconv.Itoa(i),
-      Macaddr: NewRandomMac().String(),
+      Macaddr: NewRandomMac().String(i),
       Vlan: vlan,
       Status: 0,
     }
-    err := dbs.Create(*i)
+    err := dbs.Create(*ips)
     if err.Error != nil {
       return err.Error
     }
-    dbs.NewRecord(*i)
+    dbs.NewRecord(*ips)
   }
   return nil
 }
 
 
-type Mac [4]byte
+type Mac [3]byte
 
-func (m Mac) String() string {
-  return fmt.Sprintf("c8:00:%02x:%02x:%02x:%02x",m[0],m[1],m[2],m[3])
+func (m Mac) String(end int) string {
+  return fmt.Sprintf("c8:00:%02x:%02x:%02x:%02x",m[0],m[1],m[2], end)
 }
 
 func NewRandomMac() Mac{
-  var m [4]byte
+  var m [3]byte
 
   rand.Seed(time.Now().UnixNano())
-  for i:=0;i<4;i++ {
+  for i:=0;i<3;i++ {
     mac_byte := rand.Intn(256)
     m[i] = byte(mac_byte)
 
