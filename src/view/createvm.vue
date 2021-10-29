@@ -3,10 +3,12 @@
 	<nicloudhead></nicloudhead>
 	<vmleft></vmleft>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
-		<div  class="col-sm-4 col-sm-offset-4" style="margin-top:20px">
+		<div  class="col-sm-5 col-sm-offset-4" style="margin-top:20px">
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
+				<div class="col-sm-11  col-sm-offset-1 title">
         			<label>cpu/内存</label>
+				</div>
 				</div>
 				<div class="col-sm-9">
         			<select class="col-sm-10" v-model="flavorvalue">
@@ -18,7 +20,9 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
+				<div class="col-sm-11  col-sm-offset-1 title">
         			<label>VLAN</label>
+				</div>
 				</div>
 				<div class="col-sm-9">
         			<select class="col-sm-10" v-model="vlanvalue" @change="getip">
@@ -30,7 +34,9 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
+				<div class="col-sm-11  col-sm-offset-1 title">
         			<label>IP</label>
+				</div>
 				</div>
 				<div class="col-sm-9">
 	                <select class="col-sm-10" v-model="ipvalue">
@@ -42,19 +48,23 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
+				<div class="col-sm-11  col-sm-offset-1 title">
         			<label>宿主机</label>
 				</div>
-				<div class="col-sm-9">
+				</div>
+				<div class="col-sm-9 title">
         			<select class="col-sm-10" v-model="hostvalue">
   						<option  v-for="host in hostlist" :value="host.Ipv4">
-							{{host.Usedcpu}}核/{{host.Cpu}}核 &nbsp {{host.Usedmem}}G/{{host.Mem}}G &nbsp{{ host.Ipv4 }}
+							 {{ host.Ipv4 }} ({{host.Usedcpu}}核/{{host.Cpu}}核，{{host.Usedmem}}G/{{host.Mem}}G ，{{host.count}}数量/{{host.Max_vms}}数量)
 						</option>
         			</select>
 				</div>
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
+				<div class="col-sm-11  col-sm-offset-1 title">
         			<label>镜像</label>
+				</div>
 				</div>
 				<div class="col-sm-9">
         			<select class="col-sm-10" v-model="imagevalue">
@@ -188,12 +198,24 @@ export default {
   }
 </script>
 <style scoped>
+.title {
+	text-align: center;
+}
+
+.col-sm-9 {
+	padding-left:0px;
+}
+.col-sm-3 {
+	padding-right:0px;
+}
 label {
     font-weight : 400;
     margin-top: 2px;
+	text-align: center;
 }
 
 select{
+	height:30px;
     font-family: "微软雅黑";
     border: 1px #1a1a1a solid;
     border-radius: 5px;
