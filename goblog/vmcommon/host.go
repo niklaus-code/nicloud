@@ -1,6 +1,7 @@
 package vmcommon
 
 import (
+  "fmt"
   db "goblog/dbs"
   "goblog/vmerror"
   "reflect"
@@ -77,7 +78,7 @@ func Createhost(cpu int, mem int, ip string, num int, vlan string) bool {
 func getcpumem(ip string, cpu int, mem int) (map[string]int, error) {
   db, err := db.NicloudDb()
   if err != nil {
-    return nil, nil
+    return nil, err
   }
   v := &Vm_hosts{}
   db.Where("ipv4 = ?", ip).Find(&v)
@@ -99,6 +100,19 @@ func getcpumem(ip string, cpu int, mem int) (map[string]int, error) {
   return c, nil
 }
 
+func Freehost(ip string, cpu int, mem int) error {
+  db, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+  var v Vm_hosts
+  db.Where("ipv4 = ?", ip).Find(&v)
+  fmt.Println(v.Usedmem, mem)
+  db.Model(&Vm_hosts{}).Where("ipv4=?", v.Ipv4).Update("usedcpu", v.Usedcpu-cpu)
+  db.Model(&Vm_hosts{}).Where("ipv4=?", v.Ipv4).Update("usedmem", v.Usedmem-mem)
+  return nil
+}
+
 func Updatehost(ip string, cpu int, mem int) error {
   db, err := db.NicloudDb()
   if err != nil {
@@ -109,7 +123,6 @@ func Updatehost(ip string, cpu int, mem int) error {
   if err != nil {
     return err
   }
-
 
   c := t["cpu"]
   m := t["mem"]

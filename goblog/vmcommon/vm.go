@@ -130,6 +130,11 @@ func Delete(uuid string) ([]*Vms, error) {
   if err2.Error != nil {
     return nil, err2.Error
   }
+
+  err = Freehost(vminfo.Host, vminfo.Cpu, vminfo.Mem)
+  if err != nil {
+    return nil, err
+  }
 	vmlist := VmList(host)
 	return vmlist, err
 }
