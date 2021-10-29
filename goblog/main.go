@@ -56,7 +56,10 @@ func main() {
     v4.GET("createvlan", networkapis.Add)
     v4.GET("getvlan", networkapis.Get)
     v4.GET("getip", networkapis.GetIplist)
+    v4.GET("getallip", networkapis.GetallIp)
     v4.GET("createip", networkapis.CreateIp)
+    v4.GET("downip", networkapis.DownIp)
+    v4.GET("upip", networkapis.UpIp)
   }
 	r.Run("127.0.0.1:1992")
 }

@@ -70,6 +70,18 @@ type Vms_ips struct {
   Vlan string
 }
 
+func AllIP(vlan string) []*Vms_ips {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil
+  }
+  var ip []*Vms_ips
+  dbs.Where("vlan=?", vlan).Find(&ip)
+
+  return ip
+}
+
+
 func IPlist(vlan string) []*Vms_ips {
   dbs, err := db.NicloudDb()
   if err != nil {
@@ -107,6 +119,28 @@ func Updateipstatus(ipv4 string, status int) (error) {
   return nil
 }
 
+func OpIP(ipv4 string, vlan string, op int) error {
+  dbs, err1 := db.NicloudDb()
+  if err1 != nil {
+    return vmerror.Error{
+      Message: err1.Error(),
+    }
+  }
+
+  dbs, err := db.NicloudDb()
+  if err!= nil {
+    return vmerror.Error{
+      Message: err.Error(),
+    }
+  }
+  err2 := dbs.Model(&Vms_ips{}).Where("ipv4=? and vlan=?", ipv4, vlan).Update("status", op)
+  if err2.Error != nil {
+    return vmerror.Error{
+      Message: err2.Error.Error(),
+    }
+  }
+  return nil
+}
 
 func Createip(startip string, endip string, vlan string) error {
   b, l := split(startip)

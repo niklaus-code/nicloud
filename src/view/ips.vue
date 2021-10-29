@@ -31,11 +31,14 @@
         				<td>{{item.Macaddr}}</td>
         				<td>
 							<span v-if="item.Status"  class="glyphicon glyphicon-remove"></span>
-							<span else  class="glyphicon glyphicon-ok"></span>
+							<span v-else  class="glyphicon glyphicon-ok"></span>
 						</td>
 		    			<td>
-							<button class="btn btn-danger btn-xs" type="button" @click="">
-                				删除
+							<button class="btn btn-info btn-xs" type="button" @click="downip(index, item.Ipv4)">
+                				DOWN
+            				</button>
+							<button class="btn btn-success btn-xs" type="button" @click="upip(index, item.Ipv4)">
+                				UP
             				</button>
         				</td>
 					</tr>
@@ -75,12 +78,34 @@ export default {
 		},
 
     methods: {
-	   vlaninfo: function () {
+	   	vlaninfo: function () {
             this.vlan = this.$route.query.vlan
             },
 
+		 upip: function (index, ip) {
+            var apiurl = `/api/networks/upip`
+            this.$http.get(apiurl, { params: {ipv4: ip, vlan: this.vlan}}).then(response => {
+            	if (response.data.res != null) {
+					alert("操作失败'("+response.data.res+")'")
+					} else {
+						alert("已置为可用状态")
+						this.ips[index].Status = 0
+						}
+            })
+        },
+		 downip: function (index, ip) {
+            var apiurl = `/api/networks/downip`
+            this.$http.get(apiurl, { params: {ipv4: ip, vlan: this.vlan}}).then(response => {
+            	if (response.data.res != null) {
+					alert("操作失败'("+response.data.res+")'")
+					} else {
+						alert("已置为不可用状态")
+						this.ips[index].Status = 1
+						}
+            })
+        },
 		 getip: function () {
-            var apiurl = `/api/networks/getip`
+            var apiurl = `/api/networks/getallip`
             this.$http.get(apiurl, { params: { vlan: this.vlan}}).then(response => {
             	this.ips = response.data.res
             })

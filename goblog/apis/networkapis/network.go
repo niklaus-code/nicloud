@@ -51,9 +51,39 @@ func CreateIp(c *gin.Context) {
   c.JSON(200, res)
 }
 
+func UpIp(c *gin.Context) {
+  ipv4 := c.Query("ipv4")
+  vlan := c.Query("vlan")
+  res := make(map[string]interface{})
+
+  err := networks.OpIP(ipv4, vlan, 0)
+  res["res"] = err
+  c.JSON(200, res)
+}
+
+
+func DownIp(c *gin.Context) {
+  ipv4 := c.Query("ipv4")
+  vlan := c.Query("vlan")
+  res := make(map[string]interface{})
+
+  err := networks.OpIP(ipv4, vlan, 1)
+  res["res"] = err
+  c.JSON(200, res)
+}
+
 func GetIplist(c *gin.Context) {
   vlan := c.Query("vlan")
   iplist := networks.IPlist(vlan)
+  res := make(map[string]interface{})
+  res["res"] = iplist
+
+  c.JSON(200, res)
+}
+
+func GetallIp(c *gin.Context) {
+  vlan := c.Query("vlan")
+  iplist := networks.AllIP(vlan)
   res := make(map[string]interface{})
   res["res"] = iplist
 
