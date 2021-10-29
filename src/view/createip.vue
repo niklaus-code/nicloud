@@ -87,10 +87,10 @@ export default {
 
             var apiurl = `/api/networks/createip`
             this.$http.get(apiurl, { params: {startip: this.startip, endip: this.endip, vlan: this.vlan.Vlan} }).then(response => {
-				if (response.data.res) {
+				if (response.data.res === null) {
 					alert("创建成功")
 					} else {
-					alert("创建失败")
+					alert("创建失败'(" + response.data.res.Message+"')")
 					}
 				})
 			},
@@ -98,34 +98,6 @@ export default {
 		vlaninfo: function () {
 			this.vlan = JSON.parse(this.$route.query.vlan)
 			},
-
-		check: function (vlan, bridge, network, prefix, gateway) {
-			if (typeof vlan === 'undefined' || vlan === null || vlan === ''|| typeof bridge === 'undefined' || bridge === null || bridge === '' || typeof network === 'undefined' || network === null || network === '' ||typeof prefix === 'undefined' || prefix === null || prefix === ''|| typeof gateway === 'undefined' || gateway === null || gateway === '' ) {
-				alert("缺少信息")
-                return true
-            } else {
-				return false
-				}
-			},
-
-		createvlan: function () {
-			if (this.check(this.vlan, this.bridge, this.network, this.prefix,this.gateway)) {
-				return 
-				}
-		
-
-            var apiurl = `/api/networks/createvlan`
-
-            this.$http.get(apiurl, { params: { vlan: this.vlan, bridge:this.bridge, network: this.network, prefix: this.prefix, gateway: this.gateway} }).then(response => {
-				if (response.data.res) {
-					alert("创建成功! 是否查看宿主机列表")
-					this.$router.push('/network')
-				} else {
-					alert("创建失败(" + response.data.err.Message+ ")" )
-					}
-			})
-			},
-
         }
   }
 </script>

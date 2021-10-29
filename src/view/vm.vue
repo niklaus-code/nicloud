@@ -276,8 +276,9 @@ export default {
 					if (response.data.res.Comment.length == 0) {
 						this.data[index].flag = true
 						}
-					}
+					} else {
 				alert(response.data.err.Message)
+					}
             })
         },
 
@@ -293,8 +294,9 @@ export default {
 					if (response.data.res.Comment.length == 0) {
 						this.data[index].flag = true
 						}
-					}
+					} else {
 				alert(response.data.err.Message)
+					}
             })
         },
     }

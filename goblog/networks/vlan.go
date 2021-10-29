@@ -108,30 +108,38 @@ func Updateipstatus(ipv4 string, status int) (error) {
 }
 
 
-func Createip(startip string, endip string, vlan string) bool {
+func Createip(startip string, endip string, vlan string) error {
   b, l := split(startip)
 
   if b == false {
-    return false
+    return vmerror.Error{
+      Message: "数据格式错误",
+    }
   }
 
   for _,v := range l {
     _, err := strconv.Atoi(v)
     if err != nil {
-      return false
+      return vmerror.Error{
+        Message: "数据格式错误",
+      }
     }
   }
 
 
   c, d := split(endip)
   if c == false {
-    return false
+    return vmerror.Error{
+      Message: "数据格式错误",
+    }
   }
 
   for _,v := range d {
     _, err := strconv.Atoi(v)
     if err != nil {
-      return false
+      return vmerror.Error{
+        Message: "数据格式错误",
+      }
     }
   }
 
@@ -139,12 +147,16 @@ func Createip(startip string, endip string, vlan string) bool {
   endnum, _ := strconv.Atoi(d[3])
 
   if startnum > endnum {
-    return false
+    return vmerror.Error{
+      Message: "数据格式错误",
+    }
   }
 
-  dbs, err := db.NicloudDb()
-  if err != nil {
-    return false
+  dbs, err1 := db.NicloudDb()
+  if err1 != nil {
+    return vmerror.Error{
+      Message: err1.Error(),
+    }
   }
   for i:= startnum; i <= endnum ; i++ {
     i := &Vms_ips{
@@ -155,11 +167,11 @@ func Createip(startip string, endip string, vlan string) bool {
     }
     err := dbs.Create(*i)
     if err.Error != nil {
-      return false
+      return err.Error
     }
     dbs.NewRecord(*i)
   }
-  return true
+  return nil
 }
 
 

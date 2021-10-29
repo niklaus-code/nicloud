@@ -46,8 +46,8 @@ func CreateIp(c *gin.Context) {
   vlan := c.Query("vlan")
   res := make(map[string]interface{})
 
-  b := networks.Createip(startip, endip, vlan)
-  res["res"] = b
+  err := networks.Createip(startip, endip, vlan)
+  res["res"] = err
   c.JSON(200, res)
 }
 

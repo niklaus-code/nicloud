@@ -3,7 +3,7 @@
 	<nicloudhead></nicloudhead>
 	<vmleft></vmleft>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
-		<div class="col-sm-6 col-sm-offset-3" style="margin-top:20px">
+		<div class="col-sm-10 col-sm-offset-1" style="margin-top:20px">
 			<router-link :to="{name:'createhost'}">
 				<button class="btn btn-success btn-sm" type="button">创建</button>
 			</router-link>
@@ -31,8 +31,8 @@
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
         				<td>{{item.Ipv4}}</td>
-        				<td>{{item.Usedcpu}}/{{item.Cpu}}</td>
-        				<td>{{item.Usedmem}}/{{item.Mem}}</td>
+        				<td>{{item.Usedcpu}}核/{{item.Cpu}}核</td>
+        				<td>{{item.Usedmem}}G/{{item.Mem}}G</td>
         				<td>{{item.Vlan}}</td>
         				<td>{{item.count}}/{{item.Max_vms}}</td>
         				<td>test</td>
