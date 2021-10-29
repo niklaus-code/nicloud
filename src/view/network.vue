@@ -33,7 +33,10 @@
         				<td>{{item.Bridge}}</td>
         				<td>{{item.Network}}/{{item.Prefix}}</td>
         				<td>{{item.Gateway}}</td>
-        				<td>{{item.Status}}</td>
+						 <td>
+                            <span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
+                            <span v-else class="glyphicon glyphicon-remove"></span>
+                        </td>
 		    			<td>
 							<button class="btn btn-success btn-xs" type="button" @click="addip(item)">
                 				增加IP
