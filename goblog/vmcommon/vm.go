@@ -10,6 +10,7 @@ import (
   "goblog/libvirtd"
   "goblog/networks"
   "time"
+  vmerror "goblog/vmerror"
 )
 
 type Vms struct {
@@ -48,7 +49,6 @@ type Vm_xmls struct {
 	Osxml  string
 }
 
-
 func VmStatus(uuid string, host string) (string, error) {
 	conn, err := libvirtd.Libvirtconn(host)
 
@@ -67,16 +67,6 @@ func VmStatus(uuid string, host string) (string, error) {
 	}
 
 	return libvirtd.Vmstate[state], err1
-}
-
-
-type Error struct {
-	Code    int16
-	Message string
-}
-
-func (err Error) Error() string {
-	return fmt.Sprintf("vm is running, con't delete")
 }
 
 type Vms_archive struct {
@@ -98,11 +88,16 @@ func Delete(uuid string) ([]*Vms, error) {
 	}
 
 	if vmstat == "运行" {
-		return nil, Error{
-			Code:    501,
+		return nil, vmerror.Error{
 			Message: "vm is running, con't delete",
 		}
 	}
+
+  if vmstat == "暂停" {
+    return nil, vmerror.Error{
+      Message: "vm is paused, con't delete",
+    }
+  }
 
   dbs, err := db.NicloudDb()
   if err != nil {
@@ -306,8 +301,9 @@ func MigrateVm(uuid string, migrate_host string) error {
 }
 
 func Create(cpu int, mem int, ip string, mac string, host string, image string) (bool, error) {
-  if networks.Ipresource(ip, mac) {
-    return false, nil
+  err := networks.Ipresource(ip, mac)
+  if err != nil {
+    return false, err
   }
 
 	/*create a vm*/
@@ -326,15 +322,15 @@ func Create(cpu int, mem int, ip string, mac string, host string, image string) 
 	f, err := ceph.Xml(vcpu, vmem, u, mac, imge_name, image)
 
 	err = libvirtd.DefineVm(f, host)
+
 	if err != nil {
 	  return false, err
   }
 
-  hosterr := Updatehost(host, cpu, mem)
-  if hosterr == false {
-    return hosterr, nil
+  err = Updatehost(host, cpu, mem)
+  if  err != nil {
+    return false, err
   }
-
 	svm, err := savevm(u, cpu, mem, f, ip, host, image)
 	if err != nil {
 	  return svm, err

@@ -2,6 +2,7 @@ package vmcommon
 
 import (
   db "goblog/dbs"
+  "goblog/vmerror"
   "reflect"
 )
 
@@ -33,17 +34,6 @@ func Allhosts(obj []Vm_hosts) []map[string]interface{}  {
   return mapc
 }
 
-func Hosts() []map[string]interface{} {
-  db, err := db.NicloudDb()
-  if err != nil {
-    return nil
-  }
-  var hosts []Vm_hosts
-  db.Where("status=1").Find(&hosts)
-
-  res := Allhosts(hosts)
-  return res
-}
 
 func CountHosts(ip string) int {
   db, err := db.NicloudDb()
@@ -82,44 +72,51 @@ func Createhost(cpu int, mem int, ip string, num int) bool {
   return res
 }
 
-func getcpumem(ip string, cpu int, mem int) map[string]int {
+func getcpumem(ip string, cpu int, mem int) (map[string]int, error) {
   db, err := db.NicloudDb()
   if err != nil {
-    return nil
+    return nil, nil
   }
   v := &Vm_hosts{}
   db.Where("ipv4 = ?", ip).Find(&v)
   c := make(map[string]int)
 
   if cpu + v.Usedcpu > v.Cpu {
-    return nil
+    return nil, vmerror.Error{
+      Message: "cpu资源不够",
+    }
   }
   if mem + v.Usedmem > v.Mem {
-    return nil
+    return nil, vmerror.Error{
+      "内存资源不够",
+    }
   }
   c["cpu"] = cpu + v.Usedcpu
   c["mem"] = mem +v.Usedmem
-  return c
+
+  return c, nil
 }
 
-func Updatehost(ip string, cpu int, mem int) bool {
+func Updatehost(ip string, cpu int, mem int) error {
   db, err := db.NicloudDb()
   if err != nil {
-    return false
+    return err
   }
 
-  t := getcpumem(ip, cpu, mem)
-  if t == nil {
-    return false
+  t, err := getcpumem(ip, cpu, mem)
+  if err != nil {
+    return err
   }
+
+
   c := t["cpu"]
   m := t["mem"]
 
   err1 := db.Model(&Vm_hosts{}).Where("ipv4=?", ip).Update("usedcpu", c).Update("usedmem", m)
   if err1.Error != nil {
-    return false
+    return err1.Error
   }
-  return true
+  return nil
 }
 
 func Delhost(ip string) bool {
@@ -144,3 +141,17 @@ func Gethostinfo(ip string) []map[string]interface{} {
   res := Allhosts(v)
   return res
 }
+
+
+func Hosts() []map[string]interface{} {
+    db, err := db.NicloudDb()
+    if err != nil {
+        return nil
+      }
+    var hosts []Vm_hosts
+    db.Where("status=1").Find(&hosts)
+
+      res := Allhosts(hosts)
+    return res
+  }
+

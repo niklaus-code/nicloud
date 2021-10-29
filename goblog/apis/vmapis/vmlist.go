@@ -80,10 +80,6 @@ func Createvm(c *gin.Context) {
   image := c.Query("image")
 	create, err := vmcommon.Create(cpu, mem, ip, mac, host, image)
   res := make(map[string]interface{})
-	if err != nil {
-    res["err"] = string(err.Error())
-    res["res"] = create
-  }
 
 	res["res"] = create
   res["err"] = err

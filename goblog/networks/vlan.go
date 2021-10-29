@@ -3,6 +3,7 @@ package networks
 import (
   "fmt"
   "goblog/dbs"
+  vmerror "goblog/vmerror"
   "math/rand"
   "strconv"
   "strings"
@@ -69,7 +70,6 @@ type Vms_ips struct {
   Vlan string
 }
 
-
 func IPlist(vlan string) []*Vms_ips {
   dbs, err := db.NicloudDb()
   if err != nil {
@@ -81,19 +81,21 @@ func IPlist(vlan string) []*Vms_ips {
   return ip
 }
 
-func Ipresource(ip string, mac string) bool {
+func Ipresource(ip string, mac string) error {
   dbs, err := db.NicloudDb()
   if err != nil {
-    return false
+    return err
   }
   var ipnet []*Vms_ips
   dbs.Where("ipv4=?", ip).Where("macaddr=?", mac).Find(&ipnet)
   for _, v := range ipnet {
-    if v.Status == 0 {
-      return false
+    if v.Status == 1 {
+      return vmerror.Error{
+        Message: "IP已经被占用",
+      }
     }
   }
-  return true
+  return nil
 }
 
 func Updateipstatus(ipv4 string) (error) {
@@ -161,17 +163,17 @@ func Createip(startip string, endip string, vlan string) bool {
 }
 
 
-type Mac [6]byte
+type Mac [4]byte
 
 func (m Mac) String() string {
-  return fmt.Sprintf("%02x:%02x:%02x:%02x:%02x:%02x",m[0],m[1],m[2],m[3],m[4],m[5])
+  return fmt.Sprintf("c8:00:%02x:%02x:%02x:%02x",m[0],m[1],m[2],m[3])
 }
 
 func NewRandomMac() Mac{
-  var m [6]byte
+  var m [4]byte
 
   rand.Seed(time.Now().UnixNano())
-  for i:=0;i<6;i++ {
+  for i:=0;i<4;i++ {
     mac_byte := rand.Intn(256)
     m[i] = byte(mac_byte)
 
