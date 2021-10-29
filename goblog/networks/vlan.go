@@ -98,12 +98,12 @@ func Ipresource(ip string, mac string) error {
   return nil
 }
 
-func Updateipstatus(ipv4 string) (error) {
+func Updateipstatus(ipv4 string, status int) (error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return err
   }
-  dbs.Model(&Vms_ips{}).Where("ipv4=?", ipv4).Update("status", 1)
+  dbs.Model(&Vms_ips{}).Where("ipv4=?", ipv4).Update("status", status)
   return nil
 }
 

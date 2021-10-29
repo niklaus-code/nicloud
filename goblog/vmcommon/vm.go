@@ -115,7 +115,7 @@ func Delete(uuid string) ([]*Vms, error) {
   }
 
 	dbs.Model(&Vms{}).Where("uuid=?", uuid).Delete(&Vms{})
-	err = networks.Updateipstatus(vminfo.Ip)
+	err = networks.Updateipstatus(vminfo.Ip, 0)
 	if err != nil {
 	  return nil, err
   }
@@ -336,7 +336,7 @@ func Create(cpu int, mem int, ip string, mac string, host string, image string) 
 	  return svm, err
   }
 
-  err = networks.Updateipstatus(ip)
+  err = networks.Updateipstatus(ip, 1)
   if err != nil {
     return false, err
   }
