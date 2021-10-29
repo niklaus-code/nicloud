@@ -38,7 +38,7 @@
 							<button class="btn btn-success btn-xs" type="button" @click="addip(item)">
                 				增加IP
             				</button>
-							<button class="btn btn-success btn-xs" type="button" @click="">
+							<button class="btn btn-success btn-xs" type="button" @click="ips(item.Vlan)">
                 				查看IP
             				</button>
 							<button class="btn btn-danger btn-xs" type="button" @click="">
@@ -80,6 +80,16 @@ export default {
 		},
 
     methods: {
+		ips: function (vlan) {
+			let vlanObj = vlan 
+			this.$router.push({
+    		path: '/ips',
+    			query: { 
+        			'vlan': vlanObj
+    			}
+			}) 
+			},
+
 		addip: function (vlan) {
 			let vlanObj = JSON.stringify(vlan)
 			this.$router.push({
@@ -89,6 +99,7 @@ export default {
     			}
 			}) 
 			},
+
 		delhost: function (ip, index) {
 			this.data[index].Status = 0
             var apiurl = `/api/vm/delhost`

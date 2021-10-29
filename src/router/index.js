@@ -16,12 +16,18 @@ import migratevm from '@/view/migratevm'
 import network from '@/view/network'
 import createvlan from '@/view/createvlan'
 import createip from '@/view/createip'
+import ips from '@/view/ips'
 
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/ips',
+      name: 'ips',
+      component: ips
+    },
     {
       path: '/createip',
       name: 'createip',
