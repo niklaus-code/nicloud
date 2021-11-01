@@ -4,9 +4,11 @@ package main
 import (
   "github.com/gin-gonic/gin"
   "goblog/apis"
+  "goblog/apis/hostapis"
   "goblog/apis/machineapis"
   "goblog/apis/networkapis"
   "goblog/apis/vmapis"
+  "goblog/apis/osimage"
 )
 
 func main() {
@@ -26,17 +28,12 @@ func main() {
 		v2.GET("create", vmapis.Createvm)
 		v2.GET("operation/:id", vmapis.Operation)
 		v2.GET("delete", vmapis.DeleteVM)
-		v2.GET("getimage", vmapis.GetImage)
-    v2.GET("gethosts", vmapis.GetHosts)
 		v2.GET("getflavor", vmapis.GetFlavor)
     v2.GET("vnc", vmapis.Vnc)
     v2.GET("search", vmapis.Search)
     v2.GET("getstatus", vmapis.GetVmStatus)
     v2.GET("addcomment", vmapis.Addcomment)
-    v2.GET("createhost", vmapis.Createhost)
-    v2.GET("delhost", vmapis.Delhost)
     v2.GET("getvminfo", vmapis.GetVminfo)
-    v2.GET("gethostinfo", vmapis.Gethostinfo)
     v2.GET("migratevm", vmapis.MigrateVm)
 	}
 
@@ -60,6 +57,19 @@ func main() {
     v4.GET("createip", networkapis.CreateIp)
     v4.GET("downip", networkapis.DownIp)
     v4.GET("upip", networkapis.UpIp)
+  }
+
+  v5 := r.Group("/api/hosts")
+  {
+    v5.GET("delhost", hostapis.Delhost)
+    v5.GET("gethostinfo", hostapis.Gethostinfo)
+    v5.GET("createhost", hostapis.Createhost)
+    v5.GET("gethosts", hostapis.GetHosts)
+  }
+
+  v6 := r.Group("/api/osimage")
+  {
+    v6.GET("getimage", osimage.GetImage)
   }
 	r.Run("127.0.0.1:1992")
 }

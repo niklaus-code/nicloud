@@ -9,6 +9,7 @@ import (
   "goblog/dbs"
   "goblog/libvirtd"
   "goblog/networks"
+  "goblog/osimage"
   "time"
   vmerror "goblog/vmerror"
 )
@@ -324,7 +325,7 @@ func Create(cpu int, mem int, ip string, mac string, host string, image string) 
 	 return false, err
   }
 
-	f, err := ceph.Xml(vcpu, vmem, u, mac, imge_name, image)
+	f, err := osimage.Xml(vcpu, vmem, u, mac, imge_name, image)
 
 	err = libvirtd.DefineVm(f, host)
 
@@ -385,21 +386,6 @@ func SearchVm(c string) ([]*Vms, error) {
   i := fmt.Sprintf("ip like %s", "'"+c+"%'")
   dbs.Where(i).Find(&v)
 
-  return v, nil
-}
-
-type Vms_os struct {
-  Osname string
-  Snapimage string
-}
-
-func GetImages() ([]*Vms_os, error) {
-  dbs, err := db.NicloudDb()
-  if err != nil {
-    return nil, err
-  }
-  var v []*Vms_os
-  dbs.Find(&v)
   return v, nil
 }
 

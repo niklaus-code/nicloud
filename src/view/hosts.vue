@@ -76,7 +76,7 @@ export default {
     methods: {
 		delhost: function (ip, index) {
 			this.data[index].Status = 0
-            var apiurl = `/api/vm/delhost`
+            var apiurl = `/api/hosts/delhost`
             this.$http.get(apiurl, { params: {ip: ip} } ).then(response => {
             	if (response.data.res) {
 					alert("删除成功")
@@ -85,7 +85,7 @@ export default {
         },
 
 		gethost: function (ip) {
-            var apiurl = `/api/vm/gethosts`
+            var apiurl = `/api/hosts/gethosts`
             this.$http.get(apiurl).then(response => {
             	this.data = response.data.res
             })

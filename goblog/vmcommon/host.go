@@ -1,7 +1,6 @@
 package vmcommon
 
 import (
-  "fmt"
   db "goblog/dbs"
   "goblog/vmerror"
   "reflect"
@@ -46,8 +45,6 @@ func CountHosts(ip string) int {
   db.Model(&Vms{}).Where("host=?", ip).Count(&c)
   return c
 }
-
-
 
 func Createhost(cpu int, mem int, ip string, num int, vlan string) bool {
   db, err := db.NicloudDb()
@@ -107,7 +104,7 @@ func Freehost(ip string, cpu int, mem int) error {
   }
   var v Vm_hosts
   db.Where("ipv4 = ?", ip).Find(&v)
-  fmt.Println(v.Usedmem, mem)
+
   db.Model(&Vm_hosts{}).Where("ipv4=?", v.Ipv4).Update("usedcpu", v.Usedcpu-cpu)
   db.Model(&Vm_hosts{}).Where("ipv4=?", v.Ipv4).Update("usedmem", v.Usedmem-mem)
   return nil

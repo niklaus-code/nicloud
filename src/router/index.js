@@ -17,12 +17,18 @@ import network from '@/view/network'
 import createvlan from '@/view/createvlan'
 import createip from '@/view/createip'
 import ips from '@/view/ips'
+import osimage from '@/view/osimage'
 
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/osimage',
+      name: 'osimage',
+      component: osimage
+    },
     {
       path: '/ips',
       name: 'ips',

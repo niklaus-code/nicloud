@@ -26,7 +26,7 @@ export default {
 					},
 				{
 				name: "镜像",
-				router: "os"
+				router: "osimage"
 					},
 				{
 				name: "网络",

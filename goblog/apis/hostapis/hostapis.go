@@ -1,4 +1,4 @@
-package vmapis
+package hostapis
 
 import (
   "github.com/gin-gonic/gin"
@@ -44,5 +44,3 @@ func Gethostinfo(c *gin.Context) {
 
   c.JSON(200, res)
 }
-
-

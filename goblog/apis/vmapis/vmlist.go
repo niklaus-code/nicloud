@@ -87,16 +87,6 @@ func Createvm(c *gin.Context) {
 	c.JSON(200, res)
 }
 
-func GetImage(c *gin.Context) {
-
-  res := make(map[string]interface{})
-  r, err := vmcommon.GetImages()
-
-  res["res"] = r
-  res["err"] = err
-  c.JSON(200, res)
-}
-
 func Addcomment(c *gin.Context) {
   uuid := c.Query("uuid")
   comment := c.Query("comment")
