@@ -150,7 +150,7 @@ export default {
 			},
 
         getimage: function () {
-            var apiurl = `/api/vm/getimage`
+            var apiurl = `/api/osimage/getimage`
             this.$http.get(apiurl).then(response => {
             this.imagelist = response.data.res
 			this.imagevalue = response.data.res[0].Osname
@@ -158,7 +158,7 @@ export default {
         },
 
         gethosts: function () {
-            var apiurl = `/api/vm/gethosts`
+            var apiurl = `/api/hosts/gethosts`
             this.$http.get(apiurl).then(response => {
             this.hostlist = response.data.res
 			this.hostvalue = response.data.res[0].Ipv4

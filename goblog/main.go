@@ -4,11 +4,12 @@ package main
 import (
   "github.com/gin-gonic/gin"
   "goblog/apis"
+  "goblog/apis/cephapis"
   "goblog/apis/hostapis"
   "goblog/apis/machineapis"
   "goblog/apis/networkapis"
-  "goblog/apis/vmapis"
   "goblog/apis/osimage"
+  "goblog/apis/vmapis"
 )
 
 func main() {
@@ -70,6 +71,15 @@ func main() {
   v6 := r.Group("/api/osimage")
   {
     v6.GET("getimage", osimage.GetImage)
+    v6.GET("createimage", osimage.AddImage)
+    v6.GET("delimage", osimage.DelImage)
   }
+
+  v7 := r.Group("/api/ceph")
+  {
+    v7.GET("getceph", cephapis.GetCephinfo)
+    v7.GET("addceph", cephapis.Addceph)
+  }
+
 	r.Run("127.0.0.1:1992")
 }

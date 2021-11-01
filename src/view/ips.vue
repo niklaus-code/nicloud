@@ -69,7 +69,7 @@ export default {
     },
 
 
-	  created: function () {
+	created: function () {
         this.vlaninfo()
     },
 

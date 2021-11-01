@@ -14,14 +14,28 @@ import (
 
 type Vms_os struct {
   Osname string
+  Cephblockdevice string
   Snapimage string
   Xml string
   Status int8
 }
 
-func Add(osname string, snapimage string, xml string) error {
+func Del(osname string) error {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+  err1 := dbs.Model(Vms_os{}).Where("osname=?", osname).Update("status", 0)
+  if err1.Error != nil {
+    return err1.Error
+  }
+  return nil
+}
+
+func Add(osname string, cephblockdevice string, snapimage string, xml string) error {
   os := &Vms_os{
     Osname: osname,
+    Cephblockdevice: cephblockdevice,
     Snapimage: snapimage,
     Xml: xml,
     Status: 1,
@@ -30,6 +44,7 @@ func Add(osname string, snapimage string, xml string) error {
   if err != nil {
     return err
   }
+
   errdb := dbs.Create(*os)
   if errdb.Error != nil {
     return errdb.Error

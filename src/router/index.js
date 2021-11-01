@@ -18,12 +18,30 @@ import createvlan from '@/view/createvlan'
 import createip from '@/view/createip'
 import ips from '@/view/ips'
 import osimage from '@/view/osimage'
+import createosimage from '@/view/createosimage'
+import ceph from '@/view/ceph'
+import createceph from '@/view/createceph'
 
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/createceph',
+      name: 'createceph',
+      component: createceph
+    },
+    {
+      path: '/ceph',
+      name: 'ceph',
+      component: ceph
+    },
+    {
+      path: '/createosimage',
+      name: 'createosimage',
+      component: createosimage
+    },
     {
       path: '/osimage',
       name: 'osimage',
