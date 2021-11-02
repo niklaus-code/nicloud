@@ -37,10 +37,11 @@
         				<td>{{item.Ceph_secret}}</td>
         				<td>{{item.Ips}}/{{item.Port}}</td>
         				<td>{{item.Comment}}</td>
-        				<td>{{item.Status}}</td>
+						<span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
+                        <span v-else class="glyphicon glyphicon-remove"></span>
 		    			<td>
-							<button class="btn btn-info btn-xs" type="button" @click="delhost(item.Ipv4, index)">
-                				删除
+							<button class="btn btn-info btn-xs" type="button" @click="restore(item.Name, item.Status, index)">
+                				重置
             				</button>
         				</td>
 					</tr>
@@ -72,13 +73,20 @@ export default {
 		},
 
     methods: {
-		delhost: function (ip, index) {
+		restore: function (name, status, index) {
 			this.data[index].Status = 0
-            var apiurl = `/api/hosts/delhost`
-            this.$http.get(apiurl, { params: {ip: ip} } ).then(response => {
-            	if (response.data.res) {
-					alert("删除成功")
-					}
+            var apiurl = `/api/ceph/restore`
+            this.$http.get(apiurl, { params: {name: name, status: status} } ).then(response => {
+			   if (response.data.res === null) {
+                    alert("重置成功")
+                    if (status) {
+                        this.data[index].Status = 0
+                    } else {
+                        this.data[index].Status = 1
+                        }
+                    } else {
+                    alert("重置失败('"+response.data.res.Message+"')")  
+                }
             })
         },
 

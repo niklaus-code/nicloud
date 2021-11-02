@@ -3,6 +3,8 @@ package cephapis
 import (
   "github.com/gin-gonic/gin"
   "goblog/ceph"
+  "goblog/vmerror"
+  "strconv"
 )
 
 func GetCephinfo(c *gin.Context) {
@@ -10,6 +12,24 @@ func GetCephinfo(c *gin.Context) {
   res := make(map[string]interface{})
   res["res"] = cephinfo
   res["err"] = err
+
+  c.JSON(200, res)
+}
+
+func Restore(c *gin.Context) {
+  res := make(map[string]interface{})
+  name := c.Query("name")
+  status, err := strconv.Atoi(c.Query("status"))
+  if err != nil {
+      err = vmerror.Error{
+        Message: "参数错误",
+      }
+      res["res"] = err
+      c.JSON(400, res)
+  }
+
+  err = ceph.Restore(name, status)
+  res["res"] = err
 
   c.JSON(200, res)
 }

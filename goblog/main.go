@@ -81,6 +81,7 @@ func main() {
   {
     v7.GET("getceph", cephapis.GetCephinfo)
     v7.GET("addceph", cephapis.Addceph)
+    v7.GET("restore", cephapis.Restore)
   }
 
   v8 := r.Group("/api/datacenter")

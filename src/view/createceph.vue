@@ -4,18 +4,21 @@
 	<vmleft></vmleft>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div class="col-sm-8 col-sm-offset-1" style="margin-top:20px">
+				<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>数据中心</label>
 				</div>
 				<div class="col-sm-8">
-					<form role="form">
-  						<div class="form-group">
-    						<input type="text" class="form-control" v-model="datacenter" placeholder="">
-  						</div>
-					</form>
+					                   <select class="col-sm-12" v-model="centervalue">
+                        <option  v-for="c in datacenter" :value="c.Datacenter">
+                            {{ c.Datacenter }}
+                        </option>
+                    </select>
 				</div>
     		</div>
+    		</div>
+				<div class="col-sm-12" style="margin-top:20px">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>ceph名称</label>
@@ -27,7 +30,9 @@
   						</div>
 					</form>
 				</div>
+				</div>
     		</div>
+				<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>数据池</label>
@@ -39,7 +44,9 @@
   						</div>
 					</form>
 				</div>
+				</div>
     		</div>
+				<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>密钥</label>
@@ -51,7 +58,9 @@
   						</div>
 					</form>
 				</div>
+				</div>
     		</div>
+				<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>hosts</label>
@@ -63,7 +72,9 @@
   						</div>
 					</form>
 				</div>
+				</div>
     		</div>
+				<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>端口</label>
@@ -75,7 +86,9 @@
   						</div>
 					</form>
 				</div>
+				</div>
     		</div>
+				<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>备注</label>
@@ -86,6 +99,7 @@
     						<input type="text" class="form-control" v-model="comment" placeholder="">
   						</div>
 					</form>
+				</div>
 				</div>
     		</div>
 		<div class="form-group" style="margin-top:20px" >
@@ -106,9 +120,11 @@ import vmleft from '@/components/vmleft'
 export default {
     data () {
         return {
+			centervalue: "",
+            datacenter: [],
+
 			name: "",
 			pool: "",
-			datacenter: "",
 			ceph_secret: "",
 			ips: "",
 			port: "",
@@ -120,7 +136,26 @@ export default {
         foot, nicloudhead, vmleft
     },
 
+	mounted: function() {
+        this.getdatacenter()
+        },
+
     methods: {
+        getdatacenter: function () {
+            var apiurl = `/api/datacenter/getdatacenter`
+            
+            this.$http.get(apiurl).then(response => {
+                if (response.data.err === null) {
+                    this.datacenter = response.data.res
+                    this.centervalue = response.data.res[0].Datacenter
+                } else {
+                    alert("获取数据失败(" + response.data.err.Message+ ")" )
+                    }
+            })
+            },
+
+	
+
 		check: function (osname, cephblockdevice, snapimage, xml) {
 			if (typeof osname === 'undefined' || osname === null || osname === ''|| typeof cephblockdevice === 'undefined' || cephblockdevice === null || cephblockdevice === '' || typeof snapimage === 'undefined' || snapimage === null || snapimage === '' ||typeof xml === 'undefined' || xml === null || xml === '') {
 				alert("缺少信息")
@@ -133,7 +168,7 @@ export default {
 		createceph: function () {
             var apiurl = `/api/ceph/addceph`
 
-            this.$http.get(apiurl, { params: { name: this.name, pool: this.pool, datacenter: this.datacenter, ceph_secret: this.ceph_secret, port: this.port, ips: this.ips, comment: this.comment} }).then(response => {
+            this.$http.get(apiurl, { params: { name: this.name, pool: this.pool, datacenter: this.centervalue, ceph_secret: this.ceph_secret, port: this.port, ips: this.ips, comment: this.comment} }).then(response => {
 				if (response.data.res === null) {
 					alert("创建成功!")
 					this.$router.push('/ceph')
@@ -148,12 +183,18 @@ export default {
 </script>
 <style scoped>
 
+.form-control {
+    height:30px;
+}
+
 .col-sm-4 label{
 	float: right;
 }
+
 select{
+	height:30px;
     font-family: "微软雅黑";
-    border: 1px #1a1a1a solid;
+    border: 1px #ccc solid;
     border-radius: 5px;
 }
 

@@ -18,6 +18,29 @@ type Vms_Ceph struct {
   Status int8
 }
 
+
+func Restore(vlan string, status int) error {
+  var s int
+
+  if status == 0 {
+    s = 1
+  } else {
+    s = 0
+  }
+
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  dberr := dbs.Model(Vms_Ceph{}).Where("name=?", vlan).Update("status", s)
+  if dberr.Error != nil {
+    return dberr.Error
+  }
+
+  return nil
+}
+
 func Add(name string, pool string, datacenter string, ceph_secret string, ips string, port string, comment  string) error {
   c := &Vms_Ceph{
     Name: name,
