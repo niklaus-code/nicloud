@@ -11,6 +11,7 @@ import (
 )
 
 type Vms_vlans struct {
+  Datacenter string
   Vlan string
   Bridge string
   Network string
@@ -19,8 +20,31 @@ type Vms_vlans struct {
   Status bool
 }
 
-func AddVlan(vlan string, bridge string, network string, prefix int, gateway string) error {
+func Restore(vlan string, status string) error {
+  var s bool
+
+  if status == "false" {
+    s = true
+  } else {
+    s = false
+  }
+
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  dberr := dbs.Model(Vms_vlans{}).Where("vlan=?", vlan).Update("status", s)
+  if dberr.Error != nil {
+    return dberr.Error
+  }
+
+  return nil
+}
+
+func AddVlan(datacenter string, vlan string, bridge string, network string, prefix int, gateway string) error {
   v := &Vms_vlans{
+    Datacenter: datacenter,
     Vlan: vlan,
     Bridge: bridge,
     Network: network,
@@ -62,7 +86,6 @@ func split(item string) (bool, []string) {
   return true, l
 }
 
-
 type Vms_ips struct {
   Ipv4 string
   Macaddr string
@@ -80,7 +103,6 @@ func AllIP(vlan string) []*Vms_ips {
 
   return ip
 }
-
 
 func IPlist(vlan string) []*Vms_ips {
   dbs, err := db.NicloudDb()

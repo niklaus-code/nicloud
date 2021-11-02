@@ -15,6 +15,7 @@
             					<input type="checkbox" v-model="checkvalue" @click="checkbox()">
         					</label>
         				</th>
+        				<th>数据中心</th>
         				<th>vlan</th>
         				<th>网桥</th>
         				<th>地址段</th>
@@ -25,10 +26,11 @@
     			</thead>
 
 				<tbody v-for="(item, index) in data">
-      				<tr v-if="item.Status" class="table-dark text-dark" :id="item.Uuid">
+      				<tr class="table-dark text-dark" :id="item.Uuid">
         				<label class="checkbox-inline">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
+        				<td>{{item.Datacenter}}</td>
         				<td>{{item.Vlan}}</td>
         				<td>{{item.Bridge}}</td>
         				<td>{{item.Network}}/{{item.Prefix}}</td>
@@ -44,8 +46,8 @@
 							<button class="btn btn-success btn-xs" type="button" @click="ips(item.Vlan)">
                 				查看IP
             				</button>
-							<button class="btn btn-danger btn-xs" type="button" @click="">
-                				删除
+							<button class="btn btn-danger btn-xs" type="button" @click="restore(item.Vlan, item.Status, index)">
+                				重置
             				</button>
         				</td>
 					</tr>
@@ -67,10 +69,6 @@ export default {
     data () {
         return {
 			data: [],
-			cpu: "",
-			mem: "",
-			ip: "",
-			num: "",
         }
     },
 
@@ -103,13 +101,19 @@ export default {
 			}) 
 			},
 
-		delhost: function (ip, index) {
-			this.data[index].Status = 0
-            var apiurl = `/api/vm/delhost`
-            this.$http.get(apiurl, { params: {ip: ip} } ).then(response => {
-            	if (response.data.res) {
-					alert("删除成功")
-					}
+		restore: function (vlan, status, index) {
+            var apiurl = `/api/networks/restore`
+            this.$http.get(apiurl, { params: { vlan: vlan, status: status} } ).then(response => {
+            	if (response.data.res === null) {
+					alert("重置成功")
+					if (status) {
+						this.data[index].Status = false
+					} else {
+						this.data[index].Status = true
+						}
+					} else {
+					alert("创建失败('"+response.data.res.Message+"')")	
+				}
             })
         },
 

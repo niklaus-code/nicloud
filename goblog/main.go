@@ -10,6 +10,7 @@ import (
   "goblog/apis/networkapis"
   "goblog/apis/osimage"
   "goblog/apis/vmapis"
+  "goblog/apis/datacenterapis"
 )
 
 func main() {
@@ -58,6 +59,7 @@ func main() {
     v4.GET("createip", networkapis.CreateIp)
     v4.GET("downip", networkapis.DownIp)
     v4.GET("upip", networkapis.UpIp)
+    v4.GET("restore", networkapis.Restore)
   }
 
   v5 := r.Group("/api/hosts")
@@ -79,6 +81,11 @@ func main() {
   {
     v7.GET("getceph", cephapis.GetCephinfo)
     v7.GET("addceph", cephapis.Addceph)
+  }
+
+  v8 := r.Group("/api/datacenter")
+  {
+    v8.GET("getdatacenter", datacenterapis.GetDatacenter)
   }
 
 	r.Run("127.0.0.1:1992")

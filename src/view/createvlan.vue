@@ -3,7 +3,22 @@
 	<nicloudhead></nicloudhead>
 	<vmleft></vmleft>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
-		<div class="col-sm-2 col-sm-offset-4" style="margin-top:20px">
+		<div class="col-sm-3 col-sm-offset-4" style="margin-top:20px">
+				<div class="col-sm-12">
+	 		<div class="form-group">
+				<div class="col-sm-4">
+        			<label>数据中心</label>
+				</div>
+				<div class="col-sm-8">
+				    <select class="col-sm-12" v-model="centervalue">
+                        <option  v-for="c in datacenter" :value="c.Datacenter">
+                            {{ c.Datacenter }}
+                        </option>
+                    </select>
+				</div>
+    		</div>
+				</div>
+				<div class="col-sm-12" style="margin-top:20px">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>vlan</label>
@@ -16,6 +31,8 @@
 					</form>
 				</div>
     		</div>
+				</div>
+				<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>网桥</label>
@@ -28,6 +45,8 @@
 					</form>
 				</div>
     		</div>
+    		</div>
+				<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>地址段</label>
@@ -40,6 +59,8 @@
 					</form>
 				</div>
     		</div>
+    		</div>
+				<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>子网掩码</label>
@@ -52,6 +73,8 @@
 					</form>
 				</div>
     		</div>
+    		</div>
+				<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>网关</label>
@@ -64,10 +87,13 @@
 					</form>
 				</div>
     		</div>
+    		</div>
+				<div class="col-sm-12">
 		<div class="form-group" style="margin-top:20px" >
 			<div class="col-sm-2 col-sm-offset-4">
   				<button type="submit" @click="createvlan" class="btn btn-default btn-sm">提交</button>
 			</div>
+		</div>
 		</div>
 		</div>
 	</div>		
@@ -82,6 +108,8 @@ import vmleft from '@/components/vmleft'
 export default {
     data () {
         return {
+			centervalue: "",
+			datacenter: [],
 			vlan: "",
 			bridge: "",
 			network: "",
@@ -94,10 +122,14 @@ export default {
         foot, nicloudhead, vmleft
     },
 
+	mounted: function() {
+		this.getdatacenter()
+		},
 
     methods: {
-		check: function (vlan, bridge, network, prefix, gateway) {
-			if (typeof vlan === 'undefined' || vlan === null || vlan === ''|| typeof bridge === 'undefined' || bridge === null || bridge === '' || typeof network === 'undefined' || network === null || network === '' ||typeof prefix === 'undefined' || prefix === null || prefix === ''|| typeof gateway === 'undefined' || gateway === null || gateway === '' ) {
+		check: function (datacenter, vlan, bridge, network, prefix, gateway) {
+			if (typeof datacenter === 'undefined' || datacenter === null || datacenter === ''|| typeof vlan === 'undefined' || vlan === null || vlan === ''|| typeof bridge === 'undefined' || bridge === null || bridge === '' || typeof network === 'undefined' || network === null || network === '' ||typeof prefix === 'undefined' || prefix === null || prefix === ''|| typeof gateway === 'undefined' || gateway === null || gateway === '' ) {
+
 				alert("缺少信息")
                 return true
             } else {
@@ -105,15 +137,28 @@ export default {
 				}
 			},
 
+		getdatacenter: function () {
+            var apiurl = `/api/datacenter/getdatacenter`
+			
+            this.$http.get(apiurl).then(response => {
+				if (response.data.err === null) {
+					this.datacenter = response.data.res
+					this.centervalue = response.data.res[0].Datacenter
+				} else {
+					alert("获取数据失败(" + response.data.err.Message+ ")" )
+					}
+			})
+			},
+
 		createvlan: function () {
-			if (this.check(this.vlan, this.bridge, this.network, this.prefix,this.gateway)) {
+			if (this.check(this.datacenter, this.vlan, this.bridge, this.network, this.prefix,this.gateway)) {
 				return 
 				}
 		
 
             var apiurl = `/api/networks/createvlan`
 
-            this.$http.get(apiurl, { params: { vlan: this.vlan, bridge:this.bridge, network: this.network, prefix: this.prefix, gateway: this.gateway} }).then(response => {
+            this.$http.get(apiurl, { params: {datacenter: this.centervalue,  vlan: this.vlan, bridge:this.bridge, network: this.network, prefix: this.prefix, gateway: this.gateway} }).then(response => {
 				if (response.data.res) {
 					alert("创建成功! 是否查看宿主机列表")
 					this.$router.push('/network')
@@ -127,13 +172,17 @@ export default {
   }
 </script>
 <style scoped>
+.form-control {
+	height:30px;
+}
 
 .col-sm-4 label{
 	float: right;
 }
 select{
+	height:30px;
     font-family: "微软雅黑";
-    border: 1px #1a1a1a solid;
+    border: 1px #ccc solid;
     border-radius: 5px;
 }
 

@@ -12,8 +12,9 @@ func Add(c *gin.Context) {
   network := c.Query("network")
   prefix, err := strconv.Atoi(c.Query("prefix"))
   gateway := c.Query("gateway")
+  datacenter := c.Query("datacenter")
 
-  err1 := networks.AddVlan(vlan, bridge, network, prefix, gateway)
+  err1 := networks.AddVlan(datacenter, vlan, bridge, network, prefix, gateway)
   res := make(map[string]interface{})
   if err != nil {
     res["err"] = err
@@ -37,6 +38,17 @@ func Get(c *gin.Context) {
   vlans, err := networks.Getvlan()
   res["res"] = vlans
   res["err"] = err
+  c.JSON(200, res)
+}
+
+func Restore(c *gin.Context) {
+  vlan := c.Query("vlan")
+  status := c.Query("status")
+
+  res := make(map[string]interface{})
+
+  err := networks.Restore(vlan, status)
+  res["res"] = err
   c.JSON(200, res)
 }
 
