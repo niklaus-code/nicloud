@@ -15,10 +15,11 @@
             					<input type="checkbox" v-model="checkvalue" @click="checkbox()">
         					</label>
         				</th>
+        				<th>数据中心</th>
+        				<th>网络</th>
         				<th>ip地址</th>
         				<th>cpu</th>
         				<th>内存</th>
-        				<th>网络</th>
         				<th>可创建数量</th>
 						<th>备注</th>
 						<th>操作</th>
@@ -26,19 +27,25 @@
     			</thead>
 
 				<tbody v-for="(item, index) in data">
-      				<tr v-if="item.Status" class="table-dark text-dark" :id="item.Uuid">
+      				<tr class="table-dark text-dark" :id="item.Uuid">
         				<label class="checkbox-inline">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
+        				<td>{{item.Datacenter}}</td>
+        				<td>{{item.Vlan}}</td>
         				<td>{{item.Ipv4}}</td>
         				<td>{{item.Usedcpu}}核/{{item.Cpu}}核</td>
         				<td>{{item.Usedmem}}G/{{item.Mem}}G</td>
-        				<td>{{item.Vlan}}</td>
         				<td>{{item.count}}/{{item.Max_vms}}</td>
         				<td>test</td>
+                        <td>
+                            <span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
+                            <span v-else class="glyphicon glyphicon-remove"></span>
+                        </td>
+
 		    			<td>
-							<button class="btn btn-info btn-xs" type="button" @click="delhost(item.Ipv4, index)">
-                				删除
+							<button class="btn btn-info btn-xs" type="button" @click="restore(item.Ipv4, item.Status, index)">
+                				重置
             				</button>
         				</td>
 					</tr>
@@ -74,13 +81,19 @@ export default {
 		},
 
     methods: {
-		delhost: function (ip, index) {
-			this.data[index].Status = 0
-            var apiurl = `/api/hosts/delhost`
-            this.$http.get(apiurl, { params: {ip: ip} } ).then(response => {
-            	if (response.data.res) {
-					alert("删除成功")
-					}
+		restore: function (ip, status, index) {
+            var apiurl = `/api/hosts/restore`
+            this.$http.get(apiurl, { params: {ip: ip, status: status} } ).then(response => {
+			   if (response.data.res === null) {
+                    alert("重置成功")
+                    if (status) {
+                        this.data[index].Status = 0
+                    } else {
+                        this.data[index].Status = 1
+                        }
+                    } else {
+                    alert("创建失败('"+response.data.res.Message+"')")  
+                }
             })
         },
 

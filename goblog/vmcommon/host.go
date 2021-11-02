@@ -7,6 +7,7 @@ import (
 )
 
 type Vm_hosts struct {
+  Datacenter  string
   Ipv4        string
   Mem         int
   Cpu         int
@@ -46,12 +47,13 @@ func CountHosts(ip string) int {
   return c
 }
 
-func Createhost(cpu int, mem int, ip string, num int, vlan string) bool {
+func Createhost(datacenter string, cpu int, mem int, ip string, num int, vlan string) error {
   db, err := db.NicloudDb()
   if err != nil {
-    return false
+    return err
   }
   h := &Vm_hosts{
+    Datacenter: datacenter,
     Cpu: cpu,
     Mem: mem,
     Ipv4: ip,
@@ -64,12 +66,15 @@ func Createhost(cpu int, mem int, ip string, num int, vlan string) bool {
 
   err1 := db.Create(*h)
   if err1.Error != nil {
-    return false
+    return err1.Error
   }
 
   //return bool
   res := db.NewRecord(&h)
-  return res
+  if res == false {
+    return vmerror.Error{Message: "数据插入失败"}
+  }
+  return nil
 }
 
 func getcpumem(ip string, cpu int, mem int) (map[string]int, error) {
@@ -131,16 +136,25 @@ func Updatehost(ip string, cpu int, mem int) error {
   return nil
 }
 
-func Delhost(ip string) bool {
-  db, err := db.NicloudDb()
+func Restore(ip string, status int) error {
+  var s int
+  if status == 1 {
+    s = 0
+  } else {
+    s = 1
+  }
+
+  dbs, err := db.NicloudDb()
   if err != nil {
-    return false
+    return err
   }
-  err1 := db.Model(&Vm_hosts{}).Where("ipv4=?", ip).Update("status", 0)
-  if err1.Error != nil {
-    return false
+
+  dberr := dbs.Model(Vm_hosts{}).Where("ipv4=?", ip).Update("status", s)
+  if dberr.Error != nil {
+    return dberr.Error
   }
-  return true
+
+  return nil
 }
 
 func Gethostinfo(ip string) []map[string]interface{} {

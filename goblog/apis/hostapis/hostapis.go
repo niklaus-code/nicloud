@@ -3,6 +3,7 @@ package hostapis
 import (
   "github.com/gin-gonic/gin"
   "goblog/vmcommon"
+  "goblog/vmerror"
   "strconv"
 )
 
@@ -20,19 +21,25 @@ func Createhost(c *gin.Context) {
   ip := c.Query("ip")
   num,_ := strconv.Atoi(c.Query("mem"))
   vlan := c.Query("vlan")
+  datacenter := c.Query("datacenter")
 
   res := make(map[string]interface{})
-  err := vmcommon.Createhost(cpu, mem, ip, num, vlan)
+  err := vmcommon.Createhost(datacenter, cpu, mem, ip, num, vlan)
   res["res"] = err
   c.JSON(200, res)
 }
 
 func Delhost(c *gin.Context) {
-  ip := c.Query("ip")
-  r := vmcommon.Delhost(ip)
   res := make(map[string]interface{})
+  ip := c.Query("ip")
+  status, err := strconv.Atoi(c.Query("status"))
+  if err != nil {
+    r := vmerror.Error{Message: "参数错误"}
+    res["res"] = r
+    c.JSON(400, res)
+  }
+  r := vmcommon.Restore(ip, status)
   res["res"] = r
-
   c.JSON(200, res)
 }
 

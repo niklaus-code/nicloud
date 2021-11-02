@@ -3,7 +3,36 @@
 	<nicloudhead></nicloudhead>
 	<vmleft></vmleft>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
-		<div class="col-sm-2 col-sm-offset-4" style="margin-top:20px">
+		<div class="col-sm-3 col-sm-offset-4" style="margin-top:20px">
+				<div class="col-sm-12">
+	 		<div class="form-group">
+				<div class="col-sm-3">
+        			<label>数据中心</label>
+				</div>
+				<div class="col-sm-9">
+				    <select class="col-sm-12" v-model="centervalue">
+                        <option  v-for="c in datacenter" :value="c.Datacenter">
+                            {{ c.Datacenter }}
+                        </option>
+                    </select>
+    		</div>
+				</div>
+    		</div>
+				<div class="col-sm-12" style="margin-top:20px">
+	 		<div class="form-group">
+				<div class="col-sm-3">
+        			<label>网络</label>
+				</div>
+				<div class="col-sm-9">
+				    <select class="col-sm-10" v-model="vlanvalue">
+                        <option  v-for="v in vlanlist" :value="v">
+                            {{ v.Vlan }}
+                        </option>
+                    </select>
+				</div>
+    		</div>
+    		</div>
+				<div class="col-sm-12" style="margin-top:20px">
 	 		<div class="form-group">
 				<div class="col-sm-3">
         			<label>cpu</label>
@@ -16,6 +45,8 @@
 					</form>
 				</div>
     		</div>
+    		</div>
+				<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-3">
         			<label>内存</label>
@@ -28,6 +59,8 @@
 					</form>
 				</div>
     		</div>
+    		</div>
+				<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-3">
         			<label>IP</label>
@@ -40,6 +73,8 @@
 					</form>
 				</div>
     		</div>
+    		</div>
+				<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-3">
         			<label>数量</label>
@@ -52,17 +87,6 @@
 					</form>
 				</div>
     		</div>
-	 		<div class="form-group">
-				<div class="col-sm-3">
-        			<label>网络</label>
-				</div>
-				<div class="col-sm-9">
-				    <select class="col-sm-10" v-model="vlanvalue">
-                        <option  v-for="v in vlanlist" :value="v">
-                            {{ v.Vlan }}
-                        </option>
-                    </select>
-				</div>
     		</div>
 		<div class="form-group">
 			<div class="col-sm-3 col-sm-offset-3" style="margin-top:20px" >
@@ -82,6 +106,9 @@ import vmleft from '@/components/vmleft'
 export default {
     data () {
         return {
+           	centervalue: "",
+            datacenter: [],
+
             vlanvalue: "",
             vlanlist: [],
 
@@ -97,10 +124,26 @@ export default {
     },
 
 	mounted: function () {
-		this.getvlan()
+		this.getvlan();
+		this.getdatacenter()
 		},
 
     methods: {
+    	getdatacenter: function () {
+            var apiurl = `/api/datacenter/getdatacenter`
+            
+            this.$http.get(apiurl).then(response => {
+                if (response.data.err === null) {
+                    this.datacenter = response.data.res
+                    this.centervalue = response.data.res[0].Datacenter
+                } else {
+                    alert("获取数据失败(" + response.data.err.Message+ ")" )
+                    }
+            })
+            },
+
+
+
         getvlan: function () {
             var apiurl = `/api/networks/getvlan`
             this.$http.get(apiurl).then(response => {
@@ -110,14 +153,14 @@ export default {
         },
 
 		createhost: function () {
-            var apiurl = `/api/vm/createhost`
+            var apiurl = `/api/hosts/createhost`
 
-            this.$http.get(apiurl, { params: { cpu: this.cpu, mem:this.mem, ip: this.ip, num: this.num, vlan: this.vlanvalue.Vlan} }).then(response => {
-				if (response.data.res) {
+            this.$http.get(apiurl, { params: {datacenter:this.centervalue, cpu: this.cpu, mem:this.mem, ip: this.ip, num: this.num, vlan: this.vlanvalue.Vlan} }).then(response => {
+				if (response.data.res === null) {
 					alert("创建成功! 是否查看宿主机列表")
 					this.$router.push('/hosts')
 				} else {
-					alert("创建失败")
+					alert("插入数据失败(" + response.data.res.Message+ ")" )
 					}
 			})
 			},
