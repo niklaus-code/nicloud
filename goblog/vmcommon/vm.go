@@ -28,6 +28,8 @@ type Vms struct {
 	Ip          string
 	Host        string
 	Os          string
+	Datacenter  string
+	Ceph        string
 }
 
 func GetVmByUuid(uuid string) *Vms {
@@ -77,9 +79,11 @@ type Vms_archive struct {
   Comment string
   Vmxml string
   Ip string
+  Datacenter string
+  Ceph string
 }
 
-func Delete(uuid string) ([]*Vms, error) {
+func Delete(uuid string, datacenter string, cephname string) ([]*Vms, error) {
   vminfo := GetVmByUuid(uuid)
   host := vminfo.Host
 
@@ -126,6 +130,8 @@ func Delete(uuid string) ([]*Vms, error) {
 	  Comment: vminfo.Comment,
 	  Ip: vminfo.Ip,
 	  Vmxml: vminfo.Vmxml,
+	  Datacenter: datacenter,
+	  Ceph: cephname,
   }
   err2 := dbs.Create(*v)
   if err2.Error != nil {
@@ -252,7 +258,7 @@ func Createuuid() string {
 	return u
 }
 
-func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string, image string) (bool, error) {
+func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, vmxml string, ip string, host string, image string) (bool, error) {
   /*save config to db*/
   dbs, err := db.NicloudDb()
   if err != nil {
@@ -271,7 +277,10 @@ func savevm(uuid string, cpu int, mem int, vmxml string, ip string, host string,
 		Host:        host,
 		Owner:       "Niklaus",
 		Os:          image,
+		Datacenter: datacenter,
+		Ceph: cephname,
 	}
+
 	err1 := dbs.Create(*vm)
 	if err1.Error != nil {
 	    return false, err1.Error
@@ -306,7 +315,7 @@ func MigrateVm(uuid string, migrate_host string) error {
   return err
 }
 
-func Create(cpu int, mem int, ip string, mac string, host string, image string) (bool, error) {
+func Create(datacenter string,  cephname string, cpu int, mem int, ip string, mac string, host string, image string) (bool, error) {
   err := networks.Ipresource(ip, mac)
   if err != nil {
     return false, err
@@ -325,7 +334,7 @@ func Create(cpu int, mem int, ip string, mac string, host string, image string) 
 	 return false, err
   }
 
-	f, err := osimage.Xml(vcpu, vmem, u, mac, imge_name, image)
+	f, err := osimage.Xml(cephname,   vcpu, vmem, u, mac, imge_name, image)
 
 	err = libvirtd.DefineVm(f, host)
 
@@ -337,7 +346,7 @@ func Create(cpu int, mem int, ip string, mac string, host string, image string) 
   if  err != nil {
     return false, err
   }
-	svm, err := savevm(u, cpu, mem, f, ip, host, image)
+	svm, err := savevm(datacenter, cephname, u, cpu, mem, f, ip, host, image)
 	if err != nil {
 	  return svm, err
   }

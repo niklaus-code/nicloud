@@ -123,14 +123,6 @@ export default {
     },
 
     methods: {
-		mouseOver: function (index) {
-			this.daohang[index].active = "background-color: red";
-			},
-
-		mouseLeave: function (index) {
-			this.daohang[index].active = "background-color: #e3e3e3";
-			},
-
 		c: function (index) {
 			this.data[index].flag2 = false
 			this.data[index].flag1 = true
@@ -276,9 +268,8 @@ export default {
 					if (response.data.res.Comment.length == 0) {
 						this.data[index].flag = true
 						}
-					} else {
-				alert(response.data.err.Message)
 					}
+				alert(response.data.err.Message)
             })
         },
 
@@ -294,9 +285,8 @@ export default {
 					if (response.data.res.Comment.length == 0) {
 						this.data[index].flag = true
 						}
-					} else {
-				alert(response.data.err.Message)
 					}
+				alert(response.data.err.Message)
             })
         },
     }

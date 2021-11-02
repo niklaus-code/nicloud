@@ -22,13 +22,14 @@
         				<th>内存</th>
         				<th>可创建数量</th>
 						<th>备注</th>
+						<th>状态</th>
 						<th>操作</th>
       				</tr>
     			</thead>
 
 				<tbody v-for="(item, index) in data">
       				<tr class="table-dark text-dark" :id="item.Uuid">
-        				<label class="checkbox-inline">
+        				<label class="checkbox-inline" style="width:10px">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
         				<td>{{item.Datacenter}}</td>

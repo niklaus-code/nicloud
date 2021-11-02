@@ -2,27 +2,36 @@
 	<div>
 	<nicloudhead></nicloudhead>
 	<vmleft></vmleft>
-  	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
+  	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white;">
 		<div  class="col-sm-5 col-sm-offset-3" style="margin-top:20px">
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
-				<div class="col-sm-11  col-sm-offset-1 title">
-        			<label>cpu/内存</label>
-				</div>
+        			<label>数据中心</label>
 				</div>
 				<div class="col-sm-9">
-        			<select class="col-sm-10" v-model="flavorvalue">
-  						<option  v-for="f in flavorlist" :value="f">
-							{{ f.Cpu}}核/ {{f.Mem}}G
+        			<select class="col-sm-10" v-model="centervalue">
+  						<option  v-for="c in datacenter" :value="c.Datacenter">
+							{{ c.Datacenter }}
 						</option>
         			</select>
 				</div>
     		</div>
+           <div class="col-sm-12 form-group">
+                <div class="col-sm-3">
+                    <label>CEPH</label>
+                </div>
+                <div class="col-sm-9">
+                    <select class="col-sm-10" v-model="cephvalue">
+                        <option  v-for="c in ceph" :value="c.Name">
+                            {{ c.Name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
-				<div class="col-sm-11  col-sm-offset-1 title">
         			<label>VLAN</label>
-				</div>
 				</div>
 				<div class="col-sm-9">
         			<select class="col-sm-10" v-model="vlanvalue" @change="getip">
@@ -34,9 +43,7 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
-				<div class="col-sm-11  col-sm-offset-1 title">
         			<label>IP</label>
-				</div>
 				</div>
 				<div class="col-sm-9">
 	                <select class="col-sm-10" v-model="ipvalue">
@@ -48,9 +55,19 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
-				<div class="col-sm-11  col-sm-offset-1 title">
-        			<label>宿主机</label>
+        			<label>cpu/内存</label>
 				</div>
+				<div class="col-sm-9">
+        			<select class="col-sm-10" v-model="flavorvalue">
+  						<option  v-for="f in flavorlist" :value="f">
+							{{ f.Cpu}}核/ {{f.Mem}}G
+						</option>
+        			</select>
+				</div>
+    		</div>
+	 		<div class="col-sm-12 form-group">
+				<div class="col-sm-3">
+        			<label>宿主机</label>
 				</div>
 				<div class="col-sm-9 title">
         			<select class="col-sm-10" v-model="hostvalue">
@@ -62,9 +79,7 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
-				<div class="col-sm-11  col-sm-offset-1 title">
         			<label>镜像</label>
-				</div>
 				</div>
 				<div class="col-sm-9">
         			<select class="col-sm-10" v-model="imagevalue">
@@ -92,6 +107,12 @@ import vmleft from '@/components/vmleft'
 export default {
     data () {
         return {
+			ceph : [],
+			cephvalue: "",
+
+            centervalue: "",
+            datacenter: [],
+
 			vlanvalue: "",
 			vlanlist: [],
 
@@ -129,9 +150,32 @@ export default {
 		this.getimage()
 		this.getvlan()
 		this.getip()
+		this.getceph()
+		this.getdatacenter()
     },
 
     methods: {
+       	getceph: function () {
+            var apiurl = `/api/ceph/getceph`
+            this.$http.get(apiurl).then(response => {
+                this.ceph = response.data.res
+				this.cephvalue = response.data.res[0].Name
+            })
+        },
+
+		getdatacenter: function () {
+            var apiurl = `/api/datacenter/getdatacenter`
+            
+            this.$http.get(apiurl).then(response => {
+                if (response.data.err === null) {
+                    this.datacenter = response.data.res
+                    this.centervalue = response.data.res[0].Datacenter
+                } else {
+                    alert("获取数据失败(" + response.data.err.Message+ ")" )
+                    }
+            })
+            },
+
 		createvm: function () {
             var apiurl = `/api/vm/create`
 
@@ -139,7 +183,7 @@ export default {
 				alert("缺少信息!")
 				return
 			}
-            this.$http.get(apiurl, { params: { cpu: this.flavorvalue.Cpu, mem:this.flavorvalue.Mem, ip: this.ipvalue.Ipv4, mac: this.ipvalue.Macaddr, host: this.hostvalue, image: this.imagevalue} }).then(response => {
+            this.$http.get(apiurl, { params: {datacenter: this.centervalue, ceph: this.cephvalue, cpu: this.flavorvalue.Cpu, mem:this.flavorvalue.Mem, ip: this.ipvalue.Ipv4, mac: this.ipvalue.Macaddr, host: this.hostvalue, image: this.imagevalue} }).then(response => {
 				if (response.data.res) {
 					alert("创建成功! 是否查看虚拟机列表")
 					this.$router.push('/nicloud')
@@ -205,13 +249,14 @@ export default {
 .col-sm-9 {
 	padding-left:0px;
 }
+
 .col-sm-3 {
-	padding-right:0px;
+	padding-right:30px;
 }
 label {
+	float: right;
     font-weight : 400;
     margin-top: 2px;
-	text-align: center;
 }
 
 select{

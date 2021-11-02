@@ -73,6 +73,17 @@ func Get()([]*Vms_Ceph, error) {
   return c, nil
 }
 
+func Cephinfobyname(name string)([]*Vms_Ceph, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  c := []*Vms_Ceph{}
+  dbs.Find(&c).Where("name=?", name)
+  return c, nil
+}
+
+
 
 func CephConn() (*rados.Conn, error) {
   conn, err := rados.NewConn()

@@ -2,11 +2,11 @@ package osimage
 
 import (
   "fmt"
+  "goblog/ceph"
   db "goblog/dbs"
-  "strings"
+  "goblog/networks"
 
   "github.com/beevik/etree"
-  "github.com/go-ini/ini"
 
   "goblog/vmerror"
 )
@@ -80,13 +80,19 @@ func getxml(osname string) (string, error) {
 }
 
 
-func Xml(vcpu int, vmem int, uuid string, mac string, image_name string, osname string) (string, error) {
-  var cfg, _ = ini.Load("conf/setting.ini")
-  var port = cfg.Section("ceph").Key("port").String()
-  var ceph_secret = cfg.Section("ceph").Key("ceph_secret").String()
+func Xml(cephnaem string, vcpu int, vmem int, uuid string, mac string, image_name string, osname string) (string, error) {
+  cephinfo, err := ceph.Get()
+  if err != nil {
+    return "", err
+  }
+  var ceph_secret = cephinfo[0].Ceph_secret
+  ips := cephinfo[0].Ips
+  port := cephinfo[0].Port
 
-  ips := strings.Split(cfg.Section("ceph").Key("ip").String(), ",")
-  br := cfg.Section("bridge").Key("br").String()
+  br, err := networks.Getvlan()
+  if err != nil {
+    return "", err
+  }
 
   f, err := getxml(osname)
   if err != nil {
