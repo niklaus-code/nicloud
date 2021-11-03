@@ -107,7 +107,7 @@ export default {
         }
   }
 </script>
-<style>
+<style scoped>
 
 select{
     font-family: "微软雅黑";
