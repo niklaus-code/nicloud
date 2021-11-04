@@ -4,7 +4,7 @@
 	<vmleft></vmleft>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div class="col-sm-10 col-sm-offset-1 vlan" style="margin-top:20px;">
-			<span>{{vlan}}&nbsp&&nbsp IP列表</span>
+			<span>VLAN&nbsp{{vlan}}&nbsp&&nbsp IP列表</span>
 		</div>
 		<div class="col-sm-10 col-sm-offset-1" style="margin-top:20px;">
 			<table class="table table-hover" style="text-align: center;">
