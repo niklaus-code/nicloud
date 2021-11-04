@@ -45,6 +45,18 @@ func GetImage(c *gin.Context) {
   c.JSON(200, res)
 }
 
+func GetImageby(c *gin.Context) {
+  datacenter := c.Query("datacenter")
+  storage := c.Query("storage")
+
+  res := make(map[string]interface{})
+  r, err := osimage.Getimageby(datacenter, storage)
+
+  res["res"] = r
+  res["err"] = err
+  c.JSON(200, res)
+}
+
 func AddImage(c *gin.Context) {
   datacenter := c.Query("datacenter")
   storage := c.Query("storage")

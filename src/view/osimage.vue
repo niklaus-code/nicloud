@@ -16,9 +16,11 @@
         					</label>
         				</th>
         				<th>镜像名称</th>
-        				<th>ceph块</th>
+        				<th>块设备</th>
         				<th>快照名称</th>
         				<th>XML</th>
+        				<th>存储集群</th>
+        				<th>数据中心</th>
 						<th>状态</th>
 						<th>操作</th>
       				</tr>
@@ -32,7 +34,9 @@
         				<td>{{item.Osname}}</td>
         				<td>{{item.Cephblockdevice}}</td>
         				<td>{{item.Snapimage}}</td>
-        				<td width="40%">{{item.Xml}}</td>
+        				<td class="tdxml" width="40%">{{item.Xml}}</td>
+        				<td>{{item.Storage}}</td>
+        				<td>{{item.Datacenter}}</td>
 						<td>
                             <span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
                             <span v-else class="glyphicon glyphicon-remove"></span>
@@ -142,7 +146,7 @@ label {
     vertical-align: "middle";
 }
 
-td {
+.tdxml {
 	max-width: 100px;
  	overflow: hidden; 
 	text-overflow:ellipsis;

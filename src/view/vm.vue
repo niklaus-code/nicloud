@@ -31,6 +31,7 @@
         			<th>所属宿主机</th>
         			<th>CPU/内存</th>
         			<th>所属者</th>
+        			<th>数据中心</th>
         			<th>状态</th>
         			<th>备注</th>
         			<th>操作</th>
@@ -48,6 +49,7 @@
         		<td>{{item.Host}}</td>
         		<td>{{item.Cpu}}核 / {{item.Mem}}G</td>
         		<td>{{item.Owner}}</td>
+        		<td>{{item.Datacenter}}</td>
 				<td>
 					<button  v-if="item.Status === '运行'" type="button" class="btn btn-success btn-xs">{{item.Status}}</button>
         			<button v-else type="button" class="btn btn-warning btn-xs">{{item.Status}}</button>

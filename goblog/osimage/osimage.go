@@ -78,7 +78,7 @@ func Add(datacenter string, storage string,osname string, cephblockdevice string
   if errdb.Error != nil {
     return vmerror.Error{Message: errdb.Error.Error()}
   }
-  
+
   return nil
 }
 
@@ -89,6 +89,16 @@ func Get() ([]*Vms_os, error) {
   }
   var v []*Vms_os
   dbs.Find(&v)
+  return v, nil
+}
+
+func Getimageby(datacenter string, storage string) ([]*Vms_os, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  var v []*Vms_os
+  dbs.Where("datacenter=? and storage=?", datacenter, storage).Find(&v)
   return v, nil
 }
 

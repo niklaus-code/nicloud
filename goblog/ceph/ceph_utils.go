@@ -63,13 +63,13 @@ func Add(name string, pool string, datacenter string, ceph_secret string, ips st
   return nil
 }
 
-func Get(datacenter string)([]*Vms_Ceph, error) {
+func Get()([]*Vms_Ceph, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
   c := []*Vms_Ceph{}
-  dbs.Where("datacenter=?", datacenter).Find(&c)
+  dbs.Find(&c)
   return c, nil
 }
 

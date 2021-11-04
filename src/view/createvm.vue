@@ -9,7 +9,7 @@
         			<label>数据中心</label>
 				</div>
 				<div class="col-sm-9">
-        			<select class="col-sm-10" v-model="centervalue" @change="getvlan(centervalue)" @change="getstorage(centervalue)" @change="gethosts(centervalue)" @change="getip()">
+        			<select class="col-sm-10" v-model="centervalue" @change="getvlan(centervalue)" @change="getstorage(centervalue)">
 					  <option value="">--请选择--</option>
   						<option  v-for="c in datacenter" :value="c.Datacenter">
 							{{ c.Datacenter }}
@@ -22,7 +22,7 @@
                     <label>存储集群</label>
                 </div>
                 <div class="col-sm-9">
-                    <select class="col-sm-10" v-model="storagevalue">
+                    <select class="col-sm-10" v-model="storagevalue" @change="getimageby()">
 					  <option value="">--请选择--</option>
                         <option  v-for="c in storage" :value="c.Name">
                             {{ c.Name }}
@@ -36,7 +36,7 @@
         			<label>VLAN</label>
 				</div>
 				<div class="col-sm-9">
-        			<select class="col-sm-10" v-model="vlanvalue" @change="getip">
+        			<select class="col-sm-10" v-model="vlanvalue" @change="getip" @change="gethosts(centervalue)">
 					  <option value="">--请选择--</option>
   						<option  v-for="v in vlanlist" :value="v.Vlan">
 							{{ v.Vlan }}
@@ -46,7 +46,7 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
-        			<label>IP</label>
+        			<label>IP地址</label>
 				</div>
 				<div class="col-sm-9">
 	                <select class="col-sm-10" v-model="ipvalue">
@@ -88,6 +88,7 @@
 				</div>
 				<div class="col-sm-9">
         			<select class="col-sm-10" v-model="imagevalue">
+					  <option value="">--请选择--</option>
   						<option  v-for="image in imagelist" :value="image.Osname">
 							{{ image.Osname }}
 						</option>
@@ -154,7 +155,6 @@ export default {
             this.$http.get(apiurl, { params: { datacenter: centervalue}}).then(response => {
                 if (response.data.err === null) {
                 	this.storage = response.data.res
-					this.storagevalue = response.data.res[0].Name
                 } else {
                     alert("获取数据失败(" + response.data.err.Message+ ")" )
                     }
@@ -181,7 +181,7 @@ export default {
 				return
 			}
             this.$http.get(apiurl, { params: {datacenter: this.centervalue, storage: this.storagevalue, cpu: this.flavorvalue.Cpu, mem:this.flavorvalue.Mem, ip: this.ipvalue.Ipv4, mac: this.ipvalue.Macaddr, host: this.hostvalue, image: this.imagevalue} }).then(response => {
-				if (response.data.res) {
+				if (response.data.err === null) {
 					alert("创建成功! 是否查看虚拟机列表")
 					this.$router.push('/nicloud')
 				} else {
@@ -190,28 +190,26 @@ export default {
 			})
 			},
 
-        getimage: function () {
-			setTimeout(() =>{
-            	var apiurl = `/api/osimage/getimage`
-            	this.$http.get(apiurl).then(response => {
-            	this.imagelist = response.data.res
-				this.imagevalue = response.data.res[0].Osname
+        getimageby: function () {
+           	var apiurl = `/api/osimage/getimageby`
+            this.$http.get(apiurl, { params: {datacenter:this.centervalue, storage: this.storagevalue}}).then(response => {
+				if (response.data.err === null) {
+					this.imagelist = response.data.res
+				} else {
+					alert("创建失败('"+response.data.err.Message+"')")
+					}
             	})
-			}, 1000);
         },
 
         gethosts: function (datacenter) {
-			setTimeout(() =>{
             var apiurl = `/api/hosts/gethostsbydatacenter`
-            	this.$http.get(apiurl, { params: {datacenter: datacenter, vlan: this.vlanvalue}} ).then(response => {
+           	this.$http.get(apiurl, { params: {datacenter: datacenter, vlan: this.vlanvalue}} ).then(response => {
 				if (response.data.err === null) {
             		this.hostlist = response.data.res
-            		this.hostvalue = response.data.res[0].Ipv4
 					} else {
 						alert("获取数据失败('"+response.data.err.Message+"')")
 					}
             	})
-			}, 1000);
         },
 
         getvlan: function (datacenter) {
@@ -219,7 +217,6 @@ export default {
             this.$http.get(apiurl, { params: {datacenter: datacenter}} ).then(response => {
 			if (response.data.err === null) {
             	this.vlanlist = response.data.res
-            	this.vlanvalue = response.data.res[0].Vlan
 				} else {
 					alert("创建失败('"+response.data.err.Message+"')")
 				}
@@ -227,13 +224,10 @@ export default {
         },
 
         getip: function () {
-			setTimeout(() =>{
             	var apiurl = `/api/networks/getip`
             	this.$http.get(apiurl, { params: { vlan: this.vlanvalue}}).then(response => {
             	this.iplist = response.data.res
-            	this.ipvalue = response.data.res[0].Ipv4
             	})
-			}, 1000);
         },
 
         getflavor: function () {
@@ -267,7 +261,7 @@ label {
 select{
 	height:30px;
     font-family: "微软雅黑";
-    border: 1px #1a1a1a solid;
+    border: 1px #ccc solid;
     border-radius: 5px;
 }
 

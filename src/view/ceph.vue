@@ -15,8 +15,8 @@
             					<input type="checkbox" v-model="checkvalue" @click="checkbox()">
         					</label>
         				</th>
+        				<th>存储集群</th>
         				<th>数据中心</th>
-        				<th>ceph名称</th>
         				<th>数据池</th>
         				<th>secret</th>
         				<th>hosts/port</th>
@@ -31,14 +31,16 @@
         				<label class="checkbox-inline">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
-        				<td>{{item.Datacenter}}</td>
         				<td>{{item.Name}}</td>
+        				<td>{{item.Datacenter}}</td>
         				<td>{{item.Pool}}</td>
         				<td>{{item.Ceph_secret}}</td>
         				<td>{{item.Ips}}/{{item.Port}}</td>
         				<td>{{item.Comment}}</td>
-						<span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
-                        <span v-else class="glyphicon glyphicon-remove"></span>
+						<td>
+							<span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
+                        	<span v-else class="glyphicon glyphicon-remove"></span>
+						</td>
 		    			<td>
 							<button class="btn btn-info btn-xs" type="button" @click="restore(item.Name, item.Status, index)">
                 				重置
@@ -75,7 +77,7 @@ export default {
     methods: {
 		restore: function (name, status, index) {
 			this.data[index].Status = 0
-            var apiurl = `/api/ceph/restore`
+            var apiurl = `/api/storage/restore`
             this.$http.get(apiurl, { params: {name: name, status: status} } ).then(response => {
 			   if (response.data.res === null) {
                     alert("重置成功")
@@ -91,7 +93,7 @@ export default {
         },
 
 		getceph: function (ip) {
-            var apiurl = `/api/ceph/getceph`
+            var apiurl = `/api/storage/get`
             this.$http.get(apiurl).then(response => {
             	this.data = response.data.res
             })

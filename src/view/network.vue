@@ -15,11 +15,11 @@
             					<input type="checkbox" v-model="checkvalue" @click="checkbox()">
         					</label>
         				</th>
-        				<th>数据中心</th>
         				<th>vlan</th>
         				<th>网桥</th>
         				<th>地址段</th>
 						<th>网关</th>
+        				<th>数据中心</th>
 						<th>状态</th>
 						<th>操作</th>
       				</tr>
@@ -30,11 +30,11 @@
         				<label class="checkbox-inline">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
-        				<td>{{item.Datacenter}}</td>
         				<td>{{item.Vlan}}</td>
         				<td>{{item.Bridge}}</td>
         				<td>{{item.Network}}/{{item.Prefix}}</td>
         				<td>{{item.Gateway}}</td>
+        				<td>{{item.Datacenter}}</td>
 						 <td>
                             <span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
                             <span v-else class="glyphicon glyphicon-remove"></span>

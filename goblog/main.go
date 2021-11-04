@@ -74,6 +74,7 @@ func main() {
 
   v6 := r.Group("/api/osimage")
   {
+    v6.GET("getimageby", osimage.GetImageby)
     v6.GET("getimage", osimage.GetImage)
     v6.GET("updateimage", osimage.UpdateImage)
     v6.GET("createimage", osimage.AddImage)
@@ -82,7 +83,7 @@ func main() {
 
   v7 := r.Group("/api/storage")
   {
-    v7.GET("get", cephapis.GetCephinfo)
+    v7.GET("get", cephapis.GetStorage)
     v7.GET("add", cephapis.Addceph)
     v7.GET("restore", cephapis.Restore)
   }
