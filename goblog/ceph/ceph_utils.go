@@ -63,26 +63,25 @@ func Add(name string, pool string, datacenter string, ceph_secret string, ips st
   return nil
 }
 
-func Get()([]*Vms_Ceph, error) {
+func Get(datacenter string)([]*Vms_Ceph, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
   c := []*Vms_Ceph{}
-  dbs.Find(&c)
+  dbs.Where("datacenter=?", datacenter).Find(&c)
   return c, nil
 }
 
-func Cephinfobyname(name string)([]*Vms_Ceph, error) {
+func Cephinfobyname(datacenter string, storage string)([]*Vms_Ceph, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
   c := []*Vms_Ceph{}
-  dbs.Find(&c).Where("name=?", name)
+  dbs.Where("datacenter=? and name=?", datacenter, storage).Find(&c)
   return c, nil
 }
-
 
 
 func CephConn() (*rados.Conn, error) {

@@ -15,6 +15,17 @@ func GetHosts(c *gin.Context) {
   c.JSON(200, res)
 }
 
+func GetHostsbydatacenter(c *gin.Context) {
+  datacenter := c.Query("datacenter")
+  vlan := c.Query("vlan")
+  hostlist, err := vmcommon.GetHostsbydatacenter(datacenter, vlan)
+  res := make(map[string]interface{})
+  res["res"] = hostlist
+  res["err"] = err
+
+  c.JSON(200, res)
+}
+
 func Createhost(c *gin.Context) {
   cpu, _ := strconv.Atoi(c.Query("cpu"))
   mem, _ := strconv.Atoi(c.Query("mem"))

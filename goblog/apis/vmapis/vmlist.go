@@ -79,8 +79,8 @@ func Createvm(c *gin.Context) {
 	host := c.Query("host")
   image := c.Query("image")
   datacenter := c.Query("datacenter")
-  ceph := c.Query("ceph")
-	create, err := vmcommon.Create(datacenter, ceph,  cpu, mem, ip, mac, host, image)
+  storage := c.Query("ceph")
+	create, err := vmcommon.Create(datacenter, storage,  cpu, mem, ip, mac, host, image)
   res := make(map[string]interface{})
 
 	res["res"] = create
@@ -114,11 +114,9 @@ func GetFlavor(c *gin.Context) {
 
 func DeleteVM(c *gin.Context) {
 	uuid := c.Query("uuid")
-  datacenter := c.Query("datacenter")
-  cephname := c.Query("cephname")
 
 	res := make(map[string]interface{})
-	r, err := vmcommon.Delete(uuid, datacenter, cephname)
+	r, err := vmcommon.Delete(uuid)
 
 	res["res"] = r
 	res["err"] = err

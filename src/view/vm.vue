@@ -25,11 +25,11 @@
 						</label>
 					</th>
         			<th>实例名称</th>
+        			<th>存储集群</th>
         			<th>镜像</th>
         			<th>IP地址</th>
         			<th>所属宿主机</th>
-        			<th>CPU</th>
-        			<th>内存</th>
+        			<th>CPU/内存</th>
         			<th>所属者</th>
         			<th>状态</th>
         			<th>备注</th>
@@ -42,11 +42,11 @@
   						<input type="checkbox" v-model="item.Checkout"> 
 					</label>
         		<td>{{item.Uuid}}</td>
+        		<td>{{item.Storage}}</td>
         		<td>{{item.Os}}</td>
         		<td>{{item.Ip}}</td>
         		<td>{{item.Host}}</td>
-        		<td>{{item.Cpu}}</td>
-        		<td>{{item.Mem}}</td>
+        		<td>{{item.Cpu}}核 / {{item.Mem}}G</td>
         		<td>{{item.Owner}}</td>
 				<td>
 					<button  v-if="item.Status === '运行'" type="button" class="btn btn-success btn-xs">{{item.Status}}</button>

@@ -54,6 +54,7 @@ func main() {
   {
     v4.GET("createvlan", networkapis.Add)
     v4.GET("getvlan", networkapis.Get)
+    v4.GET("getvlanbydatacenter", networkapis.Getvlanbydatacenter)
     v4.GET("getip", networkapis.GetIplist)
     v4.GET("getallip", networkapis.GetallIp)
     v4.GET("createip", networkapis.CreateIp)
@@ -68,19 +69,21 @@ func main() {
     v5.GET("gethostinfo", hostapis.Gethostinfo)
     v5.GET("createhost", hostapis.Createhost)
     v5.GET("gethosts", hostapis.GetHosts)
+    v5.GET("gethostsbydatacenter", hostapis.GetHostsbydatacenter)
   }
 
   v6 := r.Group("/api/osimage")
   {
     v6.GET("getimage", osimage.GetImage)
+    v6.GET("updateimage", osimage.UpdateImage)
     v6.GET("createimage", osimage.AddImage)
     v6.GET("delimage", osimage.DelImage)
   }
 
-  v7 := r.Group("/api/ceph")
+  v7 := r.Group("/api/storage")
   {
-    v7.GET("getceph", cephapis.GetCephinfo)
-    v7.GET("addceph", cephapis.Addceph)
+    v7.GET("get", cephapis.GetCephinfo)
+    v7.GET("add", cephapis.Addceph)
     v7.GET("restore", cephapis.Restore)
   }
 

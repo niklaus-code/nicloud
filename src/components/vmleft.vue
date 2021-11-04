@@ -37,7 +37,7 @@ export default {
 				router: "hosts"
 					},
 				{
-				name: "ceph",
+				name: "存储集群",
 				router: "ceph"
 					},
 				{

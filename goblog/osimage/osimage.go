@@ -13,7 +13,10 @@ import (
 
 
 type Vms_os struct {
+  Id int
   Osname string
+  Datacenter string
+  Storage string
   Cephblockdevice string
   Snapimage string
   Xml string
@@ -32,8 +35,33 @@ func Del(osname string) error {
   return nil
 }
 
-func Add(osname string, cephblockdevice string, snapimage string, xml string) error {
+func Update(id int, datacenter string, storage string, osname string, cephblockdevice string, snapimage string, xml string) error {
   os := &Vms_os{
+    Id: id,
+    Datacenter: datacenter,
+    Storage: storage,
+    Osname: osname,
+    Cephblockdevice: cephblockdevice,
+    Snapimage: snapimage,
+    Xml: xml,
+    Status: 1,
+  }
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  errdb := dbs.Model(&Vms_os{}).Where("id=?", id).Update(os)
+  if errdb.Error != nil {
+    return errdb.Error
+  }
+  return nil
+}
+
+func Add(datacenter string, storage string,osname string, cephblockdevice string, snapimage string, xml string) error {
+  os := &Vms_os{
+    Datacenter: datacenter,
+    Storage: storage,
     Osname: osname,
     Cephblockdevice: cephblockdevice,
     Snapimage: snapimage,
@@ -47,7 +75,7 @@ func Add(osname string, cephblockdevice string, snapimage string, xml string) er
 
   errdb := dbs.Create(*os)
   if errdb.Error != nil {
-    return errdb.Error
+    return vmerror.Error{Message: errdb.Error.Error()}
   }
   booldb := dbs.NewRecord(*os)
   if booldb == false {
@@ -80,16 +108,16 @@ func getxml(osname string) (string, error) {
 }
 
 
-func Xml(cephnaem string, vcpu int, vmem int, uuid string, mac string, image_name string, osname string) (string, error) {
-  cephinfo, err := ceph.Get()
+func Xml(datacenter string, storage string, vcpu int, vmem int, uuid string, mac string, image_name string, osname string) (string, error) {
+  storagename, err := ceph.Cephinfobyname(datacenter, storage)
   if err != nil {
     return "", err
   }
-  var ceph_secret = cephinfo[0].Ceph_secret
-  ips := cephinfo[0].Ips
-  port := cephinfo[0].Port
+  var ceph_secret = storagename[0].Ceph_secret
+  ips := storagename[0].Ips
+  port := storagename[0].Port
 
-  br, err := networks.Getvlan()
+  br, err := networks.Getvlanbydatacenter(datacenter)
   if err != nil {
     return "", err
   }

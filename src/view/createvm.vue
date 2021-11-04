@@ -9,7 +9,8 @@
         			<label>数据中心</label>
 				</div>
 				<div class="col-sm-9">
-        			<select class="col-sm-10" v-model="centervalue">
+        			<select class="col-sm-10" v-model="centervalue" @change="getvlan(centervalue)" @change="getstorage(centervalue)" @change="gethosts(centervalue)" @change="getip()">
+					  <option value="">--请选择--</option>
   						<option  v-for="c in datacenter" :value="c.Datacenter">
 							{{ c.Datacenter }}
 						</option>
@@ -18,11 +19,12 @@
     		</div>
            <div class="col-sm-12 form-group">
                 <div class="col-sm-3">
-                    <label>CEPH</label>
+                    <label>存储集群</label>
                 </div>
                 <div class="col-sm-9">
-                    <select class="col-sm-10" v-model="cephvalue">
-                        <option  v-for="c in ceph" :value="c.Name">
+                    <select class="col-sm-10" v-model="storagevalue">
+					  <option value="">--请选择--</option>
+                        <option  v-for="c in storage" :value="c.Name">
                             {{ c.Name }}
                         </option>
                     </select>
@@ -35,7 +37,8 @@
 				</div>
 				<div class="col-sm-9">
         			<select class="col-sm-10" v-model="vlanvalue" @change="getip">
-  						<option  v-for="v in vlanlist" :value="v">
+					  <option value="">--请选择--</option>
+  						<option  v-for="v in vlanlist" :value="v.Vlan">
 							{{ v.Vlan }}
 						</option>
         			</select>
@@ -47,7 +50,8 @@
 				</div>
 				<div class="col-sm-9">
 	                <select class="col-sm-10" v-model="ipvalue">
-                    	<option  v-for="ip in iplist" :value="ip">
+					  	<option value="">--请选择--</option>
+                    	<option  v-for="ip in iplist" :value="ip.Ipv4">
                         	{{ ip.Ipv4 }}
 						</option>
         			</select>
@@ -60,7 +64,7 @@
 				<div class="col-sm-9">
         			<select class="col-sm-10" v-model="flavorvalue">
   						<option  v-for="f in flavorlist" :value="f">
-							{{ f.Cpu}}核/ {{f.Mem}}G
+							{{ f.Cpu}}核 / {{f.Mem}}G
 						</option>
         			</select>
 				</div>
@@ -71,6 +75,7 @@
 				</div>
 				<div class="col-sm-9 title">
         			<select class="col-sm-10" v-model="hostvalue">
+					  	<option value="">--请选择--</option>
   						<option  v-for="host in hostlist" :value="host.Ipv4">
 							 {{ host.Ipv4 }} (&nbsp{{host.Usedcpu}}/{{host.Cpu}}&nbsp核，{{host.Usedmem}}/{{host.Mem}}&nbspG ，{{host.count}}/{{host.Max_vms}}&nbsp数量&nbsp)
 						</option>
@@ -107,8 +112,8 @@ import vmleft from '@/components/vmleft'
 export default {
     data () {
         return {
-			ceph : [],
-			cephvalue: "",
+			storage : [],
+			storagevalue: "",
 
             centervalue: "",
             datacenter: [],
@@ -134,32 +139,25 @@ export default {
         }
     },
 
-	created (){
-     this.ipvalue = this.iplist[1]
-     this.flavorvalue =this.flavorlist[1]
- 
-	},
+	mounted: function () {
+		this.getdatacenter()
+        this.getflavor () 
+		},
 
     components: {
         foot, nicloudhead, vmleft
     },
 
-    created: function () {
-		this.getflavor()
-		this.gethosts()
-		this.getimage()
-		this.getvlan()
-		this.getip()
-		this.getceph()
-		this.getdatacenter()
-    },
-
     methods: {
-       	getceph: function () {
-            var apiurl = `/api/ceph/getceph`
-            this.$http.get(apiurl).then(response => {
-                this.ceph = response.data.res
-				this.cephvalue = response.data.res[0].Name
+       	getstorage: function (centervalue) {
+            var apiurl = `/api/storage/get`
+            this.$http.get(apiurl, { params: { datacenter: centervalue}}).then(response => {
+                if (response.data.err === null) {
+                	this.storage = response.data.res
+					this.storagevalue = response.data.res[0].Name
+                } else {
+                    alert("获取数据失败(" + response.data.err.Message+ ")" )
+                    }
             })
         },
 
@@ -169,7 +167,6 @@ export default {
             this.$http.get(apiurl).then(response => {
                 if (response.data.err === null) {
                     this.datacenter = response.data.res
-                    this.centervalue = response.data.res[0].Datacenter
                 } else {
                     alert("获取数据失败(" + response.data.err.Message+ ")" )
                     }
@@ -183,7 +180,7 @@ export default {
 				alert("缺少信息!")
 				return
 			}
-            this.$http.get(apiurl, { params: {datacenter: this.centervalue, ceph: this.cephvalue, cpu: this.flavorvalue.Cpu, mem:this.flavorvalue.Mem, ip: this.ipvalue.Ipv4, mac: this.ipvalue.Macaddr, host: this.hostvalue, image: this.imagevalue} }).then(response => {
+            this.$http.get(apiurl, { params: {datacenter: this.centervalue, storage: this.storagevalue, cpu: this.flavorvalue.Cpu, mem:this.flavorvalue.Mem, ip: this.ipvalue.Ipv4, mac: this.ipvalue.Macaddr, host: this.hostvalue, image: this.imagevalue} }).then(response => {
 				if (response.data.res) {
 					alert("创建成功! 是否查看虚拟机列表")
 					this.$router.push('/nicloud')
@@ -194,41 +191,49 @@ export default {
 			},
 
         getimage: function () {
-            var apiurl = `/api/osimage/getimage`
-            this.$http.get(apiurl).then(response => {
-            this.imagelist = response.data.res
-			this.imagevalue = response.data.res[0].Osname
-            })
+			setTimeout(() =>{
+            	var apiurl = `/api/osimage/getimage`
+            	this.$http.get(apiurl).then(response => {
+            	this.imagelist = response.data.res
+				this.imagevalue = response.data.res[0].Osname
+            	})
+			}, 1000);
         },
 
-        gethosts: function () {
-            var apiurl = `/api/hosts/gethosts`
-            this.$http.get(apiurl).then(response => {
-            this.hostlist = response.data.res
-			this.hostvalue = response.data.res[0].Ipv4
-            })
+        gethosts: function (datacenter) {
+			setTimeout(() =>{
+            var apiurl = `/api/hosts/gethostsbydatacenter`
+            	this.$http.get(apiurl, { params: {datacenter: datacenter, vlan: this.vlanvalue}} ).then(response => {
+				if (response.data.err === null) {
+            		this.hostlist = response.data.res
+            		this.hostvalue = response.data.res[0].Ipv4
+					} else {
+						alert("获取数据失败('"+response.data.err.Message+"')")
+					}
+            	})
+			}, 1000);
         },
 
-        getvlan: function () {
-            var apiurl = `/api/networks/getvlan`
-            this.$http.get(apiurl).then(response => {
-            this.vlanlist = response.data.res
-			this.vlanvalue = response.data.res[0]
+        getvlan: function (datacenter) {
+            var apiurl = `/api/networks/getvlanbydatacenter`
+            this.$http.get(apiurl, { params: {datacenter: datacenter}} ).then(response => {
+			if (response.data.err === null) {
+            	this.vlanlist = response.data.res
+            	this.vlanvalue = response.data.res[0].Vlan
+				} else {
+					alert("创建失败('"+response.data.err.Message+"')")
+				}
             })
         },
 
         getip: function () {
-			var v = ""
-			if (typeof this.vlanvalue.Vlan === 'undefined' || this.vlanvalue.Vlan == null || this.vlanvalue.Vlan === '') {
-				v = "vlan82"
-				} else {
-				v = this.vlanvalue.Vlan
-				}
-            var apiurl = `/api/networks/getip`
-            this.$http.get(apiurl, { params: { vlan: v}}).then(response => {
-            this.iplist = response.data.res
-			this.ipvalue = response.data.res[0]
-            })
+			setTimeout(() =>{
+            	var apiurl = `/api/networks/getip`
+            	this.$http.get(apiurl, { params: { vlan: this.vlanvalue}}).then(response => {
+            	this.iplist = response.data.res
+            	this.ipvalue = response.data.res[0].Ipv4
+            	})
+			}, 1000);
         },
 
         getflavor: function () {

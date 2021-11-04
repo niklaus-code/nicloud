@@ -41,6 +41,15 @@ func Get(c *gin.Context) {
   c.JSON(200, res)
 }
 
+func Getvlanbydatacenter(c *gin.Context) {
+  datacenter := c.Query("datacenter")
+  res := make(map[string]interface{})
+  vlans, err := networks.Getvlanbydatacenter(datacenter)
+  res["res"] = vlans
+  res["err"] = err
+  c.JSON(200, res)
+}
+
 func Restore(c *gin.Context) {
   vlan := c.Query("vlan")
   status := c.Query("status")

@@ -91,8 +91,8 @@
 				</div>
     		</div>
 		<div class="form-group" style="margin-top:20px" >
-			<div class="col-sm-2 col-sm-offset-4">
-  				<button type="submit" @click="createosimage" class="btn btn-info">提交</button>
+			<div class="col-sm-1 col-sm-offset-6">
+  				<button type="submit" @click="updateosimage" class="btn btn-info">提交</button>
 			</div>
 		</div>
 		</div>
@@ -118,6 +118,7 @@ export default {
 			cephblockdevice: "",
 			snapimage: "",
 			xml: "",
+			id: "",
         }
     },
 
@@ -133,7 +134,6 @@ export default {
     methods: {
         getdatacenter: function () {
             var apiurl = `/api/datacenter/getdatacenter`
-
             this.$http.get(apiurl).then(response => {
                 if (response.data.err === null) {
                     this.datacenter = response.data.res
@@ -142,7 +142,6 @@ export default {
                     }
             })
             },
-
        getstorage: function (centervalue) {
             var apiurl = `/api/storage/get`
             this.$http.get(apiurl, { params: { datacenter: centervalue}}).then(response => {
@@ -154,13 +153,12 @@ export default {
                     }
             })
         },
-
-
 		vlaninfo: function () {
             this.osimage = this.$route.query.osimage
             this.cephblockdevice = this.$route.query.cephblockdevice
             this.snapimage = this.$route.query.snapimage
             this.xml = this.$route.query.xml
+            this.id = this.$route.query.id
             },
 
 		check: function (osname, cephblockdevice, snapimage, xml) {
@@ -171,25 +169,21 @@ export default {
 				return false
 				}
 			},
-
-		createosimage: function () {
+		updateosimage: function () {
 			if (this.check(this.osimage, this.cephblockdevice, this.snapimage, this.xml)) {
 				return 
 				}
-		
 
-            var apiurl = `/api/osimage/createimage`
-
-            this.$http.get(apiurl, { params: { osname: this.osimage, datacenter: this.centervalue, storage: this.storagevalue, cephblockdevice: this.cephblockdevice, snapimage: this.snapimage, xml: this.xml} }).then(response => {
+            var apiurl = `/api/osimage/updateimage`
+            this.$http.get(apiurl, { params: {id: this.id , datacenter: this.centervalue, storage: this.storagevalue, osname: this.osimage, cephblockdevice: this.cephblockdevice, snapimage: this.snapimage, xml: this.xml} }).then(response => {
 				if (response.data.res === null) {
-					alert("创建成功!")
+					alert("更新成功!")
 					this.$router.push('/osimage')
 				} else {
-					alert("创建失败(" + response.data.res.Message+ ")" )
+					alert("更新失败(" + response.data.res.Message+ ")" )
 					}
 			})
 			},
-
         }
   }
 </script>

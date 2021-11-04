@@ -19,6 +19,7 @@ import createip from '@/view/createip'
 import ips from '@/view/ips'
 import osimage from '@/view/osimage'
 import createosimage from '@/view/createosimage'
+import updateosimage from '@/view/updateosimage'
 import ceph from '@/view/ceph'
 import createceph from '@/view/createceph'
 
@@ -27,6 +28,11 @@ Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/updateosimage',
+      name: 'updateosimage',
+      component: updateosimage
+    },
     {
       path: '/createceph',
       name: 'createceph',

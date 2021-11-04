@@ -7,8 +7,9 @@ import (
   "strconv"
 )
 
-func GetCephinfo(c *gin.Context) {
-  cephinfo, err := ceph.Get()
+func  GetCephinfo(c *gin.Context) {
+  datacenter := c.Query("datacenter")
+  cephinfo, err := ceph.Get(datacenter)
   res := make(map[string]interface{})
   res["res"] = cephinfo
   res["err"] = err

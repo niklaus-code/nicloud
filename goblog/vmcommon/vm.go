@@ -29,7 +29,7 @@ type Vms struct {
 	Host        string
 	Os          string
 	Datacenter  string
-	Ceph        string
+	Storage     string
 }
 
 func GetVmByUuid(uuid string) *Vms {
@@ -80,10 +80,10 @@ type Vms_archive struct {
   Vmxml string
   Ip string
   Datacenter string
-  Ceph string
+  Storage string
 }
 
-func Delete(uuid string, datacenter string, cephname string) ([]*Vms, error) {
+func Delete(uuid string) ([]*Vms, error) {
   vminfo := GetVmByUuid(uuid)
   host := vminfo.Host
 
@@ -130,8 +130,8 @@ func Delete(uuid string, datacenter string, cephname string) ([]*Vms, error) {
 	  Comment: vminfo.Comment,
 	  Ip: vminfo.Ip,
 	  Vmxml: vminfo.Vmxml,
-	  Datacenter: datacenter,
-	  Ceph: cephname,
+	  Datacenter: vminfo.Datacenter,
+	  Storage: vminfo.Storage,
   }
   err2 := dbs.Create(*v)
   if err2.Error != nil {
@@ -278,7 +278,7 @@ func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, v
 		Owner:       "Niklaus",
 		Os:          image,
 		Datacenter: datacenter,
-		Ceph: cephname,
+		Storage: cephname,
 	}
 
 	err1 := dbs.Create(*vm)
@@ -315,7 +315,7 @@ func MigrateVm(uuid string, migrate_host string) error {
   return err
 }
 
-func Create(datacenter string,  cephname string, cpu int, mem int, ip string, mac string, host string, image string) (bool, error) {
+func Create(datacenter string,  storage string, cpu int, mem int, ip string, mac string, host string, image string) (bool, error) {
   err := networks.Ipresource(ip, mac)
   if err != nil {
     return false, err
@@ -334,7 +334,7 @@ func Create(datacenter string,  cephname string, cpu int, mem int, ip string, ma
 	 return false, err
   }
 
-	f, err := osimage.Xml(cephname,   vcpu, vmem, u, mac, imge_name, image)
+	f, err := osimage.Xml(datacenter, storage,  vcpu, vmem, u, mac, imge_name, image)
 
 	err = libvirtd.DefineVm(f, host)
 
@@ -346,7 +346,7 @@ func Create(datacenter string,  cephname string, cpu int, mem int, ip string, ma
   if  err != nil {
     return false, err
   }
-	svm, err := savevm(datacenter, cephname, u, cpu, mem, f, ip, host, image)
+	svm, err := savevm(datacenter, storage, u, cpu, mem, f, ip, host, image)
 	if err != nil {
 	  return svm, err
   }

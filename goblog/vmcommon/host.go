@@ -181,3 +181,14 @@ func Hosts() []map[string]interface{} {
     return res
   }
 
+func GetHostsbydatacenter(datacenter string, vlan string) ([]map[string]interface{},  error) {
+  db, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  var hosts []Vm_hosts
+  db.Where("status=1 and datacenter=? and vlan=?", datacenter, vlan).Find(&hosts)
+
+  res := Allhosts(hosts)
+  return res, nil
+}

@@ -76,6 +76,19 @@ func Getvlan() ([]*Vms_vlans, error) {
   return f, nil
 }
 
+func Getvlanbydatacenter(datacenter string) ([]*Vms_vlans, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  if err != nil {
+    return nil, err
+  }
+  var f []*Vms_vlans
+  dbs.Where("datacenter=?", datacenter).Find(&f)
+  return f, nil
+}
+
 func split(item string) (bool, []string) {
   start := item
   l := strings.Split(start, ".")

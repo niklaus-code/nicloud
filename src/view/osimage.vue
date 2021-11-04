@@ -38,7 +38,7 @@
                             <span v-else class="glyphicon glyphicon-remove"></span>
 		    			</td>
 		    			<td>
-							<button class="btn btn-info btn-xs" type="button" @click="editosimage(item.Osname, item.Cephblockdevice, item.Snapimage, item.Xml)">
+							<button class="btn btn-info btn-xs" type="button" @click="editosimage(item.Id, item.Osname, item.Cephblockdevice, item.Snapimage, item.Xml)">
                 				编辑
             				</button>
 							<button class="btn btn-info btn-xs" type="button" @click="delosimage(item.Osname, index)">
@@ -74,14 +74,15 @@ export default {
 		},
 
     methods: {
-		editosimage: function (osname, cephblockdevice, snapimage, xml) {
+		editosimage: function (id, osname, cephblockdevice, snapimage, xml) {
             this.$router.push({
-            path: '/createosimage',
+            path: '/updateosimage',
                 query: { 
                     'osimage': osname,
 					"cephblockdevice": cephblockdevice,
 					"snapimage" : snapimage,
 					"xml": xml,
+					"id": id,
                 }
             }) 
             },
