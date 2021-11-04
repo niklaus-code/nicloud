@@ -120,11 +120,11 @@ func Addmacine(zichangmingcheng string, pingpai string,  Xinghao string, Xulieha
 
   db, err := db.NicloudDb()
   if err != nil {
-    return nil
+    return err
   }
   err1 := db.Create(&m)
-  if err1 != nil {
-    return nil
+  if err1.Error != nil {
+    return err1.Error
   }
 
   db.NewRecord(&m)

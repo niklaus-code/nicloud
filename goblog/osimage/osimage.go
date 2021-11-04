@@ -59,6 +59,7 @@ func Update(id int, datacenter string, storage string, osname string, cephblockd
 }
 
 func Add(datacenter string, storage string,osname string, cephblockdevice string, snapimage string, xml string) error {
+  fmt.Println(datacenter, storage, osname, cephblockdevice, snapimage, xml)
   os := &Vms_os{
     Datacenter: datacenter,
     Storage: storage,
@@ -73,16 +74,11 @@ func Add(datacenter string, storage string,osname string, cephblockdevice string
     return err
   }
 
-  errdb := dbs.Create(*os)
+  errdb := dbs.Create(&os)
   if errdb.Error != nil {
     return vmerror.Error{Message: errdb.Error.Error()}
   }
-  booldb := dbs.NewRecord(*os)
-  if booldb == false {
-    return vmerror.Error{
-      Message: "数据库错误",
-    }
-  }
+  
   return nil
 }
 

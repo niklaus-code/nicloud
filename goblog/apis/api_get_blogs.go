@@ -13,11 +13,12 @@ func Get_blog(c *gin.Context) {
         return
     }
     offset := 8
-    bloglist := common.BlogGet(startpage, offset)
+    bloglist,err := common.BlogGet(startpage, offset)
 
     res := make(map[string]interface{})
     res["totalnumber"] = 5
     res["bloglist"] = bloglist
+    res["err"] = err
 
     c.JSON(200,  res)
     }

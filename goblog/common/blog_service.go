@@ -13,9 +13,12 @@ type Blog struct {
     Category_name string `json:"category_name"`
     }
 
-func BlogGet(startpage int, offset int) ([]*Blog) {
+func BlogGet(startpage int, offset int) ([]*Blog, error) {
     //初始化db
-    db := db.Db()
+    db, err := db.Db()
+    if err != nil {
+      return nil, err
+    }
     row := db.Order("create_time desc").Table("myblog_lists m").Select("m.id, m.title, m.create_time, m.content, myblog_caegory_info.category_name").Joins("LEFT JOIN article_class on m.id = article_class.article_id").Joins("left join myblog_caegory_info on myblog_caegory_info.category_id = article_class.category_id where m.status=1").Limit(offset).Offset((startpage-1)*offset)
     /*
     sql := fmt.Sprintf("select id, title, content,  img, group_concat(i.category_name) from myblog_lists as m" +
@@ -25,7 +28,7 @@ func BlogGet(startpage int, offset int) ([]*Blog) {
     */
     var blog []*Blog
     row.Scan(&blog)
-    return blog
+    return blog, nil
     }
 
 
@@ -36,14 +39,17 @@ type Myblog_thoughts struct {
     }
 
 
-func ThoughtsGet() ([]*Myblog_thoughts) {
+func ThoughtsGet() ([]*Myblog_thoughts, error) {
     //初始化db
-    db := db.Db()
+    db, err := db.Db()
+    if err != nil {
+      return nil, err
+    }
     var myblog_thoughts []*Myblog_thoughts
     //查询
 
     db.Order("id desc").Find(&myblog_thoughts)
-    return myblog_thoughts
+    return myblog_thoughts, nil
     }
 
 
@@ -55,20 +61,23 @@ type Myblog_reads struct {
     Image string `json:"image"`
 }
 
-func  ReadGet() []*Myblog_reads {
+func  ReadGet() ([]*Myblog_reads, error) {
     //初始化db
-    db := db.Db()
+    db,err := db.Db()
+    if  err != nil {
+      return nil, err
+    }
     //查询
     res := db.Model(&Myblog_reads{})
     if res != nil {
       fmt.Println(res)
     }
     var blog []*Myblog_reads
-    err := res.Find(&blog)
-    if err != nil {
-      fmt.Println(err)
+    err1 := res.Find(&blog)
+    if err1.Error != nil {
+      return nil, err1.Error
     }
-    return blog
+    return blog, nil
 }
 
 
@@ -80,9 +89,12 @@ type Bloginfo struct {
   Category_name string
 }
 
-func BlogGetById(id int) (Bloginfo) {
+func BlogGetById(id int) (Bloginfo, error) {
     //初始化db
-    db := db.Db()
+    db, err := db.Db()
+    if err != nil {
+      return Bloginfo{}, err
+    }
     var bloginfo Bloginfo
     //*查询
     row := db.Table("myblog_lists m").Select("m.id,  m.title, m.content, m.create_time, myblog_caegory_info.category_name").Joins("left join article_class on article_class.article_id = m.id ").Joins("left join myblog_caegory_info on article_class.category_id = myblog_caegory_info.category_id").Where(fmt.Sprintf("m.id=%d", id) )
@@ -94,5 +106,5 @@ func BlogGetById(id int) (Bloginfo) {
      */
     row.Scan(&bloginfo)
 
-    return bloginfo
+    return bloginfo, nil
 }

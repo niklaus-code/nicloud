@@ -5,6 +5,9 @@ import "goblog/common"
 
 
 func Get_read(c *gin.Context) {
-    res := common.ReadGet()
+    r, err := common.ReadGet()
+    res := make(map[string]interface{})
+    res["res"] =r
+    res["err"] = err
     c.JSON(200,  res)
     }

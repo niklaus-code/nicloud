@@ -12,10 +12,11 @@ func Get_blog_by_id(c *gin.Context) {
     if err != nil {
         return
     }
-    bloginfo := common.BlogGetById(blogid)
+    bloginfo, err := common.BlogGetById(blogid)
 
     res := make(map[string]interface{})
     res["res"] = bloginfo
+    res["err"] = err
 
     c.JSON(200,  res)
     }
