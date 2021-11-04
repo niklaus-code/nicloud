@@ -180,7 +180,7 @@ export default {
 				alert("缺少信息!")
 				return
 			}
-            this.$http.get(apiurl, { params: {datacenter: this.centervalue, storage: this.storagevalue, cpu: this.flavorvalue.Cpu, mem:this.flavorvalue.Mem, ip: this.ipvalue.Ipv4, mac: this.ipvalue.Macaddr, host: this.hostvalue, image: this.imagevalue} }).then(response => {
+            this.$http.get(apiurl, { params: {datacenter: this.centervalue, storage: this.storagevalue, vlan: this.vlanvalue,  cpu: this.flavorvalue.Cpu, mem:this.flavorvalue.Mem, ip: this.ipvalue, host: this.hostvalue, image: this.imagevalue} }).then(response => {
 				if (response.data.err === null) {
 					alert("创建成功! 是否查看虚拟机列表")
 					this.$router.push('/nicloud')

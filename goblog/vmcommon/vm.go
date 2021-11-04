@@ -315,8 +315,8 @@ func MigrateVm(uuid string, migrate_host string) error {
   return err
 }
 
-func Create(datacenter string,  storage string, cpu int, mem int, ip string, mac string, host string, image string) (bool, error) {
-  err := networks.Ipresource(ip, mac)
+func Create(datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, image string) (bool, error) {
+  mac, err := networks.Ipresource(ip)
   if err != nil {
     return false, err
   }
@@ -334,7 +334,7 @@ func Create(datacenter string,  storage string, cpu int, mem int, ip string, mac
 	 return false, err
   }
 
-	f, err := osimage.Xml(datacenter, storage,  vcpu, vmem, u, mac, imge_name, image)
+	f, err := osimage.Xml(datacenter, storage, vlan,  vcpu, vmem, u, mac, imge_name, image)
 
 	err = libvirtd.DefineVm(f, host)
 

@@ -5,6 +5,7 @@ import (
   "goblog/ceph"
   db "goblog/dbs"
   "goblog/networks"
+  "strings"
 
   "github.com/beevik/etree"
 
@@ -114,16 +115,17 @@ func getxml(osname string) (string, error) {
 }
 
 
-func Xml(datacenter string, storage string, vcpu int, vmem int, uuid string, mac string, image_name string, osname string) (string, error) {
+func Xml(datacenter string, storage string, vlan string,  vcpu int, vmem int, uuid string, mac string, image_name string, osname string) (string, error) {
   storagename, err := ceph.Cephinfobyname(datacenter, storage)
   if err != nil {
     return "", err
   }
+
   var ceph_secret = storagename[0].Ceph_secret
-  ips := storagename[0].Ips
+  ips := strings.Split(storagename[0].Ips, ",")
   port := storagename[0].Port
 
-  br, err := networks.Getvlanbydatacenter(datacenter)
+  br, err := networks.Getbridge(datacenter, vlan)
   if err != nil {
     return "", err
   }

@@ -81,13 +81,22 @@ func Getvlanbydatacenter(datacenter string) ([]*Vms_vlans, error) {
   if err != nil {
     return nil, err
   }
-  if err != nil {
-    return nil, err
-  }
+
   var f []*Vms_vlans
   dbs.Where("datacenter=?", datacenter).Find(&f)
   return f, nil
 }
+
+func Getbridge(datacenter string, vlan string) (string, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return "", err
+  }
+  var f []*Vms_vlans
+  dbs.Where("datacenter=? and vlan=?", datacenter, vlan).Find(&f)
+  return f[0].Bridge, nil
+}
+
 
 func split(item string) (bool, []string) {
   start := item
@@ -128,21 +137,21 @@ func IPlist(vlan string) []*Vms_ips {
   return ip
 }
 
-func Ipresource(ip string, mac string) error {
+func Ipresource(ip string) (string, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
-    return err
+    return "", err
   }
   var ipnet []*Vms_ips
-  dbs.Where("ipv4=?", ip).Where("macaddr=?", mac).Find(&ipnet)
+  dbs.Where("ipv4=?", ip).Find(&ipnet)
   for _, v := range ipnet {
     if v.Status == 1 {
-      return vmerror.Error{
+      return "", vmerror.Error{
         Message: "IP已经被占用",
       }
     }
   }
-  return nil
+  return ipnet[0].Macaddr, nil
 }
 
 func Updateipstatus(ipv4 string, status int) (error) {

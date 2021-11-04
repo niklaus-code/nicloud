@@ -250,8 +250,9 @@ export default {
 					if (response.data.res.Comment.length == 0) {
 						this.data[index].flag = true
 						}
+					} else {
+						alert("关机错误（'"+response.data.err.Message+"'）")
 					}
-				alert(response.data.err.Message)
             })
         },
 
@@ -267,8 +268,9 @@ export default {
 					if (response.data.res.Comment.length == 0) {
 						this.data[index].flag = true
 						}
+					} else {
+						alert("暂停错误（'"+response.data.err.Message+"'）")
 					}
-				alert(response.data.err.Message)
             })
         },
 
@@ -284,8 +286,9 @@ export default {
 					if (response.data.res.Comment.length == 0) {
 						this.data[index].flag = true
 						}
+					} else {
+						alert("开机错误（'"+response.data.err.Message+"'）")
 					}
-				alert(response.data.err.Message)
             })
         },
     }
