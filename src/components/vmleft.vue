@@ -1,10 +1,8 @@
 <template>
     <div  class="col-md-1" style="float:left">
         <ul class="list-group col-md-11 col-md-offset-1">
-            <li class="list-group-item" v-for="(item, index) in routelist" :class='{bg:index==isactive}'>
-                <router-link :to="{name: item.router}">
-                    <span @click="mouseOver(index)" >{{item.name}}</span>
-                </router-link>
+            <li class="list-group-item" v-for="(item, index) in routelist"  @click="up(index)"  @click="route(item.router)" v-bind:class="{aaa: is === index}">
+                    <span>{{item.name}}</span>
             </li>
         </ul>
     </div>
@@ -22,7 +20,7 @@ export default {
 					},
 				{
 				name: "云盘",
-				router: "nicloud"
+				router: "cloudrive"
 					},
 				{
 				name: "镜像",
@@ -45,18 +43,20 @@ export default {
 				router: "count"
 					},
 				],
-			isactive:8,
+			is: 8,
         }
     },
 
 	methods: {
-        mouseOver: function (index) {
-            this.isactive = index;
+        route: function (label) {
+            this.$router.push({
+            	path: label,
+            }) 
             },
 
-        mouseLeave: function (index) {
-            this.isactive = index;
-            }
+        up: function (index) {
+            this.is = index;
+            },
 	}
 }
 </script>
@@ -66,7 +66,7 @@ li {
 	text-align: center 
 }
 
-.bg {
+.aaa {
 	background-color: red;
 }
 
@@ -74,17 +74,21 @@ li {
     margin-top:100px;
 	}
 
+span {
+	font-weight: 600;
+}
+
+a{
+	color: black;
+}
+
 .list-group-item {
     background-color: transparent;
     border: none;
-    color: blue;
 }
 
 .breadcrumb {
     background-color: #5B5B5B
-}
-span {
-	font-weight: 600;
 }
 
 </style>

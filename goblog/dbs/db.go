@@ -7,6 +7,7 @@ import (
 
 func Db() (*gorm.DB,error) {
   db, errDb:=gorm.Open("mysql","modis:modis@(127.0.0.1:3306)/myblog?parseTime=true")
+  defer db.Close()
   if errDb != nil {
     return nil, errDb
   }

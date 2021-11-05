@@ -4,6 +4,7 @@ import (
   "github.com/ceph/go-ceph/rados"
   rbd "github.com/ceph/go-ceph/rbd"
   "goblog/dbs"
+  "goblog/vmerror"
   "time"
 )
 
@@ -73,6 +74,16 @@ func Get()([]*Vms_Ceph, error) {
   return c, nil
 }
 
+func Getpool(datacenter string, storage string)([]*Vms_Ceph, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  c := []*Vms_Ceph{}
+  dbs.Where("datacenter=? and name=?", datacenter, storage).Find(&c)
+  return c, nil
+}
+
 func Cephinfobyname(datacenter string, storage string)([]*Vms_Ceph, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
@@ -134,4 +145,38 @@ func RbdClone(id string) (string, error) {
     return "", e
   }
   return id, nil
+}
+
+type Vms_cloudrive struct {
+  Cloudriveid string
+  Contain string
+  Pool string
+  Storage string
+  Datacenter string
+  Vm_ip string
+  User string
+  Status int
+}
+
+func Add_cloudrive(contain string, pool string, storage string, datacenter string, user string) ([]*Vms_cloudrive, error) {
+  cloudriveid := "123cnasdasdaweqwe"
+  c := &Vms_cloudrive{
+    Cloudriveid: cloudriveid,
+    Contain: contain,
+    Pool: pool,
+    Storage: storage,
+    Datacenter: datacenter,
+    User: user,
+    Status: 1,
+  }
+
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  errdb := dbs.Create(&c)
+  if errdb.Error != nil {
+    return nil, vmerror.Error{Message: errdb.Error.Error()}
+  }
+  return nil, err
 }

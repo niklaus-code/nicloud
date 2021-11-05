@@ -22,12 +22,24 @@ import createosimage from '@/view/createosimage'
 import updateosimage from '@/view/updateosimage'
 import ceph from '@/view/ceph'
 import createceph from '@/view/createceph'
+import cloudrive from '@/view/cloudrive'
+import createcloudrive from '@/view/createcloudrive'
 
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/createcloudrive',
+      name: 'createcloudrive',
+      component: createcloudrive
+    },
+    {
+      path: '/cloudrive',
+      name: 'cloudrive',
+      component: cloudrive
+    },
     {
       path: '/updateosimage',
       name: 'updateosimage',

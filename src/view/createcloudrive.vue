@@ -25,7 +25,7 @@
         			<label>存储集群</label>
 				</div>
 				<div class="col-sm-8">
-				    <select class="col-sm-12" v-model="storagevalue">
+				    <select class="col-sm-12" v-model="storagevalue" @change="getpool">
 						 <option value="">--请选择--</option>
                         <option  v-for="c in storage" :value="c.Name">
                             {{ c.Name }}
@@ -37,62 +37,38 @@
 				<div class="col-sm-12" style="margin-top:20px">
 	 		<div class="form-group">
 				<div class="col-sm-2 col-sm-offset-2">
-        			<label>镜像名称</label>
+        			<label>存储池</label>
 				</div>
 				<div class="col-sm-8">
-					<form role="form">
-  						<div class="form-group">
-    						<input type="text" class="form-control" v-model="osimage" placeholder="">
-  						</div>
-					</form>
+				    <select class="col-sm-12" v-model="poolvalue">
+						 <option value="">--请选择--</option>
+                        <option  v-for="p in pool" :value="p.Pool">
+                            {{ p.Pool }}
+                        </option>
+                    </select>
 				</div>
 				</div>
     		</div>
-				<div class="col-sm-12">
+				<div class="col-sm-12" style="margin-top:20px">
 	 		<div class="form-group">
 				<div class="col-sm-2 col-sm-offset-2">
-        			<label>ceph块</label>
+        			<label>容量</label>
 				</div>
 				<div class="col-sm-8">
-					<form role="form">
-  						<div class="form-group">
-    						<input type="text" class="form-control" v-model="cephblockdevice" placeholder="">
-  						</div>
-					</form>
+				    <select class="col-sm-12" v-model="containvalue">
+						 <option value="">--请选择--</option>
+                        <option  v-for="c in contain" :value="c">
+                            {{ c }}G
+                        </option>
+                    </select>
 				</div>
 				</div>
     		</div>
-				<div class="col-sm-12">
-	 		<div class="form-group">
-				<div class="col-sm-2 col-sm-offset-2">
-        			<label>快照名称</label>
-				</div>
-				<div class="col-sm-8">
-					<form role="form">
-  						<div class="form-group">
-    						<input type="text" class="form-control" v-model="snapimage" placeholder="">
-  						</div>
-					</form>
-				</div>
-				</div>
-    		</div>
-				<div class="col-sm-12">
-	 		<div class="form-group">
-				<div class="col-sm-2 col-sm-offset-2">
-        			<label>xml</label>
-				</div>
-				<div class="col-sm-8">
-					<form role="form">
-  						<div class="form-group">
-    						<textarea class="form-control" v-model="xml" rows="16"></textarea>
-  						</div>
-					</form>
-				</div>
-				</div>
-    		</div>
-		<div class="form-group" style="margin-top:20px" >
+				<div class="col-sm-12" style="margin-top:20px">
+		<div class="form-group">
 			<div class="col-sm-2 col-sm-offset-4">
-  				<button type="submit" @click="createosimage" class="btn btn-info">提交</button>
+  				<button type="submit" @click="createcloudrive" class="btn btn-info">提交</button>
+			</div>
 			</div>
 		</div>
 		</div>
@@ -114,10 +90,13 @@ export default {
 			storage : [],
             storagevalue: "",
 
-			osimage: "",
-			cephblockdevice: "",
-			snapimage: "",
-			xml: "",
+			poolvalue: "",
+			pool: [],
+			
+			containvalue: 0, 
+			contain: [
+				100, 200, 500, 
+				], 
         }
     },
 
@@ -126,11 +105,22 @@ export default {
     },
 
     created: function () {
-        this.vlaninfo()
 		this.getdatacenter()
     },
 
     methods: {
+		getpool: function () {
+            var apiurl = `/api/storage/getpool`
+
+            this.$http.get(apiurl, { params: { datacenter: this.centervalue, storage: this.storagevalue}}).then(response => {
+                if (response.data.err === null) {
+                    this.pool = response.data.res
+                } else {
+                    alert("获取数据失败(" + response.data.err.Message+ ")" )
+                    }
+            })
+            },
+
         getdatacenter: function () {
             var apiurl = `/api/datacenter/getdatacenter`
 
@@ -148,7 +138,6 @@ export default {
             this.$http.get(apiurl, { params: { datacenter: centervalue}}).then(response => {
                 if (response.data.err === null) {
                     this.storage = response.data.res
-                    this.storagevalue = response.data.res[0].Name
                 } else {
                     alert("获取数据失败(" + response.data.err.Message+ ")" )
                     }
@@ -156,15 +145,8 @@ export default {
         },
 
 
-		vlaninfo: function () {
-            this.osimage = this.$route.query.osimage
-            this.cephblockdevice = this.$route.query.cephblockdevice
-            this.snapimage = this.$route.query.snapimage
-            this.xml = this.$route.query.xml
-            },
-
-		check: function (osname, cephblockdevice, snapimage, xml) {
-			if (typeof osname === 'undefined' || osname === null || osname === ''|| typeof cephblockdevice === 'undefined' || cephblockdevice === null || cephblockdevice === '' || typeof snapimage === 'undefined' || snapimage === null || snapimage === '' ||typeof xml === 'undefined' || xml === null || xml === '') {
+		check: function (centervalue, storagevalue, poolvalue, containvalue) {
+			if (typeof  centervalue=== 'undefined' ||  centervalue=== null ||  centervalue=== ''|| typeof  storagevalue=== 'undefined' || storagevalue === null || storagevalue === '' || typeof poolvalue=== 'undefined' || poolvalue=== null || poolvalue=== '' ||typeof containvalue === 'undefined' || containvalue === null || containvalue === '') {
 				alert("缺少信息")
                 return true
             } else {
@@ -172,18 +154,17 @@ export default {
 				}
 			},
 
-		createosimage: function () {
-			if (this.check(this.osimage, this.cephblockdevice, this.snapimage, this.xml)) {
+		createcloudrive: function () {
+			if (this.check(this.centervalue, this.storagevalue, this.poolvalue, this.containvalue)) {
 				return 
 				}
-		
 
-            var apiurl = `/api/osimage/createimage`
+            var apiurl = `/api/storage/addcloudrive`
 
-            this.$http.get(apiurl, { params: { osname: this.osimage, datacenter: this.centervalue, storage: this.storagevalue, cephblockdevice: this.cephblockdevice, snapimage: this.snapimage, xml: this.xml} }).then(response => {
+            this.$http.get(apiurl, { params: { datacenter: this.centervalue, storage: this.storagevalue, pool: this.poolvalue, contain: this.containvalue} }).then(response => {
 				if (response.data.err === null) {
 					alert("创建成功!")
-					this.$router.push('/osimage')
+					this.$router.push('/cloudrive')
 				} else {
 					alert("创建失败(" + response.data.err.Message+ ")" )
 					}
