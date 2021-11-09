@@ -22,7 +22,7 @@
         				<th>存储集群</th>
 						<th>数据中心</th>
         				<th>用户</th>
-						<th>状态</th>
+        				<th>状态`</th>
 						<th>操作</th>
       				</tr>
     			</thead>
@@ -32,23 +32,25 @@
         				<label class="checkbox-inline" style="width:10px">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
+        				<td>{{item.Cloudriveid}}</td>
+        				<td>{{item.Contain}}G</td>
+        				<td>{{item.Pool}}</td>
+        				<td>{{item.Vm_ip}}</td>
+        				<td>{{item.Storage}}</td>
         				<td>{{item.Datacenter}}</td>
-        				<td>{{item.Vlan}}</td>
-        				<td>{{item.Ipv4}}</td>
-        				<td>{{item.Usedcpu}}核/{{item.Cpu}}核</td>
-        				<td>{{item.Usedmem}}G/{{item.Mem}}G</td>
-        				<td>{{item.count}}/{{item.Max_vms}}</td>
-        				<td>test</td>
-                        <td>
+        				<td>{{item.User}}</td>
+				      <td>
                             <span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
                             <span v-else class="glyphicon glyphicon-remove"></span>
                         </td>
-
 		    			<td>
-							<button class="btn btn-info btn-xs" type="button" @click="restore(item.Ipv4, item.Status, index)">
+							<button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="mount(item.Cloudriveid, item.Storage, item.Pool, index)">
                 				挂载
             				</button>
-							<button class="btn btn-info btn-xs" type="button" @click="restore(item.Ipv4, item.Status, index)">
+							<button v-else class="btn btn-info btn-xs" type="button" @click="umount(item.Vm_ip, item.Storage, item.Datacenter, item.Cloudriveid, index)">
+                				卸载
+            				</button>
+							<button class="btn btn-danger btn-xs" type="button" @click="restore(item.Ipv4, item.Status, index)">
                 				销毁
             				</button>
         				</td>
@@ -81,30 +83,40 @@ export default {
     },
 
 	mounted: function () {
-		this.gethost()
+		this.getcloudrive()
 		},
 
     methods: {
-		restore: function (ip, status, index) {
-            var apiurl = `/api/hosts/restore`
-            this.$http.get(apiurl, { params: {ip: ip, status: status} } ).then(response => {
-			   if (response.data.res === null) {
-                    alert("重置成功")
-                    if (status) {
-                        this.data[index].Status = 0
-                    } else {
-                        this.data[index].Status = 1
-                        }
-                    } else {
-                    alert("创建失败('"+response.data.res.Message+"')")  
+		mount: function(cloudriveid, storage, pool, index) {
+			this.$router.push({
+            path: '/mountcloudrive',
+                query: { 
+					cloudriveid: cloudriveid,
+					storage: storage,
+					pool: pool
                 }
+            }) 
+			},
+
+		umount: function (vmip, storage, datacenter, cloudriveid) {
+            var apiurl = `/api/vm/umountdisk`
+            this.$http.get(apiurl , { params: { vmip: vmip, storage: storage, datacenter: datacenter, cloudriveid: cloudriveid} }).then(response => {
+				if (response.data.err === null ) {
+					alert("卸载成功")
+				} else {
+					alert ("获取数据失败（"+response.data.err.Message+")")
+					}
             })
         },
 
-		gethost: function (ip) {
-            var apiurl = `/api/hosts/gethosts`
+		getcloudrive: function (ip) {
+            var apiurl = `/api/storage/getcloudrive`
             this.$http.get(apiurl).then(response => {
-            	this.data = response.data.res
+				if (response.data.err === null ) {
+            		this.data = response.data.res
+				} else {
+					alert ("获取数据失败（"+response.data.err.Message+")")
+					}
             })
         },
         }

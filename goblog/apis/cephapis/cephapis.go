@@ -7,14 +7,29 @@ import (
   "strconv"
 )
 
+func  Getcloudrive(c *gin.Context) {
+  r, err := ceph.Get_cloudrive()
+  res := make(map[string]interface{})
+  res["res"] = r
+  res["err"] = err
+
+  c.JSON(200, res)
+}
+
+
 func  Addcloudrive(c *gin.Context) {
-  contain := c.Query("contain")
+  res := make(map[string]interface{})
+  contain, err := strconv.Atoi(c.Query("contain"))
+  if err != nil {
+    res["err"] = err
+    c.JSON(400, vmerror.Error{Message: "param error"})
+  }
   pool := c.Query("pool")
   storage := c.Query("storage")
   datacenter := c.Query("datacenter")
   user := "nicloud"
   r, err := ceph.Add_cloudrive(contain, pool, storage, datacenter, user)
-  res := make(map[string]interface{})
+
   res["res"] = r
   res["err"] = err
 

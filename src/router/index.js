@@ -24,12 +24,18 @@ import ceph from '@/view/ceph'
 import createceph from '@/view/createceph'
 import cloudrive from '@/view/cloudrive'
 import createcloudrive from '@/view/createcloudrive'
+import mountcloudrive from '@/view/mountcloudrive'
 
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/mountcloudrive',
+      name: 'mountcloudrive',
+      component: mountcloudrive
+    },
     {
       path: '/createcloudrive',
       name: 'createcloudrive',

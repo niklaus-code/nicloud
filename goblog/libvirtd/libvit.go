@@ -26,6 +26,7 @@ func DefineVm(xml string, host string) error {
   if err != nil {
     return err
   }
+
   _, err = conn.DomainDefineXML(xml)
   if err != nil {
     return err

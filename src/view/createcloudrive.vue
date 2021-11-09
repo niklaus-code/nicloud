@@ -27,8 +27,8 @@
 				<div class="col-sm-8">
 				    <select class="col-sm-12" v-model="storagevalue" @change="getpool">
 						 <option value="">--请选择--</option>
-                        <option  v-for="c in storage" :value="c.Name">
-                            {{ c.Name }}
+                        <option  v-for="c in storage" :value="c.Uuid">
+                            {{ c.Uuid }}
                         </option>
                     </select>
 				</div>

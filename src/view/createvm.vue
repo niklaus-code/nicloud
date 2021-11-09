@@ -24,8 +24,8 @@
                 <div class="col-sm-9">
                     <select class="col-sm-10" v-model="storagevalue" @change="getimageby()">
 					  <option value="">--请选择--</option>
-                        <option  v-for="c in storage" :value="c.Name">
-                            {{ c.Name }}
+                        <option  v-for="c in storage" :value="c.Uuid">
+                            {{ c.Uuid }}
                         </option>
                     </select>
                 </div>

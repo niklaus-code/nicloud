@@ -4,12 +4,13 @@ import (
   "github.com/ceph/go-ceph/rados"
   rbd "github.com/ceph/go-ceph/rbd"
   "goblog/dbs"
+  "goblog/utils"
   "goblog/vmerror"
   "time"
 )
 
 type Vms_Ceph struct {
-  Name string
+  Uuid string
   Pool string
   Datacenter string
   Ceph_secret string
@@ -44,7 +45,7 @@ func Restore(vlan string, status int) error {
 
 func Add(name string, pool string, datacenter string, ceph_secret string, ips string, port string, comment  string) error {
   c := &Vms_Ceph{
-    Name: name,
+    Uuid: name,
     Pool: pool,
     Datacenter: datacenter,
     Ceph_secret: ceph_secret,
@@ -80,7 +81,7 @@ func Getpool(datacenter string, storage string)([]*Vms_Ceph, error) {
     return nil, err
   }
   c := []*Vms_Ceph{}
-  dbs.Where("datacenter=? and name=?", datacenter, storage).Find(&c)
+  dbs.Where("datacenter=? and uuid=?", datacenter, storage).Find(&c)
   return c, nil
 }
 
@@ -90,7 +91,7 @@ func Cephinfobyname(datacenter string, storage string)([]*Vms_Ceph, error) {
     return nil, err
   }
   c := []*Vms_Ceph{}
-  dbs.Where("datacenter=? and name=?", datacenter, storage).Find(&c)
+  dbs.Where("datacenter=? and uuid=?", datacenter, storage).Find(&c)
   return c, nil
 }
 
@@ -131,7 +132,6 @@ func Rm_image(uuid string) (error) {
 }
 
 func RbdClone(id string) (string, error) {
-
   conn, err := CephConn()
   if err != nil {
     return "", err
@@ -147,9 +147,23 @@ func RbdClone(id string) (string, error) {
   return id, nil
 }
 
+func Createcloudrive( uuid string, contain int) error {
+  conn, err := CephConn()
+  if err != nil {
+    return err
+  }
+
+  ioctx, _ := conn.OpenIOContext("vm")
+  _, err = rbd.Create(ioctx, uuid, uint64(1024*1024*1024*contain), 0)
+  if err != nil {
+    return err
+  }
+  return nil
+}
+
 type Vms_cloudrive struct {
   Cloudriveid string
-  Contain string
+  Contain int
   Pool string
   Storage string
   Datacenter string
@@ -158,16 +172,56 @@ type Vms_cloudrive struct {
   Status int
 }
 
-func Add_cloudrive(contain string, pool string, storage string, datacenter string, user string) ([]*Vms_cloudrive, error) {
-  cloudriveid := "123cnasdasdaweqwe"
+
+func Get_cloudrive() ([]*Vms_cloudrive, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  c := []*Vms_cloudrive{}
+  dbs.Find(&c)
+  return c, err
+}
+
+func Mountvmstatus(datacenter string, storage string, cloudriveid string, vmip string) error {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+  errdb := dbs.Model(Vms_cloudrive{}).Where("datacenter=? and storage=? and cloudriveid=?", datacenter, storage, cloudriveid).Update("vm_ip", vmip).Update("status", 0)
+  if errdb.Error != nil {
+    return errdb.Error
+  }
+  return nil
+}
+
+func Umountvmstatus(datacenter string, storage string, cloudriveid string) error {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+  errdb := dbs.Model(Vms_cloudrive{}).Where("datacenter=? and storage=? and cloudriveid=?", datacenter, storage, cloudriveid).Update("vm_ip", "").Update("status", 1)
+  if errdb.Error != nil {
+    return errdb.Error
+  }
+  return nil
+}
+
+func Add_cloudrive(contain int, pool string, storage string, datacenter string, user string) ([]*Vms_cloudrive, error) {
+  cloudriveid := utils.Createuuid()
   c := &Vms_cloudrive{
     Cloudriveid: cloudriveid,
     Contain: contain,
     Pool: pool,
     Storage: storage,
     Datacenter: datacenter,
-    User: user,
+    User: "niklaus",
     Status: 1,
+  }
+
+  err := Createcloudrive(cloudriveid, contain)
+  if err != nil {
+    return nil, err
   }
 
   dbs, err := db.NicloudDb()

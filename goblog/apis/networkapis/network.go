@@ -57,7 +57,7 @@ func Restore(c *gin.Context) {
   res := make(map[string]interface{})
 
   err := networks.Restore(vlan, status)
-  res["res"] = err
+  res["err"] = err
   c.JSON(200, res)
 }
 

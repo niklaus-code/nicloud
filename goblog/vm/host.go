@@ -1,6 +1,7 @@
-package vmcommon
+package vm
 
 import (
+  "fmt"
   db "goblog/dbs"
   "goblog/vmerror"
   "reflect"
@@ -191,4 +192,19 @@ func GetHostsbydatacenter(datacenter string, vlan string) ([]map[string]interfac
 
   res := Allhosts(hosts)
   return res, nil
+}
+
+func GetHostsbyvmip(vmip string) (*Vms,  error) {
+  db, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  fmt.Println(vmip)
+  vm := &Vms{}
+  errdb := db.Where("ip=?", vmip).Find(vm)
+  if errdb.Error != nil {
+    return nil, errdb.Error
+  }
+  fmt.Println(vm)
+  return vm, nil
 }

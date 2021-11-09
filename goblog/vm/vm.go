@@ -1,17 +1,19 @@
-package vmcommon
+package vm
 
 import (
   "errors"
   "fmt"
+  "github.com/beevik/etree"
   _ "github.com/jinzhu/gorm/dialects/mysql" //这个一定要引入哦！！
-  uuid "github.com/satori/go.uuid"
   "goblog/ceph"
   "goblog/dbs"
   "goblog/libvirtd"
   "goblog/networks"
   "goblog/osimage"
-  "time"
+  "goblog/utils"
   vmerror "goblog/vmerror"
+  "strings"
+  "time"
 )
 
 type Vms struct {
@@ -252,12 +254,6 @@ func Start(uuid string, host string) (*Vms, error) {
 	return v, err4
 }
 
-func Createuuid() string {
-  /*create uuid*/
-	u := uuid.NewV4().String()
-	return u
-}
-
 func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, vmxml string, ip string, host string, image string) (bool, error) {
   /*save config to db*/
   dbs, err := db.NicloudDb()
@@ -326,7 +322,7 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
 	vmem := mem * 1024 * 1024
 
 	//create a uuid
-	u := Createuuid()
+	u := utils.Createuuid()
 
 	//create baseimage
 	imge_name, err := ceph.RbdClone(u)
@@ -335,9 +331,11 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
   }
 
 	f, err := osimage.Xml(datacenter, storage, vlan,  vcpu, vmem, u, mac, imge_name, image)
+	if err != nil {
+	  return false, err
+  }
 
 	err = libvirtd.DefineVm(f, host)
-
 	if err != nil {
 	  return false, err
   }
@@ -359,6 +357,146 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
 	return true, err
 }
 
+func Getvmxmlby (ip string, storage string, datacenter string) (string, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return "", err
+  }
+  v := &Vms{}
+  errdb := dbs.Where("ip=? and storage=? and datacenter=?",ip, storage, datacenter).Find(v)
+  if errdb.Error != nil {
+    return "", vmerror.Error{Message: errdb.Error.Error()}
+  }
+  return v.Vmxml, nil
+}
+
+func Umountdisk(vmip string,  storage string, datacenter string, diskid string) error {
+  f, err := Getvmxmlby(vmip, storage, datacenter)
+  if err != nil {
+    return err
+  }
+
+  host, err := GetHostsbyvmip(vmip)
+
+  if err != nil {
+    return err
+  }
+
+  doc := etree.NewDocument()
+  err = doc.ReadFromString(f)
+  device := doc.FindElements("./domain/devices/disk")
+  d:= doc.FindElement("./domain/devices/")
+  for _, v := range device {
+    source := v.FindElement("./source")
+    vmdisk := source.SelectAttr("name").Value
+    uuid := strings.Split(vmdisk, "/")
+    if len(uuid)> 1 && uuid[1] == diskid {
+      d.RemoveChild(v)
+      var docstring string
+      docstring, err = doc.WriteToString()
+      libvirtd.DefineVm(docstring, host.Host)
+
+      err := ceph.Umountvmstatus(datacenter, storage, diskid)
+      if err != nil {
+        return err
+      }
+      return nil
+    }
+  }
+
+  return vmerror.Error{
+    Message: "disk not found",
+  }
+}
+
+func Updatexml(vmid string, ip string, vmhost string, storage string, pool string, datacenter string, cloudriveid string) error {
+  s, err := VmStatus(vmid, vmhost)
+  if err != nil {
+    return err
+  }
+  if s != "关机" {
+    return vmerror.Error{Message: "cont mount disk, vm is " + s}
+  }
+
+  storageinfo, err := ceph.Cephinfobyname(datacenter, storage)
+  if err != nil {
+    return err
+  }
+
+  f, err := Getvmxmlby(ip, storage, datacenter)
+  if err != nil {
+    return err
+  }
+
+  doc := etree.NewDocument()
+  err = doc.ReadFromString(f)
+  if err != nil {
+    return err
+  }
+  device := doc.FindElement("./domain/devices")
+  disk := device.CreateElement("disk")
+  disk.CreateAttr("type", "network")
+  disk.CreateAttr("device", "disk")
+
+  driver := disk.CreateElement("driver")
+  driver.CreateAttr("name", "qemu")
+  driver.CreateAttr("type", "raw")
+
+  auth := disk.CreateElement("auth")
+  auth.CreateAttr("username", "admin")
+  secret := auth.CreateElement("secret")
+  secret.CreateAttr("type", "ceph")
+  secret.CreateAttr("uuid", storageinfo[0].Ceph_secret)
+
+  source := disk.CreateElement("source")
+  source.CreateAttr("protocol", "rbd")
+
+  source.CreateAttr("name", pool+"/"+cloudriveid)
+  host := source.CreateElement("host")
+
+
+  var iplist []string
+  iplist = strings.Split(storageinfo[0].Ips, ",")
+  for _, v := range iplist {
+    host.CreateAttr("name", v)
+  }
+  host.CreateAttr("port", storageinfo[0].Port)
+
+  target := disk.CreateElement("target")
+  target.CreateAttr("dev", "vdb")
+  target.CreateAttr("bus", "virtio")
+
+  address := disk.CreateElement("address")
+  address.CreateAttr("type", "pci")
+  address.CreateAttr("domain", "0x0000")
+  address.CreateAttr("bus", "0x00")
+  address.CreateAttr("slot", "0x19")
+  address.CreateAttr("function", "0x0")
+  doc.Indent(2)
+  var docstring string
+  docstring, err = doc.WriteToString()
+
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  errdb := dbs.Model(Vms{}).Where("ip=?", ip).Update("vmxml", docstring)
+  if errdb.Error != nil {
+    return vmerror.Error{Message: errdb.Error.Error()}
+  }
+
+  err = libvirtd.DefineVm(docstring, vmhost)
+  if err != nil {
+    return err
+  }
+
+  updatevm := ceph.Mountvmstatus(datacenter, storage, cloudriveid, ip)
+  if updatevm != nil {
+    return updatevm
+  }
+  return nil
+}
 
 func VmList(host string) []*Vms {
   dbs, err := db.NicloudDb()

@@ -104,7 +104,7 @@ export default {
 		restore: function (vlan, status, index) {
             var apiurl = `/api/networks/restore`
             this.$http.get(apiurl, { params: { vlan: vlan, status: status} } ).then(response => {
-            	if (response.data.res === null) {
+            	if (response.data.err === null) {
 					alert("重置成功")
 					if (status) {
 						this.data[index].Status = false
@@ -112,7 +112,7 @@ export default {
 						this.data[index].Status = true
 						}
 					} else {
-					alert("创建失败('"+response.data.res.Message+"')")	
+					alert("创建失败('"+response.data.err.Message+"')")	
 				}
             })
         },

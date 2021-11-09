@@ -15,11 +15,11 @@
             					<input type="checkbox" v-model="checkvalue" @click="checkbox()">
         					</label>
         				</th>
-        				<th>存储集群</th>
-        				<th>数据中心</th>
+        				<th>UUID</th>
         				<th>数据池</th>
         				<th>secret</th>
         				<th>hosts/port</th>
+        				<th>数据中心</th>
 						<th>备注</th>
 						<th>状态</th>
 						<th>操作</th>
@@ -31,18 +31,18 @@
         				<label class="checkbox-inline">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
-        				<td>{{item.Name}}</td>
-        				<td>{{item.Datacenter}}</td>
+        				<td>{{item.Uuid}}</td>
         				<td>{{item.Pool}}</td>
         				<td>{{item.Ceph_secret}}</td>
         				<td>{{item.Ips}}/{{item.Port}}</td>
+        				<td>{{item.Datacenter}}</td>
         				<td>{{item.Comment}}</td>
 						<td>
 							<span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
                         	<span v-else class="glyphicon glyphicon-remove"></span>
 						</td>
 		    			<td>
-							<button class="btn btn-info btn-xs" type="button" @click="restore(item.Name, item.Status, index)">
+							<button class="btn btn-info btn-xs" type="button" @click="restore(item.Uuid, item.Status, index)">
                 				重置
             				</button>
         				</td>

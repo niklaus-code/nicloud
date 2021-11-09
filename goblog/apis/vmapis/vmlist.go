@@ -3,7 +3,7 @@ package vmapis
 import (
   "fmt"
   "github.com/gin-gonic/gin"
-  "goblog/vmcommon"
+  "goblog/vm"
   "strconv"
 )
 
@@ -16,7 +16,7 @@ func Vnc(c *gin.Context)  {
 
 func Search(c *gin.Context)  {
   ct := c.Query("content")
-  vms, err := vmcommon.SearchVm(ct)
+  vms, err := vm.SearchVm(ct)
   res := make(map[string]interface{})
   if err != nil {
     c.JSON(200, res)
@@ -28,7 +28,7 @@ func Search(c *gin.Context)  {
 
 func GetVminfo(c *gin.Context) {
   uuid := c.Query("uuid")
-  iplist := vmcommon.GetVmByUuid(uuid)
+  iplist := vm.GetVmByUuid(uuid)
   res := make(map[string]interface{})
   res["res"] = iplist
 
@@ -41,7 +41,7 @@ func GetVmStatus(c *gin.Context) {
   uuid := c.Query("uuid")
 
   res := make(map[string]interface{})
-  vmstate, err := vmcommon.VmStatus(uuid, host)
+  vmstate, err := vm.VmStatus(uuid, host)
 
   if err != nil {
     res["res"] = vmstate
@@ -53,7 +53,7 @@ func GetVmStatus(c *gin.Context) {
 
 func Getvmlist(c *gin.Context) {
 	host := c.Query("host")
-	vmlist := vmcommon.VmList(host)
+	vmlist := vm.VmList(host)
 	res := make(map[string]interface{})
 	res["res"] = vmlist
 
@@ -64,10 +64,37 @@ func MigrateVm(c *gin.Context) {
   uuid := c.Query("uuid")
   migratehost := c.Query("migratehost")
 
-  vmlist := vmcommon.MigrateVm(uuid, migratehost)
+  vmlist := vm.MigrateVm(uuid, migratehost)
   res := make(map[string]interface{})
   res["res"] = vmlist
 
+  c.JSON(200, res)
+}
+
+func Umountdisk(c *gin.Context) {
+  vmip := c.Query("vmip")
+  storage := c.Query("storage")
+  datacenter := c.Query("datacenter")
+  cloudriveid := c.Query("cloudriveid")
+  res := make(map[string]interface{})
+  r := vm.Umountdisk(vmip, storage, datacenter, cloudriveid)
+
+  res["err"] = r
+  c.JSON(200, res)
+}
+
+func Mountdisk(c *gin.Context) {
+  vmid := c.Query("vmid")
+  ip := c.Query("ip")
+  storage := c.Query("storage")
+  datacenter := c.Query("datacenter")
+  pool := c.Query("pool")
+  host := c.Query("host")
+  cloudriveid := c.Query("cloudriveid")
+  res := make(map[string]interface{})
+  r := vm.Updatexml(vmid, ip,  host, storage, pool, datacenter, cloudriveid)
+
+  res["err"] = r
   c.JSON(200, res)
 }
 
@@ -81,7 +108,7 @@ func Createvm(c *gin.Context) {
   storage := c.Query("storage")
   vlan :=  c.Query("vlan")
 
-	create, err := vmcommon.Create(datacenter, storage, vlan, cpu, mem, ip,  host, image)
+	create, err := vm.Create(datacenter, storage, vlan, cpu, mem, ip,  host, image)
   res := make(map[string]interface{})
 
 	res["res"] = create
@@ -94,7 +121,7 @@ func Addcomment(c *gin.Context) {
   uuid := c.Query("uuid")
   comment := c.Query("comment")
   res := make(map[string]interface{})
-  r, err := vmcommon.Updatecomments(uuid, comment)
+  r, err := vm.Updatecomments(uuid, comment)
 
   res["res"] = r
   res["err"] = err
@@ -103,7 +130,7 @@ func Addcomment(c *gin.Context) {
 
 func GetFlavor(c *gin.Context) {
 	res := make(map[string]interface{})
-	s, err := vmcommon.Flavor()
+	s, err := vm.Flavor()
 	res["res"] = s
 	res["err"] = err
 	if err != nil {
@@ -117,7 +144,7 @@ func DeleteVM(c *gin.Context) {
 	uuid := c.Query("uuid")
 
 	res := make(map[string]interface{})
-	r, err := vmcommon.Delete(uuid)
+	r, err := vm.Delete(uuid)
 
 	res["res"] = r
 	res["err"] = err
@@ -136,14 +163,14 @@ func Operation(c *gin.Context) {
 		c.JSON(400, res)
 	}
 
-	var s *vmcommon.Vms
+	var s *vm.Vms
 	switch o {
 	case 0:
-		s, err = vmcommon.Shutdown(uuid, host)
+		s, err = vm.Shutdown(uuid, host)
 	case 1:
-		s, err = vmcommon.Start(uuid, host)
+		s, err = vm.Start(uuid, host)
   case 3:
-    s, err = vmcommon.PauseVm(uuid, host)
+    s, err = vm.PauseVm(uuid, host)
 	}
 
 	res["res"] = s

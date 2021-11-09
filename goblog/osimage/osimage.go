@@ -2,14 +2,12 @@ package osimage
 
 import (
   "fmt"
+  "github.com/beevik/etree"
   "goblog/ceph"
   db "goblog/dbs"
   "goblog/networks"
-  "strings"
-
-  "github.com/beevik/etree"
-
   "goblog/vmerror"
+  "strings"
 )
 
 
@@ -60,7 +58,6 @@ func Update(id int, datacenter string, storage string, osname string, cephblockd
 }
 
 func Add(datacenter string, storage string,osname string, cephblockdevice string, snapimage string, xml string) error {
-  fmt.Println(datacenter, storage, osname, cephblockdevice, snapimage, xml)
   os := &Vms_os{
     Datacenter: datacenter,
     Storage: storage,
@@ -113,7 +110,6 @@ func getxml(osname string) (string, error) {
   db.Where("osname=?", osname).Find(&v)
   return v[0].Xml, nil
 }
-
 
 func Xml(datacenter string, storage string, vlan string,  vcpu int, vmem int, uuid string, mac string, image_name string, osname string) (string, error) {
   storagename, err := ceph.Cephinfobyname(datacenter, storage)
