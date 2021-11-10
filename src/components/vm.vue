@@ -6,11 +6,9 @@
 			<button class="btn btn-default btn-sm" style="margin-right:5px" @click="search()">
 				 <span class="glyphicon glyphicon-search"></span>筛选
 			</button>
-			<router-link :to="{name:'createvm'}">
-			<button class="btn btn-default btn-sm">
+			<button class="btn btn-default btn-sm" @click="toParent()">
 				 <span class="glyphicon glyphicon-cog"></span>创建实例
 			</button>
-			</router-link>
 		</div>
 		<div style="margin-top:40px">
 		<table class="table table-hover" style="text-align: center;">
@@ -115,6 +113,11 @@ export default {
     },
 
     methods: {
+          toParent: function () {
+				alert(123)
+                this.$emit("toParent", "createvm");
+                },
+
 		c: function (index) {
 			this.data[index].flag2 = false
 			this.data[index].flag1 = true

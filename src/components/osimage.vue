@@ -68,6 +68,8 @@ export default {
 
     methods: {
 		editosimage: function (id, osname, cephblockdevice, snapimage, xml) {
+			this.$emit("toParent", "updateosimage");
+				/*
             this.$router.push({
             path: '/updateosimage',
                 query: { 
@@ -78,6 +80,7 @@ export default {
 					"id": id,
                 }
             }) 
+				*/
             },
 
 		delosimage: function (osname, index) {

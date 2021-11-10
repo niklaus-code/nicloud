@@ -1,7 +1,5 @@
 <template>
 	<div>
-	<nicloudhead></nicloudhead>
-	<vmleft></vmleft>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white;">
 		<div  class="col-sm-5 col-sm-offset-3" style="margin-top:20px">
 	 		<div class="col-sm-12 form-group">
@@ -105,11 +103,6 @@
 	</div>		
 </template>
 <script>
-import foot from '@/components/footer'
-import nicloudhead from '@/components/nicloudhead'
-import vmleft from '@/components/vmleft'
-
-
 export default {
     data () {
         return {
@@ -144,10 +137,6 @@ export default {
 		this.getdatacenter()
         this.getflavor () 
 		},
-
-    components: {
-        foot, nicloudhead, vmleft
-    },
 
     methods: {
        	getstorage: function (centervalue) {

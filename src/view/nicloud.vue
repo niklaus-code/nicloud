@@ -2,7 +2,7 @@
 <div>
     <nicloudhead></nicloudhead>
 	<vmleft @toParent="getMag"></vmleft>
-	<component v-bind:is="router"></component>
+	<component @toParent="getMag" v-bind:is="router"></component>
   </div>
 </template>
 <script>
@@ -16,6 +16,8 @@ import osimage from '@/components/osimage'
 import network from '@/components/network'
 import hosts from '@/components/hosts'
 import storage from '@/components/storage'
+import updateosimage from '@/components/updateosimage'
+import createvm from '@/components/createvm'
 
 export default {
     data () {
@@ -25,7 +27,7 @@ export default {
     },
 
     components: {
-        foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage
+        foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage
     },
 
 	methods: {

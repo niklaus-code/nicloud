@@ -6,7 +6,6 @@ import whisper from '@/view/whisper'
 import read from '@/view/read'
 import about from '@/view/about'
 import login from '@/view/login'
-import createvm from '@/view/createvm'
 import serveroom from '@/view/machine'
 import createmachine from '@/view/createmachine'
 import createhost from '@/view/createhost'
@@ -15,7 +14,6 @@ import createvlan from '@/view/createvlan'
 import createip from '@/view/createip'
 import ips from '@/view/ips'
 import createosimage from '@/view/createosimage'
-import updateosimage from '@/view/updateosimage'
 import createceph from '@/view/createceph'
 import createcloudrive from '@/view/createcloudrive'
 import mountcloudrive from '@/view/mountcloudrive'
@@ -40,11 +38,6 @@ export default new Router({
       path: '/createcloudrive',
       name: 'createcloudrive',
       component: createcloudrive
-    },
-    {
-      path: '/updateosimage',
-      name: 'updateosimage',
-      component: updateosimage
     },
     {
       path: '/createceph',
@@ -80,11 +73,6 @@ export default new Router({
       path: '/createhost',
       name: 'createhost',
       component: createhost
-    },
-    {
-      path: '/createvm',
-      name: 'createvm',
-      component: createvm
     },
     {
       path: '/createmachine',

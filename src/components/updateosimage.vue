@@ -1,7 +1,5 @@
 <template>
 	<div>
-	<nicloudhead></nicloudhead>
-	<vmleft></vmleft>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div class="col-sm-8 col-sm-offset-1">
 				<div class="col-sm-12">
@@ -91,7 +89,7 @@
 				</div>
     		</div>
 		<div class="form-group" style="margin-top:20px" >
-			<div class="col-sm-1 col-sm-offset-6">
+			<div class="col-sm-1 col-sm-offset-7">
   				<button type="submit" @click="updateosimage" class="btn btn-info">提交</button>
 			</div>
 		</div>
@@ -100,11 +98,6 @@
 	</div>		
 </template>
 <script>
-import foot from '@/components/footer'
-import nicloudhead from '@/components/nicloudhead'
-import vmleft from '@/components/vmleft'
-
-
 export default {
     data () {
         return {
@@ -120,10 +113,6 @@ export default {
 			xml: "",
 			id: "",
         }
-    },
-
-    components: {
-        foot, nicloudhead, vmleft
     },
 
     created: function () {
@@ -169,10 +158,9 @@ export default {
 				return false
 				}
 			},
+
 		updateosimage: function () {
-			if (this.check(this.osimage, this.cephblockdevice, this.snapimage, this.xml)) {
-				return 
-				}
+			 this.$emit("toParent", "updateosimage");
 
             var apiurl = `/api/osimage/updateimage`
             this.$http.get(apiurl, { params: {id: this.id , datacenter: this.centervalue, storage: this.storagevalue, osname: this.osimage, cephblockdevice: this.cephblockdevice, snapimage: this.snapimage, xml: this.xml} }).then(response => {
