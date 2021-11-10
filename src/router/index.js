@@ -6,31 +6,31 @@ import whisper from '@/view/whisper'
 import read from '@/view/read'
 import about from '@/view/about'
 import login from '@/view/login'
-import nicloud from '@/view/vm'
 import createvm from '@/view/createvm'
 import serveroom from '@/view/machine'
 import createmachine from '@/view/createmachine'
 import createhost from '@/view/createhost'
-import hosts from '@/view/hosts'
 import migratevm from '@/view/migratevm'
-import network from '@/view/network'
 import createvlan from '@/view/createvlan'
 import createip from '@/view/createip'
 import ips from '@/view/ips'
-import osimage from '@/view/osimage'
 import createosimage from '@/view/createosimage'
 import updateosimage from '@/view/updateosimage'
-import ceph from '@/view/ceph'
 import createceph from '@/view/createceph'
-import cloudrive from '@/view/cloudrive'
 import createcloudrive from '@/view/createcloudrive'
 import mountcloudrive from '@/view/mountcloudrive'
+import nicloud from '@/view/nicloud'
 
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/nicloud',
+      name: 'nicloud',
+      component: nicloud
+    },
     {
       path: '/mountcloudrive',
       name: 'mountcloudrive',
@@ -40,11 +40,6 @@ export default new Router({
       path: '/createcloudrive',
       name: 'createcloudrive',
       component: createcloudrive
-    },
-    {
-      path: '/cloudrive',
-      name: 'cloudrive',
-      component: cloudrive
     },
     {
       path: '/updateosimage',
@@ -57,19 +52,9 @@ export default new Router({
       component: createceph
     },
     {
-      path: '/ceph',
-      name: 'ceph',
-      component: ceph
-    },
-    {
       path: '/createosimage',
       name: 'createosimage',
       component: createosimage
-    },
-    {
-      path: '/osimage',
-      name: 'osimage',
-      component: osimage
     },
     {
       path: '/ips',
@@ -87,19 +72,9 @@ export default new Router({
       component: createvlan
     },
     {
-      path: '/network',
-      name: 'network',
-      component: network
-    },
-    {
       path: '/migratevm',
       name: 'migratevm',
       component: migratevm
-    },
-    {
-      path: '/hosts',
-      name: 'hosts',
-      component: hosts
     },
     {
       path: '/createhost',

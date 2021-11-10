@@ -1,8 +1,8 @@
 <template>
     <div  class="col-md-1" style="float:left">
         <ul class="list-group col-md-11 col-md-offset-1">
-            <li class="list-group-item" v-for="(item, index) in routelist"  @click="up(index)"  @click="route(item.router)" v-bind:class="{aaa: is === index}">
-                    <span>{{item.name}}</span>
+            <li class="list-group-item" v-for="(item, index) in routelist" v-bind:class="{aaa: is === index}">
+                    <span  @click="toParent(item.router)" >{{item.name}}</span>
             </li>
         </ul>
     </div>
@@ -16,11 +16,11 @@ export default {
 			routelist: [
 				{
 				name: "云主机",
-				router: "nicloud"
+				router: "vm"
 					},
 				{
 				name: "云盘",
-				router: "cloudrive"
+				router: "disk"
 					},
 				{
 				name: "镜像",
@@ -36,26 +36,19 @@ export default {
 					},
 				{
 				name: "存储集群",
-				router: "ceph"
+				router: "storage"
 					},
 				{
 				name: "统计",
 				router: "count"
 					},
 				],
-			is: 8,
         }
     },
 
 	methods: {
-        route: function (label) {
-            this.$router.push({
-            	path: label,
-            }) 
-            },
-
-        up: function (index) {
-            this.is = index;
+        toParent: function (item) {
+			this.$emit("toParent", item);
             },
 	}
 }

@@ -1,8 +1,5 @@
 <template>
 <div>
-    <nicloudhead></nicloudhead>
-
-	<component v-bind:is="vmleft"></component>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div class="btn-group col-md-3 col-md-offset-9" >
 			<input class="col-md-5" type="text" id="name" placeholder="" v-model="content">
@@ -93,14 +90,9 @@
 </template>
 <script>
 
-import foot from '@/components/footer'
-import nicloudhead from '@/components/nicloudhead'
-import vmleft from '@/components/vmleft'
-
 export default {
     data () {
         return {
-			vmleft: "vmleft",
 			active: "",
 			checkvalue: false,
 			content: "",
@@ -116,10 +108,6 @@ export default {
 				2: "已删除",
 			}
         }
-    },
-
-    components: {
-        foot, nicloudhead, vmleft
     },
 
     mounted: function () {
