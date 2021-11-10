@@ -1,8 +1,8 @@
 <template>
     <div  class="col-md-1" style="float:left">
         <ul class="list-group col-md-11 col-md-offset-1">
-            <li class="list-group-item" v-for="(item, index) in routelist" v-bind:class="{aaa: is === index}">
-                    <span  @click="toParent(item.router)" >{{item.name}}</span>
+            <li class="list-group-item" v-for="(item, index) in routelist" :class="{ sss: selected ===index }" @click="choose(index)" @click="toParent(item.router)">
+                    <span >{{item.name}}</span>
             </li>
         </ul>
     </div>
@@ -13,6 +13,7 @@
 export default {
     data () {
         return {
+			selected: 0,
 			routelist: [
 				{
 				name: "云主机",
@@ -46,11 +47,14 @@ export default {
         }
     },
 
-	methods: {
-        toParent: function (item) {
-			this.$emit("toParent", item);
-            },
-	}
+	methods:{
+        	choose(index){
+				this.selected = index;
+              },
+        	toParent: function (item) {
+				this.$emit("toParent", item);
+            	},
+		}
 }
 </script>
 
@@ -58,9 +62,14 @@ export default {
 li {
 	text-align: center 
 }
+.list-group-item {
+	background-color: #e3e3e3;
+	border: 0px;
+}
 
-.aaa {
-	background-color: red;
+.sss {
+	#background-color: #fff;
+	color: red;
 }
 
 .list-group {
@@ -73,11 +82,6 @@ span {
 
 a{
 	color: black;
-}
-
-.list-group-item {
-    background-color: transparent;
-    border: none;
 }
 
 .breadcrumb {
