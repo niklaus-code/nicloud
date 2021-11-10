@@ -15,7 +15,7 @@
             					<input type="checkbox" v-model="checkvalue" @click="checkbox()">
         					</label>
         				</th>
-        				<th>CLOUDRIVEID</th>
+        				<th>云盘</th>
         				<th>容量</th>
         				<th>存储池</th>
         				<th>挂载云主机</th>
@@ -50,7 +50,7 @@
 							<button v-else class="btn btn-info btn-xs" type="button" @click="umount(item.Vm_ip, item.Storage, item.Datacenter, item.Cloudriveid, index)">
                 				卸载
             				</button>
-							<button class="btn btn-danger btn-xs" type="button" @click="restore(item.Ipv4, item.Status, index)">
+							<button v-if="item.Status" class="btn btn-danger btn-xs" type="button" @click="restore(item.Ipv4, item.Status, index)">
                 				销毁
             				</button>
         				</td>
@@ -98,10 +98,12 @@ export default {
             }) 
 			},
 
-		umount: function (vmip, storage, datacenter, cloudriveid) {
+		umount: function (vmip, storage, datacenter, cloudriveid, index) {
             var apiurl = `/api/vm/umountdisk`
             this.$http.get(apiurl , { params: { vmip: vmip, storage: storage, datacenter: datacenter, cloudriveid: cloudriveid} }).then(response => {
 				if (response.data.err === null ) {
+					this.data[index].Status = 1
+					this.data[index].Vm_ip = ""
 					alert("卸载成功")
 				} else {
 					alert ("获取数据失败（"+response.data.err.Message+")")

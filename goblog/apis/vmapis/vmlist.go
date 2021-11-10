@@ -52,10 +52,10 @@ func GetVmStatus(c *gin.Context) {
 }
 
 func Getvmlist(c *gin.Context) {
-	host := c.Query("host")
-	vmlist := vm.VmList(host)
+	vmlist, err := vm.VmList()
 	res := make(map[string]interface{})
 	res["res"] = vmlist
+  res["err"] = err
 
 	c.JSON(200, res)
 }
@@ -92,7 +92,7 @@ func Mountdisk(c *gin.Context) {
   host := c.Query("host")
   cloudriveid := c.Query("cloudriveid")
   res := make(map[string]interface{})
-  r := vm.Updatexml(vmid, ip,  host, storage, pool, datacenter, cloudriveid)
+  r := vm.Mountdisk(vmid, ip,  host, storage, pool, datacenter, cloudriveid)
 
   res["err"] = r
   c.JSON(200, res)
@@ -144,10 +144,9 @@ func DeleteVM(c *gin.Context) {
 	uuid := c.Query("uuid")
 
 	res := make(map[string]interface{})
-	r, err := vm.Delete(uuid)
+	err := vm.Delete(uuid)
 
-	res["res"] = r
-	res["err"] = err
+	res["res"] = err
 	c.JSON(200, res)
 }
 

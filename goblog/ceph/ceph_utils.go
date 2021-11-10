@@ -164,6 +164,7 @@ func Createcloudrive( uuid string, contain int) error {
 type Vms_cloudrive struct {
   Cloudriveid string
   Contain int
+  Diskname string
   Pool string
   Storage string
   Datacenter string
@@ -183,12 +184,22 @@ func Get_cloudrive() ([]*Vms_cloudrive, error) {
   return c, err
 }
 
-func Mountvmstatus(datacenter string, storage string, cloudriveid string, vmip string) error {
+func Getdiskbyvm(vmip string) ([]*Vms_cloudrive) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return []*Vms_cloudrive{}
+  }
+  c := []*Vms_cloudrive{}
+  dbs.Select("contain, diskname").Where("vm_ip=?", vmip).Find(&c)
+  return c
+}
+
+func UpdateMountvmstatus(datacenter string, storage string, cloudriveid string, vmip string, diskname string) error {
   dbs, err := db.NicloudDb()
   if err != nil {
     return err
   }
-  errdb := dbs.Model(Vms_cloudrive{}).Where("datacenter=? and storage=? and cloudriveid=?", datacenter, storage, cloudriveid).Update("vm_ip", vmip).Update("status", 0)
+  errdb := dbs.Model(Vms_cloudrive{}).Where("datacenter=? and storage=? and cloudriveid=?", datacenter, storage, cloudriveid).Update(map[string]interface{}{"vm_ip": vmip, "status": 0, "diskname": diskname})
   if errdb.Error != nil {
     return errdb.Error
   }

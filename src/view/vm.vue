@@ -25,15 +25,14 @@
 						</label>
 					</th>
         			<th>实例名称</th>
-        			<th>镜像</th>
         			<th>IP地址</th>
+        			<th>镜像</th>
         			<th>所属宿主机</th>
         			<th>CPU/内存</th>
+        			<th>云盘</th>
         			<th>所属者</th>
-        			<th>存储集群</th>
-        			<th>数据中心</th>
-        			<th>状态</th>
         			<th>备注</th>
+        			<th>状态</th>
         			<th>操作</th>
       			</tr>
     		</thead>
@@ -42,18 +41,19 @@
 					<label class="checkbox-inline">
   						<input type="checkbox" v-model="item.Checkout"> 
 					</label>
-        		<td>{{item.Uuid}}</td>
-        		<td>{{item.Os}}</td>
+        		<td>{{item.Name}}</td>
         		<td>{{item.Ip}}</td>
+        		<td>{{item.Os}}</td>
         		<td>{{item.Host}}</td>
         		<td>{{item.Cpu}}核 / {{item.Mem}}G</td>
+        		<td>
+					<ul>
+						<li v-for="(k, v) in item.disk">
+							{{k.Diskname}}&nbsp{{k.Contain}}G
+						</li>
+					</ul>
+				</td>
         		<td>{{item.Owner}}</td>
-        		<td>{{item.Storage}}</td>
-        		<td>{{item.Datacenter}}</td>
-				<td>
-					<button  v-if="item.Status === '运行'" type="button" class="btn btn-success btn-xs">{{item.Status}}</button>
-        			<button v-else type="button" class="btn btn-warning btn-xs">{{item.Status}}</button>
-        		</td>
 				<td>
 		    		<span v-if='item.flag2' @click="c(index)">
                 		{{item.Comment}}
@@ -64,6 +64,10 @@
 						<span  @click="input(index, item.Uuid)" class="glyphicon glyphicon-calendar"></span>
 					</div>
 				</td>
+				<td>
+					<button  v-if="item.Status === '运行'" type="button" class="btn btn-success btn-xs">{{item.Status}}</button>
+        			<button v-else type="button" class="btn btn-warning btn-xs">{{item.Status}}</button>
+        		</td>
         		<td class="dropdown">
 					<button class="btn btn-info btn-xs dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
 						操作<span class="caret"></span>
@@ -210,7 +214,7 @@ export default {
         deletevm: function (uuid) {
             var apiurl = `/api/vm/delete`
             this.$http.get(apiurl, { params: { uuid: uuid} }).then(response => {
-				if (response.data.err == null) {
+				if (response.data.res == null) {
             		var d = new Array()
             		for (var v in response.data.res) {
                 		if (response.data.res[v]["Comment"].length > 0) {

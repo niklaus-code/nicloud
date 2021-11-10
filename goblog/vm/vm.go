@@ -12,6 +12,7 @@ import (
   "goblog/osimage"
   "goblog/utils"
   vmerror "goblog/vmerror"
+  "reflect"
   "strings"
   "time"
 )
@@ -41,6 +42,16 @@ func GetVmByUuid(uuid string) *Vms {
     return nil
   }
   dbs.Where("uuid = ?", uuid).First(v)
+  return v
+}
+
+func GetVmByIp(ip string) *Vms {
+  dbs, err := db.NicloudDb()
+  v := &Vms{}
+  if err != nil {
+    return nil
+  }
+  dbs.Where("ip = ?", ip).First(v)
   return v
 }
 
@@ -85,46 +96,46 @@ type Vms_archive struct {
   Storage string
 }
 
-func Delete(uuid string) ([]*Vms, error) {
+func Delete(uuid string) (error) {
   vminfo := GetVmByUuid(uuid)
   host := vminfo.Host
 
 	vmstat, err := VmStatus(uuid, host)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if vmstat == "运行" {
-		return nil, vmerror.Error{
+		return vmerror.Error{
 			Message: "vm is running, con't delete",
 		}
 	}
 
   if vmstat == "暂停" {
-    return nil, vmerror.Error{
+    return vmerror.Error{
       Message: "vm is paused, con't delete",
     }
   }
 
   dbs, err := db.NicloudDb()
   if err != nil {
-    return  nil, err
+    return err
   }
 
   err = libvirtd.Undefine(host, uuid)
   if err != nil {
-    return nil, err
+    return err
   }
 
 	err = ceph.Rm_image(uuid)
   if err != nil {
-    return nil, err
+    return err
   }
 
 	dbs.Model(&Vms{}).Where("uuid=?", uuid).Delete(&Vms{})
 	err = networks.Updateipstatus(vminfo.Ip, 0)
 	if err != nil {
-	  return nil, err
+	  return err
   }
 	v := &Vms_archive{
 	  Uuid: vminfo.Uuid,
@@ -137,15 +148,14 @@ func Delete(uuid string) ([]*Vms, error) {
   }
   err2 := dbs.Create(*v)
   if err2.Error != nil {
-    return nil, err2.Error
+    return err2.Error
   }
 
   err = Freehost(vminfo.Host, vminfo.Cpu, vminfo.Mem)
   if err != nil {
-    return nil, err
+    return err
   }
-	vmlist := VmList(host)
-	return vmlist, err
+	return nil
 }
 
 func PauseVm(uuid string, host string) (*Vms, error) {
@@ -371,6 +381,16 @@ func Getvmxmlby (ip string, storage string, datacenter string) (string, error) {
 }
 
 func Umountdisk(vmip string,  storage string, datacenter string, diskid string) error {
+  vminfo := GetVmByIp(vmip)
+
+  s, err := VmStatus(vminfo.Uuid, vminfo.Host)
+  if err != nil {
+    return err
+  }
+  if s != "关机" {
+    return vmerror.Error{Message: "cont mount disk, vm is " + s}
+  }
+
   f, err := Getvmxmlby(vmip, storage, datacenter)
   if err != nil {
     return err
@@ -400,6 +420,20 @@ func Umountdisk(vmip string,  storage string, datacenter string, diskid string) 
       if err != nil {
         return err
       }
+
+      dbs, err := db.NicloudDb()
+      if err != nil {
+        return err
+      }
+
+      errdb := dbs.Model(Vms{}).Where("ip=?", vmip).Update("vmxml", docstring)
+      if errdb.Error != nil {
+        return vmerror.Error{Message: errdb.Error.Error()}
+      }
+
+      if err != nil {
+        return err
+      }
       return nil
     }
   }
@@ -409,7 +443,18 @@ func Umountdisk(vmip string,  storage string, datacenter string, diskid string) 
   }
 }
 
-func Updatexml(vmid string, ip string, vmhost string, storage string, pool string, datacenter string, cloudriveid string) error {
+func disknametype(num int) string {
+  switch (num) {
+  case 0: return "vdb"
+  case 1: return "vdc"
+  case 2: return "vdd"
+  case 3: return "vde"
+  case 4: return "vdf"
+  default:         return "UNKNOWN"
+  }
+}
+
+func Mountdisk(vmid string, ip string, vmhost string, storage string, pool string, datacenter string, cloudriveid string) error {
   s, err := VmStatus(vmid, vmhost)
   if err != nil {
     return err
@@ -454,7 +499,7 @@ func Updatexml(vmid string, ip string, vmhost string, storage string, pool strin
   source.CreateAttr("name", pool+"/"+cloudriveid)
   host := source.CreateElement("host")
 
-
+  disknum := len(ceph.Getdiskbyvm(ip))
   var iplist []string
   iplist = strings.Split(storageinfo[0].Ips, ",")
   for _, v := range iplist {
@@ -462,15 +507,17 @@ func Updatexml(vmid string, ip string, vmhost string, storage string, pool strin
   }
   host.CreateAttr("port", storageinfo[0].Port)
 
+  diskname := disknametype(disknum)
   target := disk.CreateElement("target")
-  target.CreateAttr("dev", "vdb")
+  target.CreateAttr("dev", diskname)
   target.CreateAttr("bus", "virtio")
 
   address := disk.CreateElement("address")
   address.CreateAttr("type", "pci")
   address.CreateAttr("domain", "0x0000")
   address.CreateAttr("bus", "0x00")
-  address.CreateAttr("slot", "0x19")
+  slot := fmt.Sprintf("0x%d", 10+disknum)
+  address.CreateAttr("slot", slot)
   address.CreateAttr("function", "0x0")
   doc.Indent(2)
   var docstring string
@@ -481,32 +528,48 @@ func Updatexml(vmid string, ip string, vmhost string, storage string, pool strin
     return err
   }
 
-  errdb := dbs.Model(Vms{}).Where("ip=?", ip).Update("vmxml", docstring)
-  if errdb.Error != nil {
-    return vmerror.Error{Message: errdb.Error.Error()}
-  }
-
   err = libvirtd.DefineVm(docstring, vmhost)
   if err != nil {
     return err
   }
 
-  updatevm := ceph.Mountvmstatus(datacenter, storage, cloudriveid, ip)
+  errdb:= dbs.Model(Vms{}).Where("ip=?", ip).Update("vmxml", docstring)
+  if errdb.Error != nil {
+    return vmerror.Error{Message: errdb.Error.Error()}
+  }
+
+  updatevm := ceph.UpdateMountvmstatus(datacenter, storage, cloudriveid, ip, diskname)
   if updatevm != nil {
     return updatevm
   }
   return nil
 }
 
-func VmList(host string) []*Vms {
+func allvm(obj []Vms) []map[string]interface{}  {
+  var mapc []map[string]interface{}
+
+  for _, v := range obj {
+    c := make(map[string]interface{})
+    m := reflect.TypeOf(v)
+    n := reflect.ValueOf(v)
+    for i := 0; i < m.NumField(); i++ {
+      c[m.Field(i).Name] = n.Field(i).Interface()
+    }
+    c["disk"] = ceph.Getdiskbyvm(v.Ip)
+    mapc = append(mapc, c)
+  }
+  return mapc
+}
+
+func VmList() ([]map[string]interface{}, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
-    return nil
+    return nil, err
   }
-	var v []*Vms
-	dbs.Where("exist=1").Find(&v)
+	var v []Vms
+	dbs.Table("vms").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip" , "host", "os"}).Scan(&v)
 
-	return v
+	return allvm(v), nil
 }
 
 type Vm_flavors struct {

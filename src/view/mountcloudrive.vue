@@ -24,7 +24,6 @@
         			<th>IP地址</th>
         			<th>CPU/内存</th>
         			<th>所属者</th>
-        			<th>存储集群</th>
         			<th>状态</th>
         			<th>备注</th>
         			<th>操作</th>
@@ -40,7 +39,6 @@
         		<td>{{item.Ip}}</td>
         		<td>{{item.Cpu}}核 / {{item.Mem}}G</td>
         		<td>{{item.Owner}}</td>
-        		<td>{{item.Storage}}</td>
 				<td>
 					<button  v-if="item.Status === '运行'" type="button" class="btn btn-success btn-xs">{{item.Status}}</button>
         			<button v-else type="button" class="btn btn-warning btn-xs">{{item.Status}}</button>
@@ -59,7 +57,7 @@
 					<button class="btn btn-info btn-xs" @click="mount(item.Uuid, item.Ip, item.Host, item.Storage, item.Datacenter)" type="button">
 						挂载
 					</button>
-					<button class="btn btn-info btn-xs" type="button">
+					<button @click="shutdown(item.Uuid, index, item.Host)" class="btn btn-info btn-xs" type="button">
 						关机
 					</button>
 				</td>
@@ -117,6 +115,7 @@ export default {
 
 	    	if (response.data.err === null) {
             	alert("挂载成功")
+				this.$router.push('/cloudrive')
             } else {
                  alert("创建失败('"+response.data.err.Message+"')")  
                }
@@ -158,6 +157,23 @@ export default {
             	this.data = response.data.res
             })
 		},
+
+		shutdown: function (uuid, index, host) {
+            var apiurl = `/api/vm/operation/0`
+            this.$http.get(apiurl, { params: { uuid: uuid, host: host } }).then(response => {
+                if (response.data.err == null) {
+                    this.data[index].Status = response.data.res.Status
+                    if (response.data.res.Comment.length > 0) {
+                        this.data[index].flag2 = true
+                        }
+                    if (response.data.res.Comment.length == 0) {
+                        this.data[index].flag = true
+                        }
+                    } else {
+                        alert("关机错误（'"+response.data.err.Message+"'）")
+                    }
+            })
+        },
 
 		getvmstatus: function (uuid, host) {
             var apiurl = `/api/vm/getstatus`
