@@ -4,7 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import VueDragResize from 'vue-drag-resize'
-
+import store from './store'
 import axios from 'axios'
 //import $ from 'jquery'
 Vue.prototype.$http = axios
@@ -15,6 +15,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
 })

@@ -1,7 +1,5 @@
 <template>
 	<div>
-	<nicloudhead></nicloudhead>
-	<vmleft></vmleft>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div class="col-sm-8 col-sm-offset-1">
 				<div class="col-sm-12">
@@ -76,10 +74,6 @@
 	</div>		
 </template>
 <script>
-import foot from '@/components/footer'
-import nicloudhead from '@/components/nicloudhead'
-import vmleft from '@/components/vmleft'
-
 
 export default {
     data () {
@@ -98,10 +92,6 @@ export default {
 				100, 200, 500, 
 				], 
         }
-    },
-
-    components: {
-        foot, nicloudhead, vmleft
     },
 
     created: function () {

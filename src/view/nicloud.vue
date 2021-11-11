@@ -5,6 +5,7 @@
 	<component @toParent="getMag" v-bind:is="router"></component>
   </div>
 </template>
+
 <script>
 
 import foot from '@/components/footer'
@@ -18,6 +19,8 @@ import hosts from '@/components/hosts'
 import storage from '@/components/storage'
 import updateosimage from '@/components/updateosimage'
 import createvm from '@/components/createvm'
+import createvdisk from '@/components/createvdisk'
+import mountvdisk from '@/components/mountvdisk'
 
 export default {
     data () {
@@ -27,7 +30,7 @@ export default {
     },
 
     components: {
-        foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage
+        foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk
     },
 
 	methods: {

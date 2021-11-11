@@ -1,8 +1,5 @@
 <template>
 <div>
-    <nicloudhead></nicloudhead>
-
-	<component v-bind:is="vmleft"></component>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div class="btn-group col-md-2 col-md-offset-10" >
 			<input class="col-md-5" type="text" id="name" placeholder="" v-model="content">
@@ -44,17 +41,10 @@
         			<button v-else type="button" class="btn btn-warning btn-xs">{{item.Status}}</button>
         		</td>
 				<td>
-		    		<span v-if='item.flag2' @click="c(index)">
                 		{{item.Comment}}
-            		</span>
-					<li v-if='item.flag'><span class="glyphicon glyphicon-calendar" @click="edit(index)"></span></li>
-					<div v-if='item.flag1'>
-						<input type="text" v-model="comment">
-						<span  @click="input(index, item.Uuid)" class="glyphicon glyphicon-calendar"></span>
-					</div>
 				</td>
         		<td class="dropdown">
-					<button class="btn btn-info btn-xs" @click="mount(item.Uuid, item.Ip, item.Host, item.Storage, item.Datacenter)" type="button">
+					<button class="btn btn-info btn-xs" @click="mount(item.Uuid, item.Ip, item.Host,item.Datacenter)" type="button">
 						挂载
 					</button>
 					<button @click="shutdown(item.Uuid, index, item.Host)" class="btn btn-info btn-xs" type="button">
@@ -68,11 +58,6 @@
   </div>
 </template>
 <script>
-
-import foot from '@/components/footer'
-import nicloudhead from '@/components/nicloudhead'
-import vmleft from '@/components/vmleft'
-
 export default {
     data () {
         return {
@@ -90,18 +75,14 @@ export default {
 				1: "运行",
 				2: "已删除",
 			},
-			cloudriveid: "",
+			vdiskid: "",
 			pool: "",
-			
+			storage: "",
         }
     },
 
-    components: {
-        foot, nicloudhead, vmleft
-    },
-
 	created: function () {
-        this.cloudriveinfo()
+        this.vdiskinfo()
     },
 
     mounted: function () {
@@ -109,47 +90,24 @@ export default {
     },
 
     methods: {
-		mount: function (uuid, ip, host, storage, datacenter ) {
+		mount: function (uuid, ip, host, datacenter ) {
          	var apiurl = `/api/vm/mountdisk`
-            this.$http.get(apiurl, { params: { vmid: uuid, ip: ip, host: host, storage: storage, pool: this.pool, datacenter: datacenter, cloudriveid: this.cloudriveid}} ).then(response => {
+            this.$http.get(apiurl, { params: { vmid: uuid, ip: ip, host: host, storage: this.storage, pool: this.pool, datacenter: datacenter, cloudriveid: this.vdiskid}} ).then(response => {
 
 	    	if (response.data.err === null) {
             	alert("挂载成功")
-				this.$router.push('/cloudrive')
+				this.$emit("toParent", "disk");
             } else {
                  alert("创建失败('"+response.data.err.Message+"')")  
                }
 			})
 		},
 
-		c: function (index) {
-			this.data[index].flag2 = false
-			this.data[index].flag1 = true
-			this.comment = this.data[index].Comment
-			},
-
-		edit: function (index) {
-			this.data[index].flag = false
-            this.data[index].flag1 = true
-			},
-
-	    cloudriveinfo: function () {
-            this.cloudriveid = this.$route.query.cloudriveid
-            this.storage = this.$route.query.storage
-            this.pool = this.$route.query.pool
+	    vdiskinfo: function () {
+			this.vdiskid = this.$store.state.vdisk.vdiskid
+			this.storage = this.$store.state.vdisk.storage
+			this.pool = this.$store.state.vdisk.pool
             },
-
-		input: function (index, uuid) {
-            var apiurl = `/api/vm/addcomment`
-            this.$http.get(apiurl, { params: { uuid: uuid, comment: this.comment} } ).then(response => {
-                if (response.data) {
-                    this.data[index].Comment = this.comment
-                    }
-            })
-			this.data[index].flag = false
-            this.data[index].flag1 = false
-            this.data[index].flag2 = true
-			},
 
         search: function (content) {
             var apiurl = `/api/vm/search`

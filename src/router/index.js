@@ -15,8 +15,6 @@ import createip from '@/view/createip'
 import ips from '@/view/ips'
 import createosimage from '@/view/createosimage'
 import createceph from '@/view/createceph'
-import createcloudrive from '@/view/createcloudrive'
-import mountcloudrive from '@/view/mountcloudrive'
 import nicloud from '@/view/nicloud'
 
 
@@ -28,16 +26,6 @@ export default new Router({
       path: '/nicloud',
       name: 'nicloud',
       component: nicloud
-    },
-    {
-      path: '/mountcloudrive',
-      name: 'mountcloudrive',
-      component: mountcloudrive
-    },
-    {
-      path: '/createcloudrive',
-      name: 'createcloudrive',
-      component: createcloudrive
     },
     {
       path: '/createceph',

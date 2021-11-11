@@ -131,6 +131,7 @@ export default {
                     }
             })
             },
+
        getstorage: function (centervalue) {
             var apiurl = `/api/storage/get`
             this.$http.get(apiurl, { params: { datacenter: centervalue}}).then(response => {
@@ -142,6 +143,7 @@ export default {
                     }
             })
         },
+
 		vlaninfo: function () {
             this.osimage = this.$route.query.osimage
             this.cephblockdevice = this.$route.query.cephblockdevice
@@ -160,7 +162,7 @@ export default {
 			},
 
 		updateosimage: function () {
-			 this.$emit("toParent", "updateosimage");
+			this.$emit("toParent", "updateosimage");
 
             var apiurl = `/api/osimage/updateimage`
             this.$http.get(apiurl, { params: {id: this.id , datacenter: this.centervalue, storage: this.storagevalue, osname: this.osimage, cephblockdevice: this.cephblockdevice, snapimage: this.snapimage, xml: this.xml} }).then(response => {
@@ -186,15 +188,6 @@ select{
     font-family: "微软雅黑";
     border: 1px #ccc solid;
     border-radius: 5px;
-}
-
-.content {
-    box-shadow: 0 0 10px rgba(0,0,0,8);
-    border-radius: 10px/10px;
-    z-index: -1;
-    padding: 70px 0px 100px 0px;
-    margin-left: 0px;
-    margin-TOP: 50px;
 }
 
 .details-content .article-cont p {

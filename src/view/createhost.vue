@@ -142,8 +142,6 @@ export default {
             })
             },
 
-
-
         getvlan: function () {
             var apiurl = `/api/networks/getvlan`
             this.$http.get(apiurl).then(response => {

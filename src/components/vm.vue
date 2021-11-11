@@ -114,7 +114,6 @@ export default {
 
     methods: {
           toParent: function () {
-				alert(123)
                 this.$emit("toParent", "createvm");
                 },
 
@@ -299,7 +298,7 @@ export default {
   	z-index: -1;
 	padding: 20px 0px 0px 0px;
 	margin-left: 0px;
-	margin-TOP: 50px;
+	margin-top: 50px;
 }
 
 .checkbox-inline {

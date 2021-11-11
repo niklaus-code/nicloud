@@ -2,9 +2,7 @@
 	<div>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div class="col-sm-10 col-sm-offset-1" style="margin-top:20px">
-			<router-link :to="{name:'createcloudrive'}">
-				<button class="btn btn-success btn-sm" type="button">创建</button>
-			</router-link>
+			<button class="btn btn-success btn-sm" @click="toparent('createvdisk')" type="button">创建</button>
 			<table class="table table-hover" style="text-align: center;">
     			<thead>
       				<tr>
@@ -42,7 +40,8 @@
                             <span v-else class="glyphicon glyphicon-remove"></span>
                         </td>
 		    			<td>
-							<button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="mount(item.Cloudriveid, item.Storage, item.Pool, index)">
+							<!-- <button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="mount(, item.Storage, item.Pool, index)"> -->
+							<button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="toparent('mountvdisk')" @click="mount(item.Cloudriveid, item.Storage, item.Pool)">
                 				挂载
             				</button>
 							<button v-else class="btn btn-info btn-xs" type="button" @click="umount(item.Vm_ip, item.Storage, item.Datacenter, item.Cloudriveid, index)">
@@ -60,7 +59,6 @@
 </div>		
 </template>
 <script>
-
 export default {
     data () {
         return {
@@ -77,15 +75,14 @@ export default {
 		},
 
     methods: {
-		mount: function(cloudriveid, storage, pool, index) {
-			this.$router.push({
-            path: '/mountcloudrive',
-                query: { 
-					cloudriveid: cloudriveid,
-					storage: storage,
-					pool: pool
-                }
-            }) 
+		toparent: function (item) {
+            this.$emit("toParent",item);
+			},
+
+		mount: function (vdiskid, storage, pool) {
+			this.$store.state.vdisk.vdiskid = vdiskid
+			this.$store.state.vdisk.storage = storage
+			this.$store.state.vdisk.pool = pool
 			},
 
 		umount: function (vmip, storage, datacenter, cloudriveid, index) {
