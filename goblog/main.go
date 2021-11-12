@@ -62,7 +62,7 @@ func main() {
     v4.GET("createip", networkapis.CreateIp)
     v4.GET("downip", networkapis.DownIp)
     v4.GET("upip", networkapis.UpIp)
-    v4.GET("restore", networkapis.Restore)
+    v4.GET("delete", networkapis.Delete)
   }
 
   v5 := r.Group("/api/hosts")

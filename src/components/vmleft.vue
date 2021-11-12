@@ -1,7 +1,7 @@
 <template>
     <div  class="col-md-1" style="float:left">
         <ul class="list-group col-md-11 col-md-offset-1">
-            <li class="list-group-item" v-for="(item, index) in routelist" :class="{ sss: selected ===index }" @click="choose(index)" @click="toParent(item.router)">
+            <li class="list-group-item" v-for="(item, index) in routelist" :class="{ sss: selected === index }" @click="choose(index)" @click="toParent(item.router)">
                     <span >{{item.name}}</span>
             </li>
         </ul>
@@ -51,6 +51,7 @@ export default {
         	choose(index){
 				this.selected = index;
               },
+
         	toParent: function (item) {
 				this.$emit("toParent", item);
             	},

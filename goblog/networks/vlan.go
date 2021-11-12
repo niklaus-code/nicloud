@@ -20,13 +20,10 @@ type Vms_vlans struct {
   Status bool
 }
 
-func Restore(vlan string, status string) error {
-  var s bool
-
-  if status == "false" {
-    s = true
-  } else {
-    s = false
+func Delete(vlan string) error {
+  existips := IPlist(vlan)
+  if len(existips) > 0 {
+    return vmerror.Error{Message: "存在vlan相关IP 无法删除"}
   }
 
   dbs, err := db.NicloudDb()
@@ -34,7 +31,7 @@ func Restore(vlan string, status string) error {
     return err
   }
 
-  dberr := dbs.Model(Vms_vlans{}).Where("vlan=?", vlan).Update("status", s)
+  dberr := dbs.Where("vlan=?", vlan).Delete(&Vms_vlans{})
   if dberr.Error != nil {
     return dberr.Error
   }
@@ -236,13 +233,15 @@ func Createip(startip string, endip string, vlan string) error {
       Message: err1.Error(),
     }
   }
+
   for i:= startnum; i <= endnum ; i++ {
     ips := &Vms_ips{
       Ipv4: l[0]+"."+l[1]+"."+l[2]+"."+strconv.Itoa(i),
-      Macaddr: NewRandomMac().String(i),
+      Macaddr: NewRandomMac().String(l[2], i),
       Vlan: vlan,
       Status: 0,
     }
+
     err := dbs.Create(*ips)
     if err.Error != nil {
       return err.Error
@@ -255,8 +254,11 @@ func Createip(startip string, endip string, vlan string) error {
 
 type Mac [3]byte
 
-func (m Mac) String(end int) string {
-  return fmt.Sprintf("c8:00:%02x:%02x:%02x:%02x",m[0],m[1],m[2], end)
+func (m Mac) String(three string, end int) string {
+  if len(three) == 1{
+    three = "0"+three
+  }
+  return fmt.Sprintf("c8:00:%02x:%02x:%02x:%02x",m[0],m[1], three, end)
 }
 
 func NewRandomMac() Mac{

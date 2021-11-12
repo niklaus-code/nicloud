@@ -22,7 +22,7 @@
     			</thead>
 
 				<tbody v-for="(item, index) in data">
-      				<tr class="table-dark text-dark" :id="item.Uuid">
+      				<tr v-if="item.Status" class="table-dark text-dark" :id="item.Uuid">
         				<label class="checkbox-inline">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
@@ -32,8 +32,7 @@
         				<td>{{item.Gateway}}</td>
         				<td>{{item.Datacenter}}</td>
 						 <td>
-                            <span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
-                            <span v-else class="glyphicon glyphicon-remove"></span>
+                            <span class="glyphicon glyphicon-ok"></span>
                         </td>
 		    			<td>
 							<button class="btn btn-success btn-xs" type="button" @click="createip(item)">
@@ -42,8 +41,8 @@
 							<button class="btn btn-success btn-xs" type="button" @click="ips(item.Vlan)">
                 				查看IP
             				</button>
-							<button class="btn btn-danger btn-xs" type="button" @click="restore(item.Vlan, item.Status, index)">
-                				重置
+							<button class="btn btn-danger btn-xs" type="button" @click="deletevlan(item.Vlan, index)">
+                				删除
             				</button>
         				</td>
 					</tr>
@@ -83,18 +82,14 @@ export default {
 			this.$store.state.network.vlan = vlan
 			},
 
-		restore: function (vlan, status, index) {
-            var apiurl = `/api/networks/restore`
-            this.$http.get(apiurl, { params: { vlan: vlan, status: status} } ).then(response => {
+		deletevlan: function (vlan, index) {
+            var apiurl = `/api/networks/delete`
+            this.$http.get(apiurl, { params: { vlan: vlan} } ).then(response => {
             	if (response.data.err === null) {
-					alert("重置成功")
-					if (status) {
-						this.data[index].Status = false
+					alert("删除成功")
+					this.data[index].Status = false
 					} else {
-						this.data[index].Status = true
-						}
-					} else {
-					alert("创建失败('"+response.data.err.Message+"')")	
+					alert("删除失败('"+response.data.err.Message+"')")	
 				}
             })
         },

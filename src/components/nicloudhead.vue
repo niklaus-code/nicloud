@@ -18,7 +18,7 @@
 
 <style scoped>
 a {
-color : #FFF;
+	color : #FFF;
 }
 
 .breadcrumb {
