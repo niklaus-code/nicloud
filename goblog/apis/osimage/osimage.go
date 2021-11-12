@@ -31,7 +31,7 @@ func UpdateImage(c *gin.Context) {
   xml := c.Query("xml")
   err := osimage.Update(id, datacenter, storage, osname, snapname, cephblockdevice, xml)
 
-  res["res"] = err
+  res["err"] = err
   c.JSON(200, res)
 }
 
@@ -67,6 +67,6 @@ func AddImage(c *gin.Context) {
   res := make(map[string]interface{})
   err := osimage.Add(datacenter, storage, osname, cephblockdevice, snapname, xml)
 
-  res["res"] = err
+  res["err"] = err
   c.JSON(200, res)
 }

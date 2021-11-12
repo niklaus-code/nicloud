@@ -41,7 +41,7 @@
                         </td>
 		    			<td>
 							<!-- <button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="mount(, item.Storage, item.Pool, index)"> -->
-							<button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="toparent('mountvdisk')" @click="mount(item.Cloudriveid, item.Storage, item.Pool)">
+							<button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="mount('mountvdisk', item.Cloudriveid, item.Storage, item.Pool)">
                 				挂载
             				</button>
 							<button v-else class="btn btn-info btn-xs" type="button" @click="umount(item.Vm_ip, item.Storage, item.Datacenter, item.Cloudriveid, index)">
@@ -75,14 +75,11 @@ export default {
 		},
 
     methods: {
-		toparent: function (item) {
-            this.$emit("toParent",item);
-			},
-
-		mount: function (vdiskid, storage, pool) {
+		mount: function (router, vdiskid, storage, pool) {
 			this.$store.state.vdisk.vdiskid = vdiskid
 			this.$store.state.vdisk.storage = storage
 			this.$store.state.vdisk.pool = pool
+            this.$emit("toParent", router);
 			},
 
 		umount: function (vmip, storage, datacenter, cloudriveid, index) {

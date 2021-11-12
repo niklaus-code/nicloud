@@ -13,7 +13,6 @@ import migratevm from '@/view/migratevm'
 import createvlan from '@/view/createvlan'
 import createip from '@/view/createip'
 import ips from '@/view/ips'
-import createosimage from '@/view/createosimage'
 import createceph from '@/view/createceph'
 import nicloud from '@/view/nicloud'
 
@@ -31,11 +30,6 @@ export default new Router({
       path: '/createceph',
       name: 'createceph',
       component: createceph
-    },
-    {
-      path: '/createosimage',
-      name: 'createosimage',
-      component: createosimage
     },
     {
       path: '/ips',

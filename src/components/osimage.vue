@@ -2,9 +2,7 @@
 	<div>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div class="col-sm-10 col-sm-offset-1" style="margin-top:20px">
-			<router-link :to="{name:'createosimage'}">
-				<button class="btn btn-success btn-sm" type="button">创建</button>
-			</router-link>
+			<button class="btn btn-success btn-sm" type="button" @click="toParent">创建</button>
 			<table class="table table-hover" style="text-align: center;">
     			<thead>
       				<tr>
@@ -67,20 +65,17 @@ export default {
 		},
 
     methods: {
+	   	toParent: function (item) {
+            this.$emit("toParent", "createosimage");
+            },
+
 		editosimage: function (id, osname, cephblockdevice, snapimage, xml) {
+			this.$store.state.osimage.id = id
+            this.$store.state.osimage.osname = osname
+            this.$store.state.osimage.cephblockdevice = cephblockdevice
+            this.$store.state.osimage.snap = snapimage
+            this.$store.state.osimage.xml = xml
 			this.$emit("toParent", "updateosimage");
-				/*
-            this.$router.push({
-            path: '/updateosimage',
-                query: { 
-                    'osimage': osname,
-					"cephblockdevice": cephblockdevice,
-					"snapimage" : snapimage,
-					"xml": xml,
-					"id": id,
-                }
-            }) 
-				*/
             },
 
 		delosimage: function (osname, index) {
@@ -101,7 +96,7 @@ export default {
             	this.data = response.data.res
             })
         },
-        }
+     }
   }
 </script>
 <style scoped>

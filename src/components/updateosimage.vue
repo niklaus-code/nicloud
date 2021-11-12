@@ -25,8 +25,8 @@
 				<div class="col-sm-8">
 				    <select class="col-sm-12" v-model="storagevalue">
 						 <option value="">--请选择--</option>
-                        <option  v-for="c in storage" :value="c.Name">
-                            {{ c.Name }}
+                        <option  v-for="c in storage" :value="c.Uuid">
+                            {{ c.Uuid }}
                         </option>
                     </select>
 				</div>
@@ -90,7 +90,7 @@
     		</div>
 		<div class="form-group" style="margin-top:20px" >
 			<div class="col-sm-1 col-sm-offset-7">
-  				<button type="submit" @click="updateosimage" class="btn btn-info">提交</button>
+  				<button type="submit" @click="commit" class="btn btn-info">提交</button>
 			</div>
 		</div>
 		</div>
@@ -137,7 +137,7 @@ export default {
             this.$http.get(apiurl, { params: { datacenter: centervalue}}).then(response => {
                 if (response.data.err === null) {
                     this.storage = response.data.res
-                    this.storagevalue = response.data.res[0].Name
+                    this.storagevalue = response.data.res[0].Uuid
                 } else {
                     alert("获取数据失败(" + response.data.err.Message+ ")" )
                     }
@@ -145,11 +145,11 @@ export default {
         },
 
 		vlaninfo: function () {
-            this.osimage = this.$route.query.osimage
-            this.cephblockdevice = this.$route.query.cephblockdevice
-            this.snapimage = this.$route.query.snapimage
-            this.xml = this.$route.query.xml
-            this.id = this.$route.query.id
+            this.osimage = this.$store.state.osimage.osname
+            this.cephblockdevice = this.$store.state.osimage.cephblockdevice
+            this.snapimage = this.$store.state.osimage.snap
+            this.xml = this.$store.state.osimage.xml
+            this.id = this.$store.state.osimage.id
             },
 
 		check: function (osname, cephblockdevice, snapimage, xml) {
@@ -161,18 +161,17 @@ export default {
 				}
 			},
 
-		updateosimage: function () {
-			this.$emit("toParent", "updateosimage");
+		commit: function () {
 
             var apiurl = `/api/osimage/updateimage`
             this.$http.get(apiurl, { params: {id: this.id , datacenter: this.centervalue, storage: this.storagevalue, osname: this.osimage, cephblockdevice: this.cephblockdevice, snapimage: this.snapimage, xml: this.xml} }).then(response => {
-				if (response.data.res === null) {
+				if (response.data.err === null) {
 					alert("更新成功!")
-					this.$router.push('/osimage')
+					this.$emit("toParent", "osimage");
 				} else {
 					alert("更新失败(" + response.data.res.Message+ ")" )
 					}
-			})
+				})
 			},
         }
   }

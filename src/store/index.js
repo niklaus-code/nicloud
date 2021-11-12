@@ -10,6 +10,13 @@ const store = new Vuex.Store({
     	storage: "",
     	pool: "",
 		},
+	osimage: {
+		id: 0,
+		osname: "",
+		cephblockdevice: "",
+		snap: "",
+		xml: "",
+		},
   },
   mutations: {
     increment (state) {

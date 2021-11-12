@@ -21,6 +21,7 @@ import updateosimage from '@/components/updateosimage'
 import createvm from '@/components/createvm'
 import createvdisk from '@/components/createvdisk'
 import mountvdisk from '@/components/mountvdisk'
+import createosimage from '@/components/createosimage'
 
 export default {
     data () {
@@ -30,7 +31,7 @@ export default {
     },
 
     components: {
-        foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk
+        foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage
     },
 
 	methods: {
