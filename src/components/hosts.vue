@@ -2,9 +2,7 @@
 	<div>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div class="col-sm-10 col-sm-offset-1" style="margin-top:20px">
-			<router-link :to="{name:'createhost'}">
-				<button class="btn btn-success btn-sm" type="button">创建</button>
-			</router-link>
+			<button class="btn btn-success btn-sm" @click="createhost" type="button">创建</button>
 			<table class="table table-hover" style="text-align: center;">
     			<thead>
       				<tr>
@@ -72,6 +70,10 @@ export default {
 		},
 
     methods: {
+		createhost: function () {
+			this.$emit("toParent", "createhost");
+			},
+
 		restore: function (ip, status, index) {
             var apiurl = `/api/hosts/restore`
             this.$http.get(apiurl, { params: {ip: ip, status: status} } ).then(response => {

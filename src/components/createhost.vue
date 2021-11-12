@@ -1,9 +1,7 @@
 <template>
 	<div>
-	<nicloudhead></nicloudhead>
-	<vmleft></vmleft>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
-		<div class="col-sm-3 col-sm-offset-4" style="margin-top:20px">
+		<div class="col-sm-4 col-sm-offset-4" style="margin-top:20px">
 				<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-3">
@@ -77,7 +75,7 @@
 				<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-3">
-        			<label>数量</label>
+        			<label>可创建数量</label>
 				</div>
 				<div class="col-sm-9">
 					<form role="form">
@@ -89,8 +87,8 @@
     		</div>
     		</div>
 		<div class="form-group">
-			<div class="col-sm-3 col-sm-offset-3" style="margin-top:20px" >
-  				<button type="submit" @click="createhost" class="btn btn-default btn-sm">提交</button>
+			<div class="col-sm-3 col-sm-offset-6" style="margin-top:20px" >
+  				<button type="submit" @click="commit" class="btn btn-success btn-sm">提交</button>
 			</div>
 		</div>
 		</div>
@@ -98,11 +96,6 @@
 	</div>		
 </template>
 <script>
-import foot from '@/components/footer'
-import nicloudhead from '@/components/nicloudhead'
-import vmleft from '@/components/vmleft'
-
-
 export default {
     data () {
         return {
@@ -117,10 +110,6 @@ export default {
 			ip: "",
 			num: "",
         }
-    },
-
-    components: {
-        foot, nicloudhead, vmleft
     },
 
 	mounted: function () {
@@ -150,13 +139,13 @@ export default {
             })
         },
 
-		createhost: function () {
+		commit: function () {
             var apiurl = `/api/hosts/createhost`
 
             this.$http.get(apiurl, { params: {datacenter:this.centervalue, cpu: this.cpu, mem:this.mem, ip: this.ip, num: this.num, vlan: this.vlanvalue.Vlan} }).then(response => {
 				if (response.data.res === null) {
 					alert("创建成功! 是否查看宿主机列表")
-					this.$router.push('/hosts')
+					this.$emit("toParent", "hosts");
 				} else {
 					alert("插入数据失败(" + response.data.res.Message+ ")" )
 					}

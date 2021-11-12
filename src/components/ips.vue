@@ -1,7 +1,5 @@
 <template>
 	<div>
-	<nicloudhead></nicloudhead>
-	<vmleft></vmleft>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div class="col-sm-10 col-sm-offset-1 vlan" style="margin-top:20px;">
 			<span>VLAN&nbsp{{vlan}}&nbsp&&nbsp IP列表</span>
@@ -51,11 +49,6 @@
 </div>		
 </template>
 <script>
-import foot from '@/components/footer'
-import nicloudhead from '@/components/nicloudhead'
-import vmleft from '@/components/vmleft'
-
-
 export default {
     data () {
         return {
@@ -63,11 +56,6 @@ export default {
 			ips: [],
         }
     },
-
-    components: {
-        foot, nicloudhead, vmleft
-    },
-
 
 	created: function () {
         this.vlaninfo()
@@ -79,7 +67,7 @@ export default {
 
     methods: {
 	   	vlaninfo: function () {
-            this.vlan = this.$route.query.vlan
+            this.vlan = this.$store.state.network.vlan
             },
 
 		 upip: function (index, ip) {

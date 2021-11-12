@@ -5,6 +5,9 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
+	network: {
+		vlan: "",
+		},
 	vdisk: {
     	vdiskid: "",
     	storage: "",

@@ -1,7 +1,5 @@
 <template>
 	<div>
-	<nicloudhead></nicloudhead>
-	<vmleft></vmleft>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div class="col-sm-3 col-sm-offset-4" style="margin-top:20px">
 				<div class="col-sm-12">
@@ -100,11 +98,6 @@
 	</div>		
 </template>
 <script>
-import foot from '@/components/footer'
-import nicloudhead from '@/components/nicloudhead'
-import vmleft from '@/components/vmleft'
-
-
 export default {
     data () {
         return {
@@ -116,10 +109,6 @@ export default {
 			prefix: "",
 			gateway: "",
         }
-    },
-
-    components: {
-        foot, nicloudhead, vmleft
     },
 
 	mounted: function() {
@@ -160,8 +149,8 @@ export default {
 
             this.$http.get(apiurl, { params: {datacenter: this.centervalue,  vlan: this.vlan, bridge:this.bridge, network: this.network, prefix: this.prefix, gateway: this.gateway} }).then(response => {
 				if (response.data.res) {
-					alert("创建成功! 是否查看宿主机列表")
-					this.$router.push('/network')
+					alert("创建成功! 是否查看网络列表")
+					this.$emit("toParent", "network");
 				} else {
 					alert("创建失败(" + response.data.err.Message+ ")" )
 					}

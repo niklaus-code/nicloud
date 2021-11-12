@@ -8,11 +8,7 @@ import about from '@/view/about'
 import login from '@/view/login'
 import serveroom from '@/view/machine'
 import createmachine from '@/view/createmachine'
-import createhost from '@/view/createhost'
 import migratevm from '@/view/migratevm'
-import createvlan from '@/view/createvlan'
-import createip from '@/view/createip'
-import ips from '@/view/ips'
 import createceph from '@/view/createceph'
 import nicloud from '@/view/nicloud'
 
@@ -32,29 +28,9 @@ export default new Router({
       component: createceph
     },
     {
-      path: '/ips',
-      name: 'ips',
-      component: ips
-    },
-    {
-      path: '/createip',
-      name: 'createip',
-      component: createip
-    },
-    {
-      path: '/createvlan',
-      name: 'createvlan',
-      component: createvlan
-    },
-    {
       path: '/migratevm',
       name: 'migratevm',
       component: migratevm
-    },
-    {
-      path: '/createhost',
-      name: 'createhost',
-      component: createhost
     },
     {
       path: '/createmachine',

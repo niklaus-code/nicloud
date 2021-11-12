@@ -22,20 +22,25 @@ import createvm from '@/components/createvm'
 import createvdisk from '@/components/createvdisk'
 import mountvdisk from '@/components/mountvdisk'
 import createosimage from '@/components/createosimage'
+import createvlan from '@/components/createvlan'
+import ips from '@/components/ips'
+import createip from '@/components/createip'
+import createhost from '@/components/createhost'
 
 export default {
     data () {
         return {
-			router: "vm",
+			router: localStorage.getItem('router'),
         }
     },
 
     components: {
-        foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage
+        foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost
     },
 
 	methods: {
     	getMag(router) {
+			localStorage.setItem('router', router);
       		this.router = router;
     		},
   		},

@@ -1,7 +1,5 @@
 <template>
 	<div>
-	<nicloudhead></nicloudhead>
-	<vmleft></vmleft>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div class="col-sm-8 col-sm-offset-2" >
 			<div class="col-sm-12">
@@ -55,22 +53,13 @@
 	</div>		
 </template>
 <script>
-import foot from '@/components/footer'
-import nicloudhead from '@/components/nicloudhead'
-import vmleft from '@/components/vmleft'
-
-
 export default {
     data () {
         return {
-			vlan: {},
+			vlan: "",
 			startip: "",
 			endip: "",
         }
-    },
-
-    components: {
-        foot, nicloudhead, vmleft
     },
 	
     created: function () {
@@ -96,7 +85,7 @@ export default {
 			},
 
 		vlaninfo: function () {
-			this.vlan = JSON.parse(this.$route.query.vlan)
+			this.vlan = this.$store.state.network.vlan
 			},
         }
   }
