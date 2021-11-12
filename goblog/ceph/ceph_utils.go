@@ -21,7 +21,7 @@ type Vms_Ceph struct {
 }
 
 
-func Restore(vlan string, status int) error {
+func Restore(uuid string, status int) error {
   var s int
 
   if status == 0 {
@@ -35,7 +35,7 @@ func Restore(vlan string, status int) error {
     return err
   }
 
-  dberr := dbs.Model(Vms_Ceph{}).Where("name=?", vlan).Update("status", s)
+  dberr := dbs.Model(Vms_Ceph{}).Where("uuid=?", uuid).Update("status", s)
   if dberr.Error != nil {
     return dberr.Error
   }

@@ -9,7 +9,6 @@ import login from '@/view/login'
 import serveroom from '@/view/machine'
 import createmachine from '@/view/createmachine'
 import migratevm from '@/view/migratevm'
-import createceph from '@/view/createceph'
 import nicloud from '@/view/nicloud'
 
 
@@ -21,11 +20,6 @@ export default new Router({
       path: '/nicloud',
       name: 'nicloud',
       component: nicloud
-    },
-    {
-      path: '/createceph',
-      name: 'createceph',
-      component: createceph
     },
     {
       path: '/migratevm',

@@ -26,6 +26,7 @@ import createvlan from '@/components/createvlan'
 import ips from '@/components/ips'
 import createip from '@/components/createip'
 import createhost from '@/components/createhost'
+import createceph from '@/components/createceph'
 
 export default {
     data () {
@@ -35,7 +36,7 @@ export default {
     },
 
     components: {
-        foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost
+        foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph
     },
 
 	methods: {
