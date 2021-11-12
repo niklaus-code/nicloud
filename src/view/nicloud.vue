@@ -28,10 +28,17 @@ import createip from '@/components/createip'
 import createhost from '@/components/createhost'
 import createceph from '@/components/createceph'
 
+var initroute 
+if (sessionStorage.getItem('router')) {
+	
+	} else {
+		sessionStorage.setItem('router', "vm");
+		}
+
 export default {
     data () {
         return {
-			router: localStorage.getItem('router'),
+			router: sessionStorage.getItem('router'),
         }
     },
 
@@ -39,9 +46,14 @@ export default {
         foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph
     },
 
+
+	mounted: function () {
+		
+		},
+
 	methods: {
     	getMag(router) {
-			localStorage.setItem('router', router);
+			sessionStorage.setItem('router', router);
       		this.router = router;
     		},
   		},
