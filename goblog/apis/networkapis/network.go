@@ -60,6 +60,17 @@ func Delete(c *gin.Context) {
   c.JSON(200, res)
 }
 
+func Deleteip(c *gin.Context) {
+  vlan := c.Query("vlan")
+  ip := c.Query("ip")
+
+  res := make(map[string]interface{})
+
+  err := networks.Deleteip(vlan, ip)
+  res["err"] = err
+  c.JSON(200, res)
+}
+
 func CreateIp(c *gin.Context) {
   startip := c.Query("startip")
   endip := c.Query("endip")

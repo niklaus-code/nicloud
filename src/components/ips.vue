@@ -21,22 +21,25 @@
     			</thead>
 
 				<tbody v-for="(item, index) in ips">
-      				<tr class="table-dark text-dark" :id="item.Ipv4">
+      				<tr v-if="item.Exist" class="table-dark text-dark" :id="item.Ipv4">
         				<label class="checkbox-inline">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
         				<td>{{item.Ipv4}}</td>
         				<td>{{item.Macaddr}}</td>
         				<td>
-							<span v-if="item.Status"  class="glyphicon glyphicon-remove"></span>
+							<span v-if="item.Status" class="glyphicon glyphicon-remove"></span>
 							<span v-else  class="glyphicon glyphicon-ok"></span>
 						</td>
 		    			<td>
-							<button class="btn btn-info btn-xs" type="button" @click="downip(index, item.Ipv4)">
+							<button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="upip(index, item.Ipv4)">
+                				UP
+            				</button>
+							<button v-else class="btn btn-info btn-xs" type="button" @click="downip(index, item.Ipv4)">
                 				DOWN
             				</button>
-							<button class="btn btn-success btn-xs" type="button" @click="upip(index, item.Ipv4)">
-                				UP
+							<button class="btn btn-warning btn-xs" type="button" @click="deleteip(index, item.Ipv4)">
+                				删除
             				</button>
         				</td>
 					</tr>
@@ -52,7 +55,7 @@
 export default {
     data () {
         return {
-			vlan: {},
+			vlan: sessionStorage.getItem('vlan'),
 			ips: [],
         }
     },
@@ -67,8 +70,27 @@ export default {
 
     methods: {
 	   	vlaninfo: function () {
-            this.vlan = this.$store.state.network.vlan
+
+			var initroute 
+			if (sessionStorage.getItem('vlan')) {
+    			} else {
+					sessionStorage.setItem('vlan', this.$store.state.network.vlan)
+					this.vlan = this.$store.state.network.vlan
+        		}
+
             },
+
+		 deleteip: function (index, ip) {
+            var apiurl = `/api/networks/deleteip`
+            this.$http.get(apiurl, { params: {ip: ip, vlan: this.vlan}}).then(response => {
+            	if (response.data.res != null) {
+					alert("操作失败'("+response.data.err+")'")
+				} else {
+					alert("删除成功")
+					this.ips[index].Exist = false
+				}
+            })
+        },
 
 		 upip: function (index, ip) {
             var apiurl = `/api/networks/upip`
