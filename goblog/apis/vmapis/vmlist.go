@@ -4,6 +4,7 @@ import (
   "fmt"
   "github.com/gin-gonic/gin"
   "goblog/vm"
+  "goblog/vmerror"
   "strconv"
 )
 
@@ -99,22 +100,26 @@ func Mountdisk(c *gin.Context) {
 }
 
 func Createvm(c *gin.Context) {
-	cpu, _ := strconv.Atoi(c.Query("cpu"))
-	mem, _ := strconv.Atoi(c.Query("mem"))
-	ip := c.Query("ip")
-	host := c.Query("host")
+  res := make(map[string]interface{})
+  ip := c.Query("ip")
+  cpu, _ := strconv.Atoi(c.Query("cpu"))
+  mem, _ := strconv.Atoi(c.Query("mem"))
+  host := c.Query("host")
   image := c.Query("image")
   datacenter := c.Query("datacenter")
   storage := c.Query("storage")
-  vlan :=  c.Query("vlan")
+  vlan := c.Query("vlan")
 
-	create, err := vm.Create(datacenter, storage, vlan, cpu, mem, ip,  host, image)
-  res := make(map[string]interface{})
-
-	res["res"] = create
-  res["err"] = err
-
-	c.JSON(200, res)
+  pinger := vm.Ping(ip)
+  if pinger != "运行" {
+    res["err"] = vmerror.Error{Message: "宿主机不可达"}
+    c.JSON(200, res)
+  } else {
+    create, err := vm.Create(datacenter, storage, vlan, cpu, mem, ip, host, image)
+    res["res"] = create
+    res["err"] = err
+    c.JSON(200, res)
+  }
 }
 
 func Addcomment(c *gin.Context) {

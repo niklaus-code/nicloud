@@ -113,7 +113,7 @@ export default {
     },
 
     methods: {
-          toParent: function () {
+        toParent: function () {
                 this.$emit("toParent", "createvm");
                 },
 

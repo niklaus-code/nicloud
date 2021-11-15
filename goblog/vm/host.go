@@ -2,9 +2,11 @@ package vm
 
 import (
   "fmt"
+  "github.com/go-ping/ping"
   db "goblog/dbs"
   "goblog/vmerror"
   "reflect"
+  "time"
 )
 
 type Vm_hosts struct {
@@ -46,6 +48,27 @@ func CountHosts(ip string) int {
   var c int
   db.Model(&Vms{}).Where("host=?", ip).Count(&c)
   return c
+}
+
+func Ping(ip string) string {
+  if ip[0: 2] != "10" {
+    return "未知"
+  }
+  pinger, err := ping.NewPinger(ip)
+  pinger.Privileged()
+  pinger.Count = 10
+  pinger.Timeout = 1 * time.Second
+  err = pinger.Run()
+  if err != nil {
+    return "未知"
+  }
+  stats := pinger.Statistics()
+
+  if stats.PacketsRecv > 0 {
+    return "运行"
+  } else {
+    return "未知"
+  }
 }
 
 func Createhost(datacenter string, cpu int, mem int, ip string, num int, vlan string) error {

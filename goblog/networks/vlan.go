@@ -255,7 +255,7 @@ func Createip(startip string, endip string, vlan string) error {
       Ipv4: l[0]+"."+l[1]+"."+l[2]+"."+strconv.Itoa(i),
       Macaddr: NewRandomMac().String(l[2], i),
       Vlan: vlan,
-      Status: 1,
+      Status: 0,
       Exist: 1,
     }
 
