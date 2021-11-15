@@ -68,7 +68,7 @@ func main() {
 
   v5 := r.Group("/api/hosts")
   {
-    v5.GET("restore", hostapis.Delhost)
+    v5.GET("delete", hostapis.Delhost)
     v5.GET("gethostinfo", hostapis.Gethostinfo)
     v5.GET("createhost", hostapis.Createhost)
     v5.GET("gethosts", hostapis.GetHosts)

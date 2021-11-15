@@ -137,20 +137,13 @@ func Updatehost(ip string, cpu int, mem int) error {
   return nil
 }
 
-func Restore(ip string, status int) error {
-  var s int
-  if status == 1 {
-    s = 0
-  } else {
-    s = 1
-  }
-
+func Deletehost(ip string) error {
   dbs, err := db.NicloudDb()
   if err != nil {
     return err
   }
 
-  dberr := dbs.Model(Vm_hosts{}).Where("ipv4=?", ip).Update("status", s)
+  dberr := dbs.Where("ipv4=?", ip).Delete(&Vm_hosts{})
   if dberr.Error != nil {
     return dberr.Error
   }

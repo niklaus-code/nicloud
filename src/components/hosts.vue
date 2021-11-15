@@ -24,7 +24,7 @@
     			</thead>
 
 				<tbody v-for="(item, index) in data">
-      				<tr class="table-dark text-dark" :id="item.Uuid">
+      				<tr v-if="item.Status" class="table-dark text-dark" :id="item.Uuid">
         				<label class="checkbox-inline" style="width:10px">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
@@ -36,13 +36,12 @@
         				<td>{{item.count}}/{{item.Max_vms}}</td>
         				<td>test</td>
                         <td>
-                            <span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
-                            <span v-else class="glyphicon glyphicon-remove"></span>
+                            <span class="glyphicon glyphicon-ok"></span>
                         </td>
 
 		    			<td>
-							<button class="btn btn-info btn-xs" type="button" @click="restore(item.Ipv4, item.Status, index)">
-                				重置
+							<button class="btn btn-info btn-xs" type="button" @click="deletehost(item.Ipv4, index)">
+                				删除
             				</button>
         				</td>
 					</tr>
@@ -74,18 +73,14 @@ export default {
 			this.$emit("toParent", "createhost");
 			},
 
-		restore: function (ip, status, index) {
-            var apiurl = `/api/hosts/restore`
-            this.$http.get(apiurl, { params: {ip: ip, status: status} } ).then(response => {
+		deletehost: function (ip, index) {
+            var apiurl = `/api/hosts/delete`
+            this.$http.get(apiurl, { params: {ip: ip} } ).then(response => {
 			   if (response.data.res === null) {
-                    alert("重置成功")
-                    if (status) {
-                        this.data[index].Status = 0
+                    alert("删除成功")
+					this.data[index].Status=0
                     } else {
-                        this.data[index].Status = 1
-                        }
-                    } else {
-                    alert("创建失败('"+response.data.res.Message+"')")  
+                    alert("删除失败('"+response.data.res.Message+"')")  
                 }
             })
         },
