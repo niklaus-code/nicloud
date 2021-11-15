@@ -33,7 +33,7 @@ type Machineroom struct {
 }
 
 func Searchmachine(content string) ([]*Machineroom, error)  {
-  db, err := db.NicloudDb()
+  db, err := db.MachineDb()
   if err != nil {
     return nil, err
   }
@@ -45,7 +45,7 @@ func Searchmachine(content string) ([]*Machineroom, error)  {
 }
 
 func Updatemachine(id string, content string) (error)  {
-  db, err := db.NicloudDb()
+  db, err := db.MachineDb()
   if err != nil {
     return nil
   }
@@ -55,7 +55,7 @@ func Updatemachine(id string, content string) (error)  {
 }
 
 func Delmachine(id int, start int, offset int) ([]*Machineroom, error)  {
-  db, err := db.NicloudDb()
+  db, err := db.MachineDb()
   if err != nil {
     return nil, err
   }
@@ -67,7 +67,7 @@ func Delmachine(id int, start int, offset int) ([]*Machineroom, error)  {
 func Machinelist(startpage int, offset int) ([]*Machineroom, error)  {
   offsetpage := (startpage-1)*offset
 
-  db, err := db.NicloudDb()
+  db, err := db.MachineDb()
   if err != nil {
     return nil, err
   }
