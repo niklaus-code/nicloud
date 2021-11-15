@@ -88,7 +88,7 @@ func main() {
   {
     v7.GET("get", cephapis.GetStorage)
     v7.GET("add", cephapis.Addceph)
-    v7.GET("restore", cephapis.Restore)
+    v7.GET("delete", cephapis.Delete)
     v7.GET("addcloudrive", cephapis.Addcloudrive)
     v7.GET("getcloudrive", cephapis.Getcloudrive)
     v7.GET("getpool", cephapis.Getpool)

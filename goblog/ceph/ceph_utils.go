@@ -21,21 +21,13 @@ type Vms_Ceph struct {
 }
 
 
-func Restore(uuid string, status int) error {
-  var s int
-
-  if status == 0 {
-    s = 1
-  } else {
-    s = 0
-  }
-
+func Delete(uuid string) error {
   dbs, err := db.NicloudDb()
   if err != nil {
     return err
   }
 
-  dberr := dbs.Model(Vms_Ceph{}).Where("uuid=?", uuid).Update("status", s)
+  dberr := dbs.Where("uuid=?", uuid).Delete(Vms_Ceph{})
   if dberr.Error != nil {
     return dberr.Error
   }
@@ -52,6 +44,7 @@ func Add(name string, pool string, datacenter string, ceph_secret string, ips st
     Ips: ips,
     Port: port,
     Comment: comment,
+    Status: 1,
   }
   dbs, err := db.NicloudDb()
   if err != nil {

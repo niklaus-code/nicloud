@@ -23,7 +23,7 @@
     			</thead>
 
 				<tbody v-for="(item, index) in data">
-      				<tr class="table-dark text-dark" :id="item.Uuid">
+      				<tr v-if="item.Status"  class="table-dark text-dark" :id="item.Uuid">
         				<label class="checkbox-inline">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
@@ -34,12 +34,11 @@
         				<td>{{item.Datacenter}}</td>
         				<td>{{item.Comment}}</td>
 						<td>
-							<span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
-                        	<span v-else class="glyphicon glyphicon-remove"></span>
+							<span class="glyphicon glyphicon-ok"></span>
 						</td>
 		    			<td>
-							<button class="btn btn-info btn-xs" type="button" @click="restore(item.Uuid, item.Status, index)">
-                				重置
+							<button class="btn btn-warning btn-xs" type="button" @click="deletestorage(item.Uuid, index)">
+                				删除
             				</button>
         				</td>
 					</tr>
@@ -66,19 +65,14 @@ export default {
             this.$emit("toParent", "createceph");
 			},
 
-		restore: function (name, status, index) {
+		deletestorage: function (name, index) {
 			this.data[index].Status = 0
-            var apiurl = `/api/storage/restore`
-            this.$http.get(apiurl, { params: {name: name, status: status} } ).then(response => {
-			   if (response.data.res === null) {
-                    alert("重置成功")
-                    if (status) {
-                        this.data[index].Status = 0
+            var apiurl = `/api/storage/delete`
+            this.$http.get(apiurl, { params: {name: name} } ).then(response => {
+			   if (response.data.err === null) {
+                    alert("删除成功")
                     } else {
-                        this.data[index].Status = 1
-                        }
-                    } else {
-                    alert("重置失败('"+response.data.res.Message+"')")  
+                    alert("删除失败('"+response.data.err.Message+"')")  
                 }
             })
         },

@@ -56,20 +56,11 @@ func  GetStorage(c *gin.Context) {
   c.JSON(200, res)
 }
 
-func Restore(c *gin.Context) {
+func Delete(c *gin.Context) {
   res := make(map[string]interface{})
   name := c.Query("name")
-  status, err := strconv.Atoi(c.Query("status"))
-  if err != nil {
-      err = vmerror.Error{
-        Message: "参数错误",
-      }
-      res["res"] = err
-      c.JSON(400, res)
-  }
-
-  err = ceph.Restore(name, status)
-  res["res"] = err
+  err := ceph.Delete(name)
+  res["err"] = err
 
   c.JSON(200, res)
 }
