@@ -4,7 +4,6 @@ import (
   "fmt"
   "github.com/gin-gonic/gin"
   "goblog/vm"
-  "goblog/vmerror"
   "strconv"
 )
 
@@ -110,16 +109,9 @@ func Createvm(c *gin.Context) {
   storage := c.Query("storage")
   vlan := c.Query("vlan")
 
-  pinger := vm.Ping(host)
-  if pinger != "运行" {
-    res["err"] = vmerror.Error{Message: "宿主机不可达"}
-    c.JSON(200, res)
-  } else {
-    create, err := vm.Create(datacenter, storage, vlan, cpu, mem, ip, host, image)
-    res["res"] = create
-    res["err"] = err
-    c.JSON(200, res)
-  }
+  err := vm.Create(datacenter, storage, vlan, cpu, mem, ip, host, image)
+  res["err"] = err
+  c.JSON(200, res)
 }
 
 func Addcomment(c *gin.Context) {

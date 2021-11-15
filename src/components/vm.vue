@@ -32,54 +32,54 @@
       			</tr>
     		</thead>
     		<tbody v-for="(item, index) in data">
-      			<tr class="table-dark text-dark" :id="item.Uuid">
+      			<tr v-if="item.Exist" class="table-dark text-dark" :id="item.Uuid">
 					<label class="checkbox-inline">
   						<input type="checkbox" v-model="item.Checkout"> 
 					</label>
-        		<td>{{item.Name}}</td>
-        		<td>{{item.Ip}}</td>
-        		<td>{{item.Os}}</td>
-        		<td>{{item.Host}}</td>
-        		<td>{{item.Cpu}}核 / {{item.Mem}}G</td>
-        		<td>
-					<ul>
-						<li v-for="(k, v) in item.disk">
-							{{k.Diskname}}&nbsp{{k.Contain}}G
-						</li>
-					</ul>
-				</td>
-        		<td>{{item.Owner}}</td>
-				<td>
-		    		<span v-if='item.flag2' @click="c(index)">
-                		{{item.Comment}}
-            		</span>
-					<li v-if='item.flag'><span class="glyphicon glyphicon-calendar" @click="edit(index)"></span></li>
-					<div v-if='item.flag1'>
-						<input type="text" v-model="comment">
-						<span  @click="input(index, item.Uuid)" class="glyphicon glyphicon-calendar"></span>
-					</div>
-				</td>
-				<td>
-					<button  v-if="item.Status === '运行'" type="button" class="btn btn-success btn-xs">{{item.Status}}</button>
-        			<button v-else type="button" class="btn btn-warning btn-xs">{{item.Status}}</button>
-        		</td>
-        		<td class="dropdown">
-					<button class="btn btn-info btn-xs dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
-						操作<span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu" role="menu" aria-labelledby="menu1" style="">
-      					<li @click="start(item.Uuid, index, item.Host)" style="background-color: green" role="presentation"><a role="menuitem" tabindex="-1">开机</a></li>
-      					<li @click="shutdown(item.Uuid, index, item.Host)" style="background-color: #e56b6b"  role="presentation"><a role="menuitem" tabindex="-1">关机</a></li>
-      					<li @click="pause(item.Uuid, index, item.Host)" style="background-color: rgb(255, 211, 0)" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
-      					<li style="background-color: greenyellow"  role="presentation">
-						<router-link :to="{name:'migratevm', query: { uuid: item.Uuid, host: item.Host }}">
-							<a role="menuitem" tabindex="-1">迁移</a>
-						</router-link>
-						</li>
-      					<li @click="deletevm(item.Uuid)" style="background-color: #808080" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
-    				</ul>
-					<button type="button" class="btn btn-info btn-xs" @click="vnc(item.Uuid, item.Host)"> <span class="glyphicon glyphicon-facetime-video"></span></button>
-				</td>
+        			<td>{{item.Name}}</td>
+        			<td>{{item.Ip}}</td>
+        			<td>{{item.Os}}</td>
+        			<td>{{item.Host}}</td>
+        			<td>{{item.Cpu}}核 / {{item.Mem}}G</td>
+        			<td>
+						<ul>
+							<li v-for="(k, v) in item.disk">
+								{{k.Diskname}}&nbsp{{k.Contain}}G
+							</li>
+						</ul>
+					</td>
+        			<td>{{item.Owner}}</td>
+					<td>
+		    			<span v-if='item.flag2' @click="c(index)">
+                			{{item.Comment}}
+            			</span>
+						<li v-if='item.flag'><span class="glyphicon glyphicon-calendar" @click="edit(index)"></span></li>
+							<div v-if='item.flag1'>
+								<input type="text" v-model="comment">
+									<span  @click="input(index, item.Uuid)" class="glyphicon glyphicon-calendar"></span>
+							</div>
+					</td>
+					<td>
+						<button  v-if="item.Status === '运行'" type="button" class="btn btn-success btn-xs">{{item.Status}}</button>
+        				<button v-else type="button" class="btn btn-warning btn-xs">{{item.Status}}</button>
+        			</td>
+        			<td class="dropdown">
+						<button class="btn btn-info btn-xs dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
+							操作<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="menu1" style="">
+      						<li @click="start(item.Uuid, index, item.Host)" style="background-color: green" role="presentation"><a role="menuitem" tabindex="-1">开机</a></li>
+      						<li @click="shutdown(item.Uuid, index, item.Host)" style="background-color: #e56b6b"  role="presentation"><a role="menuitem" tabindex="-1">关机</a></li>
+      						<li @click="pause(item.Uuid, index, item.Host)" style="background-color: rgb(255, 211, 0)" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
+      						<li style="background-color: greenyellow"  role="presentation">
+								<router-link :to="{name:'migratevm', query: { uuid: item.Uuid, host: item.Host }}">
+									<a role="menuitem" tabindex="-1">迁移</a>
+								</router-link>
+							</li>
+      						<li @click="deletevm(item.Uuid, index)" style="background-color: #808080" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
+    					</ul>
+						<button type="button" class="btn btn-info btn-xs" @click="vnc(item.Uuid, item.Host)"> <span class="glyphicon glyphicon-facetime-video"></span></button>
+					</td>
       			</tr>
     		</tbody>
 		</table>
@@ -201,33 +201,13 @@ export default {
             })
         },
 
-        deletevm: function (uuid) {
+        deletevm: function (uuid, index) {
             var apiurl = `/api/vm/delete`
             this.$http.get(apiurl, { params: { uuid: uuid} }).then(response => {
 				if (response.data.err == null) {
-            		var d = new Array()
-            		for (var v in response.data.res) {
-                		if (response.data.res[v]["Comment"].length > 0) {
-                   	 		response.data.res[v]["flag"] = false
-                    		response.data.res[v]["flag2"] = true
-                    		} else {
-                    		response.data.res[v]["flag2"] = false
-                        	response.data.res[v]["flag"] = true
-                    		}
-                		response.data.res[v]["flag1"] = false
-                		d.push(response.data.res[v])
-                		}
-
-						this.data = d
-            			this.data = response.data.res
-						for (let v in this.data) {
-							var r = this.getvmstatus(this.data[v].Uuid, this.data[v].Host)
-							r.then(value => {
-								this.data[v].Status = value
-								},
-								)
-							}
-				} else {
+					alert("删除成功")
+					this.data[index].Exist=0	
+				} else {	
 					alert(response.data.err.Message)
 				}
             })

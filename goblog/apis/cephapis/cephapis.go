@@ -79,3 +79,12 @@ func Addceph(c *gin.Context) {
 
   c.JSON(200, res)
 }
+
+func Deletevdisk(c *gin.Context)  {
+  uuid := c.Query("uuid")
+  err := ceph.Deletevdisk(uuid)
+  res := make(map[string]interface{})
+  res["err"] = err
+
+  c.JSON(200, res)
+}

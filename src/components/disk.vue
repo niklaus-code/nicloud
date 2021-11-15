@@ -24,7 +24,7 @@
     			</thead>
 
 				<tbody v-for="(item, index) in data">
-      				<tr class="table-dark text-dark" :id="item.Uuid">
+      				<tr v-if="item.Exist" class="table-dark text-dark" :id="item.Uuid">
         				<label class="checkbox-inline" style="width:10px">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
@@ -47,7 +47,7 @@
 							<button v-else class="btn btn-info btn-xs" type="button" @click="umount(item.Vm_ip, item.Storage, item.Datacenter, item.Cloudriveid, index)">
                 				卸载
             				</button>
-							<button v-if="item.Status" class="btn btn-danger btn-xs" type="button" @click="restore(item.Ipv4, item.Status, index)">
+							<button v-if="item.Status" class="btn btn-danger btn-xs" type="button" @click="deletevdisk(item.Cloudriveid, index)">
                 				销毁
             				</button>
         				</td>
@@ -78,6 +78,18 @@ export default {
 	    create: function () {
                 this.$emit("toParent", "createvdisk");
                 },
+
+		deletevdisk: function (uuid, index) {
+            var apiurl = `/api/storage/deletevdisk`
+            this.$http.get(apiurl , { params: { uuid: uuid} }).then(response => {
+				if (response.data.err === null ) {
+					this.data[index].Exist = 0
+					alert("删除成功")
+					} else {
+					alert ("获取数据失败（"+response.data.err.Message+")")
+					}
+			})
+			},
 
 		mount: function (router, vdiskid, storage, pool) {
 			this.$store.state.vdisk.vdiskid = vdiskid

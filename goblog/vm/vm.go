@@ -322,13 +322,11 @@ func MigrateVm(uuid string, migrate_host string) error {
   return err
 }
 
-func Create(datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, image string) (bool, error) {
+func Create(datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, image string) (error) {
   mac, err := networks.Ipresource(ip)
   if err != nil {
-    return false, err
+    return err
   }
-
-  fmt.Println(2222222222)
 
 	/*create a vm*/
 	vcpu := cpu
@@ -340,36 +338,34 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
 	//create baseimage
 	imge_name, err := ceph.RbdClone(u)
 	if err != nil {
-	 return false, err
+	 return err
   }
-
-  fmt.Println(imge_name)
 
 	f, err := osimage.Xml(datacenter, storage, vlan,  vcpu, vmem, u, mac, imge_name, image)
 	if err != nil {
-	  return false, err
+	  return err
   }
 
 	err = libvirtd.DefineVm(f, host)
 	if err != nil {
-	  return false, err
+	  return err
   }
 
   err = Updatehost(host, cpu, mem)
   if  err != nil {
-    return false, err
+    return err
   }
-	svm, err := savevm(datacenter, storage, u, cpu, mem, f, ip, host, image)
+	_, err = savevm(datacenter, storage, u, cpu, mem, f, ip, host, image)
 	if err != nil {
-	  return svm, err
+	  return err
   }
 
   err = networks.Updateipstatus(ip, 1)
   if err != nil {
-    return false, err
+    return  err
   }
 
-	return true, err
+	return nil
 }
 
 func Getvmxmlby (ip string, storage string, datacenter string) (string, error) {

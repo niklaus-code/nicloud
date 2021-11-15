@@ -163,6 +163,7 @@ type Vms_cloudrive struct {
   Datacenter string
   Vm_ip string
   User string
+  Exist int8
   Status int
 }
 
@@ -220,6 +221,7 @@ func Add_cloudrive(contain int, pool string, storage string, datacenter string, 
     Storage: storage,
     Datacenter: datacenter,
     User: "niklaus",
+    Exist: 1,
     Status: 1,
   }
 
@@ -237,4 +239,22 @@ func Add_cloudrive(contain int, pool string, storage string, datacenter string, 
     return nil, vmerror.Error{Message: errdb.Error.Error()}
   }
   return nil, err
+}
+
+func Deletevdisk(uuid string) error {
+  err := Rm_image(uuid)
+  if err != nil {
+    return err
+  }
+
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  errdb := dbs.Where("cloudriveid=?", uuid).Delete(Vms_cloudrive{})
+  if errdb.Error != nil {
+    return vmerror.Error{Message: "delete vdisk fail"}
+  }
+  return nil
 }
