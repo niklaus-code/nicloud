@@ -1,8 +1,11 @@
 package networkapis
 
 import (
+  "fmt"
   "github.com/gin-gonic/gin"
   "goblog/networks"
+  "goblog/vm"
+  "goblog/vmerror"
   "strconv"
 )
 
@@ -60,15 +63,20 @@ func Delete(c *gin.Context) {
   c.JSON(200, res)
 }
 
+
 func Deleteip(c *gin.Context) {
-  vlan := c.Query("vlan")
-  ip := c.Query("ip")
-
-  res := make(map[string]interface{})
-
-  err := networks.Deleteip(vlan, ip)
-  res["err"] = err
-  c.JSON(200, res)
+ vlan := c.Query("vlan")
+ ip := c.Query("ip")
+ res := make(map[string]interface{})
+ ipcheck := vm.GetVmByIp(ip)
+ fmt.Println(ipcheck)
+ if ipcheck != nil {
+   fmt.Println()
+   res["err"] = vmerror.Error{Message: "ip已被占用"}
+ } else {
+   res["err"] = networks.Deleteip(ip, vlan)
+ }
+ c.JSON(200, res)
 }
 
 func CreateIp(c *gin.Context) {

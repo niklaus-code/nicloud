@@ -153,17 +153,17 @@ func Ipresource(ip string) (string, error) {
 }
 
 func Deleteip(vlan string, ipv4 string) error {
-  dbs, err := db.NicloudDb()
-  if err != nil {
-    return err
-  }
+ dbs, err := db.NicloudDb()
+ if err != nil {
+   return err
+ }
 
-  dberr := dbs.Where("vlan=? and ipv4=?", vlan, ipv4 ).Delete(&Vms_ips{})
-  if dberr.Error != nil {
-    return dberr.Error
-  }
+ dberr := dbs.Where("vlan=? and ipv4=?", vlan, ipv4 ).Delete(&Vms_ips{})
+ if dberr.Error != nil {
+   return dberr.Error
+ }
 
-  return nil
+ return nil
 }
 
 func Updateipstatus(ipv4 string, status int) (error) {

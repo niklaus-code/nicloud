@@ -15,6 +15,7 @@
         				</th>
 						<th>IPv4</th>
 						<th>MACADDR</th>
+						<th>VLAN</th>
 						<th>状态</th>
 						<th>操作</th>
       				</tr>
@@ -27,6 +28,7 @@
         				</label>
         				<td>{{item.Ipv4}}</td>
         				<td>{{item.Macaddr}}</td>
+        				<td>{{vlan}}</td>
         				<td>
 							<span v-if="item.Status" class="glyphicon glyphicon-remove"></span>
 							<span v-else  class="glyphicon glyphicon-ok"></span>
@@ -83,8 +85,8 @@ export default {
 		 deleteip: function (index, ip) {
             var apiurl = `/api/networks/deleteip`
             this.$http.get(apiurl, { params: {ip: ip, vlan: this.vlan}}).then(response => {
-            	if (response.data.res != null) {
-					alert("操作失败'("+response.data.err+")'")
+            	if (response.data.err != null) {
+					alert("删除失败'("+response.data.err.Message+")'")
 				} else {
 					alert("删除成功")
 					this.ips[index].Exist = false

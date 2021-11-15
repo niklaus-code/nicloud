@@ -45,6 +45,7 @@ func GetVmByUuid(uuid string) *Vms {
   return v
 }
 
+
 func GetVmByIp(ip string) *Vms {
   dbs, err := db.NicloudDb()
   v := &Vms{}
