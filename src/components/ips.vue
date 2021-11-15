@@ -74,10 +74,11 @@ export default {
 	   	vlaninfo: function () {
 
 			var initroute 
-			if (sessionStorage.getItem('vlan')) {
+			if (this.$store.state.network.vlan) {
+				this.vlan = this.$store.state.network.vlan
+				sessionStorage.setItem('vlan', this.$store.state.network.vlan)
     			} else {
-					sessionStorage.setItem('vlan', this.$store.state.network.vlan)
-					this.vlan = this.$store.state.network.vlan
+				this.vlan = sessionStorage.getItem('vlan')
         		}
 
             },

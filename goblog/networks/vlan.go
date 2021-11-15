@@ -110,7 +110,7 @@ type Vms_ips struct {
   Macaddr string
   Status int8
   Vlan string
-  Exist string
+  Exist int8
 }
 
 func AllIP(vlan string) []*Vms_ips {
@@ -250,11 +250,13 @@ func Createip(startip string, endip string, vlan string) error {
   }
 
   for i:= startnum; i <= endnum ; i++ {
+    fmt.Println(vlan,NewRandomMac().String(l[2], i) )
     ips := &Vms_ips{
       Ipv4: l[0]+"."+l[1]+"."+l[2]+"."+strconv.Itoa(i),
       Macaddr: NewRandomMac().String(l[2], i),
       Vlan: vlan,
-      Status: 0,
+      Status: 1,
+      Exist: 1,
     }
 
     err := dbs.Create(*ips)

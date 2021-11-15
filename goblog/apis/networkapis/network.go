@@ -69,8 +69,8 @@ func Deleteip(c *gin.Context) {
  ip := c.Query("ip")
  res := make(map[string]interface{})
  ipcheck := vm.GetVmByIp(ip)
- fmt.Println(ipcheck)
- if ipcheck != nil {
+
+ if ipcheck.Ip != "" {
    fmt.Println()
    res["err"] = vmerror.Error{Message: "ip已被占用"}
  } else {
