@@ -110,7 +110,7 @@ func Createvm(c *gin.Context) {
   storage := c.Query("storage")
   vlan := c.Query("vlan")
 
-  pinger := vm.Ping(ip)
+  pinger := vm.Ping(host)
   if pinger != "运行" {
     res["err"] = vmerror.Error{Message: "宿主机不可达"}
     c.JSON(200, res)
@@ -151,7 +151,7 @@ func DeleteVM(c *gin.Context) {
 	res := make(map[string]interface{})
 	err := vm.Delete(uuid)
 
-	res["res"] = err
+	res["err"] = err
 	c.JSON(200, res)
 }
 

@@ -27,7 +27,7 @@ func Del(osname string) error {
   if err != nil {
     return err
   }
-  err1 := dbs.Model(Vms_os{}).Where("osname=?", osname).Update("status", 0)
+  err1 := dbs.Where("osname=?", osname).Delete(Vms_os{})
   if err1.Error != nil {
     return err1.Error
   }

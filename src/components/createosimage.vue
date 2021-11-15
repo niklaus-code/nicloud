@@ -172,7 +172,7 @@ export default {
             this.$http.get(apiurl, { params: { osname: this.osimage, datacenter: this.centervalue, storage: this.storagevalue, cephblockdevice: this.cephblockdevice, snapimage: this.snapimage, xml: this.xml} }).then(response => {
 				if (response.data.err === null) {
 					alert("创建成功!")
-					this.$router.push('/osimage')
+                	this.$emit("toParent", "osimage");
 				} else {
 					alert("创建失败(" + response.data.err.Message+ ")" )
 					}

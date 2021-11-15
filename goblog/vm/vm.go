@@ -328,6 +328,8 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
     return false, err
   }
 
+  fmt.Println(2222222222)
+
 	/*create a vm*/
 	vcpu := cpu
 	vmem := mem * 1024 * 1024
@@ -340,6 +342,8 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
 	if err != nil {
 	 return false, err
   }
+
+  fmt.Println(imge_name)
 
 	f, err := osimage.Xml(datacenter, storage, vlan,  vcpu, vmem, u, mac, imge_name, image)
 	if err != nil {

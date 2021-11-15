@@ -204,7 +204,7 @@ export default {
         deletevm: function (uuid) {
             var apiurl = `/api/vm/delete`
             this.$http.get(apiurl, { params: { uuid: uuid} }).then(response => {
-				if (response.data.res == null) {
+				if (response.data.err == null) {
             		var d = new Array()
             		for (var v in response.data.res) {
                 		if (response.data.res[v]["Comment"].length > 0) {

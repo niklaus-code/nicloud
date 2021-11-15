@@ -154,7 +154,7 @@ export default {
             this.$http.get(apiurl, { params: { datacenter: this.centervalue, storage: this.storagevalue, pool: this.poolvalue, contain: this.containvalue} }).then(response => {
 				if (response.data.err === null) {
 					alert("创建成功!")
-					this.$router.push('/cloudrive')
+					this.$emit("toParent", "disk");
 				} else {
 					alert("创建失败(" + response.data.err.Message+ ")" )
 					}

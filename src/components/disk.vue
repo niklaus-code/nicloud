@@ -2,7 +2,7 @@
 	<div>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div class="col-sm-10 col-sm-offset-1" style="margin-top:20px">
-			<button class="btn btn-success btn-sm" @click="toparent('createvdisk')" type="button">创建</button>
+			<button class="btn btn-success btn-sm" @click="create('createvdisk')" type="button">创建</button>
 			<table class="table table-hover" style="text-align: center;">
     			<thead>
       				<tr>
@@ -75,6 +75,10 @@ export default {
 		},
 
     methods: {
+	    create: function () {
+                this.$emit("toParent", "createvdisk");
+                },
+
 		mount: function (router, vdiskid, storage, pool) {
 			this.$store.state.vdisk.vdiskid = vdiskid
 			this.$store.state.vdisk.storage = storage
