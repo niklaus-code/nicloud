@@ -16,7 +16,7 @@ func Db() (*gorm.DB,error) {
 }
 
 func MachineDb() (*gorm.DB,error) {
-  db, err:=gorm.Open("mysql","modis:modis@(10.0.90.151:3306)/nicloud?parseTime=true")
+  db, err:=gorm.Open("mysql","machine:machine@(127.0.0.1:3306)/bigdata_machine?parseTime=true")
   if err != nil {
     return nil, err
   }
