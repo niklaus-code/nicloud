@@ -94,7 +94,7 @@
 				</div>
     		</div>
 	 		<div class="col-sm-12 form-group">
-				<div class="col-sm-2 col-sm-offset-4">
+				<div class="col-sm-1 col-sm-offset-5">
 					<button class="btn btn-success btn-sm"  @click="createvm()">创建</button>
 				</div>
     		</div>

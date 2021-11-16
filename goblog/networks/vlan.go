@@ -152,7 +152,7 @@ func Ipresource(ip string) (string, error) {
   return ipnet[0].Macaddr, nil
 }
 
-func Deleteip(vlan string, ipv4 string) error {
+func Deleteip(ipv4 string, vlan string) error {
  dbs, err := db.NicloudDb()
  if err != nil {
    return err
