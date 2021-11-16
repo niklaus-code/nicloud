@@ -1,7 +1,6 @@
 package vm
 
 import (
-  "fmt"
   "github.com/go-ping/ping"
   db "goblog/dbs"
   "goblog/vmerror"
@@ -215,12 +214,11 @@ func GetHostsbyvmip(vmip string) (*Vms,  error) {
   if err != nil {
     return nil, err
   }
-  fmt.Println(vmip)
   vm := &Vms{}
   errdb := db.Where("ip=?", vmip).Find(vm)
   if errdb.Error != nil {
     return nil, errdb.Error
   }
-  fmt.Println(vm)
+
   return vm, nil
 }

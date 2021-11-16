@@ -3,12 +3,13 @@ package cephapis
 import (
   "github.com/gin-gonic/gin"
   "goblog/ceph"
+  "goblog/vm"
   "goblog/vmerror"
   "strconv"
 )
 
-func  Getcloudrive(c *gin.Context) {
-  r, err := ceph.Get_cloudrive()
+func  GetVdisk(c *gin.Context) {
+  r, err := ceph.Getvdisk()
   res := make(map[string]interface{})
   res["res"] = r
   res["err"] = err
@@ -16,6 +17,33 @@ func  Getcloudrive(c *gin.Context) {
   c.JSON(200, res)
 }
 
+func Umountdisk(c *gin.Context) {
+  vmip := c.Query("vmip")
+  storage := c.Query("storage")
+  datacenter := c.Query("datacenter")
+  vdiskid := c.Query("cloudriveid")
+  res := make(map[string]interface{})
+  vminfo := vm.GetVmByIp(vmip)
+
+  s, err := vm.VmStatus(vminfo.Uuid, vminfo.Host)
+  if err != nil {
+    res["err"] = err
+  }
+
+  if s != "关机" {
+   res["err"] = vmerror.Error{Message: "cont mount disk, vm is " + s}
+  }
+
+  xml, err := vm.Getvmxmlby(vmip, storage, datacenter)
+  if err != nil {
+    res["err"] = err
+  } else {
+    v := vm.Vms{}
+    r := ceph.Umountdisk(vmip, storage, datacenter, vdiskid, xml, vminfo.Host, v)
+    res["err"] = r
+  }
+  c.JSON(200, res)
+}
 
 func  Addcloudrive(c *gin.Context) {
   res := make(map[string]interface{})

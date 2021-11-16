@@ -38,7 +38,6 @@ func main() {
     v2.GET("getvminfo", vmapis.GetVminfo)
     v2.GET("migratevm", vmapis.MigrateVm)
     v2.GET("mountdisk", vmapis.Mountdisk)
-    v2.GET("umountdisk", vmapis.Umountdisk)
 	}
 
   v3 := r.Group("/api/machine")
@@ -91,8 +90,9 @@ func main() {
     v7.GET("delete", cephapis.Delete)
     v7.GET("deletevdisk", cephapis.Deletevdisk)
     v7.GET("addcloudrive", cephapis.Addcloudrive)
-    v7.GET("getcloudrive", cephapis.Getcloudrive)
+    v7.GET("getvdisk", cephapis.GetVdisk)
     v7.GET("getpool", cephapis.Getpool)
+    v7.GET("umountdisk", cephapis.Umountdisk)
   }
 
   v8 := r.Group("/api/datacenter")

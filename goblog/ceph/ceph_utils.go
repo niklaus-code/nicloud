@@ -1,11 +1,14 @@
 package ceph
 
 import (
+  "github.com/beevik/etree"
   "github.com/ceph/go-ceph/rados"
   rbd "github.com/ceph/go-ceph/rbd"
   "goblog/dbs"
+  "goblog/libvirtd"
   "goblog/utils"
   "goblog/vmerror"
+  "strings"
   "time"
 )
 
@@ -19,7 +22,6 @@ type Vms_Ceph struct {
   Comment string
   Status int8
 }
-
 
 func Delete(uuid string) error {
   dbs, err := db.NicloudDb()
@@ -87,7 +89,6 @@ func Cephinfobyname(datacenter string, storage string)([]*Vms_Ceph, error) {
   dbs.Where("datacenter=? and uuid=?", datacenter, storage).Find(&c)
   return c, nil
 }
-
 
 func CephConn() (*rados.Conn, error) {
   conn, err := rados.NewConn()
@@ -168,7 +169,7 @@ type Vms_cloudrive struct {
 }
 
 
-func Get_cloudrive() ([]*Vms_cloudrive, error) {
+func Getvdisk() ([]*Vms_cloudrive, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
@@ -242,7 +243,16 @@ func Add_cloudrive(contain int, pool string, storage string, datacenter string, 
 }
 
 func Deletevdisk(uuid string) error {
-  err := Rm_image(uuid)
+  checkmount, err := Getdiskstatus(uuid)
+  if err != nil {
+    return err
+  }
+
+  if checkmount == 0 {
+    return vmerror.Error{Message: "硬盘已挂载，请卸载后删除"}
+  }
+
+  err = Rm_image(uuid)
   if err != nil {
     return err
   }
@@ -257,4 +267,63 @@ func Deletevdisk(uuid string) error {
     return vmerror.Error{Message: "delete vdisk fail"}
   }
   return nil
+}
+
+func Getdiskstatus(uuid string) (int, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return 0, err
+  }
+
+  vdisk := &Vms_cloudrive{}
+  errdb := dbs.Where("cloudriveid=?", uuid).First(vdisk)
+  if errdb.Error != nil {
+    return 0, errdb.Error
+  }
+  return vdisk.Status, nil
+}
+
+func Umountdisk(vmip string, storage string, datacenter string, vdiskid string, xml string, host string, vms interface{}) error {
+  doc := etree.NewDocument()
+  err := doc.ReadFromString(xml)
+  if err != nil {
+    return err
+  }
+  device := doc.FindElements("./domain/devices/disk")
+  d:= doc.FindElement("./domain/devices/")
+  for _, v := range device {
+    source := v.FindElement("./source")
+    vmdisk := source.SelectAttr("name").Value
+    uuid := strings.Split(vmdisk, "/")
+
+    if len(uuid)> 1 && uuid[1] == vdiskid {
+      d.RemoveChild(v)
+      var docstring string
+      docstring, err = doc.WriteToString()
+      libvirtd.DefineVm(docstring, host)
+
+      err := Umountvmstatus(datacenter, storage, vdiskid)
+      if err != nil {
+        return err
+      }
+
+      dbs, err := db.NicloudDb()
+      if err != nil {
+       return err
+      }
+
+      errdb := dbs.Model(vms).Where("ip=?", vmip).Update("vmxml", docstring)
+      if errdb.Error != nil {
+       return vmerror.Error{Message: errdb.Error.Error()}
+      }
+
+      if err != nil {
+        return err
+      }
+      return nil
+    }
+  }
+  return vmerror.Error{
+    Message: "disk not found",
+  }
 }

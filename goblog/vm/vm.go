@@ -381,69 +381,6 @@ func Getvmxmlby (ip string, storage string, datacenter string) (string, error) {
   return v.Vmxml, nil
 }
 
-func Umountdisk(vmip string,  storage string, datacenter string, diskid string) error {
-  vminfo := GetVmByIp(vmip)
-
-  s, err := VmStatus(vminfo.Uuid, vminfo.Host)
-  if err != nil {
-    return err
-  }
-  if s != "关机" {
-    return vmerror.Error{Message: "cont mount disk, vm is " + s}
-  }
-
-  f, err := Getvmxmlby(vmip, storage, datacenter)
-  if err != nil {
-    return err
-  }
-
-  host, err := GetHostsbyvmip(vmip)
-
-  if err != nil {
-    return err
-  }
-
-  doc := etree.NewDocument()
-  err = doc.ReadFromString(f)
-  device := doc.FindElements("./domain/devices/disk")
-  d:= doc.FindElement("./domain/devices/")
-  for _, v := range device {
-    source := v.FindElement("./source")
-    vmdisk := source.SelectAttr("name").Value
-    uuid := strings.Split(vmdisk, "/")
-    if len(uuid)> 1 && uuid[1] == diskid {
-      d.RemoveChild(v)
-      var docstring string
-      docstring, err = doc.WriteToString()
-      libvirtd.DefineVm(docstring, host.Host)
-
-      err := ceph.Umountvmstatus(datacenter, storage, diskid)
-      if err != nil {
-        return err
-      }
-
-      dbs, err := db.NicloudDb()
-      if err != nil {
-        return err
-      }
-
-      errdb := dbs.Model(Vms{}).Where("ip=?", vmip).Update("vmxml", docstring)
-      if errdb.Error != nil {
-        return vmerror.Error{Message: errdb.Error.Error()}
-      }
-
-      if err != nil {
-        return err
-      }
-      return nil
-    }
-  }
-
-  return vmerror.Error{
-    Message: "disk not found",
-  }
-}
-
 func disknametype(num int) string {
   switch (num) {
   case 0: return "vdb"

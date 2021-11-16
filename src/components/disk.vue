@@ -71,7 +71,7 @@ export default {
     },
 
 	mounted: function () {
-		this.getcloudrive()
+		this.getvdisk()
 		},
 
     methods: {
@@ -98,9 +98,9 @@ export default {
             this.$emit("toParent", router);
 			},
 
-		umount: function (vmip, storage, datacenter, cloudriveid, index) {
-            var apiurl = `/api/vm/umountdisk`
-            this.$http.get(apiurl , { params: { vmip: vmip, storage: storage, datacenter: datacenter, cloudriveid: cloudriveid} }).then(response => {
+		umount: function (vmip, storage, datacenter, vdiskid, index) {
+            var apiurl = `/api/storage/umountdisk`
+            this.$http.get(apiurl , { params: { vmip: vmip, storage: storage, datacenter: datacenter, vdiskid: vdiskid} }).then(response => {
 				if (response.data.err === null ) {
 					this.data[index].Status = 1
 					this.data[index].Vm_ip = ""
@@ -111,8 +111,8 @@ export default {
             })
         },
 
-		getcloudrive: function (ip) {
-            var apiurl = `/api/storage/getcloudrive`
+		getvdisk: function (ip) {
+            var apiurl = `/api/storage/getvdisk`
             this.$http.get(apiurl).then(response => {
 				if (response.data.err === null ) {
             		this.data = response.data.res
