@@ -65,7 +65,7 @@
 				<div class="col-sm-12" style="margin-top:20px">
 		<div class="form-group">
 			<div class="col-sm-2 col-sm-offset-4">
-  				<button type="submit" @click="createcloudrive" class="btn btn-info">提交</button>
+  				<button type="submit" @click="createvdisk" class="btn btn-success">提交</button>
 			</div>
 			</div>
 		</div>
@@ -144,7 +144,7 @@ export default {
 				}
 			},
 
-		createcloudrive: function () {
+		createvdisk: function () {
 			if (this.check(this.centervalue, this.storagevalue, this.poolvalue, this.containvalue)) {
 				return 
 				}
