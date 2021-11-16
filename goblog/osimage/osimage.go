@@ -117,9 +117,9 @@ func Xml(datacenter string, storage string, vlan string,  vcpu int, vmem int, uu
     return "", err
   }
 
-  var ceph_secret = storagename[0].Ceph_secret
-  ips := strings.Split(storagename[0].Ips, ",")
-  port := storagename[0].Port
+  var ceph_secret = storagename.Ceph_secret
+  ips := strings.Split(storagename.Ips, ",")
+  port := storagename.Port
 
   br, err := networks.Getbridge(datacenter, vlan)
   if err != nil {

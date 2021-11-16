@@ -232,7 +232,7 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
   auth.CreateAttr("username", "admin")
   secret := auth.CreateElement("secret")
   secret.CreateAttr("type", "ceph")
-  secret.CreateAttr("uuid", storageinfo[0].Ceph_secret)
+  secret.CreateAttr("uuid", storageinfo.Ceph_secret)
 
   source := disk.CreateElement("source")
   source.CreateAttr("protocol", "rbd")
@@ -242,11 +242,11 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
 
   disknum := len(Getdiskbyvm(ip))
   var iplist []string
-  iplist = strings.Split(storageinfo[0].Ips, ",")
+  iplist = strings.Split(storageinfo.Ips, ",")
   for _, v := range iplist {
     host.CreateAttr("name", v)
   }
-  host.CreateAttr("port", storageinfo[0].Port)
+  host.CreateAttr("port", storageinfo.Port)
 
   diskname := Disknametype(disknum)
 

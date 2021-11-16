@@ -75,14 +75,14 @@ func Getpool(datacenter string, storage string)([]*Vms_Ceph, error) {
   return c, nil
 }
 
-func Cephinfobyname(datacenter string, storage string)([]*Vms_Ceph, error) {
+func Cephinfobyname(datacenter string, storage string)(*Vms_Ceph, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
-  c := []*Vms_Ceph{}
-  dbs.Where("datacenter=? and uuid=?", datacenter, storage).Find(&c)
-  return c, nil
+  c := Vms_Ceph{}
+  dbs.Where("datacenter=? and uuid=?", datacenter, storage).First(c)
+  return &c, nil
 }
 
 func CephConn() (*rados.Conn, error) {
