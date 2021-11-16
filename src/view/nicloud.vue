@@ -27,6 +27,7 @@ import ips from '@/components/ips'
 import createip from '@/components/createip'
 import createhost from '@/components/createhost'
 import createceph from '@/components/createceph'
+import migratevm from '@/components/migratevm'
 
 var initroute 
 if (sessionStorage.getItem('router')) {
@@ -43,7 +44,7 @@ export default {
     },
 
     components: {
-        foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph
+        foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
     },
 
 

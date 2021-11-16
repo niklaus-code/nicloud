@@ -89,7 +89,7 @@
 				<div class="col-sm-12">
 		<div class="form-group" style="margin-top:20px" >
 			<div class="col-sm-2 col-sm-offset-4">
-  				<button type="submit" @click="createvlan" class="btn btn-default btn-sm">提交</button>
+  				<button type="submit" @click="createvlan" class="btn btn-success btn-sm">提交</button>
 			</div>
 		</div>
 		</div>

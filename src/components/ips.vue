@@ -72,7 +72,6 @@ export default {
 
     methods: {
 	   	vlaninfo: function () {
-
 			var initroute 
 			if (this.$store.state.network.vlan) {
 				this.vlan = this.$store.state.network.vlan

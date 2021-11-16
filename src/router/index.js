@@ -8,7 +8,6 @@ import about from '@/view/about'
 import login from '@/view/login'
 import serveroom from '@/view/machine'
 import createmachine from '@/view/createmachine'
-import migratevm from '@/view/migratevm'
 import nicloud from '@/view/nicloud'
 
 
@@ -22,11 +21,6 @@ export default new Router({
       component: nicloud
     },
     {
-      path: '/migratevm',
-      name: 'migratevm',
-      component: migratevm
-    },
-    {
       path: '/createmachine',
       name: 'createmachine',
       component: createmachine
@@ -35,11 +29,6 @@ export default new Router({
       path: '/serveroom',
       name: 'serveroom',
       component: serveroom
-    },
-    {
-      path: '/nicloud',
-      name: 'nicloud',
-      component: nicloud
     },
     {
       path: '/',

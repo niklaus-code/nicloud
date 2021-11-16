@@ -6,7 +6,7 @@
 			<button class="btn btn-default btn-sm" style="margin-right:5px" @click="search()">
 				 <span class="glyphicon glyphicon-search"></span>筛选
 			</button>
-			<button class="btn btn-default btn-sm" @click="toParent()">
+			<button class="btn btn-default btn-sm" @click="create()">
 				 <span class="glyphicon glyphicon-cog"></span>创建实例
 			</button>
 		</div>
@@ -72,9 +72,7 @@
       						<li @click="shutdown(item.Uuid, index, item.Host)" style="background-color: #e56b6b"  role="presentation"><a role="menuitem" tabindex="-1">关机</a></li>
       						<li @click="pause(item.Uuid, index, item.Host)" style="background-color: rgb(255, 211, 0)" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
       						<li style="background-color: greenyellow"  role="presentation">
-								<router-link :to="{name:'migratevm', query: { uuid: item.Uuid, host: item.Host }}">
-									<a role="menuitem" tabindex="-1">迁移</a>
-								</router-link>
+								<a @click="migrate(item.Uuid, item.Host)" role="menuitem" tabindex="-1">迁移</a>
 							</li>
       						<li @click="deletevm(item.Uuid, index)" style="background-color: #808080" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
     					</ul>
@@ -113,7 +111,13 @@ export default {
     },
 
     methods: {
-        toParent: function () {
+       	migrate: function (uuid, host) {
+            this.$emit("toParent", "migratevm");
+			this.$store.state.vm.uuid = uuid
+			this.$store.state.vm.host = host
+            },
+
+        create: function () {
                 this.$emit("toParent", "createvm");
                 },
 
