@@ -269,11 +269,11 @@ func Start(uuid string, host string) (*Vms, error) {
 	return v, err4
 }
 
-func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, vmxml string, ip string, host string, image string) (bool, error) {
+func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, vmxml string, ip string, host string, image string) (string, error) {
   /*save config to db*/
   dbs, err := db.NicloudDb()
   if err != nil {
-    return false, err
+    return "", err
   }
 	vm := &Vms{
 		Uuid:        uuid,
@@ -292,14 +292,11 @@ func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, v
 		Storage: cephname,
 	}
 
-	err1 := dbs.Create(*vm)
+	err1 := dbs.Create(vm)
 	if err1.Error != nil {
-	    return false, err1.Error
+	    return "", err1.Error
   }
-
-	//return bool
-	res := dbs.NewRecord(&vm)
-	return res, err1.Error
+	return vm.Uuid, err1.Error
 }
 
 
@@ -324,6 +321,18 @@ func MigrateVm(uuid string, migrate_host string) error {
   }
 
   return err
+}
+
+func deletevmbyid(uuid string) error {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+  errdb := dbs.Model(Vms{}).Where("uuid=?", uuid).Delete(Vms{})
+  if errdb.Error != nil {
+    return errdb.Error
+  }
+  return nil
 }
 
 func Create(datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, image string) (error) {
@@ -360,11 +369,13 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
   err = Updatehostbyaddvm(host, cpu, mem)
   if  err != nil {
     ceph.Rm_image(u)
+    libvirtd.Undefine(host, u)
     return err
   }
-	_, err = savevm(datacenter, storage, u, cpu, mem, f, ip, host, image)
+	newvm, err := savevm(datacenter, storage, u, cpu, mem, f, ip, host, image)
 	if err != nil {
     ceph.Rm_image(u)
+    libvirtd.Undefine(host, u)
     Freehost(host, cpu, mem)
 	  return err
   }
@@ -372,7 +383,9 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
   err = networks.Updateipstatus(ip, 1)
   if err != nil {
     ceph.Rm_image(u)
+    libvirtd.Undefine(host, u)
     Freehost(host, cpu, mem)
+    deletevmbyid(newvm)
     return  err
   }
 
