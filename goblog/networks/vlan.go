@@ -20,8 +20,10 @@ type Vms_vlans struct {
   Status bool
 }
 
-func Delete(vlan string) error {
+func DeleteVlan(vlan string) error {
   existips := IPlist(vlan)
+  fmt.Println(existips)
+  fmt.Println(vlan)
   if len(existips) > 0 {
     return vmerror.Error{Message: "存在vlan相关IP 无法删除"}
   }
@@ -130,7 +132,7 @@ func IPlist(vlan string) []*Vms_ips {
     return nil
   }
   var ip []*Vms_ips
-  dbs.Where("status=0 and vlan=?", vlan).Find(&ip)
+  dbs.Where("vlan=?", vlan).Find(&ip)
 
   return ip
 }

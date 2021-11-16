@@ -57,7 +57,7 @@ func Delete(c *gin.Context) {
 
   res := make(map[string]interface{})
 
-  err := networks.Delete(vlan)
+  err := networks.DeleteVlan(vlan)
   res["err"] = err
   c.JSON(200, res)
 }
