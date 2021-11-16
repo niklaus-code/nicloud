@@ -326,7 +326,7 @@ func MigrateVm(uuid string, migrate_host string) error {
   return err
 }
 
-func  Create(datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, image string) (error) {
+func Create(datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, image string) (error) {
   mac, err := networks.Ipresource(ip)
   if err != nil {
     return err

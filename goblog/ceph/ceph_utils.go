@@ -80,9 +80,9 @@ func Cephinfobyname(datacenter string, storage string)(*Vms_Ceph, error) {
   if err != nil {
     return nil, err
   }
-  c := Vms_Ceph{}
+  c := &Vms_Ceph{}
   dbs.Where("datacenter=? and uuid=?", datacenter, storage).First(c)
-  return &c, nil
+  return c, nil
 }
 
 func CephConn() (*rados.Conn, error) {
