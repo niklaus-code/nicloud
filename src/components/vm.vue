@@ -55,8 +55,8 @@
             			</span>
 						<li v-if='item.flag'><span class="glyphicon glyphicon-calendar" @click="edit(index)"></span></li>
 							<div v-if='item.flag1'>
-								<input type="text" v-model="comment">
-									<span  @click="input(index, item.Uuid)" class="glyphicon glyphicon-calendar"></span>
+								<div><input type="text" v-model="comment"></div>
+								<div><span  @click="input(index, item.Uuid)" class="glyphicon glyphicon-calendar"></span></div>
 							</div>
 					</td>
 					<td>
@@ -304,5 +304,9 @@ th {
 	font-weight: bold;
 	color: black;
 	text-align: center;
+}
+
+.glyphicon {
+	caret-color: rgba(0, 0, 0, 0)
 }
 </style>

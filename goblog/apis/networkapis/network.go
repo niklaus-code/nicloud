@@ -1,7 +1,6 @@
 package networkapis
 
 import (
-  "fmt"
   "github.com/gin-gonic/gin"
   "goblog/networks"
   "goblog/vm"
@@ -71,7 +70,6 @@ func Deleteip(c *gin.Context) {
  ipcheck := vm.GetVmByIp(ip)
 
  if ipcheck.Ip != "" {
-   fmt.Println()
    res["err"] = vmerror.Error{Message: "ip已被占用"}
  } else {
    res["err"] = networks.Deleteip(ip, vlan)
