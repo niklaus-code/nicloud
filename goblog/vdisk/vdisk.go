@@ -1,4 +1,4 @@
-package vdsik
+package vdisk
 
 import (
   "fmt"
@@ -11,8 +11,8 @@ import (
   "strings"
 )
 
-type Vms_cloudrive struct {
-  Cloudriveid string
+type Vms_vdisks struct {
+  Vdiskid string
   Contain int
   Diskname string
   Pool string
@@ -24,22 +24,22 @@ type Vms_cloudrive struct {
   Status int
 }
 
-func Getdiskbyvm(vmip string) ([]*Vms_cloudrive) {
+func Getdiskbyvm(vmip string) ([]*Vms_vdisks) {
   dbs, err := db.NicloudDb()
   if err != nil {
-    return []*Vms_cloudrive{}
+    return []*Vms_vdisks{}
   }
-  c := []*Vms_cloudrive{}
+  c := []*Vms_vdisks{}
   dbs.Select("contain, diskname").Where("vm_ip=?", vmip).Find(&c)
   return c
 }
 
-func UpdateMountvmstatus(datacenter string, storage string, cloudriveid string, vmip string, diskname string) error {
+func UpdateMountvmstatus(datacenter string, storage string, vdiskid string, vmip string, diskname string) error {
   dbs, err := db.NicloudDb()
   if err != nil {
     return err
   }
-  errdb := dbs.Model(Vms_cloudrive{}).Where("datacenter=? and storage=? and cloudriveid=?", datacenter, storage, cloudriveid).Update(map[string]interface{}{"vm_ip": vmip, "status": 0, "diskname": diskname})
+  errdb := dbs.Model(Vms_vdisks{}).Where("datacenter=? and storage=? and vdiskid=?", datacenter, storage, vdiskid).Update(map[string]interface{}{"vm_ip": vmip, "status": 0, "diskname": diskname})
   if errdb.Error != nil {
     return errdb.Error
   }
@@ -51,7 +51,7 @@ func Updatevdiskbydelvm(datacenter string, storage string, vmip string) error {
   if err != nil {
     return err
   }
-  errdb := dbs.Model(Vms_cloudrive{}).Where("datacenter=? and storage=?", datacenter, storage).Update("vm_ip", "").Update("status", 1).Where("vm_ip=?", vmip)
+  errdb := dbs.Model(Vms_vdisks{}).Where("datacenter=? and storage=?", datacenter, storage).Update("vm_ip", "").Update("status", 1).Where("vm_ip=?", vmip)
   if errdb.Error != nil {
     return errdb.Error
   }
@@ -59,10 +59,10 @@ func Updatevdiskbydelvm(datacenter string, storage string, vmip string) error {
 }
 
 
-func Add_cloudrive(contain int, pool string, storage string, datacenter string, user string) ([]*Vms_cloudrive, error) {
-  cloudriveid := utils.Createuuid()
-  c := &Vms_cloudrive{
-    Cloudriveid: cloudriveid,
+func Add_cloudrive(contain int, pool string, storage string, datacenter string, user string) ([]*Vms_vdisks, error) {
+  vdiskid := utils.Createuuid()
+  c := &Vms_vdisks{
+    Vdiskid: vdiskid,
     Contain: contain,
     Pool: pool,
     Storage: storage,
@@ -72,7 +72,7 @@ func Add_cloudrive(contain int, pool string, storage string, datacenter string, 
     Status: 1,
   }
 
-  err := ceph.Createcephblock(cloudriveid, contain)
+  err := ceph.Createcephblock(vdiskid, contain)
   if err != nil {
     return nil, err
   }
@@ -108,7 +108,7 @@ func Deletevdisk(uuid string) error {
     return err
   }
 
-  errdb := dbs.Where("cloudriveid=?", uuid).Delete(Vms_cloudrive{})
+  errdb := dbs.Where("vdiskid=?", uuid).Delete(Vms_vdisks{})
   if errdb.Error != nil {
     return vmerror.Error{Message: "delete vdisk fail"}
   }
@@ -116,7 +116,6 @@ func Deletevdisk(uuid string) error {
 }
 
 func Umountdisk(vmip string, storage string, datacenter string, vdiskid string, xml string, host string, vms interface{}) error {
-  fmt.Println(vdiskid)
   doc := etree.NewDocument()
   err := doc.ReadFromString(xml)
   if err != nil {
@@ -167,30 +166,30 @@ func Getdiskstatus(uuid string) (int, error) {
     return 0, err
   }
 
-  vdisk := &Vms_cloudrive{}
-  errdb := dbs.Where("cloudriveid=?", uuid).First(vdisk)
+  vdisk := &Vms_vdisks{}
+  errdb := dbs.Where("vdiskid=?", uuid).First(vdisk)
   if errdb.Error != nil {
     return 0, errdb.Error
   }
   return vdisk.Status, nil
 }
 
-func Getvdisk() ([]*Vms_cloudrive, error) {
+func Getvdisk() ([]*Vms_vdisks, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
-  c := []*Vms_cloudrive{}
+  c := []*Vms_vdisks{}
   dbs.Find(&c)
   return c, err
 }
 
-func Umountvmstatus(datacenter string, storage string, cloudriveid string) error {
+func Umountvmstatus(datacenter string, storage string, vdiskid string) error {
   dbs, err := db.NicloudDb()
   if err != nil {
     return err
   }
-  errdb := dbs.Model(Vms_cloudrive{}).Where("datacenter=? and storage=? and cloudriveid=?", datacenter, storage, cloudriveid).Update("vm_ip", "").Update("status", 1)
+  errdb := dbs.Model(Vms_vdisks{}).Where("datacenter=? and storage=? and vdiskid=?", datacenter, storage, vdiskid).Update("vm_ip", "").Update("status", 1)
   if errdb.Error != nil {
     return errdb.Error
   }
@@ -208,7 +207,7 @@ func Disknametype(num int) string {
   }
 }
 
-func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter string, cloudriveid string, vms interface{}, xml string) error {
+func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter string, vdiskid string, vms interface{}, xml string) error {
   storageinfo, err := ceph.Cephinfobyname(datacenter, storage)
   if err != nil {
     return err
@@ -237,7 +236,7 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
   source := disk.CreateElement("source")
   source.CreateAttr("protocol", "rbd")
 
-  source.CreateAttr("name", pool+"/"+cloudriveid)
+  source.CreateAttr("name", pool+"/"+vdiskid)
   host := source.CreateElement("host")
 
   disknum := len(Getdiskbyvm(ip))
@@ -280,7 +279,7 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
     return vmerror.Error{Message: errdb.Error.Error()}
   }
 
-  updatevm := UpdateMountvmstatus(datacenter, storage, cloudriveid, ip, diskname)
+  updatevm := UpdateMountvmstatus(datacenter, storage, vdiskid, ip, diskname)
   if updatevm != nil {
     return updatevm
   }

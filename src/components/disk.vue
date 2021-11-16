@@ -28,7 +28,7 @@
         				<label class="checkbox-inline" style="width:10px">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
-        				<td>{{item.Cloudriveid}}</td>
+        				<td>{{item.Vdiskid}}</td>
         				<td>{{item.Contain}}G</td>
         				<td>{{item.Pool}}</td>
         				<td>{{item.Vm_ip}}</td>
@@ -41,10 +41,10 @@
                         </td>
 		    			<td>
 							<!-- <button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="mount(, item.Storage, item.Pool, index)"> -->
-							<button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="mount('mountvdisk', item.Cloudriveid, item.Storage, item.Pool)">
+							<button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="mount('mountvdisk', item.Vdiskid, item.Storage, item.Pool)">
                 				挂载
             				</button>
-							<button v-else class="btn btn-info btn-xs" type="button" @click="umount(item.Vm_ip, item.Storage, item.Datacenter, item.Cloudriveid, index)">
+							<button v-else class="btn btn-info btn-xs" type="button" @click="umount(item.Vm_ip, item.Storage, item.Datacenter, item.Vdiskid, index)">
                 				卸载
             				</button>
 							<button v-if="item.Status" class="btn btn-danger btn-xs" type="button" @click="deletevdisk(item.Cloudriveid, index)">

@@ -92,7 +92,7 @@ export default {
     methods: {
 		mount: function (uuid, ip, host, datacenter ) {
          	var apiurl = `/api/vdisk/mountdisk`
-            this.$http.get(apiurl, { params: { vmid: uuid, ip: ip, host: host, storage: this.storage, pool: this.pool, datacenter: datacenter, cloudriveid: this.vdiskid}} ).then(response => {
+            this.$http.get(apiurl, { params: { vmid: uuid, ip: ip, host: host, storage: this.storage, pool: this.pool, datacenter: datacenter, vdiskid: this.vdiskid}} ).then(response => {
 
 	    	if (response.data.err === null) {
             	alert("挂载成功")

@@ -2,7 +2,7 @@ package vdisk
 
 import (
   "github.com/gin-gonic/gin"
-  vdisk "goblog/vdsik"
+  vdisk "goblog/vdisk"
   "goblog/vm"
   "goblog/vmerror"
   "strconv"
@@ -15,7 +15,7 @@ func Mountdisk(c *gin.Context) {
   datacenter := c.Query("datacenter")
   pool := c.Query("pool")
   host := c.Query("host")
-  cloudriveid := c.Query("cloudriveid")
+  vdiskid := c.Query("vdiskid")
   vms := vm.Vms{}
   res := make(map[string]interface{})
 
@@ -24,17 +24,20 @@ func Mountdisk(c *gin.Context) {
     res["err"] = err
   }
 
+  if s != "关机" {
+    res["err"] = vmerror.Error{Message: "cont mount disk, vm is " + s}
+  }
+
   xml, err := vm.Getvmxmlby(ip, storage, datacenter)
   if err != nil {
     res["err"] = err
   }
 
-  if s != "关机" {
-    res["err"] = vmerror.Error{Message: "cont mount disk, vm is " + s}
+  err = vdisk.Mountdisk(ip,  host, storage, pool, datacenter, vdiskid, vms, xml)
+  if err != nil {
+    res["err"] = err
   }
-  r := vdisk.Mountdisk(ip,  host, storage, pool, datacenter, cloudriveid, vms, xml)
 
-  res["err"] = r
   c.JSON(200, res)
 }
 
@@ -87,11 +90,14 @@ func Umountdisk(c *gin.Context) {
   xml, err := vm.Getvmxmlby(vmip, storage, datacenter)
   if err != nil {
     res["err"] = err
-  } else {
-    v := vm.Vms{}
-    r := vdisk.Umountdisk(vmip, storage, datacenter, vdiskid, xml, vminfo.Host, v)
-    res["err"] = r
   }
+
+  v := vm.Vms{}
+  err = vdisk.Umountdisk(vmip, storage, datacenter, vdiskid, xml, vminfo.Host, v)
+  if err != nil {
+    res["err"] = err
+  }
+
   c.JSON(200, res)
 }
 

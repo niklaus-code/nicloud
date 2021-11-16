@@ -10,7 +10,7 @@ import (
   "goblog/networks"
   "goblog/osimage"
   "goblog/utils"
-  vdisk "goblog/vdsik"
+  vdisk "goblog/vdisk"
   vmerror "goblog/vmerror"
   "reflect"
   "time"
