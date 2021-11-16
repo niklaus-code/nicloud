@@ -149,7 +149,7 @@ export default {
 				return 
 				}
 
-            var apiurl = `/api/storage/addcloudrive`
+            var apiurl = `/api/vdisk/createvdisk`
 
             this.$http.get(apiurl, { params: { datacenter: this.centervalue, storage: this.storagevalue, pool: this.poolvalue, contain: this.containvalue} }).then(response => {
 				if (response.data.err === null) {

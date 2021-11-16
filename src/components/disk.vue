@@ -80,7 +80,7 @@ export default {
                 },
 
 		deletevdisk: function (uuid, index) {
-            var apiurl = `/api/storage/deletevdisk`
+            var apiurl = `/api/vdisk/deletevdisk`
             this.$http.get(apiurl , { params: { uuid: uuid} }).then(response => {
 				if (response.data.err === null ) {
 					this.data[index].Exist = 0
@@ -99,7 +99,7 @@ export default {
 			},
 
 		umount: function (vmip, storage, datacenter, vdiskid, index) {
-            var apiurl = `/api/storage/umountdisk`
+            var apiurl = `/api/vdisk/umountdisk`
             this.$http.get(apiurl , { params: { vmip: vmip, storage: storage, datacenter: datacenter, vdiskid: vdiskid} }).then(response => {
 				if (response.data.err === null ) {
 					this.data[index].Status = 1
@@ -112,7 +112,7 @@ export default {
         },
 
 		getvdisk: function (ip) {
-            var apiurl = `/api/storage/getvdisk`
+            var apiurl = `/api/vdisk/getvdisk`
             this.$http.get(apiurl).then(response => {
 				if (response.data.err === null ) {
             		this.data = response.data.res

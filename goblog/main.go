@@ -11,6 +11,7 @@ import (
   "goblog/apis/osimage"
   "goblog/apis/vmapis"
   "goblog/apis/datacenterapis"
+  "goblog/apis/vdisk"
 )
 
 func main() {
@@ -37,7 +38,6 @@ func main() {
     v2.GET("addcomment", vmapis.Addcomment)
     v2.GET("getvminfo", vmapis.GetVminfo)
     v2.GET("migratevm", vmapis.MigrateVm)
-    v2.GET("mountdisk", vmapis.Mountdisk)
 	}
 
   v3 := r.Group("/api/machine")
@@ -88,11 +88,8 @@ func main() {
     v7.GET("get", cephapis.GetStorage)
     v7.GET("add", cephapis.Addceph)
     v7.GET("delete", cephapis.Delete)
-    v7.GET("deletevdisk", cephapis.Deletevdisk)
-    v7.GET("addcloudrive", cephapis.Addcloudrive)
-    v7.GET("getvdisk", cephapis.GetVdisk)
     v7.GET("getpool", cephapis.Getpool)
-    v7.GET("umountdisk", cephapis.Umountdisk)
+
   }
 
   v8 := r.Group("/api/datacenter")
@@ -100,5 +97,15 @@ func main() {
     v8.GET("getdatacenter", datacenterapis.GetDatacenter)
   }
 
-	r.Run("127.0.0.1:1992")
+  v9 := r.Group("/api/vdisk")
+  {
+    v9.GET("umountdisk", vdisk.Umountdisk)
+    v9.GET("mountdisk", vdisk.Mountdisk)
+    v9.GET("deletevdisk", vdisk.Deletevdisk)
+    v9.GET("createvdisk", vdisk.Createvdisk)
+    v9.GET("getvdisk", vdisk.GetVdisk)
+  }
+
+
+  r.Run("127.0.0.1:1992")
 }

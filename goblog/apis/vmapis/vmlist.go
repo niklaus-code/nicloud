@@ -71,21 +71,6 @@ func MigrateVm(c *gin.Context) {
   c.JSON(200, res)
 }
 
-func Mountdisk(c *gin.Context) {
-  vmid := c.Query("vmid")
-  ip := c.Query("ip")
-  storage := c.Query("storage")
-  datacenter := c.Query("datacenter")
-  pool := c.Query("pool")
-  host := c.Query("host")
-  cloudriveid := c.Query("cloudriveid")
-  res := make(map[string]interface{})
-  r := vm.Mountdisk(vmid, ip,  host, storage, pool, datacenter, cloudriveid)
-
-  res["err"] = r
-  c.JSON(200, res)
-}
-
 func Createvm(c *gin.Context) {
   res := make(map[string]interface{})
   ip := c.Query("ip")

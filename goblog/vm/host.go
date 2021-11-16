@@ -138,7 +138,7 @@ func Freehost(ip string, cpu int, mem int) error {
   return nil
 }
 
-func Updatehost(ip string, cpu int, mem int) error {
+func Updatehostbyaddvm(ip string, cpu int, mem int) error {
   db, err := db.NicloudDb()
   if err != nil {
     return err
