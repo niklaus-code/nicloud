@@ -2,34 +2,34 @@
 	<div>
   	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div class="col-sm-8 col-sm-offset-1">
-				<div class="col-sm-12">
-	 		<div class="form-group">
-				<div class="col-sm-2 col-sm-offset-2">
-        			<label>数据中心</label>
-				</div>
-				<div class="col-sm-8">
-				    <select class="col-sm-12" v-model="centervalue" @change="getstorage(centervalue)">
-						 <option value="">--请选择--</option>
-                        <option  v-for="c in datacenter" :value="c.Datacenter">
-                            {{ c.Datacenter }}
-                        </option>
-                    </select>
-				</div>
+			<div class="col-sm-12">
+	 			<div class="form-group">
+					<div class="col-sm-2 col-sm-offset-2">
+        				<label>数据中心</label>
+					</div>
+					<div class="col-sm-8">
+				    	<select class="col-sm-12" v-model="centervalue" @change="getstorage(centervalue)">
+							<option value="">--请选择--</option>
+                        	<option  v-for="c in datacenter" :value="c.Datacenter">
+                            	{{ c.Datacenter }}
+                        	</option>
+                    	</select>
+					</div>
 				</div>
     		</div>
-				<div class="col-sm-12" style="margin-top:20px">
-	 		<div class="form-group">
-				<div class="col-sm-2 col-sm-offset-2">
-        			<label>存储集群</label>
-				</div>
-				<div class="col-sm-8">
-				    <select class="col-sm-12" v-model="storagevalue">
-						 <option value="">--请选择--</option>
-                        <option  v-for="c in storage" :value="c.Uuid">
-                            {{ c.Uuid }}
-                        </option>
-                    </select>
-				</div>
+			<div class="col-sm-12" style="margin-top:20px">
+	 			<div class="form-group">
+					<div class="col-sm-2 col-sm-offset-2">
+        				<label>存储集群</label>
+					</div>
+					<div class="col-sm-8">
+				    	<select class="col-sm-12" v-model="storagevalue">
+							<option value="">--请选择--</option>
+                        	<option  v-for="c in storage" :value="c.Uuid">
+                            	{{ c.Uuid }}
+                        	</option>
+                    	</select>
+					</div>
 				</div>
     		</div>
 				<div class="col-sm-12" style="margin-top:20px">
@@ -74,25 +74,27 @@
 				</div>
 				</div>
     		</div>
-				<div class="col-sm-12">
-	 		<div class="form-group">
-				<div class="col-sm-2 col-sm-offset-2">
-        			<label>xml</label>
-				</div>
-				<div class="col-sm-8">
-					<form role="form">
-  						<div class="form-group">
-    						<textarea class="form-control" v-model="xml" rows="16"></textarea>
-  						</div>
-					</form>
-				</div>
+			<div class="col-sm-12">
+	 			<div class="form-group">
+					<div class="col-sm-2 col-sm-offset-2">
+        				<label>xml</label>
+					</div>
+					<div class="col-sm-8">
+						<form role="form">
+  							<div class="form-group">
+    							<textarea class="form-control" v-model="xml" rows="16"></textarea>
+  							</div>
+						</form>
+					</div>
 				</div>
     		</div>
-		<div class="form-group" style="margin-top:20px" >
-			<div class="col-sm-2 col-sm-offset-4">
-  				<button type="submit" @click="createosimage" class="btn btn-info">提交</button>
+			<div class="col-sm-12">
+				<div class="form-group" style="margin-top:20px" >
+					<div class="col-sm-2 col-sm-offset-4">
+  						<button type="submit" @click="createosimage" class="btn btn-success">提交</button>
+					</div>
+				</div>
 			</div>
-		</div>
 		</div>
 	</div>		
 	</div>		
