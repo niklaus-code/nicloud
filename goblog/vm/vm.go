@@ -156,6 +156,11 @@ func Delete(uuid string) (error) {
   if err != nil {
     return err
   }
+
+  updatevdisk := ceph.Updatevdiskbydelvm(vminfo.Datacenter, vminfo.Storage, vminfo.Ip)
+  if updatevdisk != nil {
+    return updatevdisk
+  }
 	return nil
 }
 

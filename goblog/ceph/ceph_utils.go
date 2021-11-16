@@ -201,6 +201,18 @@ func UpdateMountvmstatus(datacenter string, storage string, cloudriveid string, 
   return nil
 }
 
+func Updatevdiskbydelvm(datacenter string, storage string, vmip string) error {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+  errdb := dbs.Model(Vms_cloudrive{}).Where("datacenter=? and storage=?", datacenter, storage).Update("vm_ip", "").Update("status", 1).Where("vm_ip=?", vmip)
+  if errdb.Error != nil {
+    return errdb.Error
+  }
+  return nil
+}
+
 func Umountvmstatus(datacenter string, storage string, cloudriveid string) error {
   dbs, err := db.NicloudDb()
   if err != nil {
