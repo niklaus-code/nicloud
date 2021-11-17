@@ -37,7 +37,7 @@
 							<span class="glyphicon glyphicon-ok"></span>
 						</td>
 		    			<td>
-							<button class="btn btn-warning btn-xs" type="button" @click="deletestorage(item.Uuid, index)">
+							<button class="btn btn-danger btn-xs" type="button" @click="deletestorage(item.Uuid, index)">
                 				删除
             				</button>
         				</td>

@@ -40,7 +40,7 @@
                         </td>
 
 		    			<td>
-							<button class="btn btn-info btn-xs" type="button" @click="deletehost(item.Ipv4, index)">
+							<button class="btn btn-danger btn-xs" type="button" @click="deletehost(item.Ipv4, index)">
                 				删除
             				</button>
         				</td>

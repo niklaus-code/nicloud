@@ -101,7 +101,7 @@ func Umountdisk(c *gin.Context) {
   } else {
     res["err"] = nil
   }
-  
+
   c.JSON(200, res)
 }
 

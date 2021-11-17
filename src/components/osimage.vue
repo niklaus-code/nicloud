@@ -41,7 +41,7 @@
 							<button class="btn btn-info btn-xs" type="button" @click="editosimage(item.Id, item.Osname, item.Cephblockdevice, item.Snapimage, item.Xml)">
                 				编辑
             				</button>
-							<button class="btn btn-info btn-xs" type="button" @click="delosimage(item.Osname, index)">
+							<button class="btn btn-danger btn-xs" type="button" @click="delosimage(item.Osname, index)">
                 				删除
             				</button>
         				</td>

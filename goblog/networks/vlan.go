@@ -22,8 +22,6 @@ type Vms_vlans struct {
 
 func DeleteVlan(vlan string) error {
   existips := IPlist(vlan)
-  fmt.Println(existips)
-  fmt.Println(vlan)
   if len(existips) > 0 {
     return vmerror.Error{Message: "存在vlan相关IP 无法删除"}
   }
