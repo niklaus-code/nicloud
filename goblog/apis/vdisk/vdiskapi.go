@@ -121,7 +121,8 @@ func Umountdisk(c *gin.Context) {
 }
 
 func  GetVdisk(c *gin.Context) {
-  r, err := vdisk.Getvdisk()
+  vmip := c.Query("vmip")
+  r, err := vdisk.Getvdisk(vmip)
   res := make(map[string]interface{})
   res["res"] = r
   res["err"] = err

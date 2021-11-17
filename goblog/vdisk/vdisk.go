@@ -24,14 +24,14 @@ type Vms_vdisks struct {
   Status int
 }
 
-func Getdiskbyvm(vmip string) ([]*Vms_vdisks) {
+func Getdiskbyvm(vmip string) ([]*Vms_vdisks, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
-    return []*Vms_vdisks{}
+    return nil, err
   }
   c := []*Vms_vdisks{}
   dbs.Select("contain, diskname").Where("vm_ip=?", vmip).Find(&c)
-  return c
+  return c, nil
 }
 
 func UpdateMountvmstatus(datacenter string, storage string, vdiskid string, vmip string, diskname string) error {
@@ -243,7 +243,7 @@ func Getdiskstatus(uuid string) (int, error) {
   return vdisk.Status, nil
 }
 
-func Getvdisk() ([]*Vms_vdisks, error) {
+func Getvdisk(vmip string) ([]*Vms_vdisks, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
@@ -251,7 +251,7 @@ func Getvdisk() ([]*Vms_vdisks, error) {
   c := []*Vms_vdisks{}
   dbs.Find(&c)
   return c, err
-}
+  }
 
 func Umountvmstatus(datacenter string, storage string, vdiskid string) error {
   dbs, err := db.NicloudDb()
@@ -265,15 +265,23 @@ func Umountvmstatus(datacenter string, storage string, vdiskid string) error {
   return nil
 }
 
-func Disknametype(num int) string {
-  switch (num) {
-  case 0: return "vdb"
-  case 1: return "vdc"
-  case 2: return "vdd"
-  case 3: return "vde"
-  case 4: return "vdf"
-  default:         return "UNKNOWN"
+var Disknametype = []string{"vdb", "vdc", "vdd", "vde", "vdf"}
+var slot = map[string] int {"vdb": 11, "vdc": 12, "vdd": 13, "vde": 14, "vdf": 15}
+
+func namedisk(vmip string) (string, error) {
+  disklist, err := Getdiskbyvm(vmip)
+  if err != nil {
+    return "", err
   }
+  
+  for _, a := range Disknametype {
+    for _, b := range disklist {
+      if a != b.Diskname {
+        return a, nil
+      }
+    }
+  }
+  return "vdb", err
 }
 
 func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter string, vdiskid string, vms interface{}, xml string) error {
@@ -308,7 +316,9 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
   source.CreateAttr("name", fmt.Sprintf("%s/%s",pool, vdiskid))
   host := source.CreateElement("host")
 
-  disknum := len(Getdiskbyvm(ip))
+  if err != nil {
+    return err
+  }
   var iplist []string
   iplist = strings.Split(storageinfo.Ips, ",")
   for _, v := range iplist {
@@ -316,7 +326,11 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
   }
   host.CreateAttr("port", storageinfo.Port)
 
-  diskname := Disknametype(disknum)
+  diskname, err := namedisk(ip)
+  fmt.Println(diskname)
+  if err != nil {
+    return err
+  }
 
   target := disk.CreateElement("target")
   target.CreateAttr("dev", diskname)
@@ -326,7 +340,7 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
   address.CreateAttr("type", "pci")
   address.CreateAttr("domain", "0x0000")
   address.CreateAttr("bus", "0x00")
-  slot := fmt.Sprintf("0x%d", 10+disknum)
+  slot := fmt.Sprintf("0x%d", slot[diskname])
   address.CreateAttr("slot", slot)
   address.CreateAttr("function", "0x0")
   doc.Indent(2)

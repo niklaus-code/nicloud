@@ -415,7 +415,11 @@ func allvm(obj []Vms) []map[string]interface{}  {
     for i := 0; i < m.NumField(); i++ {
       c[m.Field(i).Name] = n.Field(i).Interface()
     }
-    c["disk"] = vdisk.Getdiskbyvm(v.Ip)
+    vdisk, err := vdisk.Getdiskbyvm(v.Ip)
+    if err != nil {
+      return nil
+    }
+    c["disk"] = vdisk 
     mapc = append(mapc, c)
   }
   return mapc
