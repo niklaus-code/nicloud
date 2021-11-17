@@ -268,23 +268,42 @@ func Umountvmstatus(datacenter string, storage string, vdiskid string) error {
 var Disknametype = []string{"vdb", "vdc", "vdd", "vde", "vdf"}
 var slot = map[string] int {"vdb": 11, "vdc": 12, "vdd": 13, "vde": 14, "vdf": 15}
 
+func next(items []*Vms_vdisks, item string) bool {
+  for _, i := range items {
+    c := i
+    if c.Diskname == item {
+      return true
+    }
+  }
+
+  return false
+}
+
+
 func namedisk(vmip string) (string, error) {
   disklist, err := Getdiskbyvm(vmip)
   if err != nil {
     return "", err
   }
-  
+
   for _, a := range Disknametype {
-    for _, b := range disklist {
-      if a != b.Diskname {
-        return a, nil
-      }
+    b := next(disklist, a)
+    if (b == false ) {
+      return a, err
     }
   }
   return "vdb", err
 }
 
 func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter string, vdiskid string, vms interface{}, xml string) error {
+  disknum, err := Getdiskbyvm(ip)
+  if err != nil {
+    return err
+  }
+
+  if len(disknum) >= 5 {
+    return vmerror.Error{Message: "Maximum number of mounted to 5"}
+  }
   storageinfo, err := ceph.Cephinfobyname(datacenter, storage)
   if err != nil {
     return err
@@ -316,9 +335,6 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
   source.CreateAttr("name", fmt.Sprintf("%s/%s",pool, vdiskid))
   host := source.CreateElement("host")
 
-  if err != nil {
-    return err
-  }
   var iplist []string
   iplist = strings.Split(storageinfo.Ips, ",")
   for _, v := range iplist {

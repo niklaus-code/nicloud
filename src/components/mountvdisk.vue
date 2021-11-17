@@ -105,6 +105,10 @@ export default {
 				sessionStorage.setItem('vdiskid', this.$store.state.vdisk.vdiskid)
 				sessionStorage.setItem('storage', this.$store.state.vdisk.storage)
 				sessionStorage.setItem('pool', this.$store.state.vdisk.pool)
+				} else {
+				sessionStorage.setItem('vdiskid', this.$store.state.vdisk.vdiskid)
+				sessionStorage.setItem('storage', this.$store.state.vdisk.storage)
+				sessionStorage.setItem('pool', this.$store.state.vdisk.pool)
 				}
             },
 
