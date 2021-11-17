@@ -2,6 +2,7 @@ package vdisk
 
 import (
   "github.com/gin-gonic/gin"
+  r "goblog/utils"
   vdisk "goblog/vdisk"
   "goblog/vm"
   "goblog/vmerror"
@@ -22,24 +23,31 @@ func Mountdisk(c *gin.Context) {
   s, err := vm.VmStatus(vmid, host)
   if err != nil {
     res["err"] = err
+    c.JSON(200, res)
+    return
   }
 
   if s != "关机" {
     res["err"] = vmerror.Error{Message: "cont mount disk, vm is " + s}
+    c.JSON(200, res)
+    return
   }
 
   xml, err := vm.Getvmxmlby(ip, storage, datacenter)
   if err != nil {
     res["err"] = err
+    c.JSON(200, res)
+    return
   }
 
   err = vdisk.Mountdisk(ip,  host, storage, pool, datacenter, vdiskid, vms, xml)
   if err != nil {
     res["err"] = err
-  } else {
-    res["err"] = nil
+    c.JSON(200, res)
+    return
   }
 
+  res["err"] = nil
   c.JSON(200, res)
 }
 
@@ -57,19 +65,19 @@ func Createvdisk(c *gin.Context) {
   res := make(map[string]interface{})
   contain, err := strconv.Atoi(c.Query("contain"))
   if err != nil {
+    err = vmerror.Error{Message: "param error"}
     res["err"] = err
-    c.JSON(400, vmerror.Error{Message: "param error"})
+    r.Return(c, res)
   }
   pool := c.Query("pool")
   storage := c.Query("storage")
   datacenter := c.Query("datacenter")
   user := "nicloud"
-  r, err := vdisk.Add_cloudrive(contain, pool, storage, datacenter, user)
+  err = vdisk.Add_vdisk(contain, pool, storage, datacenter, user)
 
-  res["res"] = r
   res["err"] = err
 
-  c.JSON(200, res)
+  r.Return(c, res)
 }
 
 func Umountdisk(c *gin.Context) {
@@ -83,25 +91,32 @@ func Umountdisk(c *gin.Context) {
   s, err := vm.VmStatus(vminfo.Uuid, vminfo.Host)
   if err != nil {
     res["err"] = err
+    c.JSON(200, res)
+    return
   }
 
   if s != "关机" {
     res["err"] = vmerror.Error{Message: "cont mount disk, vm is " + s}
+    c.JSON(200, res)
+    return
   }
 
   xml, err := vm.Getvmxmlby(vmip, storage, datacenter)
   if err != nil {
     res["err"] = err
+    c.JSON(200, res)
+    return
   }
 
   v := vm.Vms{}
   err = vdisk.Umountdisk(vmip, storage, datacenter, vdiskid, xml, vminfo.Host, v)
   if err != nil {
     res["err"] = err
-  } else {
-    res["err"] = nil
+    c.JSON(200, res)
+    return
   }
 
+  res["err"]=nil
   c.JSON(200, res)
 }
 

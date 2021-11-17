@@ -20,10 +20,24 @@
                     <label>存储集群</label>
                 </div>
                 <div class="col-sm-9">
-                    <select class="col-sm-10" v-model="storagevalue" @change="getimageby()">
+                    <select class="col-sm-10" v-model="storagevalue" @change="getpool()" @change="getimageby()">
 					  <option value="">--请选择--</option>
                         <option  v-for="c in storage" :value="c.Uuid">
                             {{ c.Uuid }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+           <div class="col-sm-12 form-group">
+                <div class="col-sm-3">
+                    <label>存储池</label>
+                </div>
+                <div class="col-sm-9">
+                    <select class="col-sm-10" v-model="poolvalue">
+					  <option value="">--请选择--</option>
+                        <option  v-for="c in pool" :value="c.Pool">
+                            {{ c.Pool }}
                         </option>
                     </select>
                 </div>
@@ -124,6 +138,9 @@ export default {
 			ipvalue: "",
             iplist: [],
 
+			poolvalue: "",
+			pool: [],
+
 			flavorvalue: {},
 			flavorlist: [],
 			status: {
@@ -139,6 +156,17 @@ export default {
 		},
 
     methods: {
+       	getpool: function () {
+            var apiurl = `/api/storage/getpool`
+            this.$http.get(apiurl, { params: { datacenter: this.centervalue, storage: this.storagevalue}}).then(response => {
+                if (response.data.err === null) {
+                	this.pool = response.data.res
+                } else {
+                    alert("获取数据失败(" + response.data.err.Message+ ")" )
+                    }
+            })
+        },
+
        	getstorage: function (centervalue) {
             var apiurl = `/api/storage/get`
             this.$http.get(apiurl, { params: { datacenter: centervalue}}).then(response => {
@@ -169,7 +197,7 @@ export default {
 				alert("缺少信息!")
 				return
 			}
-            this.$http.get(apiurl, { params: {datacenter: this.centervalue, storage: this.storagevalue, vlan: this.vlanvalue,  cpu: this.flavorvalue.Cpu, mem:this.flavorvalue.Mem, ip: this.ipvalue, host: this.hostvalue, image: this.imagevalue} }).then(response => {
+            this.$http.get(apiurl, { params: {datacenter: this.centervalue, storage: this.storagevalue, vlan: this.vlanvalue,  cpu: this.flavorvalue.Cpu, mem:this.flavorvalue.Mem, ip: this.ipvalue, pool: this.poolvalue, host: this.hostvalue, image: this.imagevalue} }).then(response => {
 				if (response.data.err === null) {
 					alert("创建成功! 是否查看虚拟机列表")
 					this.$emit("toParent", "vm");

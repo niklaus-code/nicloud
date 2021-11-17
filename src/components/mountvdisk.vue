@@ -44,10 +44,10 @@
                 		{{item.Comment}}
 				</td>
         		<td class="dropdown">
-					<button class="btn btn-info btn-xs" @click="mount(item.Uuid, item.Ip, item.Host,item.Datacenter)" type="button">
+					<button class="btn btn-success btn-xs" @click="mount(item.Uuid, item.Ip, item.Host,item.Datacenter)" type="button">
 						挂载
 					</button>
-					<button @click="shutdown(item.Uuid, index, item.Host)" class="btn btn-info btn-xs" type="button">
+					<button @click="shutdown(item.Uuid, index, item.Host)" class="btn btn-warning btn-xs" type="button">
 						关机
 					</button>
 				</td>

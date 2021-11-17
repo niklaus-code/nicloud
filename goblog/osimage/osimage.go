@@ -111,7 +111,7 @@ func getxml(osname string) (string, error) {
   return v[0].Xml, nil
 }
 
-func Xml(datacenter string, storage string, vlan string,  vcpu int, vmem int, uuid string, mac string, image_name string, osname string) (string, error) {
+func Xml(datacenter string, storage string, vlan string,  vcpu int, vmem int, uuid string, mac string, image_name string, osname string, pool string) (string, error) {
   storagename, err := ceph.Cephinfobyname(datacenter, storage)
   if err != nil {
     return "", err
@@ -165,7 +165,7 @@ func Xml(datacenter string, storage string, vlan string,  vcpu int, vmem int, uu
     if e.Tag == "disk" {
       for _, v := range e.ChildElements() {
         if v.Tag == "source" {
-          v.CreateAttr("name", fmt.Sprintf("vm/%s", image_name))
+          v.CreateAttr("name", fmt.Sprintf("%s/%s", pool, image_name))
 
           for ip_k, ip := range ips {
             v.CreateElement("host")

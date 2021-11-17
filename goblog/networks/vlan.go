@@ -130,7 +130,7 @@ func IPlist(vlan string) []*Vms_ips {
     return nil
   }
   var ip []*Vms_ips
-  dbs.Where("vlan=?", vlan).Find(&ip)
+  dbs.Where("vlan=? and status=0", vlan).Find(&ip)
 
   return ip
 }

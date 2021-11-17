@@ -81,8 +81,9 @@ func Createvm(c *gin.Context) {
   datacenter := c.Query("datacenter")
   storage := c.Query("storage")
   vlan := c.Query("vlan")
+  pool := c.Query("pool")
 
-  err := vm.Create(datacenter, storage, vlan, cpu, mem, ip, host, image)
+  err := vm.Create(datacenter, storage, vlan, cpu, mem, ip, host, image, pool)
   res["err"] = err
   c.JSON(200, res)
 }

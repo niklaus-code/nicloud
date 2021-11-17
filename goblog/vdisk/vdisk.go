@@ -59,7 +59,7 @@ func Updatevdiskbydelvm(datacenter string, storage string, vmip string) error {
 }
 
 
-func Add_cloudrive(contain int, pool string, storage string, datacenter string, user string) ([]*Vms_vdisks, error) {
+func Add_vdisk(contain int, pool string, storage string, datacenter string, user string) error {
   vdiskid := utils.Createuuid()
   c := &Vms_vdisks{
     Vdiskid: vdiskid,
@@ -74,18 +74,18 @@ func Add_cloudrive(contain int, pool string, storage string, datacenter string, 
 
   err := ceph.Createcephblock(vdiskid, contain)
   if err != nil {
-    return nil, err
+    return err
   }
 
   dbs, err := db.NicloudDb()
   if err != nil {
-    return nil, err
+    return err
   }
   errdb := dbs.Create(&c)
   if errdb.Error != nil {
-    return nil, vmerror.Error{Message: errdb.Error.Error()}
+    return vmerror.Error{Message: errdb.Error.Error()}
   }
-  return nil, err
+  return err
 }
 
 type Vms_vdisks_archives struct {
@@ -305,7 +305,7 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
   source := disk.CreateElement("source")
   source.CreateAttr("protocol", "rbd")
 
-  source.CreateAttr("name", pool+"/"+vdiskid)
+  source.CreateAttr("name", fmt.Sprintf("%s/%s",pool, vdiskid))
   host := source.CreateElement("host")
 
   disknum := len(Getdiskbyvm(ip))

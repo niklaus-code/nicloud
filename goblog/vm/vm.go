@@ -335,7 +335,7 @@ func deletevmbyid(uuid string) error {
   return nil
 }
 
-func Create(datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, image string) (error) {
+func Create(datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, image string, pool string) (error) {
   mac, err := networks.Ipresource(ip)
   if err != nil {
     return err
@@ -354,7 +354,7 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
 	 return err
   }
 
-	f, err := osimage.Xml(datacenter, storage, vlan,  vcpu, vmem, u, mac, imge_name, image)
+	f, err := osimage.Xml(datacenter, storage, vlan,  vcpu, vmem, u, mac, imge_name, image, pool)
 	if err != nil {
 	  ceph.Rm_image(u)
 	  return err
