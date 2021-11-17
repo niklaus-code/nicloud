@@ -36,6 +36,8 @@ func Mountdisk(c *gin.Context) {
   err = vdisk.Mountdisk(ip,  host, storage, pool, datacenter, vdiskid, vms, xml)
   if err != nil {
     res["err"] = err
+  } else {
+    res["err"] = nil
   }
 
   c.JSON(200, res)
@@ -96,8 +98,10 @@ func Umountdisk(c *gin.Context) {
   err = vdisk.Umountdisk(vmip, storage, datacenter, vdiskid, xml, vminfo.Host, v)
   if err != nil {
     res["err"] = err
+  } else {
+    res["err"] = nil
   }
-
+  
   c.JSON(200, res)
 }
 

@@ -119,7 +119,7 @@ export default {
 		shutdown: function (uuid, index, host) {
             var apiurl = `/api/vm/operation/0`
             this.$http.get(apiurl, { params: { uuid: uuid, host: host } }).then(response => {
-                if (response.data.err == null) {
+                if (response.data.err === null) {
                     this.data[index].Status = response.data.res.Status
                     if (response.data.res.Comment.length > 0) {
                         this.data[index].flag2 = true
