@@ -37,8 +37,7 @@
         		<td>{{item.Cpu}}核 / {{item.Mem}}G</td>
         		<td>{{item.Owner}}</td>
 				<td>
-					<button  v-if="item.Status === '运行'" type="button" class="btn btn-success btn-xs">{{item.Status}}</button>
-        			<button v-else type="button" class="btn btn-warning btn-xs">{{item.Status}}</button>
+        			<span>{{item.Status}}</span>
         		</td>
 				<td>
                 		{{item.Comment}}
@@ -75,9 +74,6 @@ export default {
 				1: "运行",
 				2: "已删除",
 			},
-			vdiskid: "",
-			pool: "",
-			storage: "",
         }
     },
 
@@ -92,7 +88,7 @@ export default {
     methods: {
 		mount: function (uuid, ip, host, datacenter ) {
          	var apiurl = `/api/vdisk/mountdisk`
-            this.$http.get(apiurl, { params: { vmid: uuid, ip: ip, host: host, storage: this.storage, pool: this.pool, datacenter: datacenter, vdiskid: this.vdiskid}} ).then(response => {
+            this.$http.get(apiurl, { params: { vmid: uuid, ip: ip, host: host, storage: sessionStorage.getItem('storage'), pool: sessionStorage.getItem('pool') , datacenter: datacenter, vdiskid: sessionStorage.getItem('vdiskid')}} ).then(response => {
 
 	    	if (response.data.err === null) {
             	alert("挂载成功")
@@ -105,8 +101,11 @@ export default {
 
 	    vdiskinfo: function () {
 			this.vdiskid = this.$store.state.vdisk.vdiskid
+			sessionStorage.setItem('vdiskid', this.$store.state.vdisk.vdiskid)
 			this.storage = this.$store.state.vdisk.storage
+			sessionStorage.setItem('storage', this.$store.state.vdisk.storage)
 			this.pool = this.$store.state.vdisk.pool
+			sessionStorage.setItem('pool', this.$store.state.vdisk.pool)
             },
 
         search: function (content) {

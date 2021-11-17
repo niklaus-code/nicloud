@@ -2,7 +2,6 @@ package vdisk
 
 import (
   "github.com/gin-gonic/gin"
-  r "goblog/utils"
   vdisk "goblog/vdisk"
   "goblog/vm"
   "goblog/vmerror"
@@ -17,6 +16,7 @@ func Mountdisk(c *gin.Context) {
   pool := c.Query("pool")
   host := c.Query("host")
   vdiskid := c.Query("vdiskid")
+
   vms := vm.Vms{}
   res := make(map[string]interface{})
 
@@ -67,7 +67,7 @@ func Createvdisk(c *gin.Context) {
   if err != nil {
     err = vmerror.Error{Message: "param error"}
     res["err"] = err
-    r.Return(c, res)
+    c.JSON(200, res)
   }
   pool := c.Query("pool")
   storage := c.Query("storage")
@@ -77,7 +77,7 @@ func Createvdisk(c *gin.Context) {
 
   res["err"] = err
 
-  r.Return(c, res)
+  c.JSON(200, res)
 }
 
 func Umountdisk(c *gin.Context) {
