@@ -37,10 +37,10 @@
 							<button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="upip(index, item.Ipv4)">
                 				UP
             				</button>
-							<button v-else class="btn btn-info btn-xs" type="button" @click="downip(index, item.Ipv4)">
+							<button v-else class="btn btn-warning btn-xs" type="button" @click="downip(index, item.Ipv4)">
                 				DOWN
             				</button>
-							<button class="btn btn-warning btn-xs" type="button" @click="deleteip(index, item.Ipv4)">
+							<button class="btn btn-danger btn-xs" type="button" @click="deleteip(index, item.Ipv4)">
                 				删除
             				</button>
         				</td>
