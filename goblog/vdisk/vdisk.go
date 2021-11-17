@@ -88,6 +88,59 @@ func Add_cloudrive(contain int, pool string, storage string, datacenter string, 
   return nil, err
 }
 
+type Vms_vdisks_archives struct {
+  Vdiskid string
+  Pool string
+  Storage string
+  Datacenter string
+}
+
+func adddiskachives(uuid string, pool string, storage string, datacenter string) (string, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return "", err
+  }
+
+  diskachi := &Vms_vdisks_archives{
+    Vdiskid: uuid,
+    Pool: pool,
+    Storage: storage,
+    Datacenter: datacenter,
+  }
+
+  errdb := dbs.Create(diskachi)
+  if errdb.Error != nil {
+    return "", errdb.Error
+  }
+  return diskachi.Vdiskid, nil
+}
+
+func deletediskachives(uuid string) error {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  errdb := dbs.Where("uuid=?").Delete(&Vms_vdisks_archives{})
+  if errdb.Error != nil {
+    return errdb.Error
+  }
+  return nil
+}
+
+func getdiskinfobyid(uuid string) (*Vms_vdisks, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  vdiskinfo := &Vms_vdisks{}
+  errdb := dbs.Where("Vdiskid=?", uuid).First(vdiskinfo)
+  if errdb.Error != nil {
+    return nil, errdb.Error
+  }
+  return vdiskinfo, err
+}
+
 func Deletevdisk(uuid string) error {
   checkmount, err := Getdiskstatus(uuid)
   if err != nil {
@@ -98,19 +151,33 @@ func Deletevdisk(uuid string) error {
     return vmerror.Error{Message: "硬盘已挂载，请卸载后删除"}
   }
 
-  err = ceph.Rm_image(uuid)
+  dbs, err := db.NicloudDb()
   if err != nil {
     return err
   }
 
-  dbs, err := db.NicloudDb()
+  vdiskinfo, err := getdiskinfobyid(uuid)
+  if err != nil {
+    return err
+  }
+
+  addachives, err := adddiskachives(uuid, vdiskinfo.Pool, vdiskinfo.Storage, vdiskinfo.Datacenter)
   if err != nil {
     return err
   }
 
   errdb := dbs.Where("vdiskid=?", uuid).Delete(Vms_vdisks{})
   if errdb.Error != nil {
+    err = deletediskachives(addachives)
+    if err != nil {
+      return err
+    }
     return vmerror.Error{Message: "delete vdisk fail"}
+  }
+
+  err = ceph.Rm_image(uuid)
+  if err != nil {
+    return err
   }
   return nil
 }
@@ -165,6 +232,8 @@ func Getdiskstatus(uuid string) (int, error) {
   if err != nil {
     return 0, err
   }
+
+  fmt.Println(uuid)
 
   vdisk := &Vms_vdisks{}
   errdb := dbs.Where("vdiskid=?", uuid).First(vdisk)

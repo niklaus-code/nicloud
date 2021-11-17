@@ -47,7 +47,7 @@
 							<button v-else class="btn btn-info btn-xs" type="button" @click="umount(item.Vm_ip, item.Storage, item.Datacenter, item.Vdiskid, index)">
                 				卸载
             				</button>
-							<button v-if="item.Status" class="btn btn-danger btn-xs" type="button" @click="deletevdisk(item.Cloudriveid, index)">
+							<button v-if="item.Status" class="btn btn-danger btn-xs" type="button" @click="deletevdisk(item.Vdiskid, index)">
                 				销毁
             				</button>
         				</td>
