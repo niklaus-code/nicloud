@@ -100,12 +100,12 @@ export default {
 		},
 
 	    vdiskinfo: function () {
-			this.vdiskid = this.$store.state.vdisk.vdiskid
-			sessionStorage.setItem('vdiskid', this.$store.state.vdisk.vdiskid)
-			this.storage = this.$store.state.vdisk.storage
-			sessionStorage.setItem('storage', this.$store.state.vdisk.storage)
-			this.pool = this.$store.state.vdisk.pool
-			sessionStorage.setItem('pool', this.$store.state.vdisk.pool)
+			var vdiskid = sessionStorage.getItem('vdiskid')
+			if (vdiskid === null || typeof vdiskid === 'undefined' || vdiskid === '' ) {
+				sessionStorage.setItem('vdiskid', this.$store.state.vdisk.vdiskid)
+				sessionStorage.setItem('storage', this.$store.state.vdisk.storage)
+				sessionStorage.setItem('pool', this.$store.state.vdisk.pool)
+				}
             },
 
         search: function (content) {
