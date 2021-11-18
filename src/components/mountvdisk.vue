@@ -1,11 +1,12 @@
 <template>
+	<div>
 		<div class="btn-group col-md-2 col-md-offset-10" >
 			<input class="col-md-5" type="text" id="name" placeholder="" v-model="content">
 			<button class="btn btn-default btn-sm" style="margin-right:5px" @click="search()">
 				 <span class="glyphicon glyphicon-search"></span>筛选
 			</button>
 		</div>
-		<div style="margin-top:40px">
+		<div>
 		<table class="table table-hover" style="text-align: center;">
     		<thead>
       			<tr>
@@ -51,6 +52,8 @@
       			</tr>
     		</tbody>
 		</table>
+	</div>
+</div>
 </template>
 <script>
 export default {
@@ -170,14 +173,6 @@ export default {
 
 
 <style scoped>
-.content {
-	box-shadow: 0 0 10px rgba(0,0,0,8);
-  	border-radius: 10px/10px;
-  	z-index: -1;
-	padding: 20px 0px 0px 0px;
-	margin-left: 0px;
-	margin-TOP: 50px;
-}
 
 .checkbox-inline {
 	margin-bottom: 30px;
