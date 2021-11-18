@@ -1,6 +1,4 @@
 <template>
-	<div>
-  	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div class="col-sm-8 col-sm-offset-2" >
 			<div class="col-sm-12">
 			<span class="vlaninfo">vlan信息</span>
@@ -49,8 +47,6 @@
   					<button type="submit" class="btn btn-sm btn-primary">导入数据库</button>
 			</div>
 		</div>
-	</div>		
-	</div>		
 </template>
 <script>
 export default {
@@ -133,15 +129,6 @@ select{
     font-family: "微软雅黑";
     border: 1px #1a1a1a solid;
     border-radius: 5px;
-}
-
-.content {
-    box-shadow: 0 0 10px rgba(0,0,0,8);
-    border-radius: 10px/10px;
-    z-index: -1;
-    padding: 80px 0px 80px 0px;
-    margin-left: 0px;
-    margin-TOP: 50px;
 }
 
 .details-content .article-cont p {

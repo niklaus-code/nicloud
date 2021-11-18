@@ -3,7 +3,7 @@
     <nicloudhead></nicloudhead>
 	<vmleft @toParent="getMag"></vmleft>
 		<div style="padding-right:15px" class="col-xs-11">
-	    	<div class="content whisper-content leacots-content details-content col-xs-12" style="background-color:white; float:left">
+	    	<div class="content1 whisper-content leacots-content details-content col-xs-12" style="background-color:white; float:left">
 				<component @toParent="getMag" v-bind:is="router"></component>
 			</div>
 		</div>
@@ -66,10 +66,9 @@ export default {
 </script>
 
 <style>
-.content {
+.content1 {
     box-shadow: 0 0 10px rgba(0,0,0,8);
     border-radius: 10px/10px;
-    z-index: -1;
     padding: 20px 0px 0px 0px;
     margin-left: 0px;
     margin-top: 50px;

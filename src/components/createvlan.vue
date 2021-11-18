@@ -1,6 +1,4 @@
 <template>
-	<div>
-  	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div class="col-sm-3 col-sm-offset-4" style="margin-top:20px">
 				<div class="col-sm-12">
 	 		<div class="form-group">
@@ -92,10 +90,8 @@
   				<button type="submit" @click="createvlan" class="btn btn-success btn-sm">提交</button>
 			</div>
 		</div>
-		</div>
-		</div>
-	</div>		
-	</div>		
+	</div>
+</div>
 </template>
 <script>
 export default {
@@ -173,15 +169,6 @@ select{
     font-family: "微软雅黑";
     border: 1px #ccc solid;
     border-radius: 5px;
-}
-
-.content {
-    box-shadow: 0 0 10px rgba(0,0,0,8);
-    border-radius: 10px/10px;
-    z-index: -1;
-    padding: 100px 0px 100px 0px;
-    margin-left: 0px;
-    margin-TOP: 50px;
 }
 
 .details-content .article-cont p {

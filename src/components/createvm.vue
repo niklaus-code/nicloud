@@ -1,6 +1,4 @@
 <template>
-	<div>
-  	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white;">
 		<div  class="col-sm-5 col-sm-offset-3" style="margin-top:20px">
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
@@ -113,8 +111,6 @@
 				</div>
     		</div>
 		</div>
-	</div>		
-	</div>		
 </template>
 <script>
 export default {

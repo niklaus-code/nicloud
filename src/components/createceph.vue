@@ -1,6 +1,4 @@
 <template>
-	<div>
-  	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div class="col-sm-8 col-sm-offset-1" style="margin-top:20px">
 				<div class="col-sm-12">
 	 		<div class="form-group">
@@ -105,9 +103,7 @@
   				<button type="submit" @click="createceph" class="btn btn-success">提交</button>
 			</div>
 		</div>
-		</div>
-	</div>		
-	</div>		
+	</div>
 </template>
 <script>
 export default {

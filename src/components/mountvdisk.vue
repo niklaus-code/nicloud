@@ -1,6 +1,4 @@
 <template>
-<div>
-  	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div class="btn-group col-md-2 col-md-offset-10" >
 			<input class="col-md-5" type="text" id="name" placeholder="" v-model="content">
 			<button class="btn btn-default btn-sm" style="margin-right:5px" @click="search()">
@@ -53,8 +51,6 @@
       			</tr>
     		</tbody>
 		</table>
-  </div>
-  </div>
 </template>
 <script>
 export default {
