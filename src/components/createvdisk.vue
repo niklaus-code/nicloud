@@ -1,6 +1,6 @@
 <template>
 		<div class="col-sm-8 col-sm-offset-1">
-				<div class="col-sm-12">
+			<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-2 col-sm-offset-2">
         			<label>数据中心</label>
@@ -45,7 +45,7 @@
 				</div>
 				</div>
     		</div>
-				<div class="col-sm-12" style="margin-top:20px">
+			<div class="col-sm-12" style="margin-top:20px">
 	 		<div class="form-group">
 				<div class="col-sm-2 col-sm-offset-2">
         			<label>容量</label>
@@ -60,13 +60,13 @@
 				</div>
 				</div>
     		</div>
-				<div class="col-sm-12" style="margin-top:20px">
-		<div class="form-group">
-			<div class="col-sm-2 col-sm-offset-4">
-  				<button type="submit" @click="createvdisk" class="btn btn-success">提交</button>
+			<div class="col-sm-12" style="margin-top:20px">
+				<div class="form-group">
+					<div class="col-sm-2 col-sm-offset-4">
+  						<button type="submit" @click="createvdisk" class="btn btn-success">提交</button>
+					</div>
+				</div>
 			</div>
-			</div>
-		</div>
 	</div>
 </template>
 <script>
