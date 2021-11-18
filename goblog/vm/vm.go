@@ -419,7 +419,7 @@ func allvm(obj []Vms) []map[string]interface{}  {
     if err != nil {
       return nil
     }
-    c["disk"] = vdisk 
+    c["disk"] = vdisk
     mapc = append(mapc, c)
   }
   return mapc
@@ -431,7 +431,7 @@ func VmList() ([]map[string]interface{}, error) {
     return nil, err
   }
 	var v []Vms
-	dbs.Table("vms").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip" , "host", "os"}).Scan(&v)
+	dbs.Table("vms").Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip" , "host", "os"}).Scan(&v)
 
 	return allvm(v), nil
 }

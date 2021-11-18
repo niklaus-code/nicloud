@@ -274,15 +274,6 @@ export default {
 
 
 <style scoped>
-.content {
-	box-shadow: 0 0 10px rgba(0,0,0,8);
-  	border-radius: 10px/10px;
-  	z-index: -1;
-	padding: 20px 0px 0px 0px;
-	margin-left: 0px;
-	margin-top: 50px;
-}
-
 .checkbox-inline {
 	margin-bottom: 30px;
 }

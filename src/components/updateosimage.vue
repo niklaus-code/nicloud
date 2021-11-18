@@ -88,7 +88,7 @@
     		</div>
 		<div class="form-group" style="margin-top:20px" >
 			<div class="col-sm-1 col-sm-offset-7">
-  				<button type="submit" @click="commit" class="btn btn-info">提交</button>
+  				<button type="submit" @click="commit" class="btn btn-success">提交</button>
 			</div>
 		</div>
 	</div>
