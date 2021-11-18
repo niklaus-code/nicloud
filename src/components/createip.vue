@@ -1,4 +1,5 @@
 <template>
+	<div>
 		<div class="col-sm-8 col-sm-offset-2" >
 			<div class="col-sm-12">
 			<span class="vlaninfo">vlan信息</span>
@@ -18,7 +19,7 @@
 		</div>
 		<div class="col-sm-8 col-sm-offset-2" >
 			<div class="col-sm-12">
-			<span class="createip">生成IP & MAC</span>
+				<span class="createip">生成IP & MAC</span>
 			</div>
 			<div class="col-sm-5 startip">
 				<form class="form-inline" style="width:100%" >
@@ -47,6 +48,7 @@
   					<button type="submit" class="btn btn-sm btn-primary">导入数据库</button>
 			</div>
 		</div>
+	</div>
 </template>
 <script>
 export default {

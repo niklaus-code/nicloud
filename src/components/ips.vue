@@ -1,4 +1,5 @@
 <template>
+	<div>
 		<div class="col-sm-10 col-sm-offset-1 vlan" style="margin-top:20px;">
 			<span>{{vlan}}&nbsp&&nbsp IP列表</span>
 		</div>
@@ -46,6 +47,7 @@
 				</tbody>
 			</table>
 		</div>
+	</div>
 </template>
 <script>
 export default {
@@ -126,14 +128,6 @@ export default {
 	border-bottom: 3px solid green
 }
 
-.content {
-    box-shadow: 0 0 10px rgba(0,0,0,8);
-    border-radius: 10px/10px;
-    z-index: -1;
-    padding: 50px 0px 50px 0px;
-    margin-left: 0px;
-    margin-TOP: 50px;
-}
 .checkbox-inline {
     margin-bottom: 30px;
 }
