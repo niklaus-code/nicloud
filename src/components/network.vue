@@ -33,7 +33,7 @@
                             <span class="glyphicon glyphicon-ok"></span>
                         </td>
 		    			<td>
-							<button class="btn btn-success btn-xs" type="button" @click="createip(item)">
+							<button class="btn btn-success btn-xs" type="button" @click="createip(item.Vlan, item.Bridge, item.Network, item.Prefix, item.Gateway)">
                 				增加IP
             				</button>
 							<button class="btn btn-success btn-xs" type="button" @click="ips(item.Vlan)">
@@ -71,9 +71,13 @@ export default {
 			this.$store.state.network.vlan = vlan
 			},
 
-		createip: function (vlan) {
+		createip: function (vlan, bridge, network, prefix, gateway) {
 			this.$emit("toParent", "createip");
 			this.$store.state.network.vlan = vlan
+			this.$store.state.network.bridge = bridge
+			this.$store.state.network.network = network
+			this.$store.state.network.prefix = prefix
+			this.$store.state.network.gateway = gateway
 			},
 
 		deletevlan: function (vlan, index) {

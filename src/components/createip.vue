@@ -5,16 +5,16 @@
 			<span class="vlaninfo">vlan信息</span>
 			</div>
 			<div class="col-sm-3">
-				vlan名称：{{vlan.Vlan}}
+				vlan名称：{{vlan}}
 			</div>
 			<div class="col-sm-3">
-				网桥名称：{{vlan.Bridge}}
+				网桥名称：{{bridge}}
 			</div>
 			<div class="col-sm-3">
-				地址段：{{vlan.Network}}/{{vlan.Prefix}}
+				地址段：{{network}}/{{prefix}}
 			</div>
 			<div class="col-sm-3">
-				网关：{{vlan.Gateway}}
+				网关：{{gateway}}
 			</div>
 		</div>
 		<div class="col-sm-8 col-sm-offset-2" >
@@ -55,6 +55,10 @@ export default {
     data () {
         return {
 			vlan: "",
+			bridge: "",
+			network: "",
+			prefix: "",
+			gateway: "",
 			startip: "",
 			endip: "",
         }
@@ -73,7 +77,7 @@ export default {
 				}
 
             var apiurl = `/api/networks/createip`
-            this.$http.get(apiurl, { params: {startip: this.startip, endip: this.endip, vlan: this.vlan.Vlan} }).then(response => {
+            this.$http.get(apiurl, { params: {startip: this.startip, endip: this.endip, vlan: this.vlan} }).then(response => {
 				if (response.data.res === null) {
 					alert("创建成功")
 					} else {
@@ -83,7 +87,25 @@ export default {
 			},
 
 		vlaninfo: function () {
-			this.vlan = this.$store.state.network.vlan
+			var v = sessionStorage.getItem('vlan')
+			if (v === null || typeof v === 'undefined' || v === '' ) {
+				this.vlan = this.$store.state.network.vlan
+				this.bridge = this.$store.state.network.bridge
+				this.network = this.$store.state.network.network
+				this.prefix = this.$store.state.network.prefix
+				this.gateway = this.$store.state.network.gateway
+			 	sessionStorage.setItem('vlan', this.$store.state.network.vlan)
+			 	sessionStorage.setItem('bridge', this.$store.state.network.bridge)
+			 	sessionStorage.setItem('network', this.$store.state.network.network)
+			 	sessionStorage.setItem('prefix', this.$store.state.network.prefix)
+			 	sessionStorage.setItem('gateway', this.$store.state.network.gateway)
+				} else {
+					this.vlan = sessionStorage.getItem('vlan')
+					this.bridge = sessionStorage.getItem('bridge')
+					this.network = sessionStorage.getItem('network')
+					this.prefix = sessionStorage.getItem('prefix')
+					this.gateway = sessionStorage.getItem('gateway')
+				}
 			},
         }
   }

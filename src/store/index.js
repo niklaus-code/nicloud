@@ -11,6 +11,10 @@ const store = new Vuex.Store({
 		},
 	network: {
 		vlan: "",
+		bridge: "",
+		network: "",
+		prefix: "",
+		gateway: "",
 		},
 	vdisk: {
     	vdiskid: "",
