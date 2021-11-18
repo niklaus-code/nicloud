@@ -194,6 +194,6 @@ func Getosinfobyosname(osname string) (*Vms_os, error) {
   }
 
   o := &Vms_os{}
-  dbs.Where("osname=?").First(o)
+  dbs.Where("osname=?", osname).First(o)
   return o, err
 }
