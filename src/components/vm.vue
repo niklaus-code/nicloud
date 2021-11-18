@@ -310,6 +310,10 @@ th {
 	text-align: center;
 }
 
+.dropdown-menu {
+	top: 40px;
+}
+
 .glyphicon {
 	caret-color: rgba(0, 0, 0, 0)
 }
