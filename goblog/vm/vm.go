@@ -348,8 +348,13 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
 	//create a uuid
 	u := utils.Createuuid()
 
+	osinfo, err := osimage.Getosinfobyosname(image)
+	if err != nil {
+	  return err
+  }
+
 	//create baseimage
-	imge_name, err := ceph.RbdClone(u)
+	imge_name, err := ceph.RbdClone(u, osinfo.Cephblockdevice, osinfo.Snapimage, pool)
 	if err != nil {
 	 return err
   }

@@ -186,3 +186,14 @@ func Xml(datacenter string, storage string, vlan string,  vcpu int, vmem int, uu
   return docstring, nil
 }
 
+
+func Getosinfobyosname(osname string) (*Vms_os, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+
+  o := &Vms_os{}
+  dbs.Where("osname=?").First(o)
+  return o, err
+}
