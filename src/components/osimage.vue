@@ -1,6 +1,4 @@
 <template>
-	<div>
-  	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
 		<div class="col-sm-10 col-sm-offset-1" style="margin-top:20px">
 			<button class="btn btn-success btn-sm" type="button" @click="toParent">创建</button>
 			<table class="table table-hover" style="text-align: center;">
@@ -49,8 +47,6 @@
 				</tbody>
 			</table>
 		</div>
-	</div>		
-</div>		
 </template>
 <script>
 export default {
@@ -107,14 +103,6 @@ select{
     border-radius: 5px;
 }
 
-.content {
-    box-shadow: 0 0 10px rgba(0,0,0,8);
-    border-radius: 10px/10px;
-    z-index: -1;
-    padding: 50px 0px 50px 0px;
-    margin-left: 0px;
-    margin-TOP: 50px;
-}
 .checkbox-inline {
     margin-bottom: 30px;
 }
