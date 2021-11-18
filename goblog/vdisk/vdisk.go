@@ -186,8 +186,17 @@ func Deletevdisk(uuid string) error {
 }
 
 func Umountdisk(vmip string, storage string, datacenter string, vdiskid string, xml string, host string, vms interface{}) error {
+  checkmount, err := checkmount(vdiskid)
+  if err != nil {
+    return err
+  }
+  if checkmount == 1 {
+    return vmerror.Error{Message: "vdisk has been mouunted"}
+  }
+
+
   doc := etree.NewDocument()
-  err := doc.ReadFromString(xml)
+  err = doc.ReadFromString(xml)
   if err != nil {
     return err
   }
@@ -296,7 +305,26 @@ func namedisk(vmip string) (string, error) {
   return "vdb", err
 }
 
+func checkmount(vdiskid string) (int, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return 0, err
+  }
+
+  v := &Vms_vdisks{}
+  dbs.Where("vdiskid=?", vdiskid).First(v)
+  return v.Status, nil
+}
+
 func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter string, vdiskid string, vms interface{}, xml string) error {
+  checkmount, err := checkmount(vdiskid)
+  if err != nil {
+    return err
+  }
+  if checkmount == 0 {
+    return vmerror.Error{Message: "vdisk has been mouunted"}
+  }
+
   disknum, err := Getdiskbyvm(ip)
   if err != nil {
     return err
