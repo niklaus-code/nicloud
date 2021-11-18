@@ -18,7 +18,8 @@
         				<th>存储集群</th>
 						<th>数据中心</th>
         				<th>用户</th>
-        				<th>状态`</th>
+        				<th>状态</th>
+        				<th>创建时间</th>
 						<th>操作</th>
       				</tr>
     			</thead>
@@ -39,6 +40,7 @@
                             <span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
                             <span v-else class="glyphicon glyphicon-remove"></span>
                         </td>
+        				<td>{{item.Createtime}}</td>
 		    			<td>
 							<!-- <button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="mount(, item.Storage, item.Pool, index)"> -->
 							<button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="mount('mountvdisk', item.Vdiskid, item.Storage, item.Pool)">

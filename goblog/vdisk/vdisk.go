@@ -9,6 +9,7 @@ import (
   "goblog/utils"
   "goblog/vmerror"
   "strings"
+  "time"
 )
 
 type Vms_vdisks struct {
@@ -22,6 +23,7 @@ type Vms_vdisks struct {
   User string
   Exist int8
   Status int
+  Createtime string
 }
 
 func Getdiskbyvm(vmip string) ([]*Vms_vdisks, error) {
@@ -70,6 +72,7 @@ func Add_vdisk(contain int, pool string, storage string, datacenter string, user
     User: "niklaus",
     Exist: 1,
     Status: 1,
+    Createtime: time.Now().Format("2006-01-02 15:04:05"),
   }
 
   err := ceph.Createcephblock(vdiskid, contain)
@@ -233,8 +236,6 @@ func Getdiskstatus(uuid string) (int, error) {
     return 0, err
   }
 
-  fmt.Println(uuid)
-
   vdisk := &Vms_vdisks{}
   errdb := dbs.Where("vdiskid=?", uuid).First(vdisk)
   if errdb.Error != nil {
@@ -249,7 +250,7 @@ func Getvdisk(vmip string) ([]*Vms_vdisks, error) {
     return nil, err
   }
   c := []*Vms_vdisks{}
-  dbs.Find(&c)
+  dbs.Order("createtime desc").Find(&c)
   return c, err
   }
 
@@ -343,7 +344,6 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
   host.CreateAttr("port", storageinfo.Port)
 
   diskname, err := namedisk(ip)
-  fmt.Println(diskname)
   if err != nil {
     return err
   }
