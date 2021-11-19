@@ -391,25 +391,47 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
   var docstring string
   docstring, err = doc.WriteToString()
 
+  updatexml := updatexmlbyip(xml, ip, vms)
+  if updatexml != nil {
+    return updatexml
+  }
+
+  updatevm := UpdateMountvmstatus(datacenter, storage, vdiskid, ip, diskname)
+  if updatevm != nil {
+    updatexml := updatexmlbyip(xml, ip, vms)
+    if updatexml != nil {
+      return updatexml
+    }
+    return updatevm
+  }
+
+  err = libvirtd.DefineVm(docstring, vmhost)
+  if err != nil {
+    updatexml := updatexmlbyip(xml, ip, vms)
+    if updatexml != nil {
+      return updatexml
+    }
+    updatevm := UpdateMountvmstatus(datacenter, storage, vdiskid, "", "")
+    if updatevm != nil {
+      return updatevm
+    }
+    return err
+  }
+
+  return nil
+}
+
+func updatexmlbyip(xml string, ip string, vms interface{}) error {
   dbs, err := db.NicloudDb()
   if err != nil {
     return err
   }
 
-  err = libvirtd.DefineVm(docstring, vmhost)
-  if err != nil {
-    return err
-  }
-
-  errdb:= dbs.Model(vms).Where("ip=?", ip).Update("vmxml", docstring)
+  errdb:= dbs.Model(vms).Where("ip=?", ip).Update("vmxml", xml)
   if errdb.Error != nil {
     return vmerror.Error{Message: errdb.Error.Error()}
   }
 
-  updatevm := UpdateMountvmstatus(datacenter, storage, vdiskid, ip, diskname)
-  if updatevm != nil {
-    return updatevm
-  }
   return nil
 }
 
