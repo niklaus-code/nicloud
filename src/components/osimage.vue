@@ -28,7 +28,7 @@
         				<td>{{item.Osname}}</td>
         				<td>{{item.Cephblockdevice}}</td>
         				<td>{{item.Snapimage}}</td>
-        				<td class="tdxml" width="35%">{{item.Xml}}</td>
+        				<td class="tdxml" width="30%">{{item.Xml}}</td>
         				<td>{{item.Storage}}</td>
         				<td>{{item.Datacenter}}</td>
 						<td>
