@@ -34,7 +34,7 @@ func Del(osname string) error {
   return nil
 }
 
-func Update(id int, datacenter string, storage string, osname string, cephblockdevice string, snapimage string, xml string) error {
+func Update(id int, datacenter string, storage string, osname string,  snapimage string, cephblockdevice string, xml string) error {
   os := &Vms_os{
     Id: id,
     Datacenter: datacenter,
@@ -187,13 +187,13 @@ func Xml(datacenter string, storage string, vlan string,  vcpu int, vmem int, uu
 }
 
 
-func Getosinfobyosname(osname string) (*Vms_os, error) {
+func Getosinfobyosname(osname string, storage string) (*Vms_os, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
 
   o := &Vms_os{}
-  dbs.Where("osname=?", osname).First(o)
+  dbs.Where("osname=? and storage=?", osname, storage).First(o)
   return o, err
 }

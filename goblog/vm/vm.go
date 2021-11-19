@@ -348,7 +348,7 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
 	//create a uuid
 	u := utils.Createuuid()
 
-	osinfo, err := osimage.Getosinfobyosname(image)
+	osinfo, err := osimage.Getosinfobyosname(image, storage)
 	if err != nil {
 	  return err
   }

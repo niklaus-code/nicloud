@@ -126,10 +126,11 @@ func RbdClone(id string, cephblock string, snap string, pool string) (string, er
   if err != nil {
     return "", err
   }
-  
-  ioctx, _ := conn.OpenIOContext(pool)
 
-  err = rbd.CloneImage(ioctx, cephblock, snap, ioctx, id, rbd.NewRbdImageOptions())
+  ioctx, _ := conn.OpenIOContext(pool)
+  imag := rbd.GetImage(ioctx, cephblock)
+
+  _, err = imag.Clone(snap, ioctx, id, rbd.FeatureLayering, 12)
   if err != nil {
     return "", err
   }
