@@ -29,7 +29,7 @@ func Createhost(c *gin.Context) {
   cpu, _ := strconv.Atoi(c.Query("cpu"))
   mem, _ := strconv.Atoi(c.Query("mem"))
   ip := c.Query("ip")
-  num,_ := strconv.Atoi(c.Query("mem"))
+  num,_ := strconv.Atoi(c.Query("num"))
   vlan := c.Query("vlan")
   datacenter := c.Query("datacenter")
 
