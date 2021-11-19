@@ -1,10 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import blog from '@/view/index'
-import details from '@/view/details'
-import whisper from '@/view/whisper'
-import read from '@/view/read'
-import about from '@/view/about'
 import login from '@/view/login'
 import serveroom from '@/view/machine'
 import createmachine from '@/view/createmachine'
@@ -32,38 +27,13 @@ export default new Router({
     },
     {
       path: '/',
-      name: 'whisper',
-      component: whisper
+      name: 'nicloud',
+      component: nicloud
     },
     {
       path: '/login',
-      name: 'whisper',
+      name: 'login',
       component: login
     },
-    {
-      path: '/blog',
-      name: 'blog',
-      component: blog
-    },
-    {
-      path: '/details/',
-      name: 'details',
-      component: details
-    },
-    {
-      path: '/whisper',
-      name: 'whisper',
-      component: whisper
-    },
-    {
-      path: '/about',
-      name: 'about',
-      component: about
-    },
-    {
-      path: '/read',
-      name: 'read',
-      component: read
-    }
   ]
 })

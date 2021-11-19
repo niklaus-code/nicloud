@@ -9,7 +9,7 @@
 				 <span class="glyphicon glyphicon-cog"></span>创建实例
 			</button>
 		</div>
-		<div style="margin-top:40px">
+		<div style="margin-top:10px">
 		<table class="table table-hover" style="text-align: center;">
     		<thead>
       			<tr>
@@ -288,6 +288,9 @@ input{
   display: block;
 }
 
+table {
+margin-bottom: 0px;
+}
 .table tbody tr td {
 	padding: 12px;
 	vertical-align: "middle";
@@ -300,7 +303,7 @@ th {
 }
 
 .dropdown-menu {
-	top: 40px;
+	top: 10px;
 }
 
 .glyphicon {
