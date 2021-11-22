@@ -1,114 +1,62 @@
 <template>
-<div>
-<div class="sidenav">
-         <div class="login-main-text">
-            <h2>https://manyushuai.site</h2>
-            <p style="font-size: 1.9375rem">Login or register from here to access.</p>
-         </div>
-      </div>
-      <div class="main">
-         <div class="col-md-6 col-sm-12">
-            <div class="login-form">
-               <form>
-                  <div class="form-group">
-                     <label>User Name</label>
-                     <input type="text" class="form-control" placeholder="User Name">
-                  </div>
-                  <div class="form-group">
-                     <label>Password</label>
-                     <input type="password" class="form-control" placeholder="Password">
-                  </div>
-                  <button style="font-size:1.4rem" type="submit" class="btn btn-black">Login</button>
-                  <button style="font-size:1.4rem" type="submit" class="btn btn-secondary">Register</button>
-               </form>
-            </div>
-         </div>
-      </div>
-      </div>
+<div class="login col-sm-12">
+	<div class="col-sm-2 col-sm-offset-5" style="margin-top:150px">
+		<form class="form-horizontal">
+  		<div class="form-group">
+    		<div class="col-sm-10">
+      			<input v-model="username" class="form-control" placeholder="账号">
+    		</div>
+  		</div>
+  		<div class="form-group">
+    		<div class="col-sm-10">
+      			<input v-model="password" type="password" class="form-control" placeholder="密码">
+    		</div>
+  		</div>
+  		<div class="form-group">
+    		<div class="col-sm-10">
+      			<input type="button" @click="login" value="登陆">
+    		</div>
+  		</div>
+		</form>
+  </div>
+</div>
 </template>
-<style scoped>
-body {
-    font-family: "Lato", sans-serif;
-}
-
-
-
-.main-head{
-    height: 150px;
-    background: #FFF;
-   
-}
-
-.sidenav {
-    height: 100%;
-    background-color: #000;
-    overflow-x: hidden;
-    padding-top: 20px;
-}
-
-
-.main {
-    padding: 0px 10px;
-}
-
-@media screen and (max-height: 450px) {
-    .sidenav {padding-top: 15px;}
-}
-
-@media screen and (max-width: 450px) {
-    .login-form{
-        margin-top: 10%;
-    }
-
-    .register-form{
-        margin-top: 10%;
-    }
-}
-
-@media screen and (min-width: 768px){
-    .main{
-        margin-left: 40%; 
-    }
-
-    .sidenav{
-        width: 40%;
-        position: fixed;
-        z-index: 1;
-        top: 0;
-        left: 0;
-    }
-
-    .login-form{
-        margin-top: 80%;
-    }
-
-    .register-form{
-        margin-top: 20%;
-    }
-}
-
-
-.login-main-text{
-    margin-top: 20%;
-    padding: 60px;
-    color: #fff;
-}
-
-.login-main-text h2{
-    font-weight: 300;
-}
-
-.btn-black{
-    background-color: #000 !important;
-    color: #fff;
-}
-h2 {font-size: 2.88rem}
-
-.login-main-text p {
-	font-size: 1.9375
-}
-
-.form-group label {
-	    font-size: 1.875rem
+<script>
+export default {
+    data () {
+        return {
+            username: "",
+            passwd: "",
+        }
+    },
+    methods: {
+		login: function (index, uuid) {
+            var apiurl = `/api/user/login`
+            this.$http.post(apiurl,{ username: this.username, passwd: this.passwd} ).then(response => {
+		alert(123)
+					
+				if (response.data.err === null ) {
+					this.$router.push({name:"nicloud"})
+					} else {
+					alert("登陆失败")
+						}
+            	})
+            },
 	}
+}
+
+</script>
+<style scoped>
+.login {
+	position:fixed;
+	height:100%;
+	background-color:#ffffff;
+	width:100%
+	}
+
+input {
+	width: 100%;
+	font-family: "微软雅黑";
+}
+
 </style>

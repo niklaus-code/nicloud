@@ -11,10 +11,15 @@ import (
   "nicloud/apis/vmapis"
   "nicloud/apis/datacenterapis"
   "nicloud/apis/vdisk"
+  "nicloud/apis/userapis"
 )
 
 func main() {
   r := gin.Default()
+  v1 := r.Group("/api/user")
+  {
+    v1.POST("login", userapis.Login)
+  }
 	v2 := r.Group("/api/vm")
 	{
 		v2.GET("getvm", vmapis.Getvmlist)
