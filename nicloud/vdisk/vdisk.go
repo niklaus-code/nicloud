@@ -3,11 +3,11 @@ package vdisk
 import (
   "fmt"
   "github.com/beevik/etree"
-  "goblog/ceph"
-  db "goblog/dbs"
-  "goblog/libvirtd"
-  "goblog/utils"
-  "goblog/vmerror"
+  "nicloud/ceph"
+  db "nicloud/dbs"
+  "nicloud/libvirtd"
+  "nicloud/utils"
+  "nicloud/vmerror"
   "strings"
   "time"
 )

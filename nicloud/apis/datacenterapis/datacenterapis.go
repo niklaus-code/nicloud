@@ -2,7 +2,7 @@ package datacenterapis
 
 import (
   "github.com/gin-gonic/gin"
-  "goblog/datacenter"
+  "nicloud/datacenter"
 )
 
 func GetDatacenter(c *gin.Context) {

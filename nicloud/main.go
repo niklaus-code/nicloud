@@ -3,28 +3,18 @@ package main
 
 import (
   "github.com/gin-gonic/gin"
-  "goblog/apis"
-  "goblog/apis/cephapis"
-  "goblog/apis/hostapis"
-  "goblog/apis/machineapis"
-  "goblog/apis/networkapis"
-  "goblog/apis/osimage"
-  "goblog/apis/vmapis"
-  "goblog/apis/datacenterapis"
-  "goblog/apis/vdisk"
+  "nicloud/apis/cephapis"
+  "nicloud/apis/hostapis"
+  "nicloud/apis/machineapis"
+  "nicloud/apis/networkapis"
+  "nicloud/apis/osimage"
+  "nicloud/apis/vmapis"
+  "nicloud/apis/datacenterapis"
+  "nicloud/apis/vdisk"
 )
 
 func main() {
   r := gin.Default()
-
-	v1 := r.Group("/api/blog/get_blog")
-	{
-		v1.GET("/get_blog_read", apis.Get_read)
-		v1.GET("/get_blog_thoughts", apis.Get_thoughts)
-		v1.GET("/get_blog_by_id/:id", apis.Get_blog_by_id)
-		v1.GET("/get_blog/:pagenumber", apis.Get_blog)
-	}
-
 	v2 := r.Group("/api/vm")
 	{
 		v2.GET("getvm", vmapis.Getvmlist)

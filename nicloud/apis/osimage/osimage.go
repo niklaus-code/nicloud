@@ -2,8 +2,8 @@ package osimage
 
 import (
   "github.com/gin-gonic/gin"
-  "goblog/osimage"
-  "goblog/vmerror"
+  "nicloud/osimage"
+  "nicloud/vmerror"
   "strconv"
 )
 

@@ -3,7 +3,7 @@ package ceph
 import (
   "github.com/ceph/go-ceph/rados"
   rbd "github.com/ceph/go-ceph/rbd"
-  "goblog/dbs"
+  "nicloud/dbs"
   "time"
 )
 

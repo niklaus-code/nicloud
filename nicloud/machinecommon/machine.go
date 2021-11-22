@@ -3,7 +3,7 @@ package machinecommon
 import (
   "fmt"
   "github.com/go-ping/ping"
-  "goblog/dbs"
+  "nicloud/dbs"
   "time"
 )
 

@@ -2,8 +2,8 @@ package networks
 
 import (
   "fmt"
-  "goblog/dbs"
-  vmerror "goblog/vmerror"
+  "nicloud/dbs"
+  vmerror "nicloud/vmerror"
   "math/rand"
   "strconv"
   "strings"

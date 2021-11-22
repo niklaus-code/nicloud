@@ -2,7 +2,7 @@ package hostapis
 
 import (
   "github.com/gin-gonic/gin"
-  "goblog/vm"
+  "nicloud/vm"
   "strconv"
 )
 

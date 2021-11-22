@@ -2,9 +2,9 @@ package vdisk
 
 import (
   "github.com/gin-gonic/gin"
-  vdisk "goblog/vdisk"
-  "goblog/vm"
-  "goblog/vmerror"
+  vdisk "nicloud/vdisk"
+  "nicloud/vm"
+  "nicloud/vmerror"
   "strconv"
 )
 

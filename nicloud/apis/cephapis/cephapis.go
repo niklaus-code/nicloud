@@ -2,7 +2,7 @@ package cephapis
 
 import (
   "github.com/gin-gonic/gin"
-  "goblog/ceph"
+  "nicloud/ceph"
 )
 
 func  Getpool(c *gin.Context) {

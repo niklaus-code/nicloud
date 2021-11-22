@@ -2,9 +2,9 @@ package networkapis
 
 import (
   "github.com/gin-gonic/gin"
-  "goblog/networks"
-  "goblog/vm"
-  "goblog/vmerror"
+  "nicloud/networks"
+  "nicloud/vm"
+  "nicloud/vmerror"
   "strconv"
 )
 

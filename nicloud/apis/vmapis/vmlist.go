@@ -3,7 +3,7 @@ package vmapis
 import (
   "fmt"
   "github.com/gin-gonic/gin"
-  "goblog/vm"
+  "nicloud/vm"
   "strconv"
 )
 

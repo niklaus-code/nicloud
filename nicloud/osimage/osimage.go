@@ -3,10 +3,10 @@ package osimage
 import (
   "fmt"
   "github.com/beevik/etree"
-  "goblog/ceph"
-  db "goblog/dbs"
-  "goblog/networks"
-  "goblog/vmerror"
+  "nicloud/ceph"
+  db "nicloud/dbs"
+  "nicloud/networks"
+  "nicloud/vmerror"
   "strings"
 )
 

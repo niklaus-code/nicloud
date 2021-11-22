@@ -1,8 +1,8 @@
 package vm
 
 import (
-  db "goblog/dbs"
-  "goblog/vmerror"
+  db "nicloud/dbs"
+  "nicloud/vmerror"
   "reflect"
 )
 

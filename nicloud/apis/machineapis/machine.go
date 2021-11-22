@@ -2,7 +2,7 @@ package machineapis
 
 import (
   "github.com/gin-gonic/gin"
-  "goblog/machinecommon"
+  "nicloud/machinecommon"
   "strconv"
 )
 

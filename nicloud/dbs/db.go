@@ -30,7 +30,7 @@ func MachineDb() (*gorm.DB,error) {
 }
 
 func NicloudDb() (*gorm.DB,error) {
-  db, err:=gorm.Open("mysql","modis:modis@(127.0.0.1:3306)/nicloud?parseTime=true&loc=Local")
+  db, err:=gorm.Open("mysql","nicloud:nicloud@(127.0.0.1:3306)/nicloud?parseTime=true&loc=Local")
   if err != nil {
     return nil, err
   }

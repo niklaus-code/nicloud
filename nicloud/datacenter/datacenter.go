@@ -1,6 +1,6 @@
 package datacenter
 
-import "goblog/dbs"
+import "nicloud/dbs"
 
 type Vms_datacenter struct {
   Datacenter string
