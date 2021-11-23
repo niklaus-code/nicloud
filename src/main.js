@@ -16,7 +16,7 @@ Vue.prototype.cookie = cookie;
 Vue.config.productionTip = false
 
 axios.interceptors.request.use(function (config) {
-	let token = cookie.getCookie("token")
+	let token = sessionStorage.getItem('token')
 		config.headers.token = token;
 		return config
 		}

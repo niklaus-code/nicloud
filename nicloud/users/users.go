@@ -17,7 +17,7 @@ type Vms_users struct {
 }
 
 func createtoken(username string, userid string) (string, error) {
-  expiresTime := time.Now().Unix() + int64(10)
+  expiresTime := time.Now().Unix() + int64(86400)
 
   claims := jwt.StandardClaims{
     Audience:  username,     // 受众
