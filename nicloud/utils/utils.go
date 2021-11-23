@@ -27,17 +27,20 @@ func ParseToken(token string) (*jwt.StandardClaims, error) {
 
 //token auth middlehandle func
 func Tokenauth() gin.HandlerFunc {
+  res := make(map[string]interface{})
   return func(c *gin.Context) {
     token := c.Request.Header.Get("token")
     if len(token) == 0 {
+      res["err"] = "认证失败，请重新登陆"
       c.Abort()
-      c.JSON(400, "无法认证，重新登录")
+      c.JSON(400, res)
     }
 
     _, err := ParseToken(strings.Fields(token)[0])
     if err != nil {
+      res["err"] = "认证过期，请重新登陆"
       c.Abort()
-      c.JSON(200, "无法认证，重新登录")
+      c.JSON(200, res)
     }
   }
 }

@@ -180,27 +180,32 @@ export default {
         getvm: function () {
             var apiurl = `/api/vm/getvm`
             this.$http.get(apiurl).then(response => {
-            var d = new Array()
-            for (var v in response.data.res) {
-                if (response.data.res[v]["Comment"].length > 0) {
-                    response.data.res[v]["flag"] = false
-                    response.data.res[v]["flag2"] = true
-                    } else {
-                    	response.data.res[v]["flag2"] = false
-                        response.data.res[v]["flag"] = true
-                    }
-                response.data.res[v]["flag1"] = false
-                d.push(response.data.res[v])
-                }
+			if (response.data.err === null ) {
+            	var d = new Array()
+            	for (var v in response.data.res) {
+                	if (response.data.res[v]["Comment"].length > 0) {
+                    	response.data.res[v]["flag"] = false
+                    	response.data.res[v]["flag2"] = true
+                    	} else {
+                    		response.data.res[v]["flag2"] = false
+                        	response.data.res[v]["flag"] = true
+                    	}
+                	response.data.res[v]["flag1"] = false
+                	d.push(response.data.res[v])
+                	}
 
-			this.data = d
-			for (let v in this.data) {
-				var r = this.getvmstatus(this.data[v].Uuid, this.data[v].Host)
-				r.then(value => {
-					this.data[v].Status = value
-					},
-				)}
-            })
+				this.data = d
+				for (let v in this.data) {
+					var r = this.getvmstatus(this.data[v].Uuid, this.data[v].Host)
+					r.then(value => {
+						this.data[v].Status = value
+						},
+					)}
+				} else {
+					alert(response.data.err)
+					this.$router.push({name:"login"})
+					} 
+            })   
         },
 
         deletevm: function (uuid, index) {
