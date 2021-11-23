@@ -30,11 +30,13 @@ func Tokenauth() gin.HandlerFunc {
   return func(c *gin.Context) {
     token := c.Request.Header.Get("token")
     if len(token) == 0 {
+      c.Abort()
       c.JSON(400, "无法认证，重新登录")
     }
 
     _, err := ParseToken(strings.Fields(token)[0])
     if err != nil {
+      c.Abort()
       c.JSON(200, "无法认证，重新登录")
     }
   }
