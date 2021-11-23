@@ -78,7 +78,7 @@ func Machinelist(startpage int, offset int) ([]*Machineroom, error)  {
 }
 
 func Allpage() (int, int, error)  {
-  db, err := db.NicloudDb()
+  db, err := db.MachineDb()
   if err != nil {
     return 0, 0, err
   }
