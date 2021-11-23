@@ -4,14 +4,15 @@ package main
 import (
   "github.com/gin-gonic/gin"
   "nicloud/apis/cephapis"
+  "nicloud/apis/datacenterapis"
   "nicloud/apis/hostapis"
   "nicloud/apis/machineapis"
   "nicloud/apis/networkapis"
   "nicloud/apis/osimage"
-  "nicloud/apis/vmapis"
-  "nicloud/apis/datacenterapis"
-  "nicloud/apis/vdisk"
   "nicloud/apis/userapis"
+  "nicloud/apis/vdisk"
+  "nicloud/apis/vmapis"
+  "nicloud/utils"
 )
 
 func main() {
@@ -22,6 +23,8 @@ func main() {
   }
 	v2 := r.Group("/api/vm")
 	{
+	  v2.Use(utils.Tokenauth())
+
 		v2.GET("getvm", vmapis.Getvmlist)
 		v2.GET("create", vmapis.Createvm)
 		v2.GET("operation/:id", vmapis.Operation)
@@ -48,6 +51,7 @@ func main() {
 
   v4 := r.Group("/api/networks")
   {
+    v2.Use(utils.Tokenauth())
     v4.GET("createvlan", networkapis.Add)
     v4.GET("getvlan", networkapis.Get)
     v4.GET("getvlanbydatacenter", networkapis.Getvlanbydatacenter)
@@ -62,6 +66,7 @@ func main() {
 
   v5 := r.Group("/api/hosts")
   {
+    v2.Use(utils.Tokenauth())
     v5.GET("delete", hostapis.Delhost)
     v5.GET("gethostsby", hostapis.Gethostinfo)
     v5.GET("createhost", hostapis.Createhost)
@@ -71,6 +76,7 @@ func main() {
 
   v6 := r.Group("/api/osimage")
   {
+    v2.Use(utils.Tokenauth())
     v6.GET("getimageby", osimage.GetImageby)
     v6.GET("getimage", osimage.GetImage)
     v6.GET("updateimage", osimage.UpdateImage)
@@ -80,6 +86,7 @@ func main() {
 
   v7 := r.Group("/api/storage")
   {
+    v2.Use(utils.Tokenauth())
     v7.GET("get", cephapis.GetStorage)
     v7.GET("add", cephapis.Addceph)
     v7.GET("delete", cephapis.Delete)
@@ -89,11 +96,13 @@ func main() {
 
   v8 := r.Group("/api/datacenter")
   {
+    v2.Use(utils.Tokenauth())
     v8.GET("getdatacenter", datacenterapis.GetDatacenter)
   }
 
   v9 := r.Group("/api/vdisk")
   {
+    v2.Use(utils.Tokenauth())
     v9.GET("umountdisk", vdisk.Umountdisk)
     v9.GET("mountdisk", vdisk.Mountdisk)
     v9.GET("deletevdisk", vdisk.Deletevdisk)

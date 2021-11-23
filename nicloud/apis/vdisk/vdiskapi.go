@@ -29,22 +29,22 @@ func Mountdisk(c *gin.Context) {
 
   if s != "关机" {
     res["err"] = vmerror.Error{Message: "cont mount disk, vm is " + s}
+    c.Abort()
     c.JSON(200, res)
-    return
   }
 
   xml, err := vm.Getvmxmlby(ip, storage, datacenter)
   if err != nil {
     res["err"] = err
+    c.Abort()
     c.JSON(200, res)
-    return
   }
 
   err = vdisk.Mountdisk(ip,  host, storage, pool, datacenter, vdiskid, vms, xml)
   if err != nil {
     res["err"] = err
+    c.Abort()
     c.JSON(200, res)
-    return
   }
 
   res["err"] = nil
@@ -67,6 +67,7 @@ func Createvdisk(c *gin.Context) {
   if err != nil {
     err = vmerror.Error{Message: "param error"}
     res["err"] = err
+    c.Abort()
     c.JSON(200, res)
   }
   pool := c.Query("pool")
@@ -91,29 +92,29 @@ func Umountdisk(c *gin.Context) {
   s, err := vm.VmStatus(vminfo.Uuid, vminfo.Host)
   if err != nil {
     res["err"] = err
+    c.Abort()
     c.JSON(200, res)
-    return
   }
 
   if s != "关机" {
     res["err"] = vmerror.Error{Message: "cont mount disk, vm is " + s}
+    c.Abort()
     c.JSON(200, res)
-    return
   }
 
   xml, err := vm.Getvmxmlby(vmip, storage, datacenter)
   if err != nil {
     res["err"] = err
+    c.Abort()
     c.JSON(200, res)
-    return
   }
 
   v := vm.Vms{}
   err = vdisk.Umountdisk(vmip, storage, datacenter, vdiskid, xml, vminfo.Host, v)
   if err != nil {
     res["err"] = err
+    c.Abort()
     c.JSON(200, res)
-    return
   }
 
   res["err"]=nil

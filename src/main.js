@@ -6,10 +6,22 @@ import router from './router'
 import VueDragResize from 'vue-drag-resize'
 import store from './store'
 import axios from 'axios'
+import qs from 'qs';
+import cookie from './cookie/cookie'
 //import $ from 'jquery'
 Vue.prototype.$http = axios
+Vue.prototype.$qs = qs;
+Vue.prototype.cookie = cookie;
 
 Vue.config.productionTip = false
+
+axios.interceptors.request.use(function (config) {
+	let token = cookie.getCookie("token")
+		config.headers.token = token;
+		return config
+		}
+);
+
 
 /* eslint-disable no-new */
 new Vue({

@@ -5,6 +5,7 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
+	token: "",
 	vm: {
 		uuid: "",
 		host: ""
@@ -30,10 +31,11 @@ const store = new Vuex.Store({
 		},
   },
   mutations: {
-    increment (state) {
-      state.count++
-    }
-  }
+	set_token(state, token) {
+		state.token = token
+		sessionStorage.token = token
+  		}
+	}
 })
 
 export default store

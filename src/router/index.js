@@ -4,11 +4,16 @@ import login from '@/view/login'
 import serveroom from '@/view/machine'
 import createmachine from '@/view/createmachine'
 import nicloud from '@/view/nicloud'
+import store from '../store'
 
 
 Vue.use(Router)
 
-export default new Router({
+if (sessionStorage.getItem('token')) {
+	store.commit('set_token', sessionStorage.getItem('token'))
+}
+
+const router = new Router({
   routes: [
     {
       path: '/nicloud',
@@ -37,3 +42,16 @@ export default new Router({
     },
   ]
 })
+
+
+router.beforeEach(function(to, from, next) {
+	var token = store.state.token
+    if (!token) {
+        if (to.path !== '/login') {
+            return next('/login')
+        }
+    }
+    next()
+})
+
+export default router

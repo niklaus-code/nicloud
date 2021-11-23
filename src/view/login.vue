@@ -9,7 +9,7 @@
   		</div>
   		<div class="form-group">
     		<div class="col-sm-10">
-      			<input v-model="password" type="password" class="form-control" placeholder="密码">
+      			<input v-model="passwd" type="password" class="form-control" placeholder="密码">
     		</div>
   		</div>
   		<div class="form-group">
@@ -32,10 +32,12 @@ export default {
     methods: {
 		login: function (index, uuid) {
             var apiurl = `/api/user/login`
-            this.$http.post(apiurl,{ username: this.username, passwd: this.passwd} ).then(response => {
-		alert(123)
+            this.$http.post(apiurl, this.$qs.stringify({ username: this.username, passwd: this.passwd} )).then(response => {
 					
 				if (response.data.err === null ) {
+					alert("登陆成功")
+					this.$store.state.token = response.data.res
+					this.$store.commit('set_token', response.data.res);
 					this.$router.push({name:"nicloud"})
 					} else {
 					alert("登陆失败")
