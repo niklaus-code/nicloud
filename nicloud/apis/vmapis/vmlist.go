@@ -3,11 +3,8 @@ package vmapis
 import (
   "fmt"
   "github.com/gin-gonic/gin"
-  "nicloud/utils"
   "nicloud/vm"
-  "nicloud/vmerror"
   "strconv"
-  "strings"
 )
 
 func Vnc(c *gin.Context)  {
@@ -55,19 +52,7 @@ func GetVmStatus(c *gin.Context) {
 }
 
 func Getvmlist(c *gin.Context) {
-  fmt.Println(123456)
   res := make(map[string]interface{})
-  token := c.Request.Header.Get("token")
-  if len(token) == 0 {
-    res["err"] = vmerror.Error{Message: "无法认证，重新登录"}
-    c.JSON(400, res)
-  }
-
-  _, err := utils.ParseToken(strings.Fields(token)[0])
-  if err != nil {
-    c.JSON(200, res)
-  }
-
 	vmlist, err := vm.VmList()
 	res["res"] = vmlist
   res["err"] = err
