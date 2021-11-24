@@ -43,8 +43,7 @@ export default {
 		}	
     },
     methods: {
-		loginfun: function (index, uuid) {
-			alert(uuid)
+		loginfun: function () {
             var apiurl = `/api/user/login`
             this.$http.post(apiurl, this.$qs.stringify({ username: this.username, passwd: this.passwd} )).then(response => {
 					
