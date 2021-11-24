@@ -1,6 +1,6 @@
 <template>
-<div class="login col-sm-12" :style="login">
-	<div class="col-sm-4 col-sm-offset-4" style="margin-top:250px; display: flex; 　align-items:center;">
+<div class="logincss col-sm-12" :style="loginbkimage">
+	<div class="col-sm-4 col-sm-offset-4" style="margin-top:250px; display: flex; align-items:center;">
 		<form class="form-horizontal col-sm-12">
 			<div class="col-sm-10 col-sm-offset-1 a">
 			<div class="col-sm-8 col-sm-offset-2 ">
@@ -16,7 +16,7 @@
   				</div>
   				<div class="form-group">
     				<div class="col-sm-12">
-      					<input type="button" @click="login" value="登陆">
+      					<input type="button" @click="loginfun" value="登陆">
     				</div>
   				</div>
   			</div>
@@ -31,8 +31,8 @@ export default {
         return {
             username: "",
             passwd: "",
-			login: {
-			backgroundImage:"url(" + require("./fish.jpg") + ")",
+			loginbkimage: {
+				backgroundImage:"url(" + require("./fish.jpg") + ")",
         	},
 			passimage: {
 				backgroundImage:"url(" + require("./pass.svg") + ")",
@@ -43,7 +43,8 @@ export default {
 		}	
     },
     methods: {
-		login: function (index, uuid) {
+		loginfun: function (index, uuid) {
+			alert(uuid)
             var apiurl = `/api/user/login`
             this.$http.post(apiurl, this.$qs.stringify({ username: this.username, passwd: this.passwd} )).then(response => {
 					
@@ -68,7 +69,7 @@ export default {
 	background-repeat: no-repeat;
 }
 
-.login {
+.logincss {
 	position:fixed;
 	height:100%;
 	#background-color:#ffffff;
