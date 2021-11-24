@@ -29,7 +29,6 @@
 </div>
 </template>
 <script>
-import imgURL from '../../static/logo.png';
 export default {
     data () {
         return {
