@@ -3,6 +3,7 @@ package db
 import (
   "github.com/jinzhu/gorm"
   _ "github.com/jinzhu/gorm/dialects/mysql"
+  "time"
 )
 
 func Db() (*gorm.DB,error) {
@@ -38,6 +39,7 @@ func NicloudDb() (*gorm.DB,error) {
   sqlDB := db.DB()
   sqlDB.SetMaxIdleConns(100) //空闲连接数
   sqlDB.SetMaxOpenConns(1000)//最大连接数
+  sqlDB.SetConnMaxLifetime(time.Second * 3600)
 
   return db, err
 }
