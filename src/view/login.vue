@@ -2,6 +2,9 @@
 <div class="logincss col-sm-12" :style="loginbkimage">
 	<div class="col-sm-4 col-sm-offset-4" style="margin-top:250px; display: flex; align-items:center;">
 		<form class="form-horizontal col-sm-12">
+
+			<div class="col-sm-6 col-sm-offset-3"> <img src="./logo.png" width="100%"></div>
+
 			<div class="col-sm-10 col-sm-offset-1 a">
 			<div class="col-sm-8 col-sm-offset-2 ">
   				<div class="form-group">
@@ -26,6 +29,7 @@
 </div>
 </template>
 <script>
+import imgURL from '../../static/logo.png';
 export default {
     data () {
         return {
@@ -39,7 +43,7 @@ export default {
         	},
 			userimage: {
 				backgroundImage:"url(" + require("./user.svg") + ")",
-        	}
+        	},
 		}	
     },
     methods: {
