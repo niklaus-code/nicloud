@@ -391,7 +391,7 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
   var docstring string
   docstring, err = doc.WriteToString()
 
-  updatexml := updatexmlbyip(xml, ip, vms)
+  updatexml := updatexmlbyip(docstring, ip, vms)
   if updatexml != nil {
     return updatexml
   }

@@ -45,10 +45,10 @@ func Mountdisk(c *gin.Context) {
     res["err"] = err
     c.Abort()
     c.JSON(200, res)
+  } else {
+    res["err"] = nil
+    c.JSON(200, res)
   }
-
-  res["err"] = nil
-  c.JSON(200, res)
 }
 
 func Deletevdisk(c *gin.Context)  {
@@ -115,10 +115,10 @@ func Umountdisk(c *gin.Context) {
     res["err"] = err
     c.Abort()
     c.JSON(200, res)
+  } else {
+    res["err"] = nil
+    c.JSON(200, res)
   }
-
-  res["err"]=nil
-  c.JSON(200, res)
 }
 
 func  GetVdisk(c *gin.Context) {
