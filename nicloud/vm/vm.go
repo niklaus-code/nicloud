@@ -452,7 +452,7 @@ func Flavor() ([]*Vm_flavors, error) {
     return nil, err
   }
 	var f []*Vm_flavors
-	dbs.Find(&f)
+	dbs.Order("cpu").Find(&f)
 	return f, nil
 }
 
