@@ -71,7 +71,7 @@
       						<li @click="shutdown(item.Uuid, index, item.Host)" style="background-color: #e56b6b"  role="presentation"><a role="menuitem" tabindex="-1">强制断电</a></li>
       						<li @click="pause(item.Uuid, index, item.Host)" style="background-color: rgb(255, 211, 0)" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
       						<li style="background-color: greenyellow"  role="presentation">
-								<a @click="migrate(item.Uuid, item.Host)" role="menuitem" tabindex="-1">迁移</a>
+								<a @click="migrate(item.Uuid, item.Host, item.Cpu, item.Mem, item.Os, item.Owner, item.Ip)" role="menuitem" tabindex="-1">迁移</a>
 							</li>
       						<li @click="deletevm(item.Uuid, index)" style="background-color: #808080" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
     					</ul>
@@ -109,10 +109,15 @@ export default {
     },
 
     methods: {
-       	migrate: function (uuid, host) {
+       	migrate: function (uuid, host, cpu, mem, os, owner, ip) {
             this.$emit("toParent", "migratevm");
 			this.$store.state.vm.uuid = uuid
 			this.$store.state.vm.host = host
+			this.$store.state.vm.cpu = cpu
+			this.$store.state.vm.mem = mem
+			this.$store.state.vm.os = os
+			this.$store.state.vm.owner = owner
+			this.$store.state.vm.ip = ip
             },
 
         create: function () {

@@ -8,7 +8,13 @@ const store = new Vuex.Store({
 	token: "",
 	vm: {
 		uuid: "",
-		host: ""
+		host: "",
+		cpu: "",
+		mem: "",
+		owner: "",
+		os: "",
+		comment: "",
+		ip: ""
 		},
 	network: {
 		vlan: "",
