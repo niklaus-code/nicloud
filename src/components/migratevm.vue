@@ -1,15 +1,12 @@
 <template>
 	<div>
-	<nicloudhead></nicloudhead>
-	<vmleft></vmleft>
-  	<div class="content whisper-content leacots-content details-content col-md-11 col-md-offset-2" style="background-color:white; float:left">
-		<div  class="col-sm-5 col-sm-offset-3" style="margin-top:20px">
+		<div class="col-sm-4 col-sm-offset-4" style="margin-top:20px">
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
         			<label>uuid</label>
 				</div>
 				<div class="col-sm-9">
-					{{data.Uuid}}
+					{{uuid}}
 				</div>
     		</div>
 	 		<div class="col-sm-12 form-group">
@@ -17,7 +14,7 @@
         			<label>ip</label>
 				</div>
 				<div class="col-sm-9">
-					{{data.Ip}}
+					{{ip}}
 				</div>
     		</div>
 	 		<div class="col-sm-12 form-group">
@@ -25,7 +22,7 @@
         			<label>宿主机</label>
 				</div>
 				<div class="col-sm-9">
-					{{data.Host}}
+					{{vmhost}}
 				</div>
     		</div>
 	 		<div class="col-sm-12 form-group">
@@ -33,7 +30,7 @@
         			<label>cpu</label>
 				</div>
 				<div class="col-sm-9">
-					{{data.Cpu}}
+					{{cpu}}
 				</div>
     		</div>
 	 		<div class="col-sm-12 form-group">
@@ -41,7 +38,7 @@
         			<label>内存</label>
 				</div>
 				<div class="col-sm-9">
-					{{ data.Mem }}&nbspG
+					{{mem}}&nbspG
 				</div>
     		</div>
 	 		<div class="col-sm-12 form-group">
@@ -49,7 +46,7 @@
         			<label>系统</label>
 				</div>
 				<div class="col-sm-9">
-					{{ data.Os }}
+					{{os}}
 				</div>
     		</div>
 	 		<div class="col-sm-12 form-group">
@@ -57,7 +54,7 @@
         			<label>创建者</label>
 				</div>
 				<div class="col-sm-9">
-					{{ data.Owner }}
+					{{ owner }}
 				</div>
     		</div>
 	 		<div class="col-sm-12 form-group">
@@ -65,12 +62,12 @@
         			<label>备注</label>
 				</div>
 				<div class="col-sm-9">
-			a		{{ data.Comment }}
+					{{ comment }}
 				</div>
     		</div>
 	 		<div class="col-sm-12 form-group" style="margin-top:20px">
 				<div class="col-sm-3">
-        			<button class="btn btn-primary btn-sm" @click="migratevm(data.Uuid)">迁移</button>
+        			<button class="btn btn-primary btn-sm" @click="migratevm()">迁移</button>
 				</div>
 				<div class="col-sm-9">
 				    <select class="form-select col-sm-10" v-model="hostvalue">
@@ -78,10 +75,7 @@
                             {{h.Ipv4}}&nbsp(cpu:{{h.Usedcpu}}/{{h.Cpu}}， &nbsp mem:{{h.Usedmem}}/{{h.Mem}}， &nbsp 数量:{{h.count}}/{{h.Max_vms}})
                         </option>
                     </select>
-				</div>
-    		</div>
-		</div>
-	</div>		
+			</div>
 	</div>		
 </template>
 <script>
@@ -94,8 +88,9 @@ export default {
     data () {
         return {
 			hostvalue: "",
-			data: {},
+			uuid: "",
 			host: [],
+			vmhost: "",
         }
     },
 
@@ -115,9 +110,9 @@ export default {
     },
 
     methods: {
-        migratevm: function (uuid) {
+        migratevm: function () {
             var apiurl = `/api/vm/migratevm`
-            this.$http.get(apiurl, { params: { uuid: uuid , migratehost: this.hostvalue} } ).then(response => {
+            this.$http.get(apiurl, { params: { uuid: this.uuid , migratehost: this.hostvalue} } ).then(response => {
             	if (response.data.res) {
 						alert("迁移失败("+response.data.res.Message+")")
 					} else {
@@ -125,16 +120,41 @@ export default {
 					}
             })
         },
+
         getvminfo: function () {
-			var uuid = this.$route.query.uuid
-            var apiurl = `/api/vm/getvminfo`
-            this.$http.get(apiurl, { params: { uuid: uuid} } ).then(response => {
-            	this.data = response.data.res
-            })
+			var u = sessionStorage.getItem('uuid')
+            if (u === null || typeof u === 'undefined' || u === '' ) {
+				this.uuid = this.$store.state.vm.uuid
+				this.ip = this.$store.state.vm.ip
+				this.vmhost = this.$store.state.vm.host
+				this.cpu = this.$store.state.vm.cpu
+				this.mem = this.$store.state.vm.mem
+				this.owner = this.$store.state.vm.owner
+				this.comment = this.$store.state.vm.comment
+				this.os = this.$store.state.vm.os
+			    sessionStorage.setItem('uuid', this.$store.state.vm.uuid)
+			    sessionStorage.setItem('ip', this.$store.state.vm.ip)
+			    sessionStorage.setItem('vmhost', this.$store.state.vm.host)
+			    sessionStorage.setItem('cpu', this.$store.state.vm.cpu)
+			    sessionStorage.setItem('mem', this.$store.state.vm.mem)
+			    sessionStorage.setItem('owner', this.$store.state.vm.owner)
+			    sessionStorage.setItem('os', this.$store.state.vm.os)
+			    sessionStorage.setItem('comment', this.$store.state.vm.comment)
+				} else {
+			    this.uuid = sessionStorage.getItem('uuid')
+			    this.ip = sessionStorage.getItem('ip')
+			    this.vmhost = sessionStorage.getItem('vmhost')
+			    this.cpu = sessionStorage.getItem('cpu')
+			    this.mem = sessionStorage.getItem('mem')
+			    this.owner = sessionStorage.getItem('owner')
+			    this.os = sessionStorage.getItem('os')
+			    this.comment = sessionStorage.getItem('comment')
+				}
         },
+
         gethostinfo: function () {
 			var host = this.$route.query.host
-            var apiurl = `/api/vm/gethostinfo`
+            var apiurl = `/api/hosts/gethostsby`
             this.$http.get(apiurl, { params: { ip: host} } ).then(response => {
             	this.host = response.data.res
             })
