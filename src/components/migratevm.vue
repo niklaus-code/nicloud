@@ -67,7 +67,7 @@
     		</div>
 	 		<div class="col-sm-12 form-group" style="margin-top:20px">
 				<div class="col-sm-3">
-        			<button class="btn btn-primary btn-sm" @click="migratevm(data.Uuid)">迁移</button>
+        			<button class="btn btn-primary btn-sm" @click="migratevm()">迁移</button>
 				</div>
 				<div class="col-sm-9">
 				    <select class="form-select col-sm-10" v-model="hostvalue">
@@ -110,9 +110,9 @@ export default {
     },
 
     methods: {
-        migratevm: function (uuid) {
+        migratevm: function () {
             var apiurl = `/api/vm/migratevm`
-            this.$http.get(apiurl, { params: { uuid: uuid , migratehost: this.hostvalue} } ).then(response => {
+            this.$http.get(apiurl, { params: { uuid: this.uuid , migratehost: this.hostvalue} } ).then(response => {
             	if (response.data.res) {
 						alert("迁移失败("+response.data.res.Message+")")
 					} else {
