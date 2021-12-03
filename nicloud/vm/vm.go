@@ -4,7 +4,7 @@ import (
   "errors"
   "fmt"
   _ "github.com/jinzhu/gorm/dialects/mysql" //这个一定要引入哦！！
-  "nicloud/ceph"
+  "nicloud/cephcommon"
   "nicloud/dbs"
   "nicloud/libvirtd"
   "nicloud/networks"
@@ -14,6 +14,7 @@ import (
   vmerror "nicloud/vmerror"
   "reflect"
   "time"
+  "encoding/base64"
 )
 
 type Vms struct {
@@ -127,7 +128,7 @@ func Delete(uuid string) (error) {
     return err
   }
 
-	err = ceph.Rm_image(uuid)
+	err = cephcommon.Rm_image(uuid)
   if err != nil {
     return err
   }
@@ -354,32 +355,32 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
   }
 
 	//create baseimage
-	imge_name, err := ceph.RbdClone(u, osinfo.Cephblockdevice, osinfo.Snapimage, pool)
+	imge_name, err := cephcommon.RbdClone(u, osinfo.Cephblockdevice, osinfo.Snapimage, pool)
 	if err != nil {
 	 return err
   }
 
 	f, err := osimage.Xml(datacenter, storage, vlan,  vcpu, vmem, u, mac, imge_name, image, pool)
 	if err != nil {
-	  ceph.Rm_image(u)
+	  cephcommon.Rm_image(u)
 	  return err
   }
 
 	err = libvirtd.DefineVm(f, host)
 	if err != nil {
-	  ceph.Rm_image(u)
+	  cephcommon.Rm_image(u)
 	  return err
   }
 
   err = Updatehostbyaddvm(host, cpu, mem)
   if  err != nil {
-    ceph.Rm_image(u)
+    cephcommon.Rm_image(u)
     libvirtd.Undefine(host, u)
     return err
   }
 	newvm, err := savevm(datacenter, storage, u, cpu, mem, f, ip, host, image)
 	if err != nil {
-    ceph.Rm_image(u)
+    cephcommon.Rm_image(u)
     libvirtd.Undefine(host, u)
     Freehost(host, cpu, mem)
 	  return err
@@ -387,7 +388,7 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
 
   err = networks.Updateipstatus(ip, 1)
   if err != nil {
-    ceph.Rm_image(u)
+    cephcommon.Rm_image(u)
     libvirtd.Undefine(host, u)
     Freehost(host, cpu, mem)
     deletevmbyid(newvm)
@@ -410,6 +411,12 @@ func Getvmxmlby (ip string, storage string, datacenter string) (string, error) {
   return v.Vmxml, nil
 }
 
+func base(vmid string, vmip string) string {
+  b := []byte(vmid + "," + vmip)
+  encodeString := base64.URLEncoding.EncodeToString(b)
+  return encodeString
+}
+
 func allvm(obj []Vms) []map[string]interface{}  {
   var mapc []map[string]interface{}
 
@@ -420,11 +427,15 @@ func allvm(obj []Vms) []map[string]interface{}  {
     for i := 0; i < m.NumField(); i++ {
       c[m.Field(i).Name] = n.Field(i).Interface()
     }
+
     vdisk, err := vdisk.Getdiskbyvm(v.Ip)
     if err != nil {
       return nil
     }
     c["disk"] = vdisk
+
+    vncid := base(v.Uuid, v.Host)
+    c["vncid"] = vncid
     mapc = append(mapc, c)
   }
   return mapc

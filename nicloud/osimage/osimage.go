@@ -3,7 +3,7 @@ package osimage
 import (
   "fmt"
   "github.com/beevik/etree"
-  "nicloud/ceph"
+  "nicloud/cephcommon"
   db "nicloud/dbs"
   "nicloud/networks"
   "nicloud/vmerror"
@@ -112,7 +112,7 @@ func getxml(osname string) (string, error) {
 }
 
 func Xml(datacenter string, storage string, vlan string,  vcpu int, vmem int, uuid string, mac string, image_name string, osname string, pool string) (string, error) {
-  storagename, err := ceph.Cephinfobyname(datacenter, storage)
+  storagename, err := cephcommon.Cephinfobyname(datacenter, storage)
   if err != nil {
     return "", err
   }
