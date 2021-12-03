@@ -17,15 +17,15 @@ func Db() (*gorm.DB,error) {
 }
 
 func MachineDb() (*gorm.DB,error) {
-  db, err:=gorm.Open("mysql","modis:modis@(10.0.90.151:3306)/bigdata_machine?parseTime=true")
+  db, err:=gorm.Open("mysql","machine:machine@(127.0.0.1:3306)/bigdata_machine?parseTime=true")
   db.SingularTable(true)
   if err != nil {
     return nil, err
   }
 
   sqlDB := db.DB()
-  sqlDB.SetMaxIdleConns(10) //空闲连接数
-  sqlDB.SetMaxOpenConns(100)//最大连接数
+  sqlDB.SetMaxIdleConns(10000) //空闲连接数
+  sqlDB.SetMaxOpenConns(10000)//最大连接数
 
   return db, err
 }
@@ -39,7 +39,7 @@ func NicloudDb() (*gorm.DB,error) {
   sqlDB := db.DB()
   sqlDB.SetMaxIdleConns(100) //空闲连接数
   sqlDB.SetMaxOpenConns(1000)//最大连接数
-  sqlDB.SetConnMaxLifetime(time.Second * 3600)
+  sqlDB.SetConnMaxLifetime(time.Second * 60)
 
   return db, err
 }
