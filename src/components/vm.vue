@@ -313,7 +313,7 @@ th {
 }
 
 .dropdown-menu {
-	top: 10px;
+	top: 35px;
 }
 
 .glyphicon {
