@@ -3,7 +3,7 @@ package vdisk
 import (
   "fmt"
   "github.com/beevik/etree"
-  "nicloud/ceph"
+  "nicloud/cephcommon"
   db "nicloud/dbs"
   "nicloud/libvirtd"
   "nicloud/utils"
@@ -75,7 +75,7 @@ func Add_vdisk(contain int, pool string, storage string, datacenter string, user
     Createtime: time.Now().Format("2006-01-02 15:04:05"),
   }
 
-  err := ceph.Createcephblock(vdiskid, contain)
+  err := cephcommon.Createcephblock(vdiskid, contain)
   if err != nil {
     return err
   }
@@ -178,7 +178,7 @@ func Deletevdisk(uuid string) error {
     return vmerror.Error{Message: "delete vdisk fail"}
   }
 
-  err = ceph.Rm_image(uuid)
+  err = cephcommon.Rm_image(uuid)
   if err != nil {
     return err
   }
@@ -333,7 +333,7 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
   if len(disknum) >= 5 {
     return vmerror.Error{Message: "Maximum number of mounted to 5"}
   }
-  storageinfo, err := ceph.Cephinfobyname(datacenter, storage)
+  storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
   if err != nil {
     return err
   }

@@ -39,7 +39,7 @@ func NicloudDb() (*gorm.DB,error) {
   sqlDB := db.DB()
   sqlDB.SetMaxIdleConns(100) //空闲连接数
   sqlDB.SetMaxOpenConns(1000)//最大连接数
-  sqlDB.SetConnMaxLifetime(time.Second * 60)
+  sqlDB.SetConnMaxLifetime(time.Second * 6)
 
   return db, err
 }
