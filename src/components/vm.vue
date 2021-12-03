@@ -17,6 +17,7 @@
 					<label class="checkbox-inline" style="border:red 1px">
   						<input type="checkbox" v-model="checkvalue" @click="checkbox()"> 
 					</label>
+<<<<<<< HEAD
 				</th>
         		<th>实例名称</th>
         		<th>IP地址</th>
@@ -81,6 +82,54 @@
     	</tbody>
 	</table>
 </div>
+=======
+        			<td width="300px">{{item.Name}}</td>
+        			<td>{{item.Ip}}</td>
+        			<td>{{item.Os}}</td>
+        			<td>{{item.Host}}</td>
+        			<td>{{item.Cpu}}核 / {{item.Mem}}G</td>
+        			<td>
+						<ul>
+							<li v-for="(k, v) in item.disk">
+								{{k.Diskname}}&nbsp{{k.Contain}}G
+							</li>
+						</ul>
+					</td>
+        			<td>{{item.Owner}}</td>
+					<td width="10%">
+		    			<span v-if='item.flag2' @click="c(index)">
+                			{{item.Comment}}
+            			</span>
+						<li v-if='item.flag'><span class="glyphicon glyphicon-calendar" @click="edit(index)"></span></li>
+							<div v-if='item.flag1'>
+								<div><input type="text" v-model="comment"></div>
+								<div><span  @click="input(index, item.Uuid)" class="glyphicon glyphicon-calendar"></span></div>
+							</div>
+					</td>
+					<td>
+						<button  v-if="item.Status === '运行'" type="button" class="btn btn-success btn-xs">{{item.Status}}</button>
+        				<button v-else type="button" class="btn btn-warning btn-xs">{{item.Status}}</button>
+        			</td>
+        			<td class="dropdown">
+						<button class="btn btn-info btn-xs dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
+							操作<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="menu1" style="">
+      						<li @click="start(item.Uuid, index, item.Host)" style="background-color: green" role="presentation"><a role="menuitem" tabindex="-1">开机</a></li>
+      						<li @click="shutdown(item.Uuid, index, item.Host)" style="background-color: #e56b6b"  role="presentation"><a role="menuitem" tabindex="-1">强制断电</a></li>
+      						<li @click="pause(item.Uuid, index, item.Host)" style="background-color: rgb(255, 211, 0)" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
+      						<li style="background-color: greenyellow"  role="presentation">
+								<a @click="migrate(item.Uuid, item.Host, item.Cpu, item.Mem, item.Os, item.Owner, item.Ip)" role="menuitem" tabindex="-1">迁移</a>
+							</li>
+      						<li @click="deletevm(item.Uuid, index)" style="background-color: #808080" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
+    					</ul>
+						<button type="button" class="btn btn-info btn-xs" @click="vnc(item.vncid)"> <span class="glyphicon glyphicon-facetime-video"></span></button>
+					</td>
+      			</tr>
+    		</tbody>
+		</table>
+  </div>
+>>>>>>> 9f4997c7bc304e9ad5fb8ea7911332b829c3b06f
 </template>
 <script>
 
@@ -167,12 +216,9 @@ export default {
             })
 		},
 
-        vnc: function (uuid, host) {
+        vnc: function (vncid) {
             var apiurl = `/api/vm/vnc`
-            this.$http.get(apiurl, { params: { uuid: uuid, host: host} } ).then(response => {
-				var	url = response.data
-				window.open(url, '_blank');
-            })
+			window.open("http://10.0.85.90:8787/vnc.html?path=websockify/?vncid="+vncid, '_blank');
 		},
 
 		getvmstatus: function (uuid, host) {
