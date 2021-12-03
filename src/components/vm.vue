@@ -1,86 +1,86 @@
 <template>
 <div>
-		<div class="btn-group col-md-3 col-md-offset-9" >
-			<input class="col-md-5" type="text" id="name" placeholder="" v-model="content">
-			<button class="btn btn-default btn-sm" style="margin-right:5px" @click="search()">
-				 <span class="glyphicon glyphicon-search"></span>筛选
-			</button>
-			<button class="btn btn-default btn-sm" @click="create()">
-				 <span class="glyphicon glyphicon-cog"></span>创建实例
-			</button>
-		</div>
-		<div style="margin-top:10px">
-		<table class="table table-hover" style="text-align: center;">
-    		<thead>
-      			<tr>
-					<th>
-						<label class="checkbox-inline" style="border:red 1px">
-  							<input type="checkbox" v-model="checkvalue" @click="checkbox()"> 
-						</label>
-					</th>
-        			<th>实例名称</th>
-        			<th>IP地址</th>
-        			<th>镜像</th>
-        			<th>所属宿主机</th>
-        			<th>CPU/内存</th>
-        			<th>云盘</th>
-        			<th>所属者</th>
-        			<th>备注</th>
-        			<th>状态</th>
-        			<th>操作</th>
-      			</tr>
-    		</thead>
-    		<tbody v-for="(item, index) in data">
-      			<tr v-if="item.Exist" class="table-dark text-dark" :id="item.Uuid">
-					<label class="checkbox-inline">
-  						<input type="checkbox" v-model="item.Checkout"> 
+    <div class="btn-group col-md-3 col-md-offset-9">
+		<input class="col-md-6" type="text" id="name" placeholder="" v-model="content">
+		<button class="btn btn-default btn-sm" style="margin-right:5px" @click="search()">
+			 <span class="glyphicon glyphicon-search"></span>筛选
+		</button>
+		<button class="btn btn-default btn-sm" @click="create()">
+			 <span class="glyphicon glyphicon-cog"></span>创建实例
+		</button>
+	</div>
+	<div style="margin-top:10px">
+	<table class="table table-hover" style="text-align: center;">
+    	<thead>
+    		<tr>
+				<th>
+					<label class="checkbox-inline" style="border:red 1px">
+  						<input type="checkbox" v-model="checkvalue" @click="checkbox()"> 
 					</label>
-        			<td>{{item.Name}}</td>
-        			<td>{{item.Ip}}</td>
-        			<td>{{item.Os}}</td>
-        			<td>{{item.Host}}</td>
-        			<td>{{item.Cpu}}核 / {{item.Mem}}G</td>
-        			<td>
-						<ul>
-							<li v-for="(k, v) in item.disk">
-								{{k.Diskname}}&nbsp{{k.Contain}}G
-							</li>
-						</ul>
-					</td>
-        			<td>{{item.Owner}}</td>
-					<td>
-		    			<span v-if='item.flag2' @click="c(index)">
-                			{{item.Comment}}
-            			</span>
-						<li v-if='item.flag'><span class="glyphicon glyphicon-calendar" @click="edit(index)"></span></li>
-							<div v-if='item.flag1'>
-								<div><input type="text" v-model="comment"></div>
-								<div><span  @click="input(index, item.Uuid)" class="glyphicon glyphicon-calendar"></span></div>
-							</div>
-					</td>
-					<td>
-						<button  v-if="item.Status === '运行'" type="button" class="btn btn-success btn-xs">{{item.Status}}</button>
-        				<button v-else type="button" class="btn btn-warning btn-xs">{{item.Status}}</button>
-        			</td>
-        			<td class="dropdown">
-						<button class="btn btn-info btn-xs dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
-							操作<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" role="menu" aria-labelledby="menu1" style="">
-      						<li @click="start(item.Uuid, index, item.Host)" style="background-color: green" role="presentation"><a role="menuitem" tabindex="-1">开机</a></li>
-      						<li @click="shutdown(item.Uuid, index, item.Host)" style="background-color: #e56b6b"  role="presentation"><a role="menuitem" tabindex="-1">强制断电</a></li>
-      						<li @click="pause(item.Uuid, index, item.Host)" style="background-color: rgb(255, 211, 0)" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
-      						<li style="background-color: greenyellow"  role="presentation">
-								<a @click="migrate(item.Uuid, item.Host, item.Cpu, item.Mem, item.Os, item.Owner, item.Ip)" role="menuitem" tabindex="-1">迁移</a>
-							</li>
-      						<li @click="deletevm(item.Uuid, index)" style="background-color: #808080" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
-    					</ul>
-						<button type="button" class="btn btn-info btn-xs" @click="vnc(item.Uuid, item.Host)"> <span class="glyphicon glyphicon-facetime-video"></span></button>
-					</td>
-      			</tr>
-    		</tbody>
-		</table>
-  </div>
+				</th>
+        		<th>实例名称</th>
+        		<th>IP地址</th>
+        		<th>镜像</th>
+        		<th>所属宿主机</th>
+        		<th>CPU/内存</th>
+        		<th>云盘</th>
+        		<th>所属者</th>
+        		<th>备注</th>
+        		<th>状态</th>
+        		<th>操作</th>
+      		</tr>
+    	</thead>
+    	<tbody v-for="(item, index) in data">
+      		<tr v-if="item.Exist" class="table-dark text-dark" :id="item.Uuid">
+				<label class="checkbox-inline">
+  					<input type="checkbox" v-model="item.Checkout"> 
+				</label>
+       			<td>{{item.Name}}</td>
+       			<td>{{item.Ip}}</td>
+       			<td>{{item.Os}}</td>
+       			<td>{{item.Host}}</td>
+       			<td>{{item.Cpu}}核 / {{item.Mem}}G</td>
+       			<td>
+					<ul>
+						<li v-for="(k, v) in item.disk">
+							{{k.Diskname}}&nbsp{{k.Contain}}G
+						</li>
+					</ul>
+				</td>
+       			<td>{{item.Owner}}</td>
+				<td>
+	    			<span v-if='item.flag2' @click="c(index)">
+               			{{item.Comment}}
+           			</span>
+					<li v-if='item.flag'><span class="glyphicon glyphicon-calendar" @click="edit(index)"></span></li>
+						<div v-if='item.flag1'>
+							<div><input type="text" v-model="comment"></div>
+							<div><span  @click="input(index, item.Uuid)" class="glyphicon glyphicon-calendar"></span></div>
+						</div>
+				</td>
+				<td>
+					<button  v-if="item.Status === '运行'" type="button" class="btn btn-success btn-xs">{{item.Status}}</button>
+       				<button v-else type="button" class="btn btn-warning btn-xs">{{item.Status}}</button>
+       			</td>
+       			<td class="dropdown">
+					<button class="btn btn-info btn-xs dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
+						操作<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="menu1" style="">
+      					<li @click="start(item.Uuid, index, item.Host)" style="background-color: green" role="presentation"><a role="menuitem" tabindex="-1">开机</a></li>
+      					<li @click="shutdown(item.Uuid, index, item.Host)" style="background-color: #e56b6b"  role="presentation"><a role="menuitem" tabindex="-1">强制断电</a></li>
+      					<li @click="pause(item.Uuid, index, item.Host)" style="background-color: rgb(255, 211, 0)" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
+      					<li style="background-color: greenyellow"  role="presentation">
+							<a @click="migrate(item.Uuid, item.Host, item.Cpu, item.Mem, item.Os, item.Owner, item.Ip)" role="menuitem" tabindex="-1">迁移</a>
+						</li>
+      					<li @click="deletevm(item.Uuid, index)" style="background-color: #808080" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
+    				</ul>
+					<button type="button" class="btn btn-info btn-xs" @click="vnc(item.Uuid, item.Host)"> <span class="glyphicon glyphicon-facetime-video"></span></button>
+				</td>
+      		</tr>
+    	</tbody>
+	</table>
+</div>
 </template>
 <script>
 
