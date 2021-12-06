@@ -48,8 +48,7 @@
 				</form>
 			</div>
 			<div  class="col-sm-2">
-  					<button type="submit" class="btn btn-sm btn-primary" @click="create">生成IP</button>
-  					<button type="submit" class="btn btn-sm btn-primary">导入数据库</button>
+  					<button type="submit" class="btn btn-sm btn-primary" @click="create">生成IP & 入库</button>
 			</div>
 		</div>
 	</div>
