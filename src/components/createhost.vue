@@ -1,4 +1,9 @@
 <template>
+<div>
+      <div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
+                <h4>创建宿主机</h4>
+            </div>
+
 		<div class="col-sm-4 col-sm-offset-4" style="margin-top:20px">
 				<div class="col-sm-12">
 	 		<div class="form-group">
@@ -90,6 +95,7 @@
 			</div>
 		</div>
 	</div>
+</div>
 </template>
 <script>
 export default {
@@ -156,13 +162,14 @@ export default {
 .form-control {
 	height:30px;
     font-family: "微软雅黑";
-    border: 1px #1a1a1a solid;
+    border: 1px #ccc solid;
     border-radius: 5px;
 }
 
 select {
 	width: 100%;
 	height:	30px;
+    border: 1px #ccc solid;
 }
 
 .details-content .article-cont p {
@@ -172,5 +179,6 @@ select {
 label {
 	font-weight : 400;
 	margin-top: 5px;
+    float: right;
 }
 </style>

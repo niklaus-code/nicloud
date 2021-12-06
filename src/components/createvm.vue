@@ -1,4 +1,8 @@
 <template>
+    <div>
+	 		<div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
+                <h4>创建云主机</h4>
+	 		</div>
 		<div  class="col-sm-5 col-sm-offset-3" style="margin-top:20px">
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
@@ -111,6 +115,7 @@
 				</div>
     		</div>
 		</div>
+	</div>
 </template>
 <script>
 export default {

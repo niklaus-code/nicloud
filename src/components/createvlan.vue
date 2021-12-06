@@ -1,4 +1,9 @@
 <template>
+<div>
+  <div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
+                <h4>创建网络</h4>
+            </div>
+
 		<div class="col-sm-3 col-sm-offset-4" style="margin-top:20px">
 				<div class="col-sm-12">
 	 		<div class="form-group">
@@ -91,6 +96,7 @@
 			</div>
 		</div>
 	</div>
+</div>
 </div>
 </template>
 <script>

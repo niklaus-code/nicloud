@@ -1,6 +1,10 @@
 <template>
 	<div>
-		<div class="col-sm-8 col-sm-offset-2" >
+      <div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
+                <h4>创建IP</h4>
+            </div>
+
+		<div class="col-sm-8 col-sm-offset-2" style="margin-top:30px;" >
 			<div class="col-sm-12">
 			<span class="vlaninfo">vlan信息</span>
 			</div>
@@ -17,7 +21,7 @@
 				网关：{{gateway}}
 			</div>
 		</div>
-		<div class="col-sm-8 col-sm-offset-2" >
+		<div class="col-sm-8 col-sm-offset-2"  style="margin-top:30px; margin-bottom:30px" >
 			<div class="col-sm-12">
 				<span class="createip">生成IP & MAC</span>
 			</div>
@@ -49,6 +53,7 @@
 			</div>
 		</div>
 	</div>
+</div>
 </template>
 <script>
 export default {
