@@ -1,5 +1,10 @@
 <template>
-		<div class="col-sm-8 col-sm-offset-1" style="margin-top:20px">
+<div>
+      <div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
+                <h4>创建存储</h4>
+            </div>
+
+		<div class="col-sm-8 col-sm-offset-1" style="margin-top:30px; margin-bottom:30px">
 				<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
@@ -104,6 +109,7 @@
 			</div>
 		</div>
 	</div>
+</div>
 </template>
 <script>
 export default {
