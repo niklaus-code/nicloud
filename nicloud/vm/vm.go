@@ -138,6 +138,7 @@ func Delete(uuid string) (error) {
 	if err != nil {
 	  return err
   }
+
 	v := &Vms_archive{
 	  Uuid: vminfo.Uuid,
 	  Owner: vminfo.Owner,
@@ -146,6 +147,7 @@ func Delete(uuid string) (error) {
 	  Vmxml: vminfo.Vmxml,
 	  Datacenter: vminfo.Datacenter,
 	  Storage: vminfo.Storage,
+	  Create_time: time.Now(),
   }
   err2 := dbs.Create(*v)
   if err2.Error != nil {
