@@ -24,6 +24,7 @@ func Mountdisk(c *gin.Context) {
   if err != nil {
     res["err"] = err
     c.JSON(200, res)
+    c.Abort()
     return
   }
 
