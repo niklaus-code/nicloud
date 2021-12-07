@@ -137,7 +137,9 @@ func Operation(c *gin.Context) {
 	switch o {
 	case 0:
 		s, err = vm.Shutdown(uuid, host)
-	case 1:
+  case 1:
+    s, err = vm.Destroy(uuid, host)
+	case 2:
 		s, err = vm.Start(uuid, host)
   case 3:
     s, err = vm.PauseVm(uuid, host)

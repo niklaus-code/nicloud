@@ -68,7 +68,8 @@
 					</button>
 					<ul class="dropdown-menu" role="menu" aria-labelledby="menu1" style="">
       					<li @click="start(item.Uuid, index, item.Host)" style="background-color: green" role="presentation"><a role="menuitem" tabindex="-1">开机</a></li>
-      					<li @click="shutdown(item.Uuid, index, item.Host)" style="background-color: #e56b6b"  role="presentation"><a role="menuitem" tabindex="-1">强制断电</a></li>
+      					<li @click="shutdown(item.Uuid, index, item.Host)" style="background-color: green" role="presentation"><a role="menuitem" tabindex="-1">关机</a></li>
+      					<li @click="destroy(item.Uuid, index, item.Host)" style="background-color: #e56b6b"  role="presentation"><a role="menuitem" tabindex="-1">强制断电</a></li>
       					<li @click="pause(item.Uuid, index, item.Host)" style="background-color: rgb(255, 211, 0)" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
       					<li style="background-color: greenyellow"  role="presentation">
 							<a @click="migrate(item.Uuid, item.Host, item.Cpu, item.Mem, item.Os, item.Owner, item.Ip)" role="menuitem" tabindex="-1">迁移</a>
@@ -225,6 +226,25 @@ export default {
         shutdown: function (uuid, index, host) {
             var apiurl = `/api/vm/operation/0`
             this.$http.get(apiurl, { params: { uuid: uuid, host: host } }).then(response => {
+                if (response.data.err == null) {
+                    this.data[index].Status = response.data.res.Status
+                    //this.$set(this.data, index, response.data.res)
+                    if (response.data.res.Comment.length > 0) {
+                        this.data[index].flag2 = true
+                        }
+                    if (response.data.res.Comment.length == 0) {
+                        this.data[index].flag = true
+                        }
+                    } else {
+                        alert("关机错误（'"+response.data.err.Message+"'）")
+                    }
+            })
+        },
+
+
+        destroy: function (uuid, index, host) {
+            var apiurl = `/api/vm/operation/1`
+            this.$http.get(apiurl, { params: { uuid: uuid, host: host } }).then(response => {
 				if (response.data.err == null) {
 					this.data[index].Status = response.data.res.Status
 					//this.$set(this.data, index, response.data.res)
@@ -259,7 +279,7 @@ export default {
         },
 
         start: function (uuid, index, host) {
-            var apiurl = `/api/vm/operation/1`
+            var apiurl = `/api/vm/operation/2`
 			
             this.$http.get(apiurl, { params: { uuid: uuid, host: host } }).then(response => {
 				if (response.data.err === null) {
