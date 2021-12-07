@@ -68,7 +68,7 @@
 					</button>
 					<ul class="dropdown-menu" role="menu" aria-labelledby="menu1" style="">
       					<li @click="start(item.Uuid, index, item.Host)" style="background-color: green" role="presentation"><a role="menuitem" tabindex="-1">开机</a></li>
-      					<li @click="shutdown(item.Uuid, index, item.Host)" style="background-color: green" role="presentation"><a role="menuitem" tabindex="-1">关机</a></li>
+      					<li @click="shutdown(item.Uuid, index, item.Host)" style="background-color: #D2B48C" role="presentation"><a role="menuitem" tabindex="-1">关机</a></li>
       					<li @click="destroy(item.Uuid, index, item.Host)" style="background-color: #e56b6b"  role="presentation"><a role="menuitem" tabindex="-1">强制断电</a></li>
       					<li @click="pause(item.Uuid, index, item.Host)" style="background-color: rgb(255, 211, 0)" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
       					<li style="background-color: greenyellow"  role="presentation">
