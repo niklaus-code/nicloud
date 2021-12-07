@@ -88,7 +88,7 @@ export default {
 			poolvalue: "",
 			pool: [],
 			
-			containvalue: 0, 
+			containvalue: "", 
 			contain: [
 				100, 200, 500, 
 				], 
