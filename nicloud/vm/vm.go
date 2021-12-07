@@ -54,10 +54,10 @@ func Changeconfig(uuid string, host string, vcpu int, vmem int, vmhost string) e
   m := vmem * 1024 * 1024
   s, err := VmStatus(uuid, host)
   if s != "关机" {
-    return vmerror.Error{Message: "云主机还在运行中"}
+    return vmerror.Error{Message: "云主机需要关机状态"}
   }
 
-  updatehost := Updatehostbyaddvm(host, vcpu, vmem)
+  updatehost := Updatehostcpumem(host, vcpu, vmem)
   if updatehost != nil {
     return updatehost
   }
@@ -422,7 +422,7 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
 	  return err
   }
 
-  err = Updatehostbyaddvm(host, cpu, mem)
+  err = Updatehost(host, cpu, mem)
   if  err != nil {
     cephcommon.Rm_image(u)
     libvirtd.Undefine(host, u)

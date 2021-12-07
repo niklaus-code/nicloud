@@ -115,25 +115,74 @@ func Freehost(ip string, cpu int, mem int) error {
   return nil
 }
 
-func Updatehostbyaddvm(ip string, cpu int, mem int) error {
+func GetHostVmNumber(ip string) (int, int, error) {
+  db, err := db.NicloudDb()
+  if err != nil {
+    return 0,0, err
+  }
+  h := &Vm_hosts{}
+  errdb := db.Where("ipv4=?", ip).First(h)
+  if errdb.Error != nil {
+    return 0, 0, errdb.Error
+  }
+  return h.Created_vms, h.Max_vms, err
+}
+
+func Updatehostcpumem(ip string, cpu int, mem int) error {
+  c, m, err := checkcpumem(ip, cpu, mem)
+  if err != nil {
+    return err
+  }
   db, err := db.NicloudDb()
   if err != nil {
     return err
   }
-
-  t, err := getcpumem(ip, cpu, mem)
-  if err != nil {
-    return err
-  }
-
-  c := t["cpu"]
-  m := t["mem"]
 
   err1 := db.Model(&Vm_hosts{}).Where("ipv4=?", ip).Update("usedcpu", c).Update("usedmem", m)
   if err1.Error != nil {
     return err1.Error
   }
   return nil
+}
+
+func Updatehost(ip string, cpu int, mem int) error {
+  c, m, err := checkcpumem(ip, cpu, mem)
+  if err != nil {
+    return err
+  }
+
+  vms_num, max_num, err := GetHostVmNumber(ip)
+  if err != nil {
+    return err
+  }
+
+  if vms_num + 1 > max_num {
+    return vmerror.Error{Message: "超过宿主机可以创建的最大数量"}
+  }
+
+  db, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  err1 := db.Model(&Vm_hosts{}).Where("ipv4=?", ip).Update("usedcpu", c).Update("usedmem", m).Update(" Created_vms", vms_num + 1)
+  if err1.Error != nil {
+    return err1.Error
+  }
+
+  return nil
+}
+
+func checkcpumem(ip string, cpu int, mem int) (int, int, error) {
+  t, err := getcpumem(ip, cpu, mem)
+  if err != nil {
+    return 0, 0, err
+  }
+
+  c := t["cpu"]
+  m := t["mem"]
+
+  return c, m, nil
 }
 
 func Deletehost(ip string) error {
