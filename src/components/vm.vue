@@ -226,15 +226,8 @@ export default {
         shutdown: function (uuid, index, host) {
             var apiurl = `/api/vm/operation/0`
             this.$http.get(apiurl, { params: { uuid: uuid, host: host } }).then(response => {
-                if (response.data.err == null) {
-                    this.data[index].Status = response.data.res.Status
-                    //this.$set(this.data, index, response.data.res)
-                    if (response.data.res.Comment.length > 0) {
-                        this.data[index].flag2 = true
-                        }
-                    if (response.data.res.Comment.length == 0) {
-                        this.data[index].flag = true
-                        }
+                if (response.data.err === null) {
+                    this.data[index].Status = "关机"
                     } else {
                         alert("关机错误（'"+response.data.err.Message+"'）")
                     }
@@ -245,15 +238,8 @@ export default {
         destroy: function (uuid, index, host) {
             var apiurl = `/api/vm/operation/1`
             this.$http.get(apiurl, { params: { uuid: uuid, host: host } }).then(response => {
-				if (response.data.err == null) {
-					this.data[index].Status = response.data.res.Status
-					//this.$set(this.data, index, response.data.res)
-					if (response.data.res.Comment.length > 0) {
-						this.data[index].flag2 = true
-						}
-					if (response.data.res.Comment.length == 0) {
-						this.data[index].flag = true
-						}
+				if (response.data.err === null) {
+					this.data[index].Status = "关机"
 					} else {
 						alert("关机错误（'"+response.data.err.Message+"'）")
 					}
@@ -265,13 +251,7 @@ export default {
 			
             this.$http.get(apiurl, { params: { uuid: uuid, host: host } }).then(response => {
 				if (response.data.err === null) {
-					this.data[index].Status = response.data.res.Status
-					if (response.data.res.Comment.length > 0) {
-						this.data[index].flag2 = true
-						}
-					if (response.data.res.Comment.length == 0) {
-						this.data[index].flag = true
-						}
+					this.data[index].Status = "暂停"
 					} else {
 						alert("暂停错误（'"+response.data.err.Message+"'）")
 					}
@@ -283,13 +263,7 @@ export default {
 			
             this.$http.get(apiurl, { params: { uuid: uuid, host: host } }).then(response => {
 				if (response.data.err === null) {
-					this.data[index].Status = response.data.res.Status
-					if (response.data.res.Comment.length > 0) {
-						this.data[index].flag2 = true
-						}
-					if (response.data.res.Comment.length == 0) {
-						this.data[index].flag = true
-						}
+					this.data[index].Status = "运行"
 					} else {
 						alert("开机错误（'"+response.data.err.Message+"'）")
 					}

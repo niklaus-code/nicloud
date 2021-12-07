@@ -166,140 +166,88 @@ func Delete(uuid string) (error) {
 	return nil
 }
 
-func PauseVm(uuid string, host string) (*Vms, error) {
+func PauseVm(uuid string, host string) error {
   conn, err := libvirtd.Libvirtconn(host)
   if err != nil {
-    return nil, err
+    return  err
   }
   vm, err1 := conn.LookupDomainByUUIDString(uuid)
   if err1 != nil {
-    return nil, err1
+    return err1
   }
 
   err = vm.Suspend()
   if err != nil {
-    return nil, err
+    return err
   }
-
-  db, err := db.NicloudDb()
-  if err != nil {
-    return nil, err
-  }
-  var v = &Vms{}
-  db.Where("uuid = ?", uuid).First(&v)
-
-  s, err := VmStatus(uuid, host)
-  v.Status = s
-  if err != nil {
-    return nil, err
-  }
-  return v, err
+  return nil
 }
 
-func Shutdown(uuid string, host string) (*Vms, error) {
+func Shutdown(uuid string, host string) error {
   /*start vm*/
   conn, err := libvirtd.Libvirtconn(host)
   if err != nil {
-    return nil, err
+    return err
   }
   vm, err4 := conn.LookupDomainByUUIDString(uuid)
   if err4 != nil {
-    return nil, err4
+    return err4
   }
   err1 := vm.Shutdown()
   if err1 != nil {
-    return nil, err1
+    return err1
   }
 
-  dbs, err := db.NicloudDb()
-  if err != nil {
-    return nil, err
-  }
-  var v = &Vms{}
-  dbs.Where("uuid = ?", uuid).First(&v)
-
-  s, err2 := VmStatus(uuid, host)
-  v.Status = s
-  if err2 != nil {
-    return nil, err2
-  }
-  return v, err2
+  return nil
 }
 
-func Destroy(uuid string, host string) (*Vms, error) {
+func Destroy(uuid string, host string) error {
 	/*start vm*/
 	conn, err := libvirtd.Libvirtconn(host)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	vm, err4 := conn.LookupDomainByUUIDString(uuid)
 	if err4 != nil {
-		return nil, err4
+		return err4
 	}
 	err1 := vm.Destroy()
 	if err1 != nil {
-		return nil, err1
+		return err1
 	}
-
-  dbs, err := db.NicloudDb()
-  if err != nil {
-    return nil, err
-  }
-	var v = &Vms{}
-	dbs.Where("uuid = ?", uuid).First(&v)
-
-	s, err2 := VmStatus(uuid, host)
-	v.Status = s
-	if err2 != nil {
-		return nil, err2
-	}
-	return v, err2
+	return nil
 }
 
-func Start(uuid string, host string) (*Vms, error) {
+func Start(uuid string, host string) error {
 	/*start vm*/
 
 	conn, connerr := libvirtd.Libvirtconn(host)
 	if connerr != nil {
-		return nil, connerr
+		return connerr
 	}
 	vm, err := conn.LookupDomainByUUIDString(uuid)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
   vm1, err1 := VmStatus(uuid, host)
 	if err1 != nil {
-	  return nil, err1
+	  return err1
   }
 
   if vm1 == "暂停" {
     eer := vm.Resume()
     if eer != nil {
-      return nil, eer
+      return  eer
     }
   } else {
     err2 := vm.Create()
     if err2 != nil {
-      return nil, err2
+      return err2
     }
   }
-
-  dbs, err3 := db.NicloudDb()
-  if err3 != nil {
-    return nil, err3
-  }
-	var v = &Vms{}
-	dbs.Where("uuid = ?", uuid).First(&v)
-
-	s, err4 := VmStatus(uuid, host)
-	v.Status = s
-	if err4 != nil {
-		return nil, err4
-	}
-
-	return v, err4
+	return nil
 }
 
 func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, vmxml string, ip string, host string, image string) (string, error) {
