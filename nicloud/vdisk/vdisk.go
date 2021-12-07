@@ -96,6 +96,7 @@ type Vms_vdisks_archives struct {
   Pool string
   Storage string
   Datacenter string
+  Create_time time.Time
 }
 
 func adddiskachives(uuid string, pool string, storage string, datacenter string) (string, error) {
@@ -109,6 +110,7 @@ func adddiskachives(uuid string, pool string, storage string, datacenter string)
     Pool: pool,
     Storage: storage,
     Datacenter: datacenter,
+    Create_time: time.Now(),
   }
 
   errdb := dbs.Create(diskachi)
