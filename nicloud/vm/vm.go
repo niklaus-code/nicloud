@@ -50,14 +50,14 @@ func updatexmlbyuuid(xml string, uuid string, vcpu int, vmem int) error {
   return nil
 }
 
-func Changeconfig(uuid string, host string, vcpu int, vmem int, vmhost string) error {
+func Changeconfig(uuid string, host string, vcpu int, oldcpu int,  vmem int, oldmem int,  vmhost string) error {
   m := vmem * 1024 * 1024
   s, err := VmStatus(uuid, host)
   if s != "关机" {
     return vmerror.Error{Message: "云主机需要关机状态"}
   }
 
-  updatehost := Updatehostcpumem(host, vcpu, vmem)
+  updatehost := Updatehostcpumem(host, vcpu-oldcpu, vmem-oldmem)
   if updatehost != nil {
     return updatehost
   }

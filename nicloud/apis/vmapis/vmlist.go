@@ -121,13 +121,26 @@ func Changeconfig(c *gin.Context) {
     c.Abort()
     c.JSON(400, vmerror.Error{Message: "参数错误"})
   }
+
+  oldcpu, err := strconv.Atoi(c.Query("oldcpu"))
+  if err != nil {
+    c.Abort()
+    c.JSON(400, vmerror.Error{Message: "参数错误"})
+  }
+
+  oldmem, err := strconv.Atoi(c.Query("oldmem"))
+  if err != nil {
+    c.Abort()
+    c.JSON(400, vmerror.Error{Message: "参数错误"})
+  }
+
   mem, err := strconv.Atoi(c.Query("mem"))
   if err != nil {
     c.Abort()
     c.JSON(400, vmerror.Error{Message: "参数错误"})
   }
   res := make(map[string]interface{})
-  err = vm.Changeconfig(id, host, cpu, mem, vmhost)
+  err = vm.Changeconfig(id, host, cpu, oldcpu, mem, oldmem, vmhost)
   res["err"] = err
   c.JSON(200, res)
 }

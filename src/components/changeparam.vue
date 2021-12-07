@@ -63,7 +63,7 @@ export default {
     methods: {
         changeconfig: function () {
             var apiurl = `/api/vm/changeconfig`
-            this.$http.get(apiurl, { params: {uuid: this.uuid, host: this.host, cpu: this.configvalue.cpu, mem: this.configvalue.mem, vmhost: this.host} }).then(response => {
+            this.$http.get(apiurl, { params: {uuid: this.uuid, host: this.host, cpu: this.configvalue.cpu, oldcpu: this.cpu, oldmem: this.mem,  mem: this.configvalue.mem, vmhost: this.host} }).then(response => {
 				if (response.data.err === null) {
 					alert("修改成功")
 					} else {
