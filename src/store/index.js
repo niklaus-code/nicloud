@@ -6,6 +6,16 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
 	token: "",
+    changeparam: {
+		uuid: "",
+		host: "",
+		cpu: "",
+		mem: "",
+		owner: "",
+		os: "",
+		comment: "",
+		ip: ""
+        },
 	vm: {
 		uuid: "",
 		host: "",

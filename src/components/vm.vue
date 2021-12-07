@@ -74,6 +74,9 @@
       					<li style="background-color: greenyellow"  role="presentation">
 							<a @click="migrate(item.Uuid, item.Host, item.Cpu, item.Mem, item.Os, item.Owner, item.Ip)" role="menuitem" tabindex="-1">迁移</a>
 						</li>
+                          <li style="background-color: 	#9370DB"  role="presentation">
+                            <a @click="changeparam(item.Uuid, item.Ip, item.Os, item.Host, item.Cpu, item.Mem, item.Owner, item.Comment)" role="menuitem" tabindex="-1">修改配置</a>
+                        </li>
       					<li @click="deletevm(item.Uuid, index)" style="background-color: #808080" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
     				</ul>
 					<button type="button" class="btn btn-info btn-xs" @click="vnc(item.vncid)"> <span class="glyphicon glyphicon-facetime-video"></span></button>
@@ -110,6 +113,18 @@ export default {
     },
 
     methods: {
+        changeparam: function (uuid, ip, os, host, cpu, mem, owner, comment) {
+            this.$emit("toParent", "changeparam");
+			this.$store.state.changeparam.uuid = uuid
+			this.$store.state.changeparam.ip = ip
+			this.$store.state.changeparam.os = os
+			this.$store.state.changeparam.host = host
+			this.$store.state.changeparam.cpu = cpu
+			this.$store.state.changeparam.mem = mem
+			this.$store.state.changeparam.owner = owner
+			this.$store.state.changeparam.comment = comment
+            },
+
        	migrate: function (uuid, host, cpu, mem, os, owner, ip) {
             this.$emit("toParent", "migratevm");
 			this.$store.state.vm.uuid = uuid

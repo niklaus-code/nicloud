@@ -4,6 +4,7 @@ import (
   "fmt"
   "github.com/gin-gonic/gin"
   "nicloud/vm"
+  "nicloud/vmerror"
   "strconv"
 )
 
@@ -109,6 +110,26 @@ func GetFlavor(c *gin.Context) {
 	}
 
 	c.JSON(200, res)
+}
+
+func Changeconfig(c *gin.Context) {
+  id := c.Query("uuid")
+  host := c.Query("host")
+  vmhost := c.Query("vmhost")
+  cpu, err := strconv.Atoi(c.Query("cpu"))
+  if err != nil {
+    c.Abort()
+    c.JSON(400, vmerror.Error{Message: "参数错误"})
+  }
+  mem, err := strconv.Atoi(c.Query("mem"))
+  if err != nil {
+    c.Abort()
+    c.JSON(400, vmerror.Error{Message: "参数错误"})
+  }
+  res := make(map[string]interface{})
+  err = vm.Changeconfig(id, host, cpu, mem, vmhost)
+  res["err"] = err
+  c.JSON(200, res)
 }
 
 func DeleteVM(c *gin.Context) {

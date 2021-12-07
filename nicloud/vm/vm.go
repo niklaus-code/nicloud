@@ -3,6 +3,7 @@ package vm
 import (
   "errors"
   "fmt"
+  "github.com/beevik/etree"
   _ "github.com/jinzhu/gorm/dialects/mysql" //这个一定要引入哦！！
   "nicloud/cephcommon"
   "nicloud/dbs"
@@ -35,16 +36,85 @@ type Vms struct {
 	Storage     string
 }
 
+func updatexmlbyuuid(xml string, uuid string, vcpu int, vmem int) error {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  errdb:= dbs.Model(&Vms{}).Where("uuid=?", uuid).Update("vmxml", xml).Update("cpu", vcpu).Update("mem", vmem)
+  if errdb.Error != nil {
+    return vmerror.Error{Message: errdb.Error.Error()}
+  }
+
+  return nil
+}
+
+func Changeconfig(uuid string, host string, vcpu int, vmem int, vmhost string) error {
+  m := vmem * 1024 * 1024
+  s, err := VmStatus(uuid, host)
+  if s != "关机" {
+    return vmerror.Error{Message: "云主机还在运行中"}
+  }
+
+  updatehost := Updatehostbyaddvm(host, vcpu, vmem)
+  if updatehost != nil {
+    return updatehost
+  }
+
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  v := &Vms{}
+  errdb := dbs.Where("uuid = ?", uuid).First(v)
+  if errdb.Error != nil {
+    return vmerror.Error{Message: "未发现云主机"}
+  }
+
+  xml := v.Vmxml
+  doc := etree.NewDocument()
+  err = doc.ReadFromString(xml)
+  if err != nil {
+    return err
+  }
+
+  cpu := doc.FindElement("./domain/vcpu")
+  cpu.SetText(fmt.Sprintf("%d", vcpu))
+
+  mem := doc.FindElement("./domain/memory")
+  mem.SetText(fmt.Sprintf("%d", m))
+
+  currentMemory := doc.FindElement("./domain/currentMemory")
+  currentMemory.SetText(fmt.Sprintf("%d", m))
+
+  doc.Indent(2)
+  var docstring string
+  docstring, err = doc.WriteToString()
+
+  updatexml := updatexmlbyuuid(docstring, uuid, vcpu, vmem)
+  if updatexml != nil {
+    return updatexml
+  }
+
+  err = libvirtd.DefineVm(docstring, vmhost)
+  if err != nil {
+    return err
+  }
+  return nil
+}
+
 func GetVmByUuid(uuid string) *Vms {
   dbs, err := db.NicloudDb()
-  v := &Vms{}
   if err != nil {
     return nil
   }
+
+  v := &Vms{}
   dbs.Where("uuid = ?", uuid).First(v)
   return v
 }
-
 
 func GetVmByIp(ip string) *Vms {
   dbs, err := db.NicloudDb()

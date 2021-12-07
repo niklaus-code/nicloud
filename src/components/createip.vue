@@ -153,11 +153,6 @@ export default {
 .col-sm-4 label{
 	float: right;
 }
-select{
-    font-family: "微软雅黑";
-    border: 1px #1a1a1a solid;
-    border-radius: 5px;
-}
 
 .details-content .article-cont p {
     padding:30px 0 0 5px
