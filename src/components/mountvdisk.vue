@@ -59,6 +59,9 @@
 export default {
     data () {
         return {
+            vdiskid: "",
+            storage: "",
+            pool: "",
 			vmleft: "vmleft",
 			active: "",
 			content: "",
@@ -99,12 +102,15 @@ export default {
 		},
 
 	    vdiskinfo: function () {
-			var vdiskid = sessionStorage.getItem('vdiskid')
+			var vdiskid = this.$store.state.vdisk.vdiskid
 			if (vdiskid === null || typeof vdiskid === 'undefined' || vdiskid === '' ) {
-				sessionStorage.setItem('vdiskid', this.$store.state.vdisk.vdiskid)
-				sessionStorage.setItem('storage', this.$store.state.vdisk.storage)
-				sessionStorage.setItem('pool', this.$store.state.vdisk.pool)
+                this.vdiskid = sessionStorage.getItem('vdiskid')
+                this.storage = sessionStorage.getItem('storage')
+                this.pool = sessionStorage.getItem('pool')
 				} else {
+				this.vdiskid = this.$store.state.vdisk.vdiskid
+				this.storage = this.$store.state.vdisk.storage
+				this.pool = this.$store.state.vdisk.pool
 				sessionStorage.setItem('vdiskid', this.$store.state.vdisk.vdiskid)
 				sessionStorage.setItem('storage', this.$store.state.vdisk.storage)
 				sessionStorage.setItem('pool', this.$store.state.vdisk.pool)
