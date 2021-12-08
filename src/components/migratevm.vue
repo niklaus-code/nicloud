@@ -3,10 +3,12 @@
              <div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
                 <h4>迁移云主机</h4>
             </div>
-		<div class="col-sm-4 col-sm-offset-4" style="margin-top:20px">
+		<div class="col-sm-6 col-sm-offset-3" style="margin-top:20px">
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
-        			<label>uuid</label>
+				    <div class="col-sm-10 col-sm-offset-1">
+        			    <label>uuid</label>
+				    </div>
 				</div>
 				<div class="col-sm-9">
 					{{uuid}}
@@ -14,7 +16,9 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
+				    <div class="col-sm-10 col-sm-offset-1">
         			<label>ip</label>
+				    </div>
 				</div>
 				<div class="col-sm-9">
 					{{ip}}
@@ -22,7 +26,9 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
+				    <div class="col-sm-10 col-sm-offset-1">
         			<label>宿主机</label>
+				    </div>
 				</div>
 				<div class="col-sm-9">
 					{{vmhost}}
@@ -30,7 +36,9 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
+				    <div class="col-sm-10 col-sm-offset-1">
         			<label>cpu</label>
+				    </div>
 				</div>
 				<div class="col-sm-9">
 					{{cpu}}
@@ -38,7 +46,9 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
+				    <div class="col-sm-10 col-sm-offset-1">
         			<label>内存</label>
+				    </div>
 				</div>
 				<div class="col-sm-9">
 					{{mem}}&nbspG
@@ -46,7 +56,9 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
+				    <div class="col-sm-10 col-sm-offset-1">
         			<label>系统</label>
+				    </div>
 				</div>
 				<div class="col-sm-9">
 					{{os}}
@@ -54,7 +66,9 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
+				    <div class="col-sm-10 col-sm-offset-1">
         			<label>创建者</label>
+				    </div>
 				</div>
 				<div class="col-sm-9">
 					{{ owner }}
@@ -62,7 +76,9 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
+				    <div class="col-sm-10 col-sm-offset-1">
         			<label>备注</label>
+				    </div>
 				</div>
 				<div class="col-sm-9">
 					{{ comment }}
@@ -70,7 +86,9 @@
     		</div>
 	 		<div class="col-sm-12 form-group" style="margin-top:20px">
 				<div class="col-sm-3">
-        			<button class="btn btn-primary btn-sm" @click="migratevm()">迁移</button>
+				    <div class="col-sm-10 col-sm-offset-1">
+        			<button class="btn btn-primary btn-sm" style="float:right" @click="migratevm()">迁移</button>
+				    </div>
 				</div>
 				<div class="col-sm-9">
 				    <select class="form-select col-sm-10" v-model="hostvalue">
@@ -176,6 +194,8 @@ export default {
 label {
     font-weight : 500;
     margin-top: 0px;
+    float: right;
+    font-weight: 600;
 }
 
 select{
