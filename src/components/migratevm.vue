@@ -41,7 +41,7 @@
 				    </div>
 				</div>
 				<div class="col-sm-9">
-					{{cpu}}
+					{{cpu}}&nbsp核
 				</div>
     		</div>
 	 		<div class="col-sm-12 form-group">
