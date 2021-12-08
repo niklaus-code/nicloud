@@ -116,7 +116,7 @@ export default {
     methods: {
         migratevm: function () {
             var apiurl = `/api/vm/migratevm`
-            this.$http.get(apiurl, { params: { uuid: this.uuid , migratehost: this.hostvalue} } ).then(response => {
+            this.$http.get(apiurl, { params: { uuid: this.uuid , host: this.vmhost,  migratehost: this.hostvalue} } ).then(response => {
             	if (response.data.res) {
 						alert("迁移失败("+response.data.res.Message+")")
 					} else {

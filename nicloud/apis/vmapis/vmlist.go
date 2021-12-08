@@ -63,9 +63,11 @@ func Getvmlist(c *gin.Context) {
 
 func MigrateVm(c *gin.Context) {
   uuid := c.Query("uuid")
+  host := c.Query("host")
+
   migratehost := c.Query("migratehost")
 
-  vmlist := vm.MigrateVm(uuid, migratehost)
+  vmlist := vm.MigrateVm(uuid, host, migratehost)
   res := make(map[string]interface{})
   res["res"] = vmlist
 

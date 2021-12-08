@@ -351,9 +351,14 @@ func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, v
 }
 
 
-func MigrateVm(uuid string, migrate_host string) error {
+func MigrateVm(uuid string, host string, migrate_host string) error {
+  s, err := VmStatus(uuid, host)
+  if s != "关机" {
+    return vmerror.Error{Message: "云主机需要关机状态"}
+  }
+
   vm := GetVmByUuid(uuid)
-  err := libvirtd.DefineVm(vm.Vmxml, migrate_host)
+  err = libvirtd.DefineVm(vm.Vmxml, migrate_host)
   if err != nil {
     return err
   }
