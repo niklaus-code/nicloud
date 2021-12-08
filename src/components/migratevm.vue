@@ -122,8 +122,17 @@ export default {
         },
 
         getvminfo: function () {
-			var u = sessionStorage.getItem('uuid')
+			var u = this.$store.state.vm.uuid
             if (u === null || typeof u === 'undefined' || u === '' ) {
+			    this.uuid = sessionStorage.getItem('uuid')
+			    this.ip = sessionStorage.getItem('ip')
+			    this.vmhost = sessionStorage.getItem('vmhost')
+			    this.cpu = sessionStorage.getItem('cpu')
+			    this.mem = sessionStorage.getItem('mem')
+			    this.owner = sessionStorage.getItem('owner')
+			    this.os = sessionStorage.getItem('os')
+			    this.comment = sessionStorage.getItem('comment')
+				} else {
 				this.uuid = this.$store.state.vm.uuid
 				this.ip = this.$store.state.vm.ip
 				this.vmhost = this.$store.state.vm.host
@@ -140,15 +149,6 @@ export default {
 			    sessionStorage.setItem('owner', this.$store.state.vm.owner)
 			    sessionStorage.setItem('os', this.$store.state.vm.os)
 			    sessionStorage.setItem('comment', this.$store.state.vm.comment)
-				} else {
-			    this.uuid = sessionStorage.getItem('uuid')
-			    this.ip = sessionStorage.getItem('ip')
-			    this.vmhost = sessionStorage.getItem('vmhost')
-			    this.cpu = sessionStorage.getItem('cpu')
-			    this.mem = sessionStorage.getItem('mem')
-			    this.owner = sessionStorage.getItem('owner')
-			    this.os = sessionStorage.getItem('os')
-			    this.comment = sessionStorage.getItem('comment')
 				}
         },
 
