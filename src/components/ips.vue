@@ -53,7 +53,7 @@
 export default {
     data () {
         return {
-			vlan: sessionStorage.getItem('vlan'),
+			vlan: "",
 			ips: [],
         }
     },
