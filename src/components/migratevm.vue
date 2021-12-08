@@ -1,5 +1,8 @@
 <template>
 	<div>
+             <div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
+                <h4>迁移云主机</h4>
+            </div>
 		<div class="col-sm-4 col-sm-offset-4" style="margin-top:20px">
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
@@ -91,6 +94,7 @@ export default {
 			uuid: "",
 			host: [],
 			vmhost: "",
+			comment: "",
         }
     },
 
@@ -176,8 +180,9 @@ label {
 
 select{
     font-family: "微软雅黑";
-    border: 1px #1a1a1a solid;
+    border: 1px #ccc solid;
     border-radius: 5px;
+    height: 30px;
 }
 
 .content {

@@ -72,7 +72,7 @@
       					<li @click="destroy(item.Uuid, index, item.Host)" style="background-color: #e56b6b"  role="presentation"><a role="menuitem" tabindex="-1">强制断电</a></li>
       					<li @click="pause(item.Uuid, index, item.Host)" style="background-color: rgb(255, 211, 0)" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
       					<li style="background-color: greenyellow"  role="presentation">
-							<a @click="migrate(item.Uuid, item.Host, item.Cpu, item.Mem, item.Os, item.Owner, item.Ip)" role="menuitem" tabindex="-1">迁移</a>
+							<a @click="migrate(item.Uuid, item.Host, item.Cpu, item.Mem, item.Os, item.Owner, item.Ip, item.Comment)" role="menuitem" tabindex="-1">迁移</a>
 						</li>
                           <li style="background-color: 	#9370DB"  role="presentation">
                             <a @click="changeparam(item.Uuid, item.Ip, item.Os, item.Host, item.Cpu, item.Mem, item.Owner, item.Comment)" role="menuitem" tabindex="-1">修改配置</a>
@@ -125,7 +125,7 @@ export default {
 			this.$store.state.changeparam.comment = comment
             },
 
-       	migrate: function (uuid, host, cpu, mem, os, owner, ip) {
+       	migrate: function (uuid, host, cpu, mem, os, owner, ip, comment) {
             this.$emit("toParent", "migratevm");
 			this.$store.state.vm.uuid = uuid
 			this.$store.state.vm.host = host
@@ -134,6 +134,7 @@ export default {
 			this.$store.state.vm.os = os
 			this.$store.state.vm.owner = owner
 			this.$store.state.vm.ip = ip
+			this.$store.state.vm.comment = comment
             },
 
         create: function () {
