@@ -91,24 +91,24 @@ export default {
 			},
 
 		vlaninfo: function () {
-			var v = sessionStorage.getItem('vlan')
-			if (v === null || typeof v === 'undefined' || v === '' ) {
-				this.vlan = this.$store.state.network.vlan
-				this.bridge = this.$store.state.network.bridge
-				this.network = this.$store.state.network.network
-				this.prefix = this.$store.state.network.prefix
-				this.gateway = this.$store.state.network.gateway
-			 	sessionStorage.setItem('vlan', this.$store.state.network.vlan)
-			 	sessionStorage.setItem('bridge', this.$store.state.network.bridge)
-			 	sessionStorage.setItem('network', this.$store.state.network.network)
-			 	sessionStorage.setItem('prefix', this.$store.state.network.prefix)
-			 	sessionStorage.setItem('gateway', this.$store.state.network.gateway)
+			var v = this.$store.state.network.vlan
+			if (v === null || typeof v === 'undefined' || v === '' || v === "undefined") {
+			 	this.vlan = sessionStorage.getItem('vlan', this.$store.state.network.vlan)
+			 	this.bridge = sessionStorage.getItem('bridge', this.$store.state.network.bridge)
+			 	this.network = sessionStorage.getItem('network', this.$store.state.network.network)
+			 	this.prefix = sessionStorage.getItem('prefix', this.$store.state.network.prefix)
+			 	this.gateway = sessionStorage.getItem('gateway', this.$store.state.network.gateway)
 				} else {
-			 		this.vlan = sessionStorage.getItem('vlan', this.$store.state.network.vlan)
-			 		this.bridge = sessionStorage.getItem('bridge', this.$store.state.network.bridge)
-			 		this.network = sessionStorage.getItem('network', this.$store.state.network.network)
-			 		this.prefix = sessionStorage.getItem('prefix', this.$store.state.network.prefix)
-			 		this.gateway = sessionStorage.getItem('gateway', this.$store.state.network.gateway)
+				    this.vlan = this.$store.state.network.vlan
+				    this.bridge = this.$store.state.network.bridge
+				    this.network = this.$store.state.network.network
+				    this.prefix = this.$store.state.network.prefix
+				    this.gateway = this.$store.state.network.gateway
+			 	    sessionStorage.setItem('vlan', this.$store.state.network.vlan)
+			 	    sessionStorage.setItem('bridge', this.$store.state.network.bridge)
+			 	    sessionStorage.setItem('network', this.$store.state.network.network)
+			 	    sessionStorage.setItem('prefix', this.$store.state.network.prefix)
+			 	    sessionStorage.setItem('gateway', this.$store.state.network.gateway)
 				}
 			},
         }
