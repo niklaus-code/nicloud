@@ -143,7 +143,6 @@ input {
 
 label {
 	font-weight : 400;
-	margin-top: 5px;
 }
 
 .table tbody tr td {
