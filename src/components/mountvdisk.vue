@@ -195,7 +195,6 @@ input{
 }
 
 .table tbody tr td {
-	padding: 12px;
 	vertical-align: "middle";
 }
 

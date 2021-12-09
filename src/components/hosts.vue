@@ -90,8 +90,7 @@ export default {
         }
   }
 </script>
-<style>
-
+<style scoped>
 select{
     font-family: "微软雅黑";
     border: 1px #1a1a1a solid;
@@ -117,11 +116,9 @@ select{
 
 label {
 	font-weight : 400;
-	margin-top: 5px;
 }
 
 .table tbody tr td {
-    padding: 12px;
     vertical-align: "middle";
 }
 

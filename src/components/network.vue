@@ -1,7 +1,7 @@
 <template>
 		<div class="col-sm-10 col-sm-offset-1" style="margin-top:20px;">
 			<button class="btn btn-success btn-sm" type="button" @click="createvlan">创建</button>
-			<table class="table table-hover" style="text-align: center;">
+			<table class="table table-condensed .table-hover" style="text-align: center;">
     			<thead>
       				<tr>
         				<th>
@@ -20,7 +20,7 @@
     			</thead>
 
 				<tbody v-for="(item, index) in data">
-      				<tr v-if="item.Status" class="table-dark text-dark" :id="item.Uuid">
+      				<tr v-show="item.Status" class="table-dark text-dark" :id="item.Uuid">
         				<label class="checkbox-inline">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
@@ -85,7 +85,7 @@ export default {
             this.$http.get(apiurl, { params: { vlan: vlan} } ).then(response => {
             	if (response.data.err === null) {
 					alert("删除成功")
-					this.data[index].Status = false
+					this.data[index].Status = 0
 					} else {
 					alert("删除失败('"+response.data.err.Message+"')")	
 				}
@@ -101,7 +101,7 @@ export default {
         }
   }
 </script>
-<style>
+<style scoped>
 
 select{
     font-family: "微软雅黑";
@@ -123,7 +123,6 @@ label {
 }
 
 .table tbody tr td {
-    padding: 12px;
     vertical-align: "middle";
 }
 

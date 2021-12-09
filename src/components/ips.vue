@@ -121,7 +121,7 @@ export default {
   }
   }
 </script>
-<style>
+<style scoped>
 .vlan {
 	font-size: 18px;
 	font-weight: 600;
@@ -137,7 +137,6 @@ export default {
 }
 
 .table tbody tr td {
-    padding: 12px;
     vertical-align: "middle";
 }
 

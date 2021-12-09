@@ -308,10 +308,9 @@ input{
 }
 
 table {
-margin-bottom: 0px;
+    margin-bottom: 0px;
 }
 .table tbody tr td {
-	padding: 12px;
 	vertical-align: "middle";
 }
 
