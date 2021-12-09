@@ -23,9 +23,8 @@ func Mountdisk(c *gin.Context) {
   s, err := vm.VmStatus(vmid, host)
   if err != nil {
     res["err"] = err
-    c.JSON(200, res)
     c.Abort()
-    return
+    c.JSON(200, res)
   }
 
   if s != "关机" {

@@ -144,7 +144,7 @@ export default {
 		commit: function () {
             var apiurl = `/api/hosts/createhost`
 
-            this.$http.get(apiurl, { params: {datacenter:this.centervalue, cpu: this.cpu, mem:this.mem, ip: this.ip, num: this.num, vlan: this.vlanvalue.Vlan} }).then(response => {
+            this.$http.post(apiurl, this.$qs.stringify({datacenter:this.centervalue, cpu: this.cpu, mem:this.mem, ipv4: this.ip, max_vms: this.num, vlan: this.vlanvalue.Vlan})).then(response => {
 				if (response.data.res === null) {
 					alert("创建成功! 是否查看宿主机列表")
 					this.$emit("toParent", "hosts");

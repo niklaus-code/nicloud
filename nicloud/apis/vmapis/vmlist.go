@@ -36,7 +36,6 @@ func GetVminfo(c *gin.Context) {
   c.JSON(200, res)
 }
 
-
 func GetVmStatus(c *gin.Context) {
   host := c.Query("host")
   uuid := c.Query("uuid")

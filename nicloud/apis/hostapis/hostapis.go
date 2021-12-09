@@ -2,7 +2,9 @@ package hostapis
 
 import (
   "github.com/gin-gonic/gin"
+  validator "github.com/go-playground/validator/v10"
   "nicloud/vm"
+  "nicloud/vmerror"
   "strconv"
 )
 
@@ -25,16 +27,33 @@ func GetHostsbydatacenter(c *gin.Context) {
   c.JSON(200, res)
 }
 
-func Createhost(c *gin.Context) {
-  cpu, _ := strconv.Atoi(c.Query("cpu"))
-  mem, _ := strconv.Atoi(c.Query("mem"))
-  ip := c.Query("ip")
-  num,_ := strconv.Atoi(c.Query("num"))
-  vlan := c.Query("vlan")
-  datacenter := c.Query("datacenter")
 
+func Createhost(c *gin.Context) {
   res := make(map[string]interface{})
-  err := vm.Createhost(datacenter, cpu, mem, ip, num, vlan)
+
+  cpu, _ := strconv.Atoi(c.PostForm("cpu"))
+  mem, _ := strconv.Atoi(c.PostForm("mem"))
+  ipv4 := c.PostForm("ipv4")
+  max_vms,_ := strconv.Atoi(c.PostForm("max_vms"))
+  vlan := c.PostForm("vlan")
+  datacenter := c.PostForm("datacenter")
+  h := vm.Vm_hosts{
+    Cpu: cpu,
+    Mem: mem,
+    Ipv4: ipv4,
+    Max_vms: max_vms,
+    Vlan: vlan,
+    Datacenter: datacenter,
+  }
+  validate := validator.New()
+  err := validate.Struct(h)
+  if err != nil {
+    res["res"] = vmerror.Error{Message: err.Error()}
+    c.JSON(400, res)
+    return
+  }
+
+  err = vm.Createhost(datacenter, cpu, mem, ipv4, max_vms, vlan)
   res["res"] = err
   c.JSON(200, res)
 }

@@ -7,16 +7,16 @@ import (
 )
 
 type Vm_hosts struct {
-  Datacenter  string
-  Ipv4        string
-  Mem         int
-  Cpu         int
-  Max_vms     int
+  Datacenter  string  `json:"datacenter" validate:"required"`
+  Ipv4        string  `json:"ipv4" validate:"min=8,max=15"`
+  Mem         int `json:"mem" validate:"gt=0"`
+  Cpu         int `json:"cpu" validate:"gt=0"`
+  Max_vms     int `json:"max_vms" validate:"gt=0"`
   Created_vms int
   Usedmem     int
   Usedcpu     int
   Status      int8
-  Vlan        string
+  Vlan        string  `json:"vlan" validate:"required"`
 }
 
 func Allhosts(obj []Vm_hosts) []map[string]interface{}  {
