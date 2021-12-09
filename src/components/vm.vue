@@ -301,6 +301,7 @@ input{
 	margin-right: 5px;
 	border-color: #adadad;
 	height: 30px;
+    margin-top: 2px;
 }
 
 .modal {

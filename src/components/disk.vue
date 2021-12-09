@@ -133,6 +133,9 @@ select{
     margin-bottom: 30px;
 }
 
+input {
+    margin-top:2px;
+}
 
 .details-content .article-cont p {
     padding:30px 0 0 5px
