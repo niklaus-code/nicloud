@@ -11,12 +11,12 @@ import (
 )
 
 type Vms_vlans struct {
-  Datacenter string
-  Vlan string
-  Bridge string
-  Network string
-  Prefix int
-  Gateway string
+  Datacenter string  `json:"Datacenter" validate:"required"`
+  Vlan string  `json:"Vlan" validate:"required"`
+  Bridge string  `json:"Bridge" validate:"required"`
+  Network string   `json:"Network" validate:"required"`
+  Prefix int   `json:"Prefix" validate:"required"`
+  Gateway string  `json:"Gateway" validate:"min=8,max=15"`
   Status bool
 }
 

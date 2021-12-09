@@ -2,6 +2,7 @@ package networkapis
 
 import (
   "github.com/gin-gonic/gin"
+  "github.com/go-playground/validator/v10"
   "nicloud/networks"
   "nicloud/vm"
   "nicloud/vmerror"
@@ -9,28 +10,38 @@ import (
 )
 
 func Add(c *gin.Context) {
-  vlan := c.Query("vlan")
-  bridge := c.Query("bridge")
-  network := c.Query("network")
-  prefix, err := strconv.Atoi(c.Query("prefix"))
-  gateway := c.Query("gateway")
-  datacenter := c.Query("datacenter")
+  vlan := c.PostForm("vlan")
+  bridge := c.PostForm("bridge")
+  network := c.PostForm("network")
+  prefix, _ := strconv.Atoi(c.PostForm("prefix"))
+  gateway := c.PostForm("gateway")
+  datacenter := c.PostForm("datacenter")
 
-  err1 := networks.AddVlan(datacenter, vlan, bridge, network, prefix, gateway)
+  v := networks.Vms_vlans{
+    Vlan: vlan,
+    Bridge: bridge,
+    Network: network,
+    Prefix: prefix,
+    Gateway: gateway,
+    Datacenter: datacenter,
+  }
+
   res := make(map[string]interface{})
+  validate := validator.New()
+  err := validate.Struct(v)
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "参数错误"}
+    c.JSON(400, res)
+    return
+  }
+
+  err = networks.AddVlan(datacenter, vlan, bridge, network, prefix, gateway)
   if err != nil {
     res["err"] = err
-    res["res"] = false
     c.JSON(200, res)
+    return
   }
-
-  if err1 != nil {
-    res["res"] = false
-    res["err"] = err1
-  } else {
-    res["res"] = true
-  }
-
+  res["err"] = nil
   c.JSON(200, res)
 }
 

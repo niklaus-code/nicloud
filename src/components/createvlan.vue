@@ -149,8 +149,8 @@ export default {
 
             var apiurl = `/api/networks/createvlan`
 
-            this.$http.get(apiurl, { params: {datacenter: this.centervalue,  vlan: this.vlan, bridge:this.bridge, network: this.network, prefix: this.prefix, gateway: this.gateway} }).then(response => {
-				if (response.data.res) {
+            this.$http.post(apiurl,  this.$qs.stringify({datacenter: this.centervalue,  vlan: this.vlan, bridge:this.bridge, network: this.network, prefix: this.prefix, gateway: this.gateway})).then(response => {
+				if (response.data.err === null) {
 					alert("创建成功! 是否查看网络列表")
 					this.$emit("toParent", "network");
 				} else {

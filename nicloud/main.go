@@ -53,7 +53,7 @@ func main() {
   v4 := r.Group("/api/networks")
   {
     v2.Use(utils.Tokenauth())
-    v4.GET("createvlan", networkapis.Add)
+    v4.POST("createvlan", networkapis.Add)
     v4.GET("getvlan", networkapis.Get)
     v4.GET("getvlanbydatacenter", networkapis.Getvlanbydatacenter)
     v4.GET("getip", networkapis.GetIplist)
