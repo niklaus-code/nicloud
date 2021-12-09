@@ -3,6 +3,7 @@ package vmapis
 import (
   "fmt"
   "github.com/gin-gonic/gin"
+  "github.com/go-playground/validator/v10"
   "nicloud/vm"
   "nicloud/vmerror"
   "strconv"
@@ -75,17 +76,35 @@ func MigrateVm(c *gin.Context) {
 
 func Createvm(c *gin.Context) {
   res := make(map[string]interface{})
-  ip := c.Query("ip")
-  cpu, _ := strconv.Atoi(c.Query("cpu"))
-  mem, _ := strconv.Atoi(c.Query("mem"))
-  host := c.Query("host")
-  image := c.Query("image")
-  datacenter := c.Query("datacenter")
-  storage := c.Query("storage")
-  vlan := c.Query("vlan")
-  pool := c.Query("pool")
+  ip := c.PostForm("ip")
+  cpu, _ := strconv.Atoi(c.PostForm("cpu"))
+  mem, _ := strconv.Atoi(c.PostForm("mem"))
+  host := c.PostForm("host")
+  os := c.PostForm("os")
+  datacenter := c.PostForm("datacenter")
+  storage := c.PostForm("storage")
+  vlan := c.PostForm("vlan")
+  pool := c.PostForm("pool")
 
-  err := vm.Create(datacenter, storage, vlan, cpu, mem, ip, host, image, pool)
+  v := vm.Vms{
+    Ip: ip,
+    Cpu: cpu,
+    Mem: mem,
+    Host: host,
+    Os: os,
+    Datacenter: datacenter,
+    Storage: storage,
+  }
+
+  validate := validator.New()
+  err := validate.Struct(v)
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "参数错误"}
+    c.JSON(400, res)
+    return
+  }
+
+  err = vm.Create(datacenter, storage, vlan, cpu, mem, ip, host, os, pool)
   res["err"] = err
   c.JSON(200, res)
 }

@@ -26,7 +26,7 @@ func main() {
 	  v2.Use(utils.Tokenauth())
 
 		v2.GET("getvm", vmapis.Getvmlist)
-		v2.GET("create", vmapis.Createvm)
+		v2.POST("create", vmapis.Createvm)
 		v2.GET("operation/:id", vmapis.Operation)
 		v2.GET("delete", vmapis.DeleteVM)
 		v2.GET("getflavor", vmapis.GetFlavor)

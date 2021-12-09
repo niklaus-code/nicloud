@@ -21,19 +21,19 @@ import (
 type Vms struct {
 	Uuid        string
 	Name        string
-	Cpu         int
-	Mem         int
+	Cpu         int `json:"cpu validate:"gt=0"`
+	Mem         int `json:"mem validate:"gt=0"`
 	Create_time time.Time
 	Owner       string
 	Comment     string
 	Vmxml       string
 	Status      string
 	Exist       int
-	Ip          string
-	Host        string
-	Os          string
-	Datacenter  string
-	Storage     string
+	Ip          string  `json:"ip" validate:"min=8,max=15"`
+	Host        string  `json:"host" validate:"min=8,max=15"`
+	Os          string  `json:"os" validate:"required"`
+	Datacenter  string  `json:"datacenter" validate:"required"`
+	Storage     string  `json:"storage" validate:"required"`
 }
 
 func updatexmlbyuuid(xml string, uuid string, vcpu int, vmem int) error {
