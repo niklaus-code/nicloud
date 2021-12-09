@@ -107,7 +107,7 @@ func main() {
     v9.GET("umountdisk", vdisk.Umountdisk)
     v9.GET("mountdisk", vdisk.Mountdisk)
     v9.GET("deletevdisk", vdisk.Deletevdisk)
-    v9.GET("createvdisk", vdisk.Createvdisk)
+    v9.POST("createvdisk", vdisk.Createvdisk)
     v9.GET("getvdisk", vdisk.GetVdisk)
   }
 

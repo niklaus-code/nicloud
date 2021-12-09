@@ -90,13 +90,13 @@ export default {
     methods: {
 		mount: function (uuid, ip, host, datacenter ) {
          	var apiurl = `/api/vdisk/mountdisk`
-            this.$http.get(apiurl, { params: { vmid: uuid, ip: ip, host: host, storage: sessionStorage.getItem('storage'), pool: sessionStorage.getItem('pool') , datacenter: datacenter, vdiskid: sessionStorage.getItem('vdiskid')}} ).then(response => {
+            this.$http.get(apiurl, { params: { vmid: uuid, ip: ip, host: host, storage: this.storage, pool: this.pool , datacenter: datacenter, vdiskid: this.vdiskid}} ).then(response => {
 
 	    	if (response.data.err === null) {
             	alert("挂载成功")
 				this.$emit("toParent", "disk");
             } else {
-                 alert("创建失败('"+response.data.err.Message+"')")  
+                 alert("挂载失败('"+response.data.err.Message+"')")  
                }
 			})
 		},

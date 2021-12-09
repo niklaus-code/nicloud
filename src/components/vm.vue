@@ -43,7 +43,7 @@
        			<td>
 					<ul>
 						<li v-for="(k, v) in item.disk">
-							{{k.Diskname}}&nbsp{{k.Contain}}G
+							{{k.Diskname}}&nbsp{{k.contain}}G
 						</li>
 					</ul>
 				</td>

@@ -14,13 +14,13 @@ import (
 
 type Vms_vdisks struct {
   Vdiskid string
-  Contain int
+  Contain int `json:"contain" validate:"min=0,max=1024"`
   Diskname string
-  Pool string
-  Storage string
-  Datacenter string
+  Pool string `json:"pool" validate:"required"`
+  Storage string  `json:"storage" validate:"required"`
+  Datacenter string `json:"datacenter" validate:"required"`
   Vm_ip string
-  User string
+  User string `json:"user" validate:"required"`
   Exist int8
   Status int
   Createtime string

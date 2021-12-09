@@ -2,6 +2,7 @@ package vdisk
 
 import (
   "github.com/gin-gonic/gin"
+  "github.com/go-playground/validator/v10"
   vdisk "nicloud/vdisk"
   "nicloud/vm"
   "nicloud/vmerror"
@@ -23,21 +24,21 @@ func Mountdisk(c *gin.Context) {
   s, err := vm.VmStatus(vmid, host)
   if err != nil {
     res["err"] = err
-    c.Abort()
     c.JSON(200, res)
+    return
   }
 
   if s != "关机" {
     res["err"] = vmerror.Error{Message: "cont mount disk, vm is " + s}
-    c.Abort()
     c.JSON(200, res)
+    return
   }
 
   xml, err := vm.Getvmxmlby(ip, storage, datacenter)
   if err != nil {
-    res["err"] = err
-    c.Abort()
+    res["err"] = vmerror.Error{Message: "获取云主机信息失败"}
     c.JSON(200, res)
+    return
   }
 
   err = vdisk.Mountdisk(ip,  host, storage, pool, datacenter, vdiskid, vms, xml)
@@ -45,10 +46,12 @@ func Mountdisk(c *gin.Context) {
     res["err"] = err
     c.Abort()
     c.JSON(200, res)
-  } else {
-    res["err"] = nil
-    c.JSON(200, res)
+    return
   }
+
+  res["err"] = nil
+  c.JSON(200, res)
+
 }
 
 func Deletevdisk(c *gin.Context)  {
@@ -63,17 +66,27 @@ func Deletevdisk(c *gin.Context)  {
 
 func Createvdisk(c *gin.Context) {
   res := make(map[string]interface{})
-  contain, err := strconv.Atoi(c.Query("contain"))
-  if err != nil {
-    err = vmerror.Error{Message: "param error"}
-    res["err"] = err
-    c.Abort()
-    c.JSON(200, res)
-  }
-  pool := c.Query("pool")
-  storage := c.Query("storage")
-  datacenter := c.Query("datacenter")
+  contain, _ := strconv.Atoi(c.PostForm("contain"))
+  pool := c.PostForm("pool")
+  storage := c.PostForm("storage")
+  datacenter := c.PostForm("datacenter")
   user := "nicloud"
+
+  d := vdisk.Vms_vdisks{
+    Contain: contain,
+    Pool: pool,
+    Storage: storage,
+    Datacenter: datacenter,
+    User: user,
+  }
+  validate := validator.New()
+  err := validate.Struct(d)
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "参数错误"}
+    c.JSON(400, res)
+    return
+  }
+
   err = vdisk.Add_vdisk(contain, pool, storage, datacenter, user)
 
   res["err"] = err

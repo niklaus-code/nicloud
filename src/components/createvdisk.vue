@@ -103,7 +103,7 @@ export default {
 		getpool: function () {
             var apiurl = `/api/storage/getpool`
 
-            this.$http.get(apiurl, { params: { datacenter: this.centervalue, storage: this.storagevalue}}).then(response => {
+            this.$http.get(apiurl, {params: { datacenter: this.centervalue, storage: this.storagevalue}}).then(response => {
                 if (response.data.err === null) {
                     this.pool = response.data.res
                 } else {
@@ -152,7 +152,7 @@ export default {
 
             var apiurl = `/api/vdisk/createvdisk`
 
-            this.$http.get(apiurl, { params: { datacenter: this.centervalue, storage: this.storagevalue, pool: this.poolvalue, contain: this.containvalue} }).then(response => {
+            this.$http.post(apiurl,  this.$qs.stringify({ datacenter: this.centervalue, storage: this.storagevalue, pool: this.poolvalue, contain: this.containvalue})).then(response => {
 				if (response.data.err === null) {
 					alert("创建成功!")
 					this.$emit("toParent", "disk");

@@ -28,12 +28,12 @@
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
         				<td>{{item.Vdiskid}}</td>
-        				<td>{{item.Contain}}G</td>
-        				<td>{{item.Pool}}</td>
+        				<td>{{item.contain}}G</td>
+        				<td>{{item.pool}}</td>
         				<td>{{item.Vm_ip}}</td>
-        				<td>{{item.Storage}}</td>
-        				<td>{{item.Datacenter}}</td>
-        				<td>{{item.User}}</td>
+        				<td>{{item.storage}}</td>
+        				<td>{{item.datacenter}}</td>
+        				<td>{{item.user}}</td>
 				      <td>
                             <span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
                             <span v-else class="glyphicon glyphicon-remove"></span>
@@ -41,10 +41,10 @@
         				<td>{{item.Createtime}}</td>
 		    			<td>
 							<!-- <button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="mount(, item.Storage, item.Pool, index)"> -->
-							<button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="mount('mountvdisk', item.Vdiskid, item.Storage, item.Pool)">
+							<button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="mount('mountvdisk', item.Vdiskid, item.storage, item.pool)">
                 				挂载
             				</button>
-							<button v-else class="btn btn-warning btn-xs" type="button" @click="umount(item.Vm_ip, item.Storage, item.Datacenter, item.Vdiskid, index)">
+							<button v-else class="btn btn-warning btn-xs" type="button" @click="umount(item.Vm_ip, item.storage, item.datacenter, item.Vdiskid, index)">
                 				卸载
             				</button>
 							<button v-if="item.Status" class="btn btn-danger btn-xs" type="button" @click="deletevdisk(item.Vdiskid, index)">
