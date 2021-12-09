@@ -2,6 +2,7 @@ package osimage
 
 import (
   "github.com/gin-gonic/gin"
+  "github.com/go-playground/validator/v10"
   "nicloud/osimage"
   "nicloud/vmerror"
   "strconv"
@@ -58,14 +59,32 @@ func GetImageby(c *gin.Context) {
 }
 
 func AddImage(c *gin.Context) {
-  datacenter := c.Query("datacenter")
-  storage := c.Query("storage")
-  osname := c.Query("osname")
-  snapname := c.Query("snapimage")
-  cephblockdevice := c.Query("cephblockdevice")
-  xml := c.Query("xml")
+  datacenter := c.PostForm("datacenter")
+  storage := c.PostForm("storage")
+  osname := c.PostForm("osname")
+  snapname := c.PostForm("snapimage")
+  cephblockdevice := c.PostForm("cephblockdevice")
+  xml :=c.PostForm("xml")
   res := make(map[string]interface{})
-  err := osimage.Add(datacenter, storage, osname, cephblockdevice, snapname, xml)
+
+  o := osimage.Vms_os{
+    Datacenter: datacenter,
+    Storage: storage,
+    Osname: osname,
+    Snapimage: snapname,
+    Cephblockdevice: cephblockdevice,
+    Xml: xml,
+  }
+
+  validate := validator.New()
+  err := validate.Struct(o)
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "参数错误"}
+    c.JSON(400, res)
+    return
+  }
+
+  err = osimage.Add(datacenter, storage, osname, cephblockdevice, snapname, xml)
 
   res["err"] = err
   c.JSON(200, res)

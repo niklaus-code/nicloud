@@ -81,7 +81,7 @@ func main() {
     v6.GET("getimageby", osimage.GetImageby)
     v6.GET("getimage", osimage.GetImage)
     v6.GET("updateimage", osimage.UpdateImage)
-    v6.GET("createimage", osimage.AddImage)
+    v6.POST("createimage", osimage.AddImage)
     v6.GET("delimage", osimage.DelImage)
   }
 

@@ -13,12 +13,12 @@ import (
 
 type Vms_os struct {
   Id int
-  Osname string
-  Datacenter string
-  Storage string
-  Cephblockdevice string
-  Snapimage string
-  Xml string
+  Osname string `json:"Osname" validate:"required"`
+  Datacenter string `json:"Datacenter" validate:"required"`
+  Storage string  `json:"Storage" validate:"required"`
+  Cephblockdevice string  `json:"Cephblockdevice" validate:"required"`
+  Snapimage string  `json:"Snapimage" validate:"required"`
+  Xml string  `json:"Xml" validate:"required"`
   Status int8
 }
 

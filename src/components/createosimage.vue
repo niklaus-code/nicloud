@@ -173,7 +173,7 @@ export default {
 
             var apiurl = `/api/osimage/createimage`
 
-            this.$http.get(apiurl, { params: { osname: this.osimage, datacenter: this.centervalue, storage: this.storagevalue, cephblockdevice: this.cephblockdevice, snapimage: this.snapimage, xml: this.xml} }).then(response => {
+            this.$http.post(apiurl, this.$qs.stringify({osname: this.osimage, datacenter: this.centervalue, storage: this.storagevalue, cephblockdevice: this.cephblockdevice, snapimage: this.snapimage, xml: this.xml})).then(response => {
 				if (response.data.err === null) {
 					alert("创建成功!")
                 	this.$emit("toParent", "osimage");
