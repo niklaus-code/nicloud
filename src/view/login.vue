@@ -40,7 +40,7 @@ export default {
 				backgroundImage:"url(" + require("./fish.jpg") + ")",
         	},
 			passimage: {
-				backgroundImage:"url(" + require("./pass.svg") + ")",
+				backgroundImage:"url(" + require("./key-fill.svg") + ")",
         	},
 			userimage: {
 				backgroundImage:"url(" + require("./user.svg") + ")",
@@ -92,11 +92,13 @@ export default {
 }
 
 input {
+    font-weight: 500px;
 	width: 100%;
 	font-family: "微软雅黑";
 }
 
 .login {
+    font-weight:900;
 	margin-top:30px;
 	margin-bottom:10px;
 }
