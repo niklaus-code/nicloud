@@ -62,7 +62,7 @@
 					<button  v-if="item.Status === '运行'" type="button" class="btn btn-success btn-xs">{{item.Status}}</button>
        				<button v-else type="button" class="btn btn-warning btn-xs">{{item.Status}}</button>
        			</td>
-       			<td :class="[{'dropup': (index > 10)}, {'dropdown': (index <= 10)}]">
+       			<td :class="[{'dropup': (index > 10)}, {'dropdown': (index <= 10)}]" style="min-width:90px">
 					<button class="btn btn-info btn-xs dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
 						操作<span class="caret"></span>
 					</button>
