@@ -3,10 +3,12 @@
 	<div class="col-sm-4 col-sm-offset-4" style="margin-top:250px; display: flex; align-items:center;">
 		<form class="form-horizontal col-sm-12">
 
-			<div class="col-sm-6 col-sm-offset-3"> <img src="./logo.png" width="100%"></div>
+			<div class="col-sm-6 col-sm-offset-3"> 
+                <img src="./logo.png" width="100%">
+            </div>
 
-			<div class="col-sm-10 col-sm-offset-1 a">
-			<div class="col-sm-8 col-sm-offset-2 ">
+			<div class="col-sm-12 a">
+			<div class="col-sm-12 login">
   				<div class="form-group">
     				<div class="col-sm-12">
       					<input v-model="username" class="form-control passwd" :style="userimage" placeholder="账号">
@@ -94,7 +96,7 @@ input {
 	font-family: "微软雅黑";
 }
 
-.col-sm-8 {
+.login {
 	margin-top:30px;
 	margin-bottom:10px;
 }
