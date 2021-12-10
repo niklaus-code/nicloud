@@ -19,18 +19,37 @@ func DelImage(c *gin.Context) {
 
 func UpdateImage(c *gin.Context) {
   res := make(map[string]interface{})
-  id, errparam := strconv.Atoi(c.Query("id"))
+  id, errparam := strconv.Atoi(c.PostForm("id"))
   if errparam != nil {
-    res["res"] = vmerror.Error{Message: "param err by ysman"}
+    res["res"] = vmerror.Error{Message: "param err"}
     c.JSON(400, res)
   }
-  datacenter := c.Query("datacenter")
-  storage := c.Query("storage")
-  osname := c.Query("osname")
-  snapname := c.Query("snapimage")
-  cephblockdevice := c.Query("cephblockdevice")
-  xml := c.Query("xml")
-  err := osimage.Update(id, datacenter, storage, osname, snapname, cephblockdevice, xml)
+  datacenter := c.PostForm("datacenter")
+  storage := c.PostForm("storage")
+  osname := c.PostForm("osname")
+  snapname := c.PostForm("snapimage")
+  cephblockdevice := c.PostForm("cephblockdevice")
+  xml := c.PostForm("xml")
+
+  o := osimage.Vms_os{
+    Id: id,
+    Datacenter: datacenter,
+    Storage: storage,
+    Osname: osname,
+    Snapimage: snapname,
+    Cephblockdevice: cephblockdevice,
+    Xml: xml,
+  }
+
+  validate := validator.New()
+  err := validate.Struct(o)
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "参数错误"}
+    c.JSON(400, res)
+    return
+  }
+
+  err = osimage.Update(id, datacenter, storage, osname, snapname, cephblockdevice, xml)
 
   res["err"] = err
   c.JSON(200, res)

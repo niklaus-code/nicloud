@@ -112,7 +112,7 @@ export default {
     },
 
     created: function () {
-        this.vlaninfo()
+        this.osinfo()
 		this.getdatacenter()
     },
 
@@ -140,13 +140,27 @@ export default {
             })
         },
 
-		vlaninfo: function () {
-            this.osimage = this.$store.state.osimage.osname
-            this.cephblockdevice = this.$store.state.osimage.cephblockdevice
-            this.snapimage = this.$store.state.osimage.snap
-            this.xml = this.$store.state.osimage.xml
-            this.id = this.$store.state.osimage.id
-            },
+		osinfo: function () {
+            var v = this.$store.state.osimage.osname
+            if (v === null || typeof v === 'undefined' || v === '' || v === "undefined") {
+                this.osimage = sessionStorage.getItem('osimage')
+                this.cephblockdevice = sessionStorage.getItem('cephblockdevice')
+                this.snapimage = sessionStorage.getItem('snapimage')
+                this.xml = sessionStorage.getItem('xml')
+                this.id = sessionStorage.getItem('id')
+            } else {
+                this.osimage = this.$store.state.osimage.osname
+                this.cephblockdevice = this.$store.state.osimage.cephblockdevice
+                this.snapimage = this.$store.state.osimage.snap
+                this.xml = this.$store.state.osimage.xml
+                this.id = this.$store.state.osimage.id
+                sessionStorage.setItem('osimage', this.$store.state.osimage.osname)
+                sessionStorage.setItem('cephblockdevice', this.$store.state.osimage.cephblockdevice)
+                sessionStorage.setItem('snapimage', this.$store.state.osimage.snap)
+                sessionStorage.setItem('xml', this.$store.state.osimage.xml)
+                sessionStorage.setItem('id', this.$store.state.osimage.id)
+                }
+        },
 
 		check: function (osname, cephblockdevice, snapimage, xml) {
 			if (typeof osname === 'undefined' || osname === null || osname === ''|| typeof cephblockdevice === 'undefined' || cephblockdevice === null || cephblockdevice === '' || typeof snapimage === 'undefined' || snapimage === null || snapimage === '' ||typeof xml === 'undefined' || xml === null || xml === '') {
@@ -160,7 +174,7 @@ export default {
 		commit: function () {
 
             var apiurl = `/api/osimage/updateimage`
-            this.$http.get(apiurl, { params: {id: this.id , datacenter: this.centervalue, storage: this.storagevalue, osname: this.osimage, cephblockdevice: this.cephblockdevice, snapimage: this.snapimage, xml: this.xml} }).then(response => {
+            this.$http.post(apiurl,this.$qs.stringify({id: this.id , datacenter: this.centervalue, storage: this.storagevalue, osname: this.osimage, cephblockdevice: this.cephblockdevice, snapimage: this.snapimage, xml: this.xml})).then(response => {
 				if (response.data.err === null) {
 					alert("更新成功!")
 					this.$emit("toParent", "osimage");
