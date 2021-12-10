@@ -41,7 +41,6 @@ export default {
 					},
 				{
 				name: "统计",
-				router: "count"
 					},
 				],
         }

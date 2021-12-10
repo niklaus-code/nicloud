@@ -3,12 +3,12 @@
 	 		<div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
                 <h4>创建云主机</h4>
 	 		</div>
-		<div  class="col-sm-5 col-sm-offset-3" style="margin-top:20px">
+		<div  class="col-sm-8 col-sm-offset-2" style="margin-top:20px">
 	 		<div class="col-sm-12 form-group">
-				<div class="col-sm-3">
+				<div class="col-sm-4">
         			<label>数据中心</label>
 				</div>
-				<div class="col-sm-9">
+				<div class="col-sm-8">
         			<select class="col-sm-10" v-model="centervalue" @change="getvlan(centervalue)" @change="getstorage(centervalue)">
 					  <option value="">--请选择--</option>
   						<option  v-for="c in datacenter" :value="c.Datacenter">
@@ -18,10 +18,10 @@
 				</div>
     		</div>
            <div class="col-sm-12 form-group">
-                <div class="col-sm-3">
+                <div class="col-sm-4">
                     <label>存储集群</label>
                 </div>
-                <div class="col-sm-9">
+                <div class="col-sm-8">
                     <select class="col-sm-10" v-model="storagevalue" @change="getpool()" @change="getimageby()">
 					  <option value="">--请选择--</option>
                         <option  v-for="c in storage" :value="c.Uuid">
@@ -32,10 +32,10 @@
             </div>
 
            <div class="col-sm-12 form-group">
-                <div class="col-sm-3">
+                <div class="col-sm-4">
                     <label>存储池</label>
                 </div>
-                <div class="col-sm-9">
+                <div class="col-sm-8">
                     <select class="col-sm-10" v-model="poolvalue">
 					  <option value="">--请选择--</option>
                         <option  v-for="c in pool" :value="c.Pool">
@@ -46,10 +46,10 @@
             </div>
 
 	 		<div class="col-sm-12 form-group">
-				<div class="col-sm-3">
+				<div class="col-sm-4">
         			<label>VLAN</label>
 				</div>
-				<div class="col-sm-9">
+				<div class="col-sm-8">
         			<select class="col-sm-10" v-model="vlanvalue" @change="getip" @change="gethosts(centervalue)">
 					  <option value="">--请选择--</option>
   						<option  v-for="v in vlanlist" :value="v.Vlan">
@@ -59,10 +59,10 @@
 				</div>
     		</div>
 	 		<div class="col-sm-12 form-group">
-				<div class="col-sm-3">
+				<div class="col-sm-4">
         			<label>IP地址</label>
 				</div>
-				<div class="col-sm-9">
+				<div class="col-sm-8">
 	                <select class="col-sm-10" v-model="ipvalue">
 					  	<option value="">--请选择--</option>
                     	<option  v-for="ip in iplist" :value="ip.Ipv4">
@@ -72,10 +72,10 @@
 				</div>
     		</div>
 	 		<div class="col-sm-12 form-group">
-				<div class="col-sm-3">
+				<div class="col-sm-4">
         			<label>cpu/内存</label>
 				</div>
-				<div class="col-sm-9">
+				<div class="col-sm-8">
         			<select class="col-sm-10" v-model="flavorvalue">
   						<option  v-for="f in flavorlist" :value="f">
 							{{ f.Cpu}}核 / {{f.Mem}}G
@@ -84,10 +84,10 @@
 				</div>
     		</div>
 	 		<div class="col-sm-12 form-group">
-				<div class="col-sm-3">
+				<div class="col-sm-4">
         			<label>宿主机</label>
 				</div>
-				<div class="col-sm-9 title">
+				<div class="col-sm-8 title">
         			<select class="col-sm-10" v-model="hostvalue">
 					  	<option value="">--请选择--</option>
   						<option  v-for="host in hostlist" :value="host.Ipv4">
@@ -97,10 +97,10 @@
 				</div>
     		</div>
 	 		<div class="col-sm-12 form-group">
-				<div class="col-sm-3">
+				<div class="col-sm-4">
         			<label>镜像</label>
 				</div>
-				<div class="col-sm-9">
+				<div class="col-sm-8">
         			<select class="col-sm-10" v-model="imagevalue">
 					  <option value="">--请选择--</option>
   						<option  v-for="image in imagelist" :value="image.Osname">
@@ -109,8 +109,8 @@
         			</select>
 				</div>
     		</div>
-	 		<div class="col-sm-12 form-group">
-				<div class="col-sm-1 col-sm-offset-5">
+	 		<div class="col-sm-12 form-group create">
+				<div class="col-sm-2 col-sm-offset-4">
 					<button class="btn btn-success btn-sm"  @click="createvm()">创建</button>
 				</div>
     		</div>
@@ -283,13 +283,8 @@ select{
     border-radius: 5px;
 }
 
-.content {
-    box-shadow: 0 0 10px rgba(0,0,0,8);
-    border-radius: 10px/10px;
-    z-index: -1;
-    padding: 70px 0px 70px 0px;
-    margin-left: 0px;
-    margin-TOP: 50px;
+.create {
+    margin-top:20px
 }
 
 .details-content .article-cont p {
