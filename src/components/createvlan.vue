@@ -4,7 +4,9 @@
                 <h4>创建网络</h4>
             </div>
 
-		<div class="col-sm-3 col-sm-offset-4" style="margin-top:20px">
+		<div class="col-sm-6 col-sm-offset-2" style="margin-top:20px">
+		<div class="col-sm-10 col-sm-offset-2" style="margin-top:20px">
+
 				<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
@@ -95,6 +97,7 @@
   				<button type="submit" @click="createvlan" class="btn btn-success btn-sm">提交</button>
 			</div>
 		</div>
+	</div>
 	</div>
 </div>
 </div>
