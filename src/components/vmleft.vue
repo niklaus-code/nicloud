@@ -40,6 +40,10 @@ export default {
 				router: "storage"
 					},
 				{
+				name: "数据中心",
+				router: "datacenter"
+					},
+				{
 				name: "统计",
 					},
 				],

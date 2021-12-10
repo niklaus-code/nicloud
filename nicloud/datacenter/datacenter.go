@@ -19,3 +19,21 @@ func Get() ([]*Vms_datacenter, error) {
   }
   return center, nil
 }
+
+func Add (datacenter string, comment string) error {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  c := Vms_datacenter{
+    Datacenter: datacenter,
+    Comment: comment,
+  }
+
+  errdb := dbs.Create(&c)
+  if errdb.Error != nil {
+    return errdb.Error
+  }
+  return nil
+}

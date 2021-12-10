@@ -99,6 +99,7 @@ func main() {
   {
     v2.Use(utils.Tokenauth())
     v8.GET("getdatacenter", datacenterapis.GetDatacenter)
+    v8.POST("adddatacenter", datacenterapis.AddDatacenter)
   }
 
   v9 := r.Group("/api/vdisk")
