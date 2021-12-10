@@ -89,7 +89,7 @@ func main() {
   {
     v2.Use(utils.Tokenauth())
     v7.GET("get", cephapis.GetStorage)
-    v7.GET("add", cephapis.Addceph)
+    v7.POST("add", cephapis.Addceph)
     v7.GET("delete", cephapis.Delete)
     v7.GET("getpool", cephapis.Getpool)
 

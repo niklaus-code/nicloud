@@ -157,7 +157,7 @@ export default {
 		createceph: function () {
             var apiurl = `/api/storage/add`
 
-            this.$http.get(apiurl, { params: { name: this.name, pool: this.pool, datacenter: this.centervalue, ceph_secret: this.ceph_secret, port: this.port, ips: this.ips, comment: this.comment} }).then(response => {
+            this.$http.post(apiurl,  this.$qs.stringify({ name: this.name, pool: this.pool, datacenter: this.centervalue, ceph_secret: this.ceph_secret, port: this.port, ips: this.ips, comment: this.comment})).then(response => {
 				if (response.data.res === null) {
 					alert("创建成功!")
 					this.$emit("toParent", "storage");

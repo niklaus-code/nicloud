@@ -10,11 +10,11 @@ import (
 
 type Vms_Ceph struct {
   Uuid string
-  Pool string
-  Datacenter string
-  Ceph_secret string
-  Ips string
-  Port string
+  Pool string `json:"Pool" validate:"required"`
+  Datacenter string `json:"Datacenter" validate:"required"`
+  Ceph_secret string  `json:"Ceph_secret" validate:"required"`
+  Ips string  `json:"Ips" validate:"required"`
+  Port string `json:"Port" validate:"required"`
   Comment string
   Status int8
 }
