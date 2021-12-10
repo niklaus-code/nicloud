@@ -1,13 +1,15 @@
 <template>
 <div>
-    <div class="btn-group col-md-3 col-md-offset-9">
-		<input class="col-md-6" type="text" id="name" placeholder="" v-model="content">
-		<button class="btn btn-default btn-sm" style="margin-right:5px" @click="search()">
-			 <span class="glyphicon glyphicon-search"></span>筛选
+    <div class="btn-group col-md-6 col-md-offset-6">
+        <div class="col-md-9 col-md-offset-3" style="float: right">
+		<button class="btn btn-default btn-sm" @click="create()" style="float: right">
+		    <span class="glyphicon glyphicon-cog"></span>创建实例
 		</button>
-		<button class="btn btn-default btn-sm" @click="create()">
-			 <span class="glyphicon glyphicon-cog"></span>创建实例
+		<button class="btn btn-default btn-sm" style="margin-right:5px" @click="search()" style="float: right">
+	        <span class="glyphicon glyphicon-search"></span>筛选
 		</button>
+		<input class="col-md-6" type="text" id="name" placeholder="" v-model="content" style="float: right">
+        </div>
 	</div>
 	<div style="margin-top:10px">
 	<table class="table table-hover" style="text-align: center;">
@@ -39,7 +41,7 @@
        			<td>{{item.Ip}}</td>
        			<td>{{item.Os}}</td>
        			<td>{{item.Host}}</td>
-       			<td>{{item.Cpu}}核 / {{item.Mem}}G</td>
+       			<td  style="min-width:80px">{{item.Cpu}}核 / {{item.Mem}}G</td>
        			<td>
 					<ul>
 						<li v-for="(k, v) in item.disk">
@@ -301,7 +303,7 @@ input{
 	margin-right: 5px;
 	border-color: #adadad;
 	height: 30px;
-    margin-top: 2px;
+    margin-top: 1px;
 }
 
 .modal {
@@ -321,8 +323,7 @@ th {
 	text-align: center;
 }
 
-.1dropdown-menu {
-	top: 35px;
+.col-md-9 {
 }
 
 .glyphicon {
