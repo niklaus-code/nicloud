@@ -3,7 +3,8 @@
 	 		<div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
                 <h4>创建云主机</h4>
 	 		</div>
-		<div  class="col-sm-8 col-sm-offset-2" style="margin-top:20px">
+		<div  class="col-sm-9 col-sm-offset-1" style="margin-top:20px">
+		<div  class="col-sm-10 col-sm-offset-1" style="margin-top:20px">
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-4">
         			<label>数据中心</label>
@@ -113,6 +114,7 @@
 				<div class="col-sm-2 col-sm-offset-4">
 					<button class="btn btn-success btn-sm"  @click="createvm()">创建</button>
 				</div>
+    		</div>
     		</div>
 		</div>
 	</div>
