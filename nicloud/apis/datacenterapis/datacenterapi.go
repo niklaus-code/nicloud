@@ -25,3 +25,13 @@ func AddDatacenter(c *gin.Context) {
   res["err"] = err
   c.JSON(200, res)
 }
+
+func DelDatacenter(c *gin.Context) {
+  d := c.Query("datacenter")
+
+  res := make(map[string]interface{})
+  err := datacenter.Del(d)
+
+  res["err"] = err
+  c.JSON(200, res)
+}

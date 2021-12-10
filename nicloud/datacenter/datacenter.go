@@ -1,10 +1,14 @@
 package datacenter
 
-import "nicloud/dbs"
+import (
+  "fmt"
+  "nicloud/dbs"
+)
 
 type Vms_datacenter struct {
   Datacenter string
   Comment string
+  Status int
 }
 
 func Get() ([]*Vms_datacenter, error) {
@@ -29,9 +33,24 @@ func Add (datacenter string, comment string) error {
   c := Vms_datacenter{
     Datacenter: datacenter,
     Comment: comment,
+    Status: 1,
   }
 
   errdb := dbs.Create(&c)
+  if errdb.Error != nil {
+    return errdb.Error
+  }
+  return nil
+}
+
+func Del(datacenter string) error {
+  fmt.Println(datacenter)
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  errdb := dbs.Where("datacenter=?", datacenter).Delete(&Vms_datacenter{})
   if errdb.Error != nil {
     return errdb.Error
   }

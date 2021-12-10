@@ -16,7 +16,7 @@
     			</thead>
 
 				<tbody v-for="(item, index) in data">
-      				<tr class="table-dark text-dark" :id="item.Uuid">
+      				<tr v-if="item.Status" class="table-dark text-dark" :id="item.Uuid">
         				<label class="checkbox-inline" style="width:10px">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
@@ -27,7 +27,7 @@
                         </td>
 
 		    			<td>
-							<button class="btn btn-danger btn-xs" type="button" @click="deletehost(item.Ipv4, index)">
+							<button class="btn btn-danger btn-xs" type="button" @click="deletedatacenter(item.Datacenter, index)">
                 				删除
             				</button>
         				</td>
@@ -54,10 +54,10 @@ export default {
 			this.$emit("toParent", "createdatacenter");
 			},
 
-		deletehost: function (ip, index) {
-            var apiurl = `/api/hosts/delete`
-            this.$http.get(apiurl, { params: {ip: ip} } ).then(response => {
-			   if (response.data.res === null) {
+		deletedatacenter: function (d, index) {
+            var apiurl = `/api/datacenter/deldatacenter`
+            this.$http.get(apiurl, { params: {datacenter: d} } ).then(response => {
+			   if (response.data.err === null) {
                     alert("删除成功")
 					this.data[index].Status=0
                     } else {
