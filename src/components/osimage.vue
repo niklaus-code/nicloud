@@ -1,5 +1,5 @@
 <template>
-		<div class="col-sm-10 col-sm-offset-1" style="margin-top:20px">
+		<div class="col-sm-12" style="margin-top:20px">
 			<button class="btn btn-success btn-sm" type="button" @click="toParent">创建</button>
 			<table class="table table-hover" style="text-align: center;">
     			<thead>
@@ -35,7 +35,7 @@
                             <span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
                             <span v-else class="glyphicon glyphicon-remove"></span>
 		    			</td>
-		    			<td>
+		    			<td style="min-width:92px">
 							<button class="btn btn-info btn-xs" type="button" @click="editosimage(item.Id, item.Osname, item.Cephblockdevice, item.Snapimage, item.Xml)">
                 				编辑
             				</button>
