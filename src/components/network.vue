@@ -1,5 +1,5 @@
 <template>
-		<div class="col-sm-10 col-sm-offset-1" style="margin-top:20px;">
+		<div class="col-sm-12" style="margin-top:20px;">
 			<button class="btn btn-success btn-sm" type="button" @click="createvlan">创建</button>
 			<table class="table table-condensed .table-hover" style="text-align: center;">
     			<thead>
