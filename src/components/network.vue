@@ -117,9 +117,12 @@ select{
     padding:30px 0 0 5px
 }
 
+input {
+	margin-top: 2px;
+}
+
 label {
 	font-weight : 400;
-	margin-top: 5px;
 }
 
 .table tbody tr td {
