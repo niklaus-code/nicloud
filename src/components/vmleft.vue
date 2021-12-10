@@ -1,5 +1,5 @@
 <template>
-    <div  class="col-md-1" style="float:left">
+    <div  class="col-md-1">
         <ul class="list-group col-md-11 col-md-offset-1">
             <li class="list-group-item" v-for="(item, index) in routelist" :class="{ sss: selected === index }" @click="choose(index)" @click="toParent(item.router)">
                     <span >{{item.name}}</span>
@@ -71,6 +71,16 @@ li {
 .sss {
 	#background-color: #fff;
 	color: red;
+}
+
+.list-group-item {
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
+.col-md-1 {
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .list-group {
