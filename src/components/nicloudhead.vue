@@ -10,7 +10,7 @@
 		</div>
 		<div class="col-sm-2 col-sm-offset-7">
             <div style="float: right">
-                <strong>{{username}} </strong> | <span :style="active" @mouseover="mouseOver" @click="out">退出</span>
+                <strong>{{username}} </strong> | <span :style="active" @mouseover="mouseOver" @mouseleave="leave" @click="out">退出</span>
 		    </div>
 		</div>
 	</ul>
@@ -42,6 +42,10 @@ export default {
         out: function () {
             sessionStorage.removeItem("token");
             this.$router.push({name:"login"});
+            },
+
+        leave: function () {
+            this.active = "color: #FFF";
             },
         
         mouseOver: function () {
