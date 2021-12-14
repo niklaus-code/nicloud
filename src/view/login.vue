@@ -53,8 +53,8 @@ export default {
             this.$http.post(apiurl, this.$qs.stringify({ username: this.username, passwd: this.passwd} )).then(response => {
 					
 				if (response.data.err === null ) {
-					this.$store.state.token = response.data.res
-					this.$store.commit('set_token', response.data.res);
+					this.$store.state.username = response.data.username
+					this.$store.commit('set_token', response.data.token);
 					this.$router.push({name:"nicloud"})
 					} else {
 					alert("登陆失败")

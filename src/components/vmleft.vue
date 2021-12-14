@@ -98,8 +98,4 @@ a{
 	color: black;
 }
 
-.breadcrumb {
-    background-color: #5B5B5B
-}
-
 </style>

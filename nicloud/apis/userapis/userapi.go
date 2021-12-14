@@ -10,9 +10,10 @@ func Login(c *gin.Context) {
   passwd := c.PostForm("passwd")
 
   res := make(map[string]interface{})
-  r, err := users.Login(username, passwd)
+  t, u,  err := users.Login(username, passwd)
 
-  res["res"] = r
+  res["token"] = t
+  res["username"] = u
   res["err"] = err
   c.JSON(200, res)
 }

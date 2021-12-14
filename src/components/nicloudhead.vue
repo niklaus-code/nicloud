@@ -1,31 +1,74 @@
 <template>
-<div class="abc">
-	<ul class="breadcrumb">
-    	<li>
+<div class="abc col-sm-12">
+    	<div class="col-sm-3">
 			<router-link :to="{name:'nicloud'}">
-				<span>NICLOUD</span>
+				<span>NICLOUD&nbsp/</span>
 			</router-link>
-		</li>
-    	<li>
 			<router-link :to="{name:'serveroom'}">
 				<span>SERVEROOM</span>
 			</router-link>
-		</li>
+		</div>
+		<div class="col-sm-2 col-sm-offset-7">
+            <div style="float: right">
+                <strong>{{username}} </strong> | <span :style="active" @mouseover="mouseOver" @click="out">退出</span>
+		    </div>
+		</div>
 	</ul>
 </div>
 
 </template>
+<script>
+export default {
+    data () {
+        return {
+            username: "",
+            charge: "",
+            active: "",
+        }
+    },
+       created: function () {
+        this.getuser()
+    },
+    methods: {
+        getuser: function () {
+            var u = this.$store.state.username
+            if (u === null || typeof u === 'undefined' || u === '' || u === "undefined") {
+                this.username = sessionStorage.getItem('username')
+            } else {
+                sessionStorage.setItem('username', this.$store.state.username)
+                this.username =  this.$store.state.username
+                }
+            },
+        out: function () {
+            sessionStorage.removeItem("token");
+            this.$router.push({name:"login"});
+            },
+        
+        mouseOver: function () {
+            this.active = "color: #3090C7";
+            },
+        },
+    }
+
+</script>
 
 <style scoped>
-a {
-	color : #FFF;
+.outstyle {
+    background-color: red;
 }
 
-.breadcrumb {
+a {
 	color: #FFF;
-	background-color: #5B5B5B;
 }
+
 .abc {
-	background-color: #e3e3e3;
+	color: #FFF;
+    padding-top: 3px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    font-size: 15px;
+	background-color: #5B5B5B;
 }
 </style>

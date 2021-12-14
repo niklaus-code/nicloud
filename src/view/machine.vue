@@ -187,7 +187,7 @@ export default {
 	}
 </script>
 
-<style>
+<style scoped>
 input {
 	margin-right: 5px;
 	height: 29px;
@@ -197,6 +197,7 @@ input {
 	margin: 0
 }
 .machine {
+    margin-top:0;
 	background-color: white;
 }
 </style>

@@ -37,20 +37,20 @@ func createtoken(username string, userid string) (string, error) {
   return token, nil
 }
 
-func Login(username string, passwd string) (string, error) {
+func Login(username string, passwd string) (string, string, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
-    return "", err
+    return "", "", err
   }
   u := &Vms_users{}
   dbs.Where("username=?", username).First(u)
   if u.Passwd == passwd {
     token, err := createtoken(u.Username, strconv.Itoa(u.Id))
     if err != nil {
-      return "", err
+      return "", "", err
     }
-    return token, err
+    return token, username, err
   } else {
-    return "", vmerror.Error{Message: "Authentication failed"}
+    return "", "", vmerror.Error{Message: "登陆失败"}
   }
 }
