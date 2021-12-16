@@ -94,7 +94,6 @@ func Createvm(c *gin.Context) {
   datacenter := c.PostForm("datacenter")
   storage := c.PostForm("storage")
   vlan := c.PostForm("vlan")
-  pool := c.PostForm("pool")
 
   token := c.Request.Header.Get("token")
   user, err := utils.ParseToken(token)
@@ -123,7 +122,7 @@ func Createvm(c *gin.Context) {
     return
   }
 
-  err = vm.Create(datacenter, storage, vlan, cpu, mem, ip, host, os, pool, user)
+  err = vm.Create(datacenter, storage, vlan, cpu, mem, ip, host, os, user)
   res["err"] = err
   c.JSON(200, res)
 }
@@ -186,9 +185,11 @@ func Changeconfig(c *gin.Context) {
 
 func DeleteVM(c *gin.Context) {
 	uuid := c.Query("uuid")
+  datacenter := c.Query("datacenter")
+  storage := c.Query("storage")
 
 	res := make(map[string]interface{})
-	err := vm.Delete(uuid)
+	err := vm.Delete(uuid, datacenter, storage)
 
 	res["err"] = err
 	c.JSON(200, res)

@@ -57,7 +57,10 @@ func Mountdisk(c *gin.Context) {
 
 func Deletevdisk(c *gin.Context)  {
   uuid := c.Query("uuid")
-  err := vdisk.Deletevdisk(uuid)
+  datacenter := c.Query("datacenter")
+  storage := c.Query("storage")
+  err := vdisk.Deletevdisk(uuid, datacenter, storage)
+
   res := make(map[string]interface{})
   res["err"] = err
 
@@ -152,7 +155,7 @@ func  GetVdisk(c *gin.Context) {
     c.JSON(200, res)
     return
   }
-  
+
   r, err := vdisk.Getvdisk(user)
 
   res["res"] = r

@@ -75,7 +75,7 @@ func Add_vdisk(contain int, pool string, storage string, datacenter string, user
     Createtime: time.Now().Format("2006-01-02 15:04:05"),
   }
 
-  err := cephcommon.Createcephblock(vdiskid, contain)
+  err := cephcommon.Createcephblock(vdiskid, contain, pool)
   if err != nil {
     return err
   }
@@ -146,7 +146,12 @@ func getdiskinfobyid(uuid string) (*Vms_vdisks, error) {
   return vdiskinfo, err
 }
 
-func Deletevdisk(uuid string) error {
+func Deletevdisk(uuid string, datacenter string, storage string) error {
+  storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
+  if err != nil {
+    return err
+  }
+
   checkmount, err := Getdiskstatus(uuid)
   if err != nil {
     return err
@@ -180,7 +185,7 @@ func Deletevdisk(uuid string) error {
     return vmerror.Error{Message: "delete vdisk fail"}
   }
 
-  err = cephcommon.Rm_image(uuid)
+  err = cephcommon.Rm_image(uuid, storageinfo.Pool)
   if err != nil {
     return err
   }

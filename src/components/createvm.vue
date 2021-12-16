@@ -32,20 +32,6 @@
                 </div>
             </div>
 
-           <div class="col-sm-12 form-group">
-                <div class="col-sm-4">
-                    <label>存储池</label>
-                </div>
-                <div class="col-sm-8">
-                    <select class="col-sm-10" v-model="poolvalue">
-					  <option value="">--请选择--</option>
-                        <option  v-for="c in pool" :value="c.Pool">
-                            {{ c.Pool }}
-                        </option>
-                    </select>
-                </div>
-            </div>
-
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-4">
         			<label>VLAN</label>
@@ -200,7 +186,7 @@ export default {
 				alert("缺少信息!")
 				return
 			}
-            this.$http.post(apiurl, this.$qs.stringify({datacenter: this.centervalue, storage: this.storagevalue, vlan: this.vlanvalue,  cpu: this.flavorvalue.Cpu, mem:this.flavorvalue.Mem, ip: this.ipvalue, pool: this.poolvalue, host: this.hostvalue, os: this.imagevalue})).then(response => {
+            this.$http.post(apiurl, this.$qs.stringify({datacenter: this.centervalue, storage: this.storagevalue, vlan: this.vlanvalue,  cpu: this.flavorvalue.Cpu, mem:this.flavorvalue.Mem, ip: this.ipvalue, host: this.hostvalue, os: this.imagevalue})).then(response => {
 				if (response.data.err === null) {
 					alert("创建成功! 是否查看虚拟机列表")
 					this.$emit("toParent", "vm");

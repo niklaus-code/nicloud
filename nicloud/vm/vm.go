@@ -167,9 +167,14 @@ type Vms_archive struct {
   Storage string
 }
 
-func Delete(uuid string) (error) {
+func Delete(uuid string, datacenter string, storage string) (error) {
   vminfo := GetVmByUuid(uuid)
   host := vminfo.Host
+  
+  storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
+  if err != nil {
+    return err
+  }
 
 	vmstat, err := VmStatus(uuid, host)
 	if err != nil {
@@ -193,14 +198,9 @@ func Delete(uuid string) (error) {
     return err
   }
 
-  err = libvirtd.Undefine(host, uuid)
+	err = cephcommon.Rm_image(uuid, storageinfo.Pool)
   if err != nil {
-    return err
-  }
-
-	err = cephcommon.Rm_image(uuid)
-  if err != nil {
-    return err
+    return vmerror.Error{"删除块设备错误"}
   }
 
 	dbs.Model(&Vms{}).Where("uuid=?", uuid).Delete(&Vms{})
@@ -232,6 +232,11 @@ func Delete(uuid string) (error) {
   updatevdisk := vdisk.Updatevdiskbydelvm(vminfo.Datacenter, vminfo.Storage, vminfo.Ip)
   if updatevdisk != nil {
     return updatevdisk
+  }
+
+  err = libvirtd.Undefine(host, uuid)
+  if err != nil {
+    return err
   }
 	return nil
 }
@@ -391,7 +396,7 @@ func deletevmbyid(uuid string) error {
   return nil
 }
 
-func Create(datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, image string, pool string, owner string) (error) {
+func Create(datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, image string, owner string) (error) {
   mac, err := networks.Ipresource(ip)
   if err != nil {
     return err
@@ -409,33 +414,38 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
 	  return err
   }
 
+  storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
+  if err != nil {
+    return err
+  }
+
 	//create baseimage
-	imge_name, err := cephcommon.RbdClone(u, osinfo.Cephblockdevice, osinfo.Snapimage, pool)
+	imge_name, err := cephcommon.RbdClone(u, osinfo.Cephblockdevice, osinfo.Snapimage, storageinfo.Pool)
 	if err != nil {
 	 return err
   }
 
-	f, err := osimage.Xml(datacenter, storage, vlan,  vcpu, vmem, u, mac, imge_name, image, pool)
+	f, err := osimage.Xml(datacenter, storage, vlan,  vcpu, vmem, u, mac, imge_name, image, storageinfo.Pool)
 	if err != nil {
-	  cephcommon.Rm_image(u)
+	  cephcommon.Rm_image(u, storageinfo.Pool)
 	  return err
   }
 
 	err = libvirtd.DefineVm(f, host)
 	if err != nil {
-	  cephcommon.Rm_image(u)
+	  cephcommon.Rm_image(u, storageinfo.Pool)
 	  return err
   }
 
   err = Updatehost(host, cpu, mem)
   if  err != nil {
-    cephcommon.Rm_image(u)
+    cephcommon.Rm_image(u, storageinfo.Pool)
     libvirtd.Undefine(host, u)
     return err
   }
 	newvm, err := savevm(datacenter, storage, u, cpu, mem, f, ip, host, image, owner)
 	if err != nil {
-    cephcommon.Rm_image(u)
+    cephcommon.Rm_image(u, storageinfo.Pool)
     libvirtd.Undefine(host, u)
     Freehost(host, cpu, mem)
 	  return err
@@ -443,7 +453,7 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
 
   err = networks.Updateipstatus(ip, 1)
   if err != nil {
-    cephcommon.Rm_image(u)
+    cephcommon.Rm_image(u, storageinfo.Pool)
     libvirtd.Undefine(host, u)
     Freehost(host, cpu, mem)
     deletevmbyid(newvm)

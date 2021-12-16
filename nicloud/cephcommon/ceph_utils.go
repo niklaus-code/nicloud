@@ -103,13 +103,13 @@ func CephConn() (*rados.Conn, error) {
   return conn, nil
 }
 
-func Rm_image(uuid string) (error) {
+func Rm_image(uuid string, pool string) (error) {
   conn, err := CephConn()
   if err != nil {
     return err
   }
 
-  ioctx, err := conn.OpenIOContext("vm")
+  ioctx, err := conn.OpenIOContext(pool)
   if err != nil {
     return err
   }
@@ -138,16 +138,20 @@ func RbdClone(id string, cephblock string, snap string, pool string) (string, er
   return id, nil
 }
 
-func Createcephblock( uuid string, contain int) error {
+func Createcephblock(uuid string, contain int, pool string) error {
   conn, err := CephConn()
   if err != nil {
     return err
   }
 
-  ioctx, _ := conn.OpenIOContext("vm")
+  ioctx, _ := conn.OpenIOContext(pool)
   _, err = rbd.Create(ioctx, uuid, uint64(1024*1024*1024*contain), 0)
   if err != nil {
     return err
   }
   return nil
+}
+
+func Changename(uuid string) {
+
 }

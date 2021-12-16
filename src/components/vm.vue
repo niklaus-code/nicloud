@@ -79,7 +79,7 @@
                           <li style="background-color: 	#9370DB"  role="presentation">
                             <a @click="changeparam(item.Uuid, item.Ip, item.Os, item.Host, item.Cpu, item.Mem, item.Owner, item.Comment)" role="menuitem" tabindex="-1">修改配置</a>
                         </li>
-      					<li @click="deletevm(item.Uuid, index)" style="background-color: #808080" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
+      					<li @click="deletevm(item.Uuid, item.Datacenter, item.Storage,  index)" style="background-color: #808080" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
     				</ul>
 					<button type="button" class="btn btn-info btn-xs" @click="vnc(item.vncid)"> <span class="glyphicon glyphicon-facetime-video"></span></button>
 				</td>
@@ -231,9 +231,9 @@ export default {
             })   
         },
 
-        deletevm: function (uuid, index) {
+        deletevm: function (uuid, datacenter, storage, index) {
             var apiurl = `/api/vm/delete`
-            this.$http.get(apiurl, { params: { uuid: uuid} }).then(response => {
+            this.$http.get(apiurl, { params: { uuid: uuid, datacenter:datacenter, storage: storage} }).then(response => {
 				if (response.data.err == null) {
 					alert("删除成功")
 					this.data[index].Exist=0	

@@ -47,7 +47,7 @@
 							<button v-else class="btn btn-warning btn-xs" type="button" @click="umount(item.Vm_ip, item.storage, item.datacenter, item.Vdiskid, index)">
                 				卸载
             				</button>
-							<button v-if="item.Status" class="btn btn-danger btn-xs" type="button" @click="deletevdisk(item.Vdiskid, index)">
+							<button v-if="item.Status" class="btn btn-danger btn-xs" type="button" @click="deletevdisk(item.Vdiskid, item.datacenter, item.storage, index)">
                 				销毁
             				</button>
         				</td>
@@ -77,9 +77,9 @@ export default {
                 this.$emit("toParent", "createvdisk");
                 },
 
-		deletevdisk: function (uuid, index) {
+		deletevdisk: function (uuid, datacenter, storage, index) {
             var apiurl = `/api/vdisk/deletevdisk`
-            this.$http.get(apiurl , { params: { uuid: uuid} }).then(response => {
+            this.$http.get(apiurl , { params: { uuid: uuid, datacenter: datacenter, storage: storage} }).then(response => {
 				if (response.data.err === null ) {
 					this.data[index].Exist = 0
 					alert("删除成功")
