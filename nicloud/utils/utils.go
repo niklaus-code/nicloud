@@ -13,16 +13,16 @@ func Createuuid() string {
   return u
 }
 
-func ParseToken(token string) (*jwt.StandardClaims, error) {
+func ParseToken(token string) (string, error) {
   jwtToken, err := jwt.ParseWithClaims(token, &jwt.StandardClaims{}, func(token *jwt.Token) (i interface{}, e error) {
     return []byte("nicloud"), nil
   })
   if err == nil && jwtToken != nil {
     if claim, ok := jwtToken.Claims.(*jwt.StandardClaims); ok && jwtToken.Valid {
-      return claim, nil
+      return claim.Issuer, nil
     }
   }
-  return nil, err
+  return "", err
 }
 
 //token auth middlehandle func

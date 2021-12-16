@@ -24,7 +24,7 @@ type Vms struct {
 	Cpu         int `json:"cpu validate:"gt=0"`
 	Mem         int `json:"mem validate:"gt=0"`
 	Create_time time.Time
-	Owner       string
+	Owner       string  `json:"os" validate:"required"`
 	Comment     string
 	Vmxml       string
 	Status      string
@@ -320,7 +320,7 @@ func Start(uuid string, host string) error {
 	return nil
 }
 
-func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, vmxml string, ip string, host string, image string) (string, error) {
+func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, vmxml string, ip string, host string, image string, owner string) (string, error) {
   /*save config to db*/
   dbs, err := db.NicloudDb()
   if err != nil {
@@ -337,7 +337,7 @@ func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, v
 		Status:      "",
 		Ip:          ip,
 		Host:        host,
-		Owner:       "Niklaus",
+		Owner:       owner,
 		Os:          image,
 		Datacenter: datacenter,
 		Storage: cephname,
@@ -391,7 +391,7 @@ func deletevmbyid(uuid string) error {
   return nil
 }
 
-func Create(datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, image string, pool string) (error) {
+func Create(datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, image string, pool string, owner string) (error) {
   mac, err := networks.Ipresource(ip)
   if err != nil {
     return err
@@ -433,7 +433,7 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
     libvirtd.Undefine(host, u)
     return err
   }
-	newvm, err := savevm(datacenter, storage, u, cpu, mem, f, ip, host, image)
+	newvm, err := savevm(datacenter, storage, u, cpu, mem, f, ip, host, image, owner)
 	if err != nil {
     cephcommon.Rm_image(u)
     libvirtd.Undefine(host, u)

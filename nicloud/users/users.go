@@ -20,11 +20,11 @@ func createtoken(username string, userid string) (string, error) {
   expiresTime := time.Now().Unix() + int64(86400)
 
   claims := jwt.StandardClaims{
-    Audience:  username,     // 受众
+    Audience:  "ADMIN",     // 受众
     ExpiresAt: expiresTime,       // 失效时间
     Id:        userid,   // 编号
     IssuedAt:  time.Now().Unix(), // 签发时间
-    Issuer:    "gin hello",       // 签发人
+    Issuer:    username,       // 签发人
     NotBefore: time.Now().Unix(), // 生效时间
     Subject:   "login",           // 主题
   }

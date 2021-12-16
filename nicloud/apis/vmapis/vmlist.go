@@ -4,6 +4,7 @@ import (
   "fmt"
   "github.com/gin-gonic/gin"
   "github.com/go-playground/validator/v10"
+  "nicloud/utils"
   "nicloud/vm"
   "nicloud/vmerror"
   "strconv"
@@ -85,6 +86,11 @@ func Createvm(c *gin.Context) {
   storage := c.PostForm("storage")
   vlan := c.PostForm("vlan")
   pool := c.PostForm("pool")
+  token := c.Request.Header.Get("token")
+  user, err := utils.ParseToken(token)
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "认证失败"}
+  }
 
   v := vm.Vms{
     Ip: ip,
@@ -94,17 +100,18 @@ func Createvm(c *gin.Context) {
     Os: os,
     Datacenter: datacenter,
     Storage: storage,
+    Owner: user,
   }
 
   validate := validator.New()
-  err := validate.Struct(v)
+  err = validate.Struct(v)
   if err != nil {
     res["err"] = vmerror.Error{Message: "参数错误"}
     c.JSON(400, res)
     return
   }
 
-  err = vm.Create(datacenter, storage, vlan, cpu, mem, ip, host, os, pool)
+  err = vm.Create(datacenter, storage, vlan, cpu, mem, ip, host, os, pool, user)
   res["err"] = err
   c.JSON(200, res)
 }
