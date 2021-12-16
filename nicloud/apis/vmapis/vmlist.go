@@ -55,7 +55,16 @@ func GetVmStatus(c *gin.Context) {
 
 func Getvmlist(c *gin.Context) {
   res := make(map[string]interface{})
-	vmlist, err := vm.VmList()
+
+  token := c.Request.Header.Get("token")
+  user, err := utils.ParseToken(token)
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "认证失败"}
+    c.JSON(200, res)
+    return
+  }
+
+	vmlist, err := vm.VmList(user)
 	res["res"] = vmlist
   res["err"] = err
 
@@ -86,6 +95,7 @@ func Createvm(c *gin.Context) {
   storage := c.PostForm("storage")
   vlan := c.PostForm("vlan")
   pool := c.PostForm("pool")
+
   token := c.Request.Header.Get("token")
   user, err := utils.ParseToken(token)
   if err != nil {

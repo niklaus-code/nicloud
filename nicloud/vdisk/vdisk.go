@@ -255,15 +255,19 @@ func Getdiskstatus(uuid string) (int, error) {
   return vdisk.Status, nil
 }
 
-func Getvdisk(vmip string) ([]*Vms_vdisks, error) {
+func Getvdisk(user string) ([]*Vms_vdisks, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
   c := []*Vms_vdisks{}
-  dbs.Order("createtime desc").Find(&c)
-  return c, err
+  if user == "admin" {
+    dbs.Order("createtime desc").Find(&c)
+  } else {
+    dbs.Where("user=?", user).Order("createtime desc").Find(&c)
   }
+  return c, err
+}
 
 func Umountvmstatus(datacenter string, storage string, vdiskid string) error {
   dbs, err := db.NicloudDb()

@@ -496,15 +496,20 @@ func allvm(obj []Vms) []map[string]interface{}  {
   return mapc
 }
 
-func VmList() ([]map[string]interface{}, error) {
+func VmList(user string) ([]map[string]interface{}, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
 	var v []Vms
-	dbs.Table("vms").Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip" , "host", "os"}).Scan(&v)
 
-	return allvm(v), nil
+  if user == "admin" {
+    dbs.Table("vms").Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Scan(&v)
+    return allvm(v), nil
+  } else {
+    dbs.Table("vms").Where("owner=?", user).Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Scan(&v)
+    return allvm(v), nil
+  }
 }
 
 type Vm_flavors struct {

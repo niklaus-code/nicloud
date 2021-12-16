@@ -143,9 +143,18 @@ func Umountdisk(c *gin.Context) {
 }
 
 func  GetVdisk(c *gin.Context) {
-  vmip := c.Query("vmip")
-  r, err := vdisk.Getvdisk(vmip)
   res := make(map[string]interface{})
+
+  token := c.Request.Header.Get("token")
+  user, err := utils.ParseToken(token)
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "认证失败"}
+    c.JSON(200, res)
+    return
+  }
+  
+  r, err := vdisk.Getvdisk(user)
+
   res["res"] = r
   res["err"] = err
 
