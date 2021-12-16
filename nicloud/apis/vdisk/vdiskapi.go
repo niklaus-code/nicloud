@@ -3,6 +3,7 @@ package vdisk
 import (
   "github.com/gin-gonic/gin"
   "github.com/go-playground/validator/v10"
+  "nicloud/utils"
   vdisk "nicloud/vdisk"
   "nicloud/vm"
   "nicloud/vmerror"
@@ -70,7 +71,14 @@ func Createvdisk(c *gin.Context) {
   pool := c.PostForm("pool")
   storage := c.PostForm("storage")
   datacenter := c.PostForm("datacenter")
-  user := "nicloud"
+
+  token := c.Request.Header.Get("token")
+  user, err := utils.ParseToken(token)
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "认证失败"}
+    c.JSON(200, res)
+    return
+  }
 
   d := vdisk.Vms_vdisks{
     Contain: contain,
@@ -80,7 +88,7 @@ func Createvdisk(c *gin.Context) {
     User: user,
   }
   validate := validator.New()
-  err := validate.Struct(d)
+  err = validate.Struct(d)
   if err != nil {
     res["err"] = vmerror.Error{Message: "参数错误"}
     c.JSON(400, res)

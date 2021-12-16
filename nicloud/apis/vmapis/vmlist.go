@@ -90,6 +90,8 @@ func Createvm(c *gin.Context) {
   user, err := utils.ParseToken(token)
   if err != nil {
     res["err"] = vmerror.Error{Message: "认证失败"}
+    c.JSON(200, res)
+    return
   }
 
   v := vm.Vms{

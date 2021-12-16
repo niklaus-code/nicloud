@@ -69,7 +69,7 @@ func Add_vdisk(contain int, pool string, storage string, datacenter string, user
     Pool: pool,
     Storage: storage,
     Datacenter: datacenter,
-    User: "niklaus",
+    User: user,
     Exist: 1,
     Status: 1,
     Createtime: time.Now().Format("2006-01-02 15:04:05"),
