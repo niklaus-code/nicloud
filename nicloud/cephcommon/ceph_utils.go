@@ -104,12 +104,7 @@ func CephConn() (*rados.Conn, error) {
 }
 
 func Rm_image(uuid string, pool string) (error) {
-  conn, err := CephConn()
-  if err != nil {
-    return err
-  }
-
-  ioctx, err := conn.OpenIOContext(pool)
+  ioctx, err := ceph_ioctx(pool)
   if err != nil {
     return err
   }
@@ -122,13 +117,10 @@ func Rm_image(uuid string, pool string) (error) {
 }
 
 func RbdClone(id string, cephblock string, snap string, pool string) (string, error) {
-
-  conn, err := CephConn()
+  ioctx, err := ceph_ioctx(pool)
   if err != nil {
-    return "", vmerror.Error{"ceph 连接失败"}
+    return "", err
   }
-
-  ioctx, _ := conn.OpenIOContext(pool)
   imag := rbd.GetImage(ioctx, cephblock)
 
   _, err = imag.Clone(snap, ioctx, id, rbd.FeatureLayering, 12)
@@ -139,17 +131,29 @@ func RbdClone(id string, cephblock string, snap string, pool string) (string, er
 }
 
 func Createcephblock(uuid string, contain int, pool string) error {
-  conn, err := CephConn()
+  ioctx, err := ceph_ioctx(pool)
   if err != nil {
     return err
   }
 
-  ioctx, _ := conn.OpenIOContext(pool)
   _, err = rbd.Create(ioctx, uuid, uint64(1024*1024*1024*contain), 0)
   if err != nil {
     return err
   }
   return nil
+}
+
+func ceph_ioctx(pool string) (*rados.IOContext, error){
+  conn, err := CephConn()
+  if err != nil {
+    return nil, vmerror.Error{Message: "ceph 连接失败"}
+  }
+
+  ioctx, err := conn.OpenIOContext(pool)
+  if err != nil {
+    return nil, vmerror.Error{Message: "获取ceph池句柄失败"}
+  }
+  return ioctx, nil
 }
 
 func Changename(uuid string) {
