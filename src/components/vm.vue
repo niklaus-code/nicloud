@@ -69,18 +69,18 @@
 						操作<span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu" role="menu" aria-labelledby="menu1" style="">
-      					<li @click="start(item.Uuid, index, item.Host)" style="background-color: green; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">开机</a></li>
-      					<li @click="pause(item.Uuid, index, item.Host)" style="background-color: green" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
-      					<li @click="shutdown(item.Uuid, index, item.Host)" style="background-color: #D2B48C; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">关机</a></li>
-      					<li @click="destroy(item.Uuid, index, item.Host)" style="background-color:  #D2B48C"  role="presentation"><a role="menuitem" tabindex="-1">强制断电</a></li>
-      					<li style="background-color: rgb(255, 211, 0); border-bottom: 1px white solid"  role="presentation">
+      					<li @click="start(item.Uuid, index, item.Host)" style="background-color: green;" role="presentation"><a role="menuitem" tabindex="-1">开机</a></li>
+      					<li @click="pause(item.Uuid, index, item.Host)" style="background-color: green; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
+      					<li @click="shutdown(item.Uuid, index, item.Host)" style="background-color: #D2B48C;" role="presentation"><a role="menuitem" tabindex="-1">关机</a></li>
+      					<li @click="destroy(item.Uuid, index, item.Host)" style="background-color:  #D2B48C; border-bottom: 1px white solid"  role="presentation"><a role="menuitem" tabindex="-1">强制断电</a></li>
+      					<li style="background-color: rgb(255, 211, 0)"  role="presentation">
 							<a @click="migrate(item.Uuid, item.Host, item.Cpu, item.Mem, item.Os, item.Owner, item.Ip, item.Comment)" role="menuitem" tabindex="-1">迁移</a>
 						</li>
-                          <li style="background-color: rgb(255, 211, 0)"  role="presentation">
+                        <li style="background-color: rgb(255, 211, 0); border-bottom: 1px white solid"  role="presentation">
                             <a @click="changeparam(item.Uuid, item.Ip, item.Os, item.Host, item.Cpu, item.Mem, item.Owner, item.Comment)" role="menuitem" tabindex="-1">修改配置</a>
                         </li>
-      					<li @click="rebuild(item.Uuid, item.Datacenter, item.Storage, item.Os, item.Host)" style="background-color: #CD5C5C; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">重置镜像</a></li>
-      					<li @click="deletevm(item.Uuid, item.Datacenter, item.Storage,  index)" style="background-color: #CD5C5C" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
+      					<li @click="rebuild(item.Uuid, item.Datacenter, item.Storage, item.Os, item.Host)" style="background-color: #CD5C5C" role="presentation"><a role="menuitem" tabindex="-1">重置镜像</a></li>
+      					<li @click="deletevm(item.Uuid, item.Datacenter, item.Storage,  index)" style="background-color: #CD5C5C; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
     				</ul>
 					<button type="button" class="btn btn-info btn-xs" @click="vnc(item.vncid)"> <span class="glyphicon glyphicon-facetime-video"></span></button>
 				</td>
