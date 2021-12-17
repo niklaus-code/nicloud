@@ -116,14 +116,20 @@ func Rm_image(uuid string, pool string) (error) {
   return nil
 }
 
+
+func image_ctx(ctx *rados.IOContext, cephblock string) *rbd.Image {
+  imagectx := rbd.GetImage(ctx, cephblock)
+  return imagectx
+}
+
 func RbdClone(id string, cephblock string, snap string, pool string) (string, error) {
   ioctx, err := ceph_ioctx(pool)
   if err != nil {
     return "", err
   }
-  imag := rbd.GetImage(ioctx, cephblock)
+  img_ctx := image_ctx(ioctx, cephblock)
 
-  _, err = imag.Clone(snap, ioctx, id, rbd.FeatureLayering, 12)
+  _, err = img_ctx.Clone(snap, ioctx, id, rbd.FeatureLayering, 12)
   if err != nil {
     return "", err
   }
@@ -156,6 +162,21 @@ func ceph_ioctx(pool string) (*rados.IOContext, error){
   return ioctx, nil
 }
 
-func Changename(uuid string) {
+func Changename (uuid string, cephblock string, snap string, pool string, oldname string) error {
+  ioctx, err := ceph_ioctx("vm")
+  if err != nil {
+    return err
+  }
+  img, err := RbdClone(uuid, cephblock, snap, pool)
+  if err != nil {
+    return err
+  }
+  err = Rm_image(oldname, pool)
+  if err != nil {
+    return err
+  }
 
+  fd := image_ctx(ioctx, img)
+  fd.Rename(oldname)
+  return nil
 }

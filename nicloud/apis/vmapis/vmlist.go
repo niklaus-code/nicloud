@@ -223,3 +223,16 @@ func Operation(c *gin.Context) {
 	res["err"] = err
 	c.JSON(200, res)
 }
+
+func Rebuild(c *gin.Context)  {
+  uuid := c.Query("uuid")
+  datacenter := c.Query("datacenter")
+  storage := c.Query("storage")
+  osname := c.Query("osname")
+  host := c.Query("host")
+
+  res := make(map[string]interface{})
+  err := vm.Rebuildimg(osname, storage, datacenter, uuid, host)
+  res["err"] = err
+  c.JSON(200, res)
+}

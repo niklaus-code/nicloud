@@ -45,6 +45,9 @@ func Undefine(host string, uuid string) error {
   if err != nil {
     return err
   }
-  vm.Undefine()
+  err = vm.Undefine()
+  if err != nil {
+    return err
+  }
   return nil
 }

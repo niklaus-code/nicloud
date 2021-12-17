@@ -144,13 +144,13 @@ func VmStatus(uuid string, host string) (string, error) {
 	}
 	vm, err := conn.LookupDomainByUUIDString(uuid)
 	if err != nil {
-		return "vm not found", err
+		return "未发现云主机", err
 	}
 
 	state, _, err1 := vm.GetState()
 
 	if err1 != nil {
-		return "vm not found", err1
+		return "未发现云主机", err1
 	}
 
 	return libvirtd.Vmstate[state], err1
@@ -170,7 +170,7 @@ type Vms_archive struct {
 func Delete(uuid string, datacenter string, storage string) (error) {
   vminfo := GetVmByUuid(uuid)
   host := vminfo.Host
-  
+
   storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
   if err != nil {
     return err
@@ -183,13 +183,13 @@ func Delete(uuid string, datacenter string, storage string) (error) {
 
 	if vmstat == "运行" {
 		return vmerror.Error{
-			Message: "vm is running, con't delete",
+			Message: "虚拟机正在运行，无法删除",
 		}
 	}
 
   if vmstat == "暂停" {
     return vmerror.Error{
-      Message: "vm is paused, con't delete",
+      Message: "虚拟机处于暂停状态，无法删除",
     }
   }
 
@@ -558,3 +558,32 @@ func Updatecomments(uuid string, comment string) (bool, error) {
   return true, nil
 }
 
+func Rebuildimg(image string, storage string, datacenter string, old_uuid string, host string) error {
+  vmstat, err := VmStatus(old_uuid, host)
+  if err != nil {
+    return err
+  }
+  
+  if vmstat != "关机" {
+    return vmerror.Error{
+      Message: "虚拟机正在运行，无法重置",
+    }
+  }
+
+  osinfo, err := osimage.Getosinfobyosname(image, storage)
+  if err != nil {
+    return err
+  }
+
+  storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
+  if err != nil {
+    return err
+  }
+
+  uuid := utils.Createuuid()
+  err = cephcommon.Changename(uuid, osinfo.Cephblockdevice, osinfo.Snapimage, storageinfo.Pool, old_uuid)
+  if err != nil {
+    return err
+  }
+  return nil
+}
