@@ -103,7 +103,15 @@ func CephConn() (*rados.Conn, error) {
   return conn, nil
 }
 
-func Rm_image(uuid string, pool string) (error) {
+func rename(img  *rbd.Image, blockname string) error {
+  err := img.Rename(blockname)
+  if err != nil {
+    return err
+  }
+  return nil
+}
+
+func Rm_image(uuid string, pool string) error {
   ioctx, err := ceph_ioctx(pool)
   if err != nil {
     return err
@@ -111,13 +119,16 @@ func Rm_image(uuid string, pool string) (error) {
 
   img := rbd.GetImage(ioctx, uuid)
   Archive_img := "x_"+(time.Now().Format("200601021504"))+uuid
-  img.Rename(Archive_img)
+  err = rename(img, Archive_img)
+  if err != nil {
+    return err
+  }
 
   return nil
 }
 
 
-func image_ctx(ctx *rados.IOContext, cephblock string) *rbd.Image {
+func  image_ctx(ctx *rados.IOContext, cephblock string) *rbd.Image {
   imagectx := rbd.GetImage(ctx, cephblock)
   return imagectx
 }
@@ -163,7 +174,7 @@ func ceph_ioctx(pool string) (*rados.IOContext, error){
 }
 
 func Changename (uuid string, cephblock string, snap string, pool string, oldname string) error {
-  ioctx, err := ceph_ioctx("vm")
+  ioctx, err := ceph_ioctx(pool)
   if err != nil {
     return err
   }
@@ -177,6 +188,63 @@ func Changename (uuid string, cephblock string, snap string, pool string, oldnam
   }
 
   fd := image_ctx(ioctx, img)
-  fd.Rename(oldname)
+  err = rename(fd, oldname)
+  if err != nil {
+    return err
+  }
+  return nil
+}
+
+type Vms_snaps struct {
+  Id int
+  Vm_uuid string
+  Datacenter string
+  Storage string
+  Snap string
+  Create_time time.Time
+}
+
+func Getimgbyname(imgname string, pool string) (*rbd.Image, error) {
+  ctx, err := ceph_ioctx(pool)
+  if err != nil {
+    return nil, err
+  }
+
+  errimg, err := rbd.OpenImage(ctx, imgname, "")
+  if err !=nil {
+    return nil, err
+  }
+  return errimg, nil
+}
+
+func Createimgsnap(vmid string, datacenter string, storage string, snapname string, pool string) error {
+  img, err := Getimgbyname(vmid, pool)
+  if err != nil {
+    return err
+  }
+
+  _, err = img.CreateSnapshot(snapname)
+  if err != nil {
+    return err
+  }
+
+  s := Vms_snaps{
+   Vm_uuid: vmid,
+   Datacenter: datacenter,
+   Storage: storage,
+   Snap: snapname,
+   Create_time: time.Now(),
+  }
+
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  errdb := dbs.Create(&s)
+  if errdb.Error !=nil {
+    return errdb.Error
+  }
+
   return nil
 }

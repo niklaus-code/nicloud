@@ -236,3 +236,14 @@ func Rebuild(c *gin.Context)  {
   res["err"] = err
   c.JSON(200, res)
 }
+
+func Createsnap(c *gin.Context)  {
+  uuid := c.Query("uuid")
+  datacenter := c.Query("datacenter")
+  storage := c.Query("storage")
+
+  res := make(map[string]interface{})
+  err := vm.Creatsnap(uuid, datacenter, storage)
+  res["err"] = err
+  c.JSON(200, res)
+}

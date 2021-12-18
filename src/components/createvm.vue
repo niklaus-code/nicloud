@@ -96,6 +96,11 @@
         			</select>
 				</div>
     		</div>
+	 		<div class="col-sm-12 form-group">
+				<div class="col-sm-8 col-md-offset-4" style="color: #DCDCDC">
+                    *设计为一个存储集群只有一个存储池
+    		    </div>
+    		</div>
 	 		<div class="col-sm-12 form-group create">
 				<div class="col-sm-2 col-sm-offset-4">
 					<button class="btn btn-success btn-sm"  @click="createvm()">创建</button>

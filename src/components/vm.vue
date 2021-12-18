@@ -80,6 +80,7 @@
                             <a @click="changeparam(item.Uuid, item.Ip, item.Os, item.Host, item.Cpu, item.Mem, item.Owner, item.Comment)" role="menuitem" tabindex="-1">修改配置</a>
                         </li>
       					<li @click="rebuild(item.Uuid, item.Datacenter, item.Storage, item.Os, item.Host)" style="background-color: #CD5C5C" role="presentation"><a role="menuitem" tabindex="-1">重置镜像</a></li>
+      					<li @click="createsnap(item.Uuid, item.Datacenter, item.Storage, item.Os, item.Host)" style="background-color: #CD5C5C" role="presentation"><a role="menuitem" tabindex="-1">创建快照</a></li>
       					<li @click="deletevm(item.Uuid, item.Datacenter, item.Storage,  index)" style="background-color: #CD5C5C; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
     				</ul>
 					<button type="button" class="btn btn-info btn-xs" @click="vnc(item.vncid)"> <span class="glyphicon glyphicon-facetime-video"></span></button>
@@ -244,7 +245,18 @@ export default {
             })
         },
 
-        rebuild: function (uuid, datacenter, storage, osname, host) {
+        createsnap: function (uuid, datacenter, storage) {
+            var apiurl = `/api/vm/createsnap`
+            this.$http.get(apiurl, { params: { uuid: uuid, datacenter:datacenter, storage: storage}}).then(response => {
+				if (response.data.err == null) {
+					alert("创建成功")
+				} else {	
+					alert(response.data.err.Message)
+				}
+            })
+        },
+
+        ruebuild: function (uuid, datacenter, storage, osname, host) {
             var apiurl = `/api/vm/rebuild`
             this.$http.get(apiurl, { params: { uuid: uuid, datacenter:datacenter, storage: storage, osname: osname, host: host}}).then(response => {
 				if (response.data.err == null) {

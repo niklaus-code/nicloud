@@ -517,7 +517,7 @@ func VmList(user string) ([]map[string]interface{}, error) {
     dbs.Table("vms").Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Scan(&v)
     return allvm(v), nil
   } else {
-    dbs.Table("vms").Where("owner=?", user).Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Scan(&v)
+    dbs.Table("vms").Order("create_time desc").Where("owner=?", user).Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Scan(&v)
     return allvm(v), nil
   }
 }
@@ -563,7 +563,7 @@ func Rebuildimg(image string, storage string, datacenter string, old_uuid string
   if err != nil {
     return err
   }
-  
+
   if vmstat != "关机" {
     return vmerror.Error{
       Message: "虚拟机正在运行，无法重置",
@@ -584,6 +584,21 @@ func Rebuildimg(image string, storage string, datacenter string, old_uuid string
   err = cephcommon.Changename(uuid, osinfo.Cephblockdevice, osinfo.Snapimage, storageinfo.Pool, old_uuid)
   if err != nil {
     return err
+  }
+  return nil
+}
+
+func Creatsnap(vmid string, datacenter string, storage string) error {
+  storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
+  if err != nil {
+    return err
+  }
+
+  snapname := vmid + time.Now().Format("200601021504")
+
+  c := cephcommon.Createimgsnap(vmid, datacenter, storage, snapname, storageinfo.Pool)
+  if c != nil {
+    return c
   }
   return nil
 }
