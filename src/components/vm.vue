@@ -196,7 +196,7 @@ export default {
         search: function (content) {
             var apiurl = `/api/vm/search`
             this.$http.get(apiurl, { params: { content: this.content} } ).then(response => {
-            	this.data = response.data.res
+            	this.comment(response.data.res)
             })
 		},
 
@@ -223,33 +223,37 @@ export default {
                 this.getvm(Number(this.pagenumber)-1)
                 }
                 },
-	
-        getvm: function (start) {
-            var apiurl = `/api/vm/getvm`
-            this.$http.get(apiurl, { params: { start: start} }).then(response => {
-			if (response.data.err === null ) {
-            	var d = new Array()
-                this.totalpagenumber = response.data.pagenumber
-                this.pagenumber = start
-            	for (var v in response.data.res) {
-                	if (response.data.res[v]["Comment"].length > 0) {
-                    	response.data.res[v]["flag"] = false
-                    	response.data.res[v]["flag2"] = true
-                    	} else {
-                    		response.data.res[v]["flag2"] = false
-                        	response.data.res[v]["flag"] = true
-                    	}
-                	response.data.res[v]["flag1"] = false
-                	d.push(response.data.res[v])
-                	}
 
+
+        comment: function(res) {
+            var d = new Array()
+            	for (var v in res) {
+                	if (res[v]["Comment"].length > 0) {
+                    	res[v]["flag"] = false
+                    	res[v]["flag2"] = true
+                    	} else {
+                    		res[v]["flag2"] = false
+                        	res[v]["flag"] = true
+                    	}
+                	res[v]["flag1"] = false
+                	d.push(res[v])
 				this.data = d
+                	}
 				for (let v in this.data) {
 					var r = this.getvmstatus(this.data[v].Uuid, this.data[v].Host)
 					r.then(value => {
 						this.data[v].Status = value
 						},
 					)}
+            },
+	
+        getvm: function (start) {
+            var apiurl = `/api/vm/getvm`
+            this.$http.get(apiurl, { params: { start: start} }).then(response => {
+			if (response.data.err === null ) {
+                this.totalpagenumber = response.data.pagenumber
+                this.pagenumber = start
+                this.comment(response.data.res)
 				} else {
 					alert(response.data.err)
 					this.$router.push({name:"login"})

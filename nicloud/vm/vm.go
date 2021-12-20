@@ -553,16 +553,16 @@ func Flavor() ([]*Vm_flavors, error) {
 	return f, nil
 }
 
-func SearchVm(c string) ([]*Vms, error) {
+func SearchVm(c string) ([]map[string]interface{}, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
-  var v []*Vms
-  i := fmt.Sprintf("ip like %s", "'"+c+"%'")
+  var v []Vms
+  i := fmt.Sprintf("ip like %s or comment like %s", "'"+c+"%'", "'"+c+"%'")
   dbs.Where(i).Find(&v)
 
-  return v, nil
+  return allvm(v), nil
 }
 
 func Updatecomments(uuid string, comment string) (bool, error) {
