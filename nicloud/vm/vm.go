@@ -559,9 +559,9 @@ func SearchVm(c string) ([]map[string]interface{}, error) {
     return nil, err
   }
   var v []Vms
-  i := fmt.Sprintf("ip like %s or comment like %s", "'"+c+"%'", "'"+c+"%'")
+  i := fmt.Sprintf("ip like %s or comment like %s", "'%"+c+"%'", "'%"+c+"%'")
   dbs.Where(i).Find(&v)
-
+  fmt.Println(i)
   return allvm(v), nil
 }
 
