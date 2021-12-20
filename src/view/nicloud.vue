@@ -74,6 +74,7 @@ export default {
     border-radius: 10px/10px;
     padding: 30px 0px 30px 0px;
     margin-left: 0px;
+    margin-top: 30px;
     margin-top: 50px;
 }
 </style>
