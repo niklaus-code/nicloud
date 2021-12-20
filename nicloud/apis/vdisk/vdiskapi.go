@@ -116,33 +116,33 @@ func Umountdisk(c *gin.Context) {
   s, err := vm.VmStatus(vminfo.Uuid, vminfo.Host)
   if err != nil {
     res["err"] = err
-    c.Abort()
     c.JSON(200, res)
+    return
   }
 
   if s != "关机" {
     res["err"] = vmerror.Error{Message: "cont mount disk, vm is " + s}
     c.Abort()
     c.JSON(200, res)
+    return
   }
 
   xml, err := vm.Getvmxmlby(vmip, storage, datacenter)
   if err != nil {
     res["err"] = err
-    c.Abort()
     c.JSON(200, res)
+    return
   }
 
   v := vm.Vms{}
   err = vdisk.Umountdisk(vmip, storage, datacenter, vdiskid, xml, vminfo.Host, v)
   if err != nil {
     res["err"] = err
-    c.Abort()
     c.JSON(200, res)
-  } else {
-    res["err"] = nil
-    c.JSON(200, res)
+    return
   }
+  res["err"] = nil
+  c.JSON(200, res)
 }
 
 func  GetVdisk(c *gin.Context) {
