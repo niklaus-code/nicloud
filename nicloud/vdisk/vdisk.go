@@ -53,7 +53,7 @@ func Updatevdiskbydelvm(datacenter string, storage string, vmip string) error {
   if err != nil {
     return err
   }
-  errdb := dbs.Model(Vms_vdisks{}).Where("datacenter=? and storage=?", datacenter, storage).Update("vm_ip", "").Update("status", 1).Where("vm_ip=?", vmip)
+  errdb := dbs.Model(Vms_vdisks{}).Where("datacenter=? and storage=? and vm_ip=?", datacenter, storage, vmip).Update("vm_ip", "").Update("status", 1).Where("vm_ip=?", vmip)
   if errdb.Error != nil {
     return errdb.Error
   }
