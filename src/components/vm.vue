@@ -1,14 +1,21 @@
 <template>
 <div>
-    <div class="btn-group col-md-6 col-md-offset-6">
+    <div class="btn-group col-md-6" style="margin-bottom:20px">
+        <ul class="pagination">
+            <li><a @click="down()">&laquo;</a></li>
+            <li  v-for="(item, index) in totalpagenumber"><a @click="getvm(item)">{{item}}</a></li>
+            <li><a @click="up()">&raquo;</a></li>
+        </ul>
+	</div>
+    <div class="btn-group col-md-6" style="margin-bottom:20px">
         <div class="col-md-9 col-md-offset-3" style="float: right">
-		<button class="btn btn-default btn-sm" @click="create()" style="float: right">
-		    <span class="glyphicon glyphicon-cog"></span>创建实例
-		</button>
-		<button class="btn btn-default btn-sm" style="margin-right:5px" @click="search()" style="float: right">
-	        <span class="glyphicon glyphicon-search"></span>筛选
-		</button>
-		<input class="col-md-6" type="text" id="name" placeholder="" v-model="content" style="float: right">
+		    <button class="btn btn-default btn-sm" @click="create()" style="float: right">
+		        <span class="glyphicon glyphicon-cog"></span>创建实例
+		    </button>
+		    <button class="btn btn-default btn-sm" style="margin-right:5px" @click="search()" style="float: right">
+	            <span class="glyphicon glyphicon-search"></span>筛选
+		    </button>
+		    <input class="col-md-6" type="text" id="name" placeholder="" v-model="content" style="float: right">
         </div>
 	</div>
 	<div style="margin-top:10px">
@@ -96,6 +103,8 @@
 export default {
     data () {
         return {
+            totalpagenumber: "pagenumber",
+            pagenumber: 1,
             dropup: "dropup",
             dropdown: "dropdown",
 			active: "",
@@ -116,7 +125,7 @@ export default {
     },
 
     mounted: function () {
-		this.getvm()
+		this.getvm(1)
     },
 
     methods: {
@@ -202,12 +211,26 @@ export default {
             	return response.data.res
             	})
 			},
+
+        up: function() {
+            if (Number(this.pagenumber) < Number(this.totalpagenumber)) {
+                this.getvm(Number(this.pagenumber)+1)
+                }
+            },
+
+        down: function() {
+            if (Number(this.pagenumber) > 1 ) {
+                this.getvm(Number(this.pagenumber)-1)
+                }
+                },
 	
-        getvm: function () {
+        getvm: function (start) {
             var apiurl = `/api/vm/getvm`
-            this.$http.get(apiurl).then(response => {
+            this.$http.get(apiurl, { params: { start: start} }).then(response => {
 			if (response.data.err === null ) {
             	var d = new Array()
+                this.totalpagenumber = response.data.pagenumber
+                this.pagenumber = start
             	for (var v in response.data.res) {
                 	if (response.data.res[v]["Comment"].length > 0) {
                     	response.data.res[v]["flag"] = false
@@ -348,10 +371,16 @@ th {
 	text-align: center;
 }
 
-.col-md-9 {
-}
-
 .glyphicon {
 	caret-color: rgba(0, 0, 0, 0)
+}
+
+.pagination {
+    margin-top: 0;
+    display: block;
+}
+
+.pagination li a {
+    color: #000;
 }
 </style>

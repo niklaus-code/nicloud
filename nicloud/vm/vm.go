@@ -506,7 +506,23 @@ func allvm(obj []Vms) []map[string]interface{}  {
   return mapc
 }
 
-func VmList(user string) ([]map[string]interface{}, error) {
+func Getpagenumber(user string, offset int) (int, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return 0, err
+  }
+
+  var v []Vms
+  if user == "admin" {
+    dbs.Table("vms").Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Scan(&v)
+  } else {
+    dbs.Table("vms").Order("create_time desc").Where("owner=?", user).Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Scan(&v)
+  }
+  pagenumber := len(v)/offset+1
+  return pagenumber, nil
+}
+
+func VmList(user string, start int, offset int) ([]map[string]interface{}, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
@@ -514,12 +530,12 @@ func VmList(user string) ([]map[string]interface{}, error) {
 	var v []Vms
 
   if user == "admin" {
-    dbs.Table("vms").Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Scan(&v)
-    return allvm(v), nil
+    dbs.Table("vms").Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Limit(offset).Offset((start-1)*offset).Scan(&v)
   } else {
-    dbs.Table("vms").Order("create_time desc").Where("owner=?", user).Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Scan(&v)
-    return allvm(v), nil
+    dbs.Table("vms").Order("create_time desc").Where("owner=?", user).Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Limit(offset).Offset((start-1)*offset).Scan(&v)
   }
+
+  return allvm(v), nil
 }
 
 type Vm_flavors struct {
