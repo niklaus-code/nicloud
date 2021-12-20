@@ -97,7 +97,7 @@
 				</div>
     		</div>
 	 		<div class="col-sm-12 form-group">
-				<div class="col-sm-8 col-md-offset-4" style="color: #DCDCDC">
+				<div class="col-sm-8 col-md-offset-4" style="color: #C0C0C0">
                     *设计为一个存储集群只有一个存储池
     		    </div>
     		</div>

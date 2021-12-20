@@ -1,11 +1,10 @@
 <template>
 <div>
-      <div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
-                <h4>创建宿主机</h4>
-            </div>
-
-		<div class="col-sm-4 col-sm-offset-4" style="margin-top:20px">
-				<div class="col-sm-12">
+    <div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
+        <h4>创建宿主机</h4>
+    </div>
+    <div class="col-sm-4 col-sm-offset-4" style="margin-top:20px">
+	    <div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-3">
         			<label>数据中心</label>
@@ -16,10 +15,10 @@
                             {{ c.Datacenter }}
                         </option>
                     </select>
-    		</div>
-				</div>
-    		</div>
-				<div class="col-sm-12" style="margin-top:20px">
+    		    </div>
+			</div>
+    	</div>
+		<div class="col-sm-12" style="margin-top:20px">
 	 		<div class="form-group">
 				<div class="col-sm-3">
         			<label>网络</label>
@@ -32,8 +31,8 @@
                     </select>
 				</div>
     		</div>
-    		</div>
-				<div class="col-sm-12" style="margin-top:20px">
+    	</div>
+		<div class="col-sm-12" style="margin-top:20px">
 	 		<div class="form-group">
 				<div class="col-sm-3">
         			<label>cpu</label>
@@ -47,7 +46,7 @@
 				</div>
     		</div>
     		</div>
-				<div class="col-sm-12">
+		<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-3">
         			<label>内存</label>
@@ -60,8 +59,8 @@
 					</form>
 				</div>
     		</div>
-    		</div>
-				<div class="col-sm-12">
+    	</div>
+		<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-3">
         			<label>IP</label>
@@ -74,8 +73,8 @@
 					</form>
 				</div>
     		</div>
-    		</div>
-				<div class="col-sm-12">
+    	</div>
+		<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-3">
         			<label>可创建数量</label>
@@ -88,11 +87,19 @@
 					</form>
 				</div>
     		</div>
-    		</div>
-		<div class="form-group">
-			<div class="col-sm-3 col-sm-offset-6" style="margin-top:20px" >
-  				<button type="submit" @click="commit" class="btn btn-success btn-sm">提交</button>
-			</div>
+    	</div>
+        <div class="col-sm-12">
+            <div class="col-sm-9 col-md-offset-3" style="color: #C0C0C0">
+                *创建宿主机之前需要配置好免密登陆
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+		    <div class="form-group">
+			    <div class="col-sm-3 col-md-offset-3" style="margin-top:20px" >
+  				    <button type="submit" @click="commit" class="btn btn-success btn-sm">提交</button>
+			    </div>
+		    </div>
 		</div>
 	</div>
 </div>
@@ -177,7 +184,7 @@ select {
 }
 
 label {
-	font-weight : 400;
+	font-weight : 500;
 	margin-top: 5px;
     float: right;
 }
