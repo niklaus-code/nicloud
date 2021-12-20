@@ -277,7 +277,7 @@ select{
 }
 
 .create {
-    margin-top:20px
+    margin-top:8px
 }
 
 .details-content .article-cont p {
