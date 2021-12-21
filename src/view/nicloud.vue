@@ -2,12 +2,13 @@
 <div>
     <nicloudhead></nicloudhead>
 	<vmleft @toParent="getMag"></vmleft>
-		<div style="padding-right:15px" class="col-xs-11">
-	    	<div class="content1 whisper-content leacots-content details-content col-xs-12" style="background-color:white; float:left">
-				<component @toParent="getMag" v-bind:is="router"></component>
-			</div>
+	<div style="padding-right:15px" class="col-xs-11">
+	   	<div class="content1 whisper-content leacots-content details-content col-xs-12" style="background-color:white; float:left">
+			<component @toParent="getMag" v-bind:is="router"></component>
 		</div>
-  </div>
+	</div>
+    <vmbottom></vmbottom>
+</div>
 </template>
 
 <script>
@@ -35,6 +36,7 @@ import migratevm from '@/components/migratevm'
 import changeparam from '@/components/changeparam'
 import createdatacenter from '@/components/createdatacenter'
 import datacenter from '@/components/datacenter'
+import vmbottom from '@/components/vmbottom'
 
 var initroute 
 if (sessionStorage.getItem('router')) {
@@ -51,7 +53,7 @@ export default {
     },
 
     components: {
-        datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
+        vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
     },
 
 
