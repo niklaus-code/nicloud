@@ -15,7 +15,9 @@ const store = new Vuex.Store({
 		owner: "",
 		os: "",
 		comment: "",
-		ip: ""
+		ip: "",
+        datacenter: "",
+        storage: ""
         },
 	vm: {
 		uuid: "",

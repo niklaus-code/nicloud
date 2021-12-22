@@ -86,8 +86,8 @@
                         <li style="background-color: rgb(255, 211, 0); border-bottom: 1px white solid"  role="presentation">
                             <a @click="changeparam(item.Uuid, item.Ip, item.Os, item.Host, item.Cpu, item.Mem, item.Owner, item.Comment)" role="menuitem" tabindex="-1">修改配置</a>
                         </li>
-      					<li @click="createsnap(item.Uuid, item.Datacenter, item.Storage, item.Os, item.Host)" style="background-color:  #C0C0C0" role="presentation"><a role="menuitem" tabindex="-1">创建快照</a></li>
-      					<li @click="createsnap(item.Uuid, item.Datacenter, item.Storage, item.Os, item.Host)" style="background-color:  #C0C0C0; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">查看&恢复快照</a></li>
+      					<li @click="createsnap(item.Uuid, item.Ip,  item.Os, item.Host, item.Datacenter, item.Storage, item.Owner, item.Comment)" style="background-color:  #C0C0C0" role="presentation"><a role="menuitem" tabindex="-1">创建快照</a></li>
+      					<li @click="snap(item.Uuid, item.Ip, item.Os, item.Host, item.Datacenter, item.Storage, item.Owner, item.Comment)" style="background-color:  #C0C0C0; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">查看&恢复快照</a></li>
       					<li @click="rebuild(item.Uuid, item.Datacenter, item.Storage, item.Os, item.Host)" style="background-color: #CD5C5C" role="presentation"><a role="menuitem" tabindex="-1">重置镜像</a></li>
       					<li @click="deletevm(item.Uuid, item.Datacenter, item.Storage,  index)" style="background-color: #CD5C5C; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
     				</ul>
@@ -129,6 +129,30 @@ export default {
     },
 
     methods: {
+        createsnap: function (uuid, ip, os, host,datacenter, storage , owner, comment) {
+            this.$emit("toParent", "createsnap");
+			this.$store.state.changeparam.uuid = uuid
+			this.$store.state.changeparam.ip = ip
+			this.$store.state.changeparam.os = os
+			this.$store.state.changeparam.datacenter = datacenter
+			this.$store.state.changeparam.storage = storage
+			this.$store.state.changeparam.host = host
+			this.$store.state.changeparam.owner = owner
+			this.$store.state.changeparam.comment = comment
+            },
+
+        snap: function (uuid, ip, os, host,datacenter, storage , owner, comment) {
+            this.$emit("toParent", "snap");
+			this.$store.state.changeparam.uuid = uuid
+			this.$store.state.changeparam.ip = ip
+			this.$store.state.changeparam.os = os
+			this.$store.state.changeparam.datacenter = datacenter
+			this.$store.state.changeparam.storage = storage
+			this.$store.state.changeparam.host = host
+			this.$store.state.changeparam.owner = owner
+			this.$store.state.changeparam.comment = comment
+            },
+
         changeparam: function (uuid, ip, os, host, cpu, mem, owner, comment) {
             this.$emit("toParent", "changeparam");
 			this.$store.state.changeparam.uuid = uuid
@@ -272,7 +296,7 @@ export default {
 				}
             })
         },
-
+        /*
         createsnap: function (uuid, datacenter, storage) {
             var apiurl = `/api/vm/createsnap`
             this.$http.get(apiurl, { params: { uuid: uuid, datacenter:datacenter, storage: storage}}).then(response => {
@@ -283,6 +307,7 @@ export default {
 				}
             })
         },
+        */
 
         ruebuild: function (uuid, datacenter, storage, osname, host) {
             var apiurl = `/api/vm/rebuild`

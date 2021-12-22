@@ -1,6 +1,7 @@
 package cephcommon
 
 import (
+  "fmt"
   "github.com/ceph/go-ceph/rados"
   rbd "github.com/ceph/go-ceph/rbd"
   "nicloud/dbs"
@@ -82,7 +83,10 @@ func Cephinfobyname(datacenter string, storage string)(*Vms_Ceph, error) {
     return nil, err
   }
   c := &Vms_Ceph{}
-  dbs.Where("datacenter=? and uuid=?", datacenter, storage).First(c)
+  errdb := dbs.Where("datacenter=? and uuid=?", datacenter, storage).First(c)
+  if errdb.Error != nil {
+    return nil, errdb.Error
+  }
   return c, nil
 }
 
@@ -246,5 +250,20 @@ func Createimgsnap(vmid string, datacenter string, storage string, snapname stri
     return errdb.Error
   }
 
+  return nil
+}
+
+func Rollback(vmid string, snapname string, pool string) error {
+  img, err := Getimgbyname(vmid, pool)
+  if err != nil {
+    return err
+  }
+
+  s := img.GetSnapshot(snapname)
+  err = s.Rollback()
+  fmt.Println(err)
+  if err != nil {
+    return err
+  }
   return nil
 }

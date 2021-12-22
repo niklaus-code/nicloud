@@ -252,12 +252,38 @@ func Rebuild(c *gin.Context)  {
 }
 
 func Createsnap(c *gin.Context)  {
+  uuid := c.PostForm("uuid")
+  datacenter := c.PostForm("datacenter")
+  storage := c.PostForm("storage")
+  snapname := c.PostForm("snapname")
+
+  res := make(map[string]interface{})
+  err := vm.Creatsnap(uuid, datacenter, storage, snapname)
+  res["err"] = err
+  c.JSON(200, res)
+}
+
+func Getsnap(c *gin.Context)  {
   uuid := c.Query("uuid")
   datacenter := c.Query("datacenter")
   storage := c.Query("storage")
 
   res := make(map[string]interface{})
-  err := vm.Creatsnap(uuid, datacenter, storage)
+  s, err := vm.Getsnap(datacenter, storage, uuid)
+  res["res"] = s
+  res["err"] = err
+  c.JSON(200, res)
+}
+
+func Rollback(c *gin.Context)  {
+  uuid := c.Query("uuid")
+  datacenter := c.Query("datacenter")
+  storage := c.Query("storage")
+  snapname := c.Query("snapname")
+
+  res := make(map[string]interface{})
+  err := vm.RollbackSnap(uuid, snapname,  datacenter, storage)
+
   res["err"] = err
   c.JSON(200, res)
 }

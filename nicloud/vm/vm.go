@@ -561,7 +561,6 @@ func SearchVm(c string) ([]map[string]interface{}, error) {
   var v []Vms
   i := fmt.Sprintf("ip like %s or comment like %s or host like %s", "'%"+c+"%'", "'%"+c+"%'",  "'%"+c+"%'")
   dbs.Where(i).Find(&v)
-  fmt.Println(i)
   return allvm(v), nil
 }
 
@@ -604,13 +603,11 @@ func Rebuildimg(image string, storage string, datacenter string, old_uuid string
   return nil
 }
 
-func Creatsnap(vmid string, datacenter string, storage string) error {
+func Creatsnap(vmid string, datacenter string, storage string, snapname string) error {
   storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
   if err != nil {
     return err
   }
-
-  snapname := vmid + time.Now().Format("200601021504")
 
   c := cephcommon.Createimgsnap(vmid, datacenter, storage, snapname, storageinfo.Pool)
   if c != nil {
@@ -618,3 +615,30 @@ func Creatsnap(vmid string, datacenter string, storage string) error {
   }
   return nil
 }
+
+func Getsnap(datacenter string, storage string, vmid string) ([]cephcommon.Vms_snaps, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  snap := []cephcommon.Vms_snaps{}
+  errdb := dbs.Where("datacenter=? and storage= ? and vm_uuid =?", datacenter, storage, vmid).Find(&snap)
+  if errdb.Error != nil {
+    return nil, errdb.Error
+  }
+  return snap, nil
+}
+
+func RollbackSnap(vmid string, snapname string, datacenter string, storage string) error {
+  storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
+  if err != nil {
+    return err
+  }
+
+  r := cephcommon.Rollback(vmid, snapname, storageinfo.Pool)
+  if r != nil {
+    return vmerror.Error{Message: r.Error()}
+  }
+  return nil
+}
+

@@ -38,7 +38,9 @@ func main() {
     v2.GET("migratevm", vmapis.MigrateVm)
     v2.GET("changeconfig", vmapis.Changeconfig)
     v2.GET("rebuild", vmapis.Rebuild)
-    v2.GET("createsnap", vmapis.Createsnap)
+    v2.POST("createsnap", vmapis.Createsnap)
+    v2.GET("getsnap", vmapis.Getsnap)
+    v2.GET("rollback", vmapis.Rollback)
 	}
 
   v3 := r.Group("/api/machine")

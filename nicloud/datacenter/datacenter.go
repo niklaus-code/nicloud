@@ -1,7 +1,6 @@
 package datacenter
 
 import (
-  "fmt"
   "nicloud/dbs"
 )
 
@@ -44,7 +43,6 @@ func Add (datacenter string, comment string) error {
 }
 
 func Del(datacenter string) error {
-  fmt.Println(datacenter)
   dbs, err := db.NicloudDb()
   if err != nil {
     return err
