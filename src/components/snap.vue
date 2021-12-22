@@ -180,6 +180,7 @@ select{
     font-family: "微软雅黑";
     border: 1px #ccc solid;
     border-radius: 5px;
+    height: 30px;
 }
 
 .details-content .article-cont p {

@@ -42,7 +42,7 @@
                     </div>
 		        </div>
                 <div class="col-sm-2 col-sm-offset-2">
-                    <button @click="createsnap" style="margin-left:40px;margin-top:1px" type="button" class="btn btn-success btn-xs">提交</button>
+                    <button @click="createsnap" type="button" class="btn btn-success btn-xs">提交</button>
 		        </div>
 		    </div>
 		</div>
@@ -183,4 +183,8 @@ text-align: center
 .info {
     border-bottom: 1px solid #ccc
 }
+
+.form-control {
+       height: 30px;
+    }
 </style>
