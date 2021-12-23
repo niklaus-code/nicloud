@@ -111,6 +111,7 @@ type Vms_ips struct {
   Status int8
   Vlan string
   Exist int8
+  Create_time time.Time
 }
 
 func AllIP(vlan string) []*Vms_ips {
@@ -145,7 +146,7 @@ func IPlist(vlan string) []*Vms_ips {
     return nil
   }
   var ip []*Vms_ips
-  dbs.Where("vlan=? and status=0", vlan).Order("ipv4").Find(&ip)
+  dbs.Where("vlan=? and status=0", vlan).Order("create_time desc").Find(&ip)
 
   return ip
 }
@@ -270,6 +271,7 @@ func Createip(startip string, endip string, vlan string) error {
       Vlan: vlan,
       Status: 0,
       Exist: 1,
+      Create_time: time.Now(),
     }
 
     err := dbs.Create(*ips)
