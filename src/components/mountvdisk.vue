@@ -1,54 +1,62 @@
 <template>
 	<div>
-		<div class="btn-group col-md-2 col-md-offset-10" >
-			<input class="col-md-5" type="text" id="name" placeholder="" v-model="content">
-			<button class="btn btn-default btn-sm" style="margin-right:5px" @click="search()">
+        <div class="btn-group col-md-6" style="margin-bottom:20px">
+            <ul class="pagination">
+                <li><a @click="down()">&laquo;</a></li>
+                <li  v-for="(item, index) in totalpagenumber"><a @click="getvm(item)">{{item}}</a></li>
+                <li><a @click="up()">&raquo;</a></li>
+            </ul>
+        </div>
+
+		<div class="btn-group col-md-6" style="float: right">
+			<button class="btn btn-default btn-sm" style="float:right; margin-right:5px" @click="search()">
 				 <span class="glyphicon glyphicon-search"></span>筛选
 			</button>
+			<input class="col-md-5" style="float:right" type="text" id="name" placeholder="" v-model="content">
 		</div>
 		<div>
-		<table class="table table-hover" style="text-align: center;">
-    		<thead>
-      			<tr>
-					<th>
-						<label class="checkbox-inline" style="border:red 1px">
-  							<input type="checkbox" v-model="checkvalue" @click="checkbox()"> 
-						</label>
-					</th>
-        			<th>实例名称</th>
-        			<th>镜像</th>
-        			<th>IP地址</th>
-        			<th>CPU/内存</th>
-        			<th>所属者</th>
-        			<th>状态</th>
-        			<th>备注</th>
-        			<th>操作</th>
-      			</tr>
-    		</thead>
-    		<tbody v-for="(item, index) in data">
-      			<tr class="table-dark text-dark" :id="item.Uuid">
-					<label class="checkbox-inline">
-  						<input type="checkbox" v-model="item.Checkout"> 
-					</label>
-        		<td>{{item.Uuid}}</td>
-        		<td>{{item.Os}}</td>
-        		<td>{{item.Ip}}</td>
-        		<td>{{item.Cpu}}核 / {{item.Mem}}G</td>
-        		<td>{{item.Owner}}</td>
-				<td>
-        			<span>{{item.Status}}</span>
-        		</td>
-				<td>
+		    <table class="table table-hover" style="text-align: center;">
+    		    <thead>
+      			    <tr>
+					    <th>
+						    <label class="checkbox-inline" style="border:red 1px">
+  							    <input type="checkbox" v-model="checkvalue" @click="checkbox()"> 
+						    </label>
+					    </th>
+        			    <th>实例名称</th>
+        			    <th>镜像</th>
+        			    <th>IP地址</th>
+        			    <th>CPU/内存</th>
+        			    <th>所属者</th>
+        			    <th>状态</th>
+        			    <th>备注</th>
+        			    <th>操作</th>
+      			    </tr>
+    		    </thead>
+    		    <tbody v-for="(item, index) in data">
+      			    <tr class="table-dark text-dark" :id="item.Uuid">
+					    <label class="checkbox-inline">
+  						    <input type="checkbox" v-model="item.Checkout"> 
+					    </label>
+        		    <td>{{item.Uuid}}</td>
+        		    <td>{{item.Os}}</td>
+        		    <td>{{item.Ip}}</td>
+        		    <td>{{item.Cpu}}核 / {{item.Mem}}G</td>
+        		    <td>{{item.Owner}}</td>
+				    <td>
+        			    <span>{{item.Status}}</span>
+        		    </td>
+				    <td>
                 		{{item.Comment}}
-				</td>
-        		<td class="dropdown">
-					<button class="btn btn-success btn-xs" @click="mount(item.Uuid, item.Ip, item.Host,item.Datacenter)" type="button">
-						挂载
-					</button>
-					<button @click="shutdown(item.Uuid, index, item.Host)" class="btn btn-warning btn-xs" type="button">
-						关机
-					</button>
-				</td>
+				    </td>
+        		    <td class="dropdown">
+					    <button class="btn btn-success btn-xs" @click="mount(item.Uuid, item.Ip, item.Host,item.Datacenter)" type="button">
+						    挂载
+					    </button>
+					    <button @click="shutdown(item.Uuid, index, item.Host)" class="btn btn-warning btn-xs" type="button">
+						    关机
+					    </button>
+				    </td>
       			</tr>
     		</tbody>
 		</table>
@@ -59,6 +67,10 @@
 export default {
     data () {
         return {
+            totalpagenumber: "pagenumber",
+            pagenumber: 1,
+            dropup: "dropup",
+            dropdown: "dropdown",
             vdiskid: "",
             storage: "",
             pool: "",
@@ -84,7 +96,7 @@ export default {
     },
 
     mounted: function () {
-		this.getvm()
+		this.getvm(1)
     },
 
     methods: {
@@ -147,34 +159,63 @@ export default {
             	return response.data.res
             	})
 			},
-	
-        getvm: function () {
-            var apiurl = `/api/vm/getvm`
-            this.$http.get(apiurl).then(response => {
-            var d = new Array()
-            for (var v in response.data.res) {
-                if (response.data.res[v]["Comment"].length > 0) {
-                    response.data.res[v]["flag"] = false
-                    response.data.res[v]["flag2"] = true
-                    } else {
-                    	response.data.res[v]["flag2"] = false
-                        response.data.res[v]["flag"] = true
-                    }
-                response.data.res[v]["flag1"] = false
-                d.push(response.data.res[v])
-                }
 
-			this.data = d
-			for (let v in this.data) {
-				var r = this.getvmstatus(this.data[v].Uuid, this.data[v].Host)
-				r.then(value => {
-					this.data[v].Status = value
-					},
-				)}
+        search: function (content) {
+            var apiurl = `/api/vm/search`
+            this.$http.get(apiurl, { params: { content: this.content} } ).then(response => {
+                this.comment(response.data.res)
             })
         },
-    }
-  }
+
+        up: function() {
+            if (Number(this.pagenumber) < Number(this.totalpagenumber)) {
+                this.getvm(Number(this.pagenumber)+1)
+                }
+            },
+
+        down: function() {
+            if (Number(this.pagenumber) > 1 ) {
+                this.getvm(Number(this.pagenumber)-1)
+                }
+            },
+
+        comment: function(res) {
+            var d = new Array()
+                for (var v in res) {
+                    if (res[v]["Comment"].length > 0) {
+                        res[v]["flag"] = false
+                        res[v]["flag2"] = true
+                        } else {
+                            res[v]["flag2"] = false
+                            res[v]["flag"] = true
+                        }
+                    res[v]["flag1"] = false
+                    d.push(res[v])
+                this.data = d
+                    }
+                for (let v in this.data) {
+                    var r = this.getvmstatus(this.data[v].Uuid, this.data[v].Host)
+                    r.then(value => {
+                        this.data[v].Status = value
+                        },
+                    )}
+            },
+
+        getvm: function (start) {
+            var apiurl = `/api/vm/getvm`
+            this.$http.get(apiurl, { params: { start: start} }).then(response => {
+            if (response.data.err === null ) {
+                this.totalpagenumber = response.data.pagenumber
+                this.pagenumber = start
+                this.comment(response.data.res)
+                } else {
+                    alert(response.data.err)
+                    this.$router.push({name:"login"})
+                    } 
+                })
+            },
+     }
+}
 </script>
 
 
@@ -202,5 +243,14 @@ th {
 	font-weight: bold;
 	color: black;
 	text-align: center;
+}
+
+.pagination {
+    margin-top: 0;
+    display: block;
+}
+
+.pagination li a {
+    color: #000;
 }
 </style>
