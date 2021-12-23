@@ -63,7 +63,7 @@
            			</span>
 					<li v-if='item.flag'><span class="glyphicon glyphicon-calendar" @click="edit(index)"></span></li>
 						<div v-if='item.flag1'>
-							<div><input type="text" v-model="comment"></div>
+							<div><input type="text" v-model="comments"></div>
 							<div><span  @click="input(index, item.Uuid)" class="glyphicon glyphicon-calendar"></span></div>
 						</div>
 				</td>
@@ -75,7 +75,7 @@
 					<button class="btn btn-info btn-xs dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
 						操作<span class="caret"></span>
 					</button>
-					<ul class="dropdown-menu" role="menu" aria-labelledby="menu1" style="">
+					<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
       					<li @click="start(item.Uuid, index, item.Host)" style="background-color: green;" role="presentation"><a role="menuitem" tabindex="-1">开机</a></li>
       					<li @click="pause(item.Uuid, index, item.Host)" style="background-color: green; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
       					<li @click="shutdown(item.Uuid, index, item.Host)" style="background-color: #D2B48C;" role="presentation"><a role="menuitem" tabindex="-1">关机</a></li>
@@ -103,6 +103,7 @@
 export default {
     data () {
         return {
+            comments: "",
             totalpagenumber: "pagenumber",
             pagenumber: 1,
             dropup: "dropup",
@@ -184,7 +185,7 @@ export default {
 		c: function (index) {
 			this.data[index].flag2 = false
 			this.data[index].flag1 = true
-			this.comment = this.data[index].Comment
+			this.comments = this.data[index].Comment
 			},
 
 		edit: function (index) {
@@ -194,9 +195,9 @@ export default {
 
 		input: function (index, uuid) {
             var apiurl = `/api/vm/addcomment`
-            this.$http.get(apiurl, { params: { uuid: uuid, comment: this.comment} } ).then(response => {
+            this.$http.get(apiurl, { params: { uuid: uuid, comment: this.comments} } ).then(response => {
                 if (response.data) {
-                    this.data[index].Comment = this.comment
+                    this.data[index].Comment = this.comments
                     }
             })
 			this.data[index].flag = false
