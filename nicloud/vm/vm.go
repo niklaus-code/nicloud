@@ -518,7 +518,10 @@ func Getpagenumber(user string, offset int) (int, error) {
   } else {
     dbs.Table("vms").Order("create_time desc").Where("owner=?", user).Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Scan(&v)
   }
-  pagenumber := len(v)/offset+1
+  pagenumber := len(v)%offset
+  if pagenumber > 0 {
+    pagenumber = pagenumber + 1
+  }
   return pagenumber, nil
 }
 
