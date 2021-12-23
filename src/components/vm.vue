@@ -309,7 +309,7 @@ export default {
         },
         */
 
-        ruebuild: function (uuid, datacenter, storage, osname, host) {
+        rebuild: function (uuid, datacenter, storage, osname, host) {
             var apiurl = `/api/vm/rebuild`
             this.$http.get(apiurl, { params: { uuid: uuid, datacenter:datacenter, storage: storage, osname: osname, host: host}}).then(response => {
 				if (response.data.err == null) {
