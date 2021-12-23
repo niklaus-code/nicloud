@@ -17,6 +17,14 @@ func Vnc(c *gin.Context)  {
   c.JSON(200, res)
 }
 
+  //xlsx := excelize.NewFile()
+  //xlsx.SetCellValue("Sheet1", "A2", "asdas")
+  //
+  //c.Header("Content-Type", "application/octet-stream")
+  //c.Header("Content-Disposition", "attachment; filename="+"Workbook.xlsx")
+  //c.Header("Content-Transfer-Encoding", "binary")
+  //_ = xlsx.Write(c.Writer)
+
 func Search(c *gin.Context)  {
   ct := c.Query("content")
   vms, err := vm.SearchVm(ct)

@@ -1,12 +1,16 @@
 package networkapis
 
 import (
+  "bytes"
   "github.com/gin-gonic/gin"
   "github.com/go-playground/validator/v10"
+  "net/http"
   "nicloud/networks"
   "nicloud/vm"
   "nicloud/vmerror"
+  "os"
   "strconv"
+  "time"
 )
 
 func Add(c *gin.Context) {
@@ -109,7 +113,6 @@ func UpIp(c *gin.Context) {
   c.JSON(200, res)
 }
 
-
 func DownIp(c *gin.Context) {
   ipv4 := c.Query("ipv4")
   vlan := c.Query("vlan")
@@ -136,4 +139,18 @@ func GetallIp(c *gin.Context) {
   res["res"] = iplist
 
   c.JSON(200, res)
+}
+
+func DownloadExcel(c *gin.Context) {
+  vlan := c.Query("vlan")
+
+  c.Header("Content-Type", "application/octet-stream")
+  c.Header("Content-Disposition", "attachment; filename=IPLists.txt")
+  c.Header("Content-Transfer-Encoding", "binary")
+  file, _ := os.OpenFile("test2.txt", os.O_RDWR|os.O_APPEND|os.O_CREATE, 0664)
+  defer file.Close()
+
+  ipliststr := networks.Downloadips(vlan)
+  con := bytes.NewReader([]byte(ipliststr))
+  http.ServeContent(c.Writer, c.Request, "asd", time.Now(), con)
 }

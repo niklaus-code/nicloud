@@ -124,6 +124,21 @@ func AllIP(vlan string) []*Vms_ips {
   return ip
 }
 
+func Downloadips(vlan string) string {
+  ips := AllIP(vlan)
+  var ipliststr string
+  str1 := "host v_10_0_85_20{hardware ethernet "
+  for _, v := range ips {
+      ipliststr += str1
+      ipliststr += v.Macaddr
+      ipliststr += ";fixed-address "
+      ipliststr += v.Ipv4
+      ipliststr += ";}"
+      ipliststr += "\n"
+  }
+  return ipliststr
+}
+
 func IPlist(vlan string) []*Vms_ips {
   dbs, err := db.NicloudDb()
   if err != nil {

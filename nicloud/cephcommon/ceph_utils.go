@@ -1,7 +1,6 @@
 package cephcommon
 
 import (
-  "fmt"
   "github.com/ceph/go-ceph/rados"
   rbd "github.com/ceph/go-ceph/rbd"
   "nicloud/dbs"
@@ -261,7 +260,6 @@ func Rollback(vmid string, snapname string, pool string) error {
 
   s := img.GetSnapshot(snapname)
   err = s.Rollback()
-  fmt.Println(err)
   if err != nil {
     return err
   }

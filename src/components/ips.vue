@@ -2,6 +2,7 @@
 	<div>
 		<div class="col-sm-10 col-sm-offset-1 vlan" style="margin-top:20px;">
 			<span>{{vlan}}&nbsp&&nbsp IP列表</span>
+            <button style="float: right" class="btn btn-success btn-sm"><a :href=downloadurl>导出IP列表</a></button>
 		</div>
 		<div class="col-sm-10 col-sm-offset-1" style="margin-top:20px;">
 			<table class="table table-hover" style="text-align: center;">
@@ -55,6 +56,7 @@ export default {
         return {
 			vlan: "",
 			ips: [],
+            downloadurl: ""
         }
     },
 
@@ -67,6 +69,10 @@ export default {
 		},
 
     methods: {
+        downloadexcel: function () {
+            var apiurl = `/api/vm/download_excel`
+            window.location(apiurl)
+            },
 	   	vlaninfo: function () {
 			var initroute 
 			if (this.$store.state.network.vlan) {
@@ -75,6 +81,7 @@ export default {
     			} else {
 				this.vlan = sessionStorage.getItem('vlan')
         		}
+            this.downloadurl = "http://127.0.0.1/api/networks/download_excel?vlan="+this.vlan
 
             },
 
@@ -146,4 +153,11 @@ th {
     text-align: center;
 }
 
+.btn {
+    padding:2px;
+}
+a {
+    color: white;
+    text-decoration: none;
+}
 </style>
