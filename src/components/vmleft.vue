@@ -24,7 +24,7 @@ export default {
 				router: "disk"
 					},
 				{
-				name: "镜像",
+				name: "系统镜像",
 				router: "osimage"
 					},
 				{
