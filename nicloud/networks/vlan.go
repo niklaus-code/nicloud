@@ -214,12 +214,37 @@ func OpIP(ipv4 string, vlan string, op int) error {
   return nil
 }
 
-func Createip(startip string, endip string, vlan string) error {
+func Createip(startip string, endip string, vlan string, prefix int, gateway string) error {
   b, l := split(startip)
+  e, f := split(gateway)
 
-  if b == false {
+  if b == false || e == false {
     return vmerror.Error{
       Message: "数据格式错误",
+    }
+  }
+
+  if prefix >= 8 && prefix < 16 {
+    if l[0] != f[0] {
+      return vmerror.Error{
+        Message: "数据格式错误",
+      }
+    }
+  }
+
+  if prefix >= 16 && prefix < 24 {
+    if l[0] != f[0] || l[1] != f[1] {
+      return vmerror.Error{
+        Message: "数据格式错误",
+      }
+    }
+  }
+
+  if prefix >= 24 && prefix <= 32 {
+    if l[0] != f[0] || l[1] != f[1] || l[2] != f[2] {
+      return vmerror.Error{
+        Message: "数据格式错误",
+      }
     }
   }
 

@@ -96,9 +96,21 @@ func CreateIp(c *gin.Context) {
   startip := c.Query("startip")
   endip := c.Query("endip")
   vlan := c.Query("vlan")
-  res := make(map[string]interface{})
+  prefix, err := strconv.Atoi(c.Query("prefix"))
+  gateway := c.Query("gateway")
 
-  err := networks.Createip(startip, endip, vlan)
+  res := make(map[string]interface{})
+  if err != nil {
+    res["res"] = err
+    c.JSON(400, res)
+  }
+
+  if prefix >= 32 || prefix < 8 {
+    res["res"] = err
+    c.JSON(400, vmerror.Error{"参数错误"})
+  }
+
+  err = networks.Createip(startip, endip, vlan, prefix, gateway)
   res["res"] = err
   c.JSON(200, res)
 }
