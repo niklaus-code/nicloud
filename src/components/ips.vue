@@ -16,6 +16,7 @@
 						<th>IPv4</th>
 						<th>MACADDR</th>
 						<th>VLAN</th>
+						<th>创建时间</th>
 						<th>状态</th>
 						<th>操作</th>
       				</tr>
@@ -29,6 +30,7 @@
         				<td>{{item.Ipv4}}</td>
         				<td>{{item.Macaddr}}</td>
         				<td>{{vlan}}</td>
+        				<td>{{item.Create_time}}</td>
         				<td>
 							<span v-if="item.Status" class="glyphicon glyphicon-remove"></span>
 							<span v-else  class="glyphicon glyphicon-ok"></span>
