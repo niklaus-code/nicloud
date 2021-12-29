@@ -1,7 +1,9 @@
 <template>
 <div class="abc col-sm-12">
     	<div class="col-sm-3">
-				<span @click="index">NICLOUD&nbsp/</span>
+            <router-link :to="{name:'nicloud'}">
+				<span>NICLOUD&nbsp/</span>
+			</router-link>
 			<router-link :to="{name:'serveroom'}">
 				<span>SERVEROOM</span>
 			</router-link>

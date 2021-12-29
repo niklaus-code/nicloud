@@ -1,20 +1,6 @@
 <template>
 	<div>
-		<nicloudhead> </nicloudhead>
-		<div class="btn-group col-md-1 col-md-offset-11" >
-			<strong>总数:<span>{{total}}<span></strong>
-		</div>
-		
-		<div class="btn-group col-md-2 col-md-offset-10" style="margin-top:10px">
-            <input class="col-md-5" type="text" id="name" placeholder="" v-model="content">
-            <button class="btn btn-default btn-sm" style="margin-right:5px" @click="search()">
-                 <span class="glyphicon glyphicon-search"></span>筛选
-            </button>
-        <router-link :to="{name:'createmachine'}">
-            <button class="btn btn-default btn-sm">
-                 <span class="glyphicon glyphicon-cog"></span>增加机器
-            </button>
-        </router-link>
+		<machinehead> </machinehead>
     </div>
 		<div class="machine">
 			<table class="table table-bordered">
@@ -97,7 +83,7 @@
 	</div>
 </template>
 <script>
-import nicloudhead from '@/components/nicloudhead'
+import machinehead from '@/components/machinehead'
 
 export default {
     data () {
@@ -110,7 +96,7 @@ export default {
 			}
 		},
     components: {
-        nicloudhead
+        machinehead
     },
 	mounted: function () {
 		this.getmachinelist(1, 50)
