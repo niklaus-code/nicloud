@@ -49,6 +49,7 @@
 			</div>
 			<div  class="col-sm-2">
   					<button type="submit" class="btn btn-sm btn-success" @click="create">生成IP & 入库</button>
+  					<button type="submit" class="btn btn-sm btn-info" @click="ips">查看IP</button>
 			</div>
 		</div>
 	</div>
@@ -74,6 +75,11 @@ export default {
 
 
     methods: {
+       ips: function () {
+            this.$emit("toParent", "ips");
+            this.$store.state.network.vlan = this.vlan
+            },
+
 		create: function () {
 			if (typeof this.startip === 'undefined' || this.startip === null || this.startip === ''|| typeof this.endip === 'undefined' || this.endip === null || this.endip === '') {
 				alert("输入为空")
