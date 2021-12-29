@@ -1,6 +1,6 @@
 <template>
 <div>
-    <nicloudhead></nicloudhead>
+    <nicloudhead @toParent="getMag"></nicloudhead>
 	<vmleft @toParent="getMag"></vmleft>
 	<div style="padding-right:15px" class="col-xs-11">
 	   	<div class="content1 whisper-content leacots-content details-content col-xs-12" style="background-color:white; float:left">
