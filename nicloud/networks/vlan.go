@@ -128,8 +128,10 @@ func AllIP(vlan string) []*Vms_ips {
 func Downloadips(vlan string) string {
   ips := AllIP(vlan)
   var ipliststr string
-  str1 := "host v_10_0_85_20{hardware ethernet "
+  str1 := "host v_"
   for _, v := range ips {
+      ipliststr += v.Ipv4
+      ipliststr += "{hardware ethernet "
       ipliststr += str1
       ipliststr += v.Macaddr
       ipliststr += ";fixed-address "
