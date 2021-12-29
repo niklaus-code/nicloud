@@ -221,7 +221,11 @@ export default {
         search: function (content) {
             var apiurl = `/api/vm/search`
             this.$http.get(apiurl, { params: { content: this.content} } ).then(response => {
-            	this.comment(response.data.res)
+                if (response.data.res === null) {
+                    alert("未查询到")
+                    } else {
+            	    this.comment(response.data.res)
+                    }
             })
 		},
 
