@@ -120,7 +120,7 @@ func AllIP(vlan string) []*Vms_ips {
     return nil
   }
   var ip []*Vms_ips
-  dbs.Where("vlan=?", vlan).Find(&ip)
+  dbs.Where("vlan=?", vlan).Order("create_time desc").Order("ipv4").Find(&ip)
 
   return ip
 }

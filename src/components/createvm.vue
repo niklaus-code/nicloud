@@ -78,7 +78,7 @@
         			<select class="col-sm-10" v-model="hostvalue">
 					  	<option value="">--请选择--</option>
   						<option  v-for="host in hostlist" :value="host.Ipv4">
-							 {{ host.Ipv4 }} (&nbsp{{host.Usedcpu}}/{{host.Cpu}}&nbsp核，{{host.Usedmem}}/{{host.Mem}}&nbspG ，{{host.count}}/{{host.Max_vms}}&nbsp数量&nbsp)
+							 {{ host.Ipv4 }} ({{host.Usedcpu}}/{{host.Cpu}}&nbsp核，{{host.Usedmem}}/{{host.Mem}}&nbspG ，{{host.count}}/{{host.Max_vms}}&nbsp个)
 						</option>
         			</select>
 				</div>
