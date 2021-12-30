@@ -8,6 +8,7 @@ import (
   "nicloud/vm"
   "nicloud/vmerror"
   "strconv"
+  "sync"
 )
 
 func Vnc(c *gin.Context)  {
@@ -143,8 +144,10 @@ func Createvm(c *gin.Context) {
     c.JSON(400, res)
     return
   }
-
+  var rwLock sync.RWMutex
+  rwLock.Lock()
   err = vm.Create(datacenter, storage, vlan, cpu, mem, ip, host, os, user)
+  rwLock.Unlock()
   res["err"] = err
   c.JSON(200, res)
 }
@@ -206,12 +209,16 @@ func Changeconfig(c *gin.Context) {
 }
 
 func DeleteVM(c *gin.Context) {
+
 	uuid := c.Query("uuid")
   datacenter := c.Query("datacenter")
   storage := c.Query("storage")
 
 	res := make(map[string]interface{})
+  var rwLock sync.RWMutex
+	rwLock.Lock()
 	err := vm.Delete(uuid, datacenter, storage)
+	rwLock.Unlock()
 
 	res["err"] = err
 	c.JSON(200, res)

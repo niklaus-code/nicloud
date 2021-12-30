@@ -8,6 +8,7 @@ import (
   "nicloud/vm"
   "nicloud/vmerror"
   "strconv"
+  "sync"
 )
 
 func Mountdisk(c *gin.Context) {
@@ -41,8 +42,10 @@ func Mountdisk(c *gin.Context) {
     c.JSON(200, res)
     return
   }
-
+  var rwLock sync.RWMutex
+  rwLock.Lock()
   err = vdisk.Mountdisk(ip,  host, storage, pool, datacenter, vdiskid, vms, xml)
+  rwLock.Unlock()
   if err != nil {
     res["err"] = err
     c.Abort()
@@ -59,8 +62,11 @@ func Deletevdisk(c *gin.Context)  {
   uuid := c.Query("uuid")
   datacenter := c.Query("datacenter")
   storage := c.Query("storage")
-  err := vdisk.Deletevdisk(uuid, datacenter, storage)
 
+  var rwLock sync.RWMutex
+  rwLock.Lock()
+  err := vdisk.Deletevdisk(uuid, datacenter, storage)
+  rwLock.Unlock()
   res := make(map[string]interface{})
   res["err"] = err
 
@@ -98,8 +104,10 @@ func Createvdisk(c *gin.Context) {
     return
   }
 
+  var rwLock sync.RWMutex
+  rwLock.Lock()
   err = vdisk.Add_vdisk(contain, pool, storage, datacenter, user)
-
+  rwLock.Unlock()
   res["err"] = err
 
   c.JSON(200, res)
@@ -135,7 +143,10 @@ func Umountdisk(c *gin.Context) {
   }
 
   v := vm.Vms{}
+  var rwLock sync.RWMutex
+  rwLock.Lock()
   err = vdisk.Umountdisk(vmip, storage, datacenter, vdiskid, xml, vminfo.Host, v)
+  rwLock.Unlock()
   if err != nil {
     res["err"] = err
     c.JSON(200, res)
