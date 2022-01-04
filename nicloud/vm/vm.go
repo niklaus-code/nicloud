@@ -358,7 +358,7 @@ func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, v
 
 func MigrateVm(uuid string, host string, migrate_host string) error {
   s, err := VmStatus(uuid, host)
-  if s != "关机" {
+  if s == "开机" {
     return vmerror.Error{Message: "云主机需要关机状态"}
   }
 
