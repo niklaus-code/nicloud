@@ -86,8 +86,7 @@
                         <li style="background-color: rgb(255, 211, 0); border-bottom: 1px white solid"  role="presentation">
                             <a @click="changeparam(item.Uuid, item.Ip, item.Os, item.Host, item.Cpu, item.Mem, item.Owner, item.Comment)" role="menuitem" tabindex="-1">修改配置</a>
                         </li>
-      					<li @click="createsnap(item.Uuid, item.Ip,  item.Os, item.Host, item.Datacenter, item.Storage, item.Owner, item.Comment)" style="background-color:  #C0C0C0" role="presentation"><a role="menuitem" tabindex="-1">创建快照</a></li>
-      					<li @click="snap(item.Uuid, item.Ip, item.Os, item.Host, item.Datacenter, item.Storage, item.Owner, item.Comment)" style="background-color:  #C0C0C0; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">查看&恢复快照</a></li>
+      					<li @click="createsnap(item.Uuid, item.Ip,  item.Os, item.Host, item.Datacenter, item.Storage, item.Owner, item.Comment)" style="background-color:  #C0C0C0" role="presentation"><a role="menuitem" tabindex="-1">创建 & 恢复快照</a></li>
       					<li @click="rebuild(item.Uuid, item.Datacenter, item.Storage, item.Os, item.Host)" style="background-color: #CD5C5C" role="presentation"><a role="menuitem" tabindex="-1">重置镜像</a></li>
       					<li @click="deletevm(item.Uuid, item.Datacenter, item.Storage,  index)" style="background-color: #CD5C5C; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
     				</ul>

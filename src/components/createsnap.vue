@@ -5,31 +5,70 @@
             </div>
 
         <div class="col-sm-8 col-sm-offset-2 choose">
-                <ul>
-                    <li><strong>IP</strong>:&nbsp&nbsp{{ip}}</li>
-                    <li><strong>UUID</strong>:&nbsp&nbsp{{uuid}}</li>
-                    <li><strong>数据中心</strong>:&nbsp&nbsp{{datacenter}}</li>
-                    <li><strong>存储</strong>:&nbsp&nbsp{{storage}}</li>
-                    <li><strong>备注</strong>:&nbsp&nbsp{{comment}}</li>
-                </ul>
-            <table class="table table-bordered" style="text-align: center; margin-top:30px">
-                <thead>
-                    <tr>
-                        <th>快照名称</th>
-                        <th>创建时间</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="c in snap">
-                        <td>{{c.Snap}}</td>
-                        <td>{{c.Create_time}}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="col-sm-12" >
+                <div class="col-sm-1" >
+                    <label>IP:</label>
+                </div>
+                <div class="col-sm-11" >
+                    {{ip}}
+                </div>
+            </div>
+            <div class="col-sm-12" >
+                <div class="col-sm-1" >
+                    <label>UUID:</label>
+                </div>
+                <div class="col-sm-11" >
+                    {{uuid}}
+                </div>
+            </div>
+            <div class="col-sm-12" >
+                <div class="col-sm-1" >
+                    <label>备注:</label>
+                </div>
+                <div class="col-sm-11" >
+                    {{comment}}
+                </div>
+            </div>
+            <div class="col-sm-12" >
+                <div class="col-sm-1" >
+                    <label>存储集群:</label>
+                </div>
+                <div class="col-sm-11" >
+                    {{storage}}
+                </div>
+            </div>
+            <div class="col-sm-12" >
+                <div class="col-sm-1" >
+                    <label>数据中心:</label>
+                </div>
+                <div class="col-sm-11" >
+                    {{datacenter}}
+                </div>
+            </div>
+            <div class="col-sm-12" style="margin-top:30px">
+                <table class="table table-bordered" style="text-align: center" v-if="lensnap">
+                    <thead>
+                        <tr>
+                            <th>快照名称</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="c in snap">
+                            <td>{{c.Snap}}</td>
+                            <td>{{c.Create_time}}</td>
+                            <td>
+                                <button type="button" class="btn btn-success btn-xs" @click="rollback(c.Snap)">从此快照恢复</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 		<div class="col-sm-8 col-sm-offset-2 choose"  style="margin-top:30px; margin-bottom:30px" >
             <div class="col-sm-8" style="padding-left:0">
-                <div class="col-sm-11" style="padding-right:0">
+                <div class="col-sm-11" style="padding-left:15px">
                     <div class="col-sm-2">
                         <h5>创建快照</h5>
                     </div>
@@ -53,6 +92,7 @@ export default {
     data () {
         return {
             snap: [],
+            lensnap: 0,
             uuid: "",
             ip: "",
             host: "",
@@ -70,6 +110,20 @@ export default {
 
 
     methods: {
+        rollback: function (snapname) {
+            alert("恢复快照，需要联系管理员手动操作 =^_^=")
+            return
+            var apiurl = `/api/vm/rollback`
+            this.$http.get(apiurl, { params: {uuid: this.uuid, datacenter: this.datacenter, storage: this.storage, snapname: snapname} }).then(response => {
+                if (response.data.err === null) {
+                    alert("回滚成功")
+                    } else {
+                    alert("回滚失败'(" + response.data.err.Message+"')")
+                    }
+                
+                })
+            },
+
         createsnap: function () {
             var apiurl = `/api/vm/createsnap`
             this.$http.post(apiurl, this.$qs.stringify({ uuid: this.uuid, datacenter: this.datacenter, storage: this.storage, snapname: this.snapvalue})).then(response => {
@@ -86,13 +140,13 @@ export default {
             this.$http.get(apiurl, { params: {uuid: this.uuid, datacenter: this.datacenter, storage: this.storage} }).then(response => {
 				if (response.data.err === null) {
                     this.snap = response.data.res
+                    this.lensnap = response.data.res.length
 					} else {
 					alert("获取镜像快照失败'(" + response.data.err.Message+"')")
 					}
                 
 				})
             },
-
 
 		vminfo: function () {
 			var v = this.$store.state.changeparam.uuid
@@ -148,20 +202,14 @@ export default {
 	border-radius: 4px 4px 0 0;
 }
 
-.col-sm-6 {
+.col-sm-1 label {
+    float: right
 }
 
-.startip {
-	margin-top: 10px;
+.col-sm-11 {
+    padding-left: 0px
 }
 
-.endip {
-	margin-top: 10px;
-}
-
-.col-sm-4 label{
-	float: right;
-}
 select{
     font-family: "微软雅黑";
     border: 1px #ccc solid;
@@ -172,14 +220,10 @@ select{
     padding:30px 0 0 5px
 }
 
-label {
-	font-weight : 400;
-	margin-top: 5px;
-}
-
 th {
 text-align: center
 }
+
 .info {
     border-bottom: 1px solid #ccc
 }

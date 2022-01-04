@@ -82,6 +82,8 @@ export default {
             },
 
         rollback: function () {
+            alert("此操作暂不开放， 请联系管理员操作")
+            return
             var apiurl = `/api/vm/rollback`
             this.$http.get(apiurl, { params: {uuid: this.uuid, datacenter: this.datacenter, storage: this.storage, snapname: this.snapvalue} }).then(response => {
 				if (response.data.err === null) {
