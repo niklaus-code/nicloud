@@ -32,9 +32,6 @@
         				<td>{{item.Usedmem}}G/{{item.Mem}}G</td>
         				<td>{{item.count}}/{{item.Max_vms}}</td>
                         <td>
-                            <span class="glyphicon glyphicon-ok"></span>
-                        </td>
-                        <td>
                             <span v-if='item.flag2' @click="c(index)">
                                 {{item.Comment}}
                             </span>
