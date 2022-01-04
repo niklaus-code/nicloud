@@ -9,9 +9,21 @@ import (
 )
 
 func GetHosts(c *gin.Context) {
-  hostlist := vm.Hosts()
+  hostlist, err := vm.Hosts()
   res := make(map[string]interface{})
   res["res"] = hostlist
+  res["err"] = err
+
+  c.JSON(200, res)
+}
+
+func Addcomment(c *gin.Context) {
+  ip := c.Query("ip")
+  comment := c.Query("comment")
+
+  err := vm.Addcomment(ip, comment)
+  res := make(map[string]interface{})
+  res["err"] = err
 
   c.JSON(200, res)
 }

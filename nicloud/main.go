@@ -77,6 +77,7 @@ func main() {
     v5.GET("gethostsby", hostapis.Gethostinfo)
     v5.POST("createhost", hostapis.Createhost)
     v5.GET("gethosts", hostapis.GetHosts)
+    v5.GET("addcomment", hostapis.Addcomment)
     v5.GET("gethostsbydatacenter", hostapis.GetHostsbydatacenter)
   }
 

@@ -17,6 +17,7 @@ type Vm_hosts struct {
   Usedcpu     int
   Status      int8
   Vlan        string  `json:"vlan" validate:"required"`
+  Comment     string
 }
 
 func Allhosts(obj []Vm_hosts) []map[string]interface{}  {
@@ -211,16 +212,16 @@ func Gethostinfo(ip string) []map[string]interface{} {
 }
 
 
-func Hosts() []map[string]interface{} {
+func Hosts() ([]map[string]interface{}, error) {
     db, err := db.NicloudDb()
     if err != nil {
-        return nil
+        return nil, err
       }
     var hosts []Vm_hosts
     db.Where("status=1").Find(&hosts)
 
     res := Allhosts(hosts)
-    return res
+    return res, nil
   }
 
 func GetHostsbydatacenter(datacenter string, vlan string) ([]map[string]interface{},  error) {
@@ -247,4 +248,18 @@ func GetHostsbyvmip(vmip string) (*Vms,  error) {
   }
 
   return vm, nil
+}
+
+
+func Addcomment(ip string, c string) error {
+  db, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  dberr := db.Model(&Vm_hosts{}).Where("ipv4 = ?", ip).Update("comment", c)
+  if dberr.Error != nil {
+    return dberr.Error
+  }
+  return nil
 }
