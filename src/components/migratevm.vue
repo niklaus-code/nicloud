@@ -87,7 +87,7 @@
 	 		<div class="col-sm-12 form-group" style="margin-top:20px">
 				<div class="col-sm-3">
 				    <div class="col-sm-10 col-sm-offset-1">
-        			<button class="btn btn-primary btn-sm" style="float:right" @click="migratevm()">迁移</button>
+        			<button class="btn btn-info btn-sm" style="float:right" @click="migratevm()">迁移</button>
 				    </div>
 				</div>
 				<div class="col-sm-9">
@@ -136,7 +136,7 @@ export default {
             var apiurl = `/api/vm/migratevm`
             this.$http.get(apiurl, { params: { uuid: this.uuid , host: this.vmhost,  migratehost: this.hostvalue} } ).then(response => {
             	if (response.data.res) {
-						alert("迁移失败("+response.data.res.Message+")")
+						alert("迁移失败('"+response.data.res.Message+"')")
 					} else {
 						alert("迁移成功")
 					}
@@ -189,6 +189,14 @@ export default {
 
 .form-group {
 	margin-bottom:6px;
+}
+
+.col-sm-3 {
+    padding-right: 0px;
+}
+
+.col-sm-10 {
+    padding-right: 0px;
 }
 
 label {
