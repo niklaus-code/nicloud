@@ -39,6 +39,7 @@ import datacenter from '@/components/datacenter'
 import vmbottom from '@/components/vmbottom'
 import snap from '@/components/snap'
 import createsnap from '@/components/createsnap'
+import restorevm from '@/components/restorevm'
 
 var initroute 
 if (sessionStorage.getItem('router')) {
@@ -55,7 +56,7 @@ export default {
     },
 
     components: {
-        createsnap, snap, vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
+        restorevm, createsnap, snap, vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
     },
 
 

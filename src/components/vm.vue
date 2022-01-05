@@ -87,7 +87,7 @@
                             <a @click="changeparam(item.Uuid, item.Ip, item.Os, item.Host, item.Cpu, item.Mem, item.Owner, item.Comment)" role="menuitem" tabindex="-1">修改配置</a>
                         </li>
       					<li @click="createsnap(item.Uuid, item.Ip,  item.Os, item.Host, item.Datacenter, item.Storage, item.Owner, item.Comment)" style="background-color:  #C0C0C0" role="presentation"><a role="menuitem" tabindex="-1">创建 & 恢复快照</a></li>
-      					<li @click="rebuild(item.Uuid, item.Datacenter, item.Storage, item.Os, item.Host)" style="background-color: #CD5C5C" role="presentation"><a role="menuitem" tabindex="-1">重置镜像</a></li>
+      					<li @click="restore(item.Uuid, item.Ip,  item.Os, item.Host, item.Datacenter, item.Storage, item.Owner, item.Comment)" style="background-color: #CD5C5C" role="presentation"><a role="menuitem" tabindex="-1">重置镜像</a></li>
       					<li @click="deletevm(item.Uuid, item.Datacenter, item.Storage,  index)" style="background-color: #CD5C5C; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
     				</ul>
 					<button type="button" class="btn btn-info btn-xs" @click="vnc(item.vncid)"> <span class="glyphicon glyphicon-facetime-video"></span></button>
@@ -217,6 +217,7 @@ export default {
 					}
 				}
 			},
+
         search: function (content) {
             var apiurl = `/api/vm/search`
             this.$http.get(apiurl, { params: { content: this.content} } ).then(response => {
@@ -300,29 +301,18 @@ export default {
 				}
             })
         },
-        /*
-        createsnap: function (uuid, datacenter, storage) {
-            var apiurl = `/api/vm/createsnap`
-            this.$http.get(apiurl, { params: { uuid: uuid, datacenter:datacenter, storage: storage}}).then(response => {
-				if (response.data.err == null) {
-					alert("创建成功")
-				} else {	
-					alert(response.data.err.Message)
-				}
-            })
-        },
-        */
-
-        rebuild: function (uuid, datacenter, storage, osname, host) {
-            var apiurl = `/api/vm/rebuild`
-            this.$http.get(apiurl, { params: { uuid: uuid, datacenter:datacenter, storage: storage, osname: osname, host: host}}).then(response => {
-				if (response.data.err == null) {
-					alert("重置成功")
-				} else {	
-					alert(response.data.err.Message)
-				}
-            })
-        },
+    
+        restore: function (uuid, ip, os, host,datacenter, storage , owner, comment) {
+            this.$emit("toParent", "restorevm");
+			this.$store.state.changeparam.uuid = uuid
+			this.$store.state.changeparam.ip = ip
+			this.$store.state.changeparam.os = os
+			this.$store.state.changeparam.datacenter = datacenter
+			this.$store.state.changeparam.storage = storage
+			this.$store.state.changeparam.host = host
+			this.$store.state.changeparam.owner = owner
+			this.$store.state.changeparam.comment = comment
+            },
 
         shutdown: function (uuid, index, host) {
             var apiurl = `/api/vm/operation/0`
