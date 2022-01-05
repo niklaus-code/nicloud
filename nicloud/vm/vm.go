@@ -137,12 +137,7 @@ type Vm_xmls struct {
 }
 
 func VmStatus(uuid string, host string) (string, error) {
-	conn, err := libvirtd.Libvirtconn(host)
-
-	if err != nil {
-		return "", err
-	}
-	vm, err := conn.LookupDomainByUUIDString(uuid)
+	vm, err := libvirtd.GetDomain(host, uuid)
 	if err != nil {
 		return "未发现云主机", err
 	}
@@ -242,13 +237,9 @@ func Delete(uuid string, datacenter string, storage string) (error) {
 }
 
 func PauseVm(uuid string, host string) error {
-  conn, err := libvirtd.Libvirtconn(host)
+  vm, err := libvirtd.GetDomain(host, uuid)
   if err != nil {
-    return  err
-  }
-  vm, err1 := conn.LookupDomainByUUIDString(uuid)
-  if err1 != nil {
-    return err1
+    return err
   }
 
   err = vm.Suspend()
@@ -260,11 +251,7 @@ func PauseVm(uuid string, host string) error {
 
 func Shutdown(uuid string, host string) error {
   /*start vm*/
-  conn, err := libvirtd.Libvirtconn(host)
-  if err != nil {
-    return err
-  }
-  vm, err4 := conn.LookupDomainByUUIDString(uuid)
+  vm, err4 := libvirtd.GetDomain(host, uuid)
   if err4 != nil {
     return err4
   }
@@ -278,11 +265,7 @@ func Shutdown(uuid string, host string) error {
 
 func Destroy(uuid string, host string) error {
 	/*start vm*/
-	conn, err := libvirtd.Libvirtconn(host)
-	if err != nil {
-		return err
-	}
-	vm, err4 := conn.LookupDomainByUUIDString(uuid)
+	vm, err4 := libvirtd.GetDomain(host, uuid)
 	if err4 != nil {
 		return err4
 	}
@@ -295,12 +278,7 @@ func Destroy(uuid string, host string) error {
 
 func Start(uuid string, host string) error {
 	/*start vm*/
-
-	conn, connerr := libvirtd.Libvirtconn(host)
-	if connerr != nil {
-		return connerr
-	}
-	vm, err := conn.LookupDomainByUUIDString(uuid)
+	vm, err := libvirtd.GetDomain(host, uuid)
 
 	if err != nil {
 		return err

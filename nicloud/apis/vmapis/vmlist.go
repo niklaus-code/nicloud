@@ -4,6 +4,7 @@ import (
   "fmt"
   "github.com/gin-gonic/gin"
   "github.com/go-playground/validator/v10"
+  ll "nicloud/libvirtd"
   "nicloud/utils"
   "nicloud/vm"
   "nicloud/vmerror"
@@ -92,6 +93,15 @@ func Getvmlist(c *gin.Context) {
   res["err"] = err
 
 	c.JSON(200, res)
+}
+
+func MigrateVmlive(c *gin.Context) {
+
+  vmlist := ll.Migratevmlive()
+  res := make(map[string]interface{})
+  res["res"] = vmlist
+
+  c.JSON(200, res)
 }
 
 func MigrateVm(c *gin.Context) {
