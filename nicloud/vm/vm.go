@@ -249,12 +249,40 @@ func PauseVm(uuid string, host string) error {
   return nil
 }
 
+/*
+enum virDomainRebootFlagValues {
+  VIR_DOMAIN_REBOOT_DEFAULT 	= 	0 (0x0) hypervisor choice
+  VIR_DOMAIN_REBOOT_ACPI_POWER_BTN 	= 	1 (0x1; 1 << 0) Send ACPI event
+  VIR_DOMAIN_REBOOT_GUEST_AGENT 	= 	2 (0x2; 1 << 1) Use guest agent
+  VIR_DOMAIN_REBOOT_INITCTL 	= 	4 (0x4; 1 << 2) Use initctl
+  VIR_DOMAIN_REBOOT_SIGNAL 	= 	8 (0x8; 1 << 3) Send a signal
+  VIR_DOMAIN_REBOOT_PARAVIRT 	= 	16 (0x10; 1 << 4) Use paravirt guest control
+}
+*/
+
+func Reboot(uuid string, host string) error {
+  /*start vm*/
+  vm, err4 := libvirtd.GetDomain(host, uuid)
+  if err4 != nil {
+    return err4
+  }
+
+  err1 := vm.Reboot(0)
+  if err1 != nil {
+    return err1
+  }
+
+  return nil
+}
+
+
 func Shutdown(uuid string, host string) error {
   /*start vm*/
   vm, err4 := libvirtd.GetDomain(host, uuid)
   if err4 != nil {
     return err4
   }
+
   err1 := vm.Shutdown()
   if err1 != nil {
     return err1

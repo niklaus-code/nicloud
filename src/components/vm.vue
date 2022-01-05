@@ -77,16 +77,17 @@
 					</button>
 					<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
       					<li @click="start(item.Uuid, index, item.Host)" style="background-color: green;" role="presentation"><a role="menuitem" tabindex="-1">开机</a></li>
-      					<li @click="pause(item.Uuid, index, item.Host)" style="background-color: green; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
+      					<li @click="reboot(item.Uuid, index, item.Host)" style="background-color: green; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">重启</a></li>
       					<li @click="shutdown(item.Uuid, index, item.Host)" style="background-color: #D2B48C;" role="presentation"><a role="menuitem" tabindex="-1">关机</a></li>
-      					<li @click="destroy(item.Uuid, index, item.Host)" style="background-color:  #D2B48C; border-bottom: 1px white solid"  role="presentation"><a role="menuitem" tabindex="-1">强制断电</a></li>
+      					<li @click="destroy(item.Uuid, index, item.Host)" style="background-color: #D2B48C; border-bottom: 1px white solid"  role="presentation"><a role="menuitem" tabindex="-1">强制断电</a></li>
+      					<li @click="pause(item.Uuid, index, item.Host)" style="background-color: rgb(255, 211, 0);" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
       					<li style="background-color: rgb(255, 211, 0)"  role="presentation">
 							<a @click="migrate(item.Uuid, item.Host, item.Cpu, item.Mem, item.Os, item.Owner, item.Ip, item.Comment)" role="menuitem" tabindex="-1">迁移</a>
 						</li>
-                        <li style="background-color: rgb(255, 211, 0); border-bottom: 1px white solid"  role="presentation">
+                        <li style="background-color: #C0C0C0;"  role="presentation">
                             <a @click="changeparam(item.Uuid, item.Ip, item.Os, item.Host, item.Cpu, item.Mem, item.Owner, item.Comment)" role="menuitem" tabindex="-1">修改配置</a>
                         </li>
-      					<li @click="createsnap(item.Uuid, item.Ip,  item.Os, item.Host, item.Datacenter, item.Storage, item.Owner, item.Comment)" style="background-color:  #C0C0C0" role="presentation"><a role="menuitem" tabindex="-1">创建 & 恢复快照</a></li>
+      					<li @click="createsnap(item.Uuid, item.Ip,  item.Os, item.Host, item.Datacenter, item.Storage, item.Owner, item.Comment)" style="background-color: #C0C0C0; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">创建 & 恢复快照</a></li>
       					<li @click="restore(item.Uuid, item.Ip,  item.Os, item.Host, item.Datacenter, item.Storage, item.Owner, item.Comment)" style="background-color: #CD5C5C" role="presentation"><a role="menuitem" tabindex="-1">重置镜像</a></li>
       					<li @click="deletevm(item.Uuid, item.Datacenter, item.Storage,  index)" style="background-color: #CD5C5C; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">删除</a></li>
     				</ul>
@@ -343,6 +344,18 @@ export default {
             this.$http.get(apiurl, { params: { uuid: uuid, host: host } }).then(response => {
 				if (response.data.err === null) {
 					this.data[index].Status = "暂停"
+					} else {
+						alert("暂停错误（'"+response.data.err.Message+"'）")
+					}
+            })
+        },
+
+        reboot: function (uuid, index, host) {
+            var apiurl = `/api/vm/operation/4`
+			
+            this.$http.get(apiurl, { params: { uuid: uuid, host: host } }).then(response => {
+				if (response.data.err === null) {
+					this.data[index].Status = "正在重启"
 					} else {
 						alert("暂停错误（'"+response.data.err.Message+"'）")
 					}

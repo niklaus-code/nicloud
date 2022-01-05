@@ -256,6 +256,8 @@ func Operation(c *gin.Context) {
 		err = vm.Start(uuid, host)
   case 3:
     err = vm.PauseVm(uuid, host)
+  case 4:
+    err = vm.Reboot(uuid, host)
 	}
 
 	res["res"] = s
