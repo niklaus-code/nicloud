@@ -284,8 +284,8 @@ export default {
             this.$http.get(apiurl, { params: { start: start} }).then(response => {
 			if (response.data.err === null ) {
                 this.totalpagenumber = response.data.pagenumber
+                this.vmcount = response.data.vmcount
                 this.pagenumber = start
-                this.vmcount = response.data.res.length
                 this.comment(response.data.res)
 				} else {
 					alert(response.data.err)

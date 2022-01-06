@@ -512,10 +512,10 @@ func allvm(obj []Vms) []map[string]interface{}  {
   return mapc
 }
 
-func Getpagenumber(user string, offset int) (int, error) {
+func Getpagenumber(user string, offset int) (int, int, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
-    return 0, err
+    return 0, 0, err
   }
 
   var v []Vms
@@ -531,7 +531,7 @@ func Getpagenumber(user string, offset int) (int, error) {
   } else {
     pagenumber = len(v)/offset
   }
-  return pagenumber, nil
+  return pagenumber, len(v), nil
 }
 
 func VmList(user string, start int, offset int) ([]map[string]interface{}, error) {
