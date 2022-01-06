@@ -1,14 +1,9 @@
 <template>
 <div>
-    <div class="btn-group col-md-6" style="margin-bottom:20px">
-        <ul class="pagination">
-            <li><a @click="down()">&laquo;</a></li>
-            <li  v-for="(item, index) in totalpagenumber"><a @click="getvm(item)">{{item}}</a></li>
-            <li><a @click="up()">&raquo;</a></li>
-        </ul>
-	</div>
-    <div class="btn-group col-md-6" style="margin-bottom:20px">
-        <div class="col-md-9 col-md-offset-3" style="float: right">
+        <div class="col-md-7">
+            <h5>云主机列表({{vmcount}})<h5>
+        </div>
+        <div class="col-md-5" style="float: right; margin-bottom:20px">
 		    <button class="btn btn-default btn-sm" @click="create()" style="float: right">
 		        <span class="glyphicon glyphicon-cog"></span>创建实例
 		    </button>
@@ -17,7 +12,6 @@
 		    </button>
 		    <input class="col-md-6" type="text" id="name" placeholder="" v-model="content" style="float: right">
         </div>
-	</div>
 	<div style="margin-top:10px">
 	<table class="table table-hover" style="text-align: center;">
     	<thead>
@@ -96,6 +90,13 @@
       		</tr>
     	</tbody>
 	</table>
+    <div class="btn-group col-md-6" style="margin-top:20px">
+        <ul class="pagination">
+            <li><a @click="down()">&laquo;</a></li>
+            <li  v-for="(item, index) in totalpagenumber"><a @click="getvm(item)">{{item}}</a></li>
+            <li><a @click="up()">&raquo;</a></li>
+        </ul>
+	</div>
 </div>
 </template>
 <script>
@@ -103,6 +104,7 @@
 export default {
     data () {
         return {
+            vmcount: 0,
             comments: "",
             totalpagenumber: "pagenumber",
             pagenumber: 1,
@@ -283,6 +285,7 @@ export default {
 			if (response.data.err === null ) {
                 this.totalpagenumber = response.data.pagenumber
                 this.pagenumber = start
+                this.vmcount = response.data.res.length
                 this.comment(response.data.res)
 				} else {
 					alert(response.data.err)
@@ -377,8 +380,11 @@ export default {
   }
 </script>
 
-
 <style scoped>
+h5 {
+    font-weight: 600;
+}
+
 .checkbox-inline {
 	margin-bottom: 30px;
 }
