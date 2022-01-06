@@ -4,7 +4,7 @@
                 <h4>云主机 & 创建快照</h4>
             </div>
 
-        <div class="col-sm-8 col-sm-offset-2 choose">
+        <div class="col-sm-10 col-sm-offset-1 choose">
             <div class="col-sm-12" >
                 <div class="col-sm-2" >
                     <label>IP:</label>
@@ -66,20 +66,24 @@
                 </table>
             </div>
         </div>
-		<div class="col-sm-8 col-sm-offset-2 choose"  style="margin-top:30px; margin-bottom:30px" >
+		<div class="col-sm-10 col-sm-offset-1 choose"  style="margin-top:30px; margin-bottom:30px" >
+            <div class="col-sm-12" >
                     <div class="col-sm-2">
                         <h5>创建快照</h5>
                     </div>
-                    <div class="col-sm-10" style="padding-left: 0">
+                    <div class="col-sm-10">
                         <form role="form">
                             <div class="form-group">
                                 <input type="text" class="form-control" v-model="snapvalue" placeholder="">
                             </div>
                         </form>
                     </div>
+              </div>
+            <div class="col-sm-12" >
                 <div class="col-sm-2 col-sm-offset-2">
                     <button @click="createsnap" type="button" class="btn btn-success btn-xs">提交</button>
 		        </div>
+		    </div>
 		</div>
 </div>
 </template>
@@ -206,8 +210,8 @@ export default {
     float: right
 }
 
-.col-sm-10 {
-    padding-left: 0px
+.col-sm-10  {
+    padding-left: 0px;
 }
 
 select{
