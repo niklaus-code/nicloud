@@ -7,9 +7,9 @@
 <style>
 .col-md-12 {
     bottom:0; 
-    color: #FFFFFF;
+    color: black;
     position: fixed;
-    background-color: #676767;
+    background-color: #e3e3e3;
     font-weight:500;
 }
 </style>
