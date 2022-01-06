@@ -7,7 +7,7 @@
         <div class="col-sm-10 col-sm-offset-1 choose">
             <div class="col-sm-12" >
                 <div class="col-sm-2" >
-                    <label>IP:</label>
+                    <label>IP :</label>
                 </div>
                 <div class="col-sm-10" >
                     {{ip}}
@@ -15,7 +15,7 @@
             </div>
             <div class="col-sm-12" >
                 <div class="col-sm-2" >
-                    <label>UUID:</label>
+                    <label>UUID :</label>
                 </div>
                 <div class="col-sm-10" >
                     {{uuid}}
@@ -23,7 +23,7 @@
             </div>
             <div class="col-sm-12" >
                 <div class="col-sm-2" >
-                    <label>备注:</label>
+                    <label>备注 :</label>
                 </div>
                 <div class="col-sm-10" >
                     {{comment}}
@@ -31,7 +31,7 @@
             </div>
             <div class="col-sm-12" >
                 <div class="col-sm-2" >
-                    <label>存储集群:</label>
+                    <label>存储集群 :</label>
                 </div>
                 <div class="col-sm-10" >
                     {{storage}}
@@ -39,7 +39,7 @@
             </div>
             <div class="col-sm-12" >
                 <div class="col-sm-2" >
-                    <label>数据中心:</label>
+                    <label>数据中心 :</label>
                 </div>
                 <div class="col-sm-10" >
                     {{datacenter}}
@@ -69,7 +69,7 @@
 		<div class="col-sm-10 col-sm-offset-1 choose"  style="margin-top:30px; margin-bottom:30px" >
             <div class="col-sm-12" >
                     <div class="col-sm-2">
-                        <h5>输入名称</h5>
+                        <h5>输入快照名称&nbsp</h5>
                     </div>
                     <div class="col-sm-4">
                         <form role="form">
@@ -81,7 +81,7 @@
               </div>
             <div class="col-sm-12" >
                 <div class="col-sm-2 col-sm-offset-2">
-                    <button @click="createsnap" type="button" class="btn btn-success btn-xs">创建快照</button>
+                    <button @click="createsnap" type="button" class="btn btn-success btn-xs">创建</button>
 		        </div>
 		    </div>
 		</div>
