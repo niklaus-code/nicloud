@@ -6,42 +6,42 @@
 
         <div class="col-sm-8 col-sm-offset-2 choose">
             <div class="col-sm-12" >
-                <div class="col-sm-1" >
+                <div class="col-sm-2" >
                     <label>IP:</label>
                 </div>
-                <div class="col-sm-11" >
+                <div class="col-sm-10" >
                     {{ip}}
                 </div>
             </div>
             <div class="col-sm-12" >
-                <div class="col-sm-1" >
+                <div class="col-sm-2" >
                     <label>UUID:</label>
                 </div>
-                <div class="col-sm-11" >
+                <div class="col-sm-10" >
                     {{uuid}}
                 </div>
             </div>
             <div class="col-sm-12" >
-                <div class="col-sm-1" >
+                <div class="col-sm-2" >
                     <label>备注:</label>
                 </div>
-                <div class="col-sm-11" >
+                <div class="col-sm-10" >
                     {{comment}}
                 </div>
             </div>
             <div class="col-sm-12" >
-                <div class="col-sm-1" >
+                <div class="col-sm-2" >
                     <label>存储集群:</label>
                 </div>
-                <div class="col-sm-11" >
+                <div class="col-sm-10" >
                     {{storage}}
                 </div>
             </div>
             <div class="col-sm-12" >
-                <div class="col-sm-1" >
+                <div class="col-sm-2" >
                     <label>数据中心:</label>
                 </div>
-                <div class="col-sm-11" >
+                <div class="col-sm-10" >
                     {{datacenter}}
                 </div>
             </div>
@@ -67,8 +67,6 @@
             </div>
         </div>
 		<div class="col-sm-8 col-sm-offset-2 choose"  style="margin-top:30px; margin-bottom:30px" >
-            <div class="col-sm-8" style="padding-left:0">
-                <div class="col-sm-11" style="padding-left:15px">
                     <div class="col-sm-2">
                         <h5>创建快照</h5>
                     </div>
@@ -79,11 +77,9 @@
                             </div>
                         </form>
                     </div>
-		        </div>
                 <div class="col-sm-2 col-sm-offset-2">
                     <button @click="createsnap" type="button" class="btn btn-success btn-xs">提交</button>
 		        </div>
-		    </div>
 		</div>
 </div>
 </template>
@@ -202,11 +198,15 @@ export default {
 	border-radius: 4px 4px 0 0;
 }
 
-.col-sm-1 label {
+.col-sm-2 label {
     float: right
 }
 
-.col-sm-11 {
+.col-sm-2 h5 {
+    float: right
+}
+
+.col-sm-10 {
     padding-left: 0px
 }
 
