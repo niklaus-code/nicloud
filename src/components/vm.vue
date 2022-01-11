@@ -72,11 +72,14 @@
 					<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
       					<li @click="start(item.Uuid, index, item.Host)" style="background-color: green;" role="presentation"><a role="menuitem" tabindex="-1">开机</a></li>
       					<li @click="reboot(item.Uuid, index, item.Host)" style="background-color: green; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">重启</a></li>
+      					<li @click="pause(item.Uuid, index, item.Host)" style="background-color: #D2B48C;" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
       					<li @click="shutdown(item.Uuid, index, item.Host)" style="background-color: #D2B48C;" role="presentation"><a role="menuitem" tabindex="-1">关机</a></li>
       					<li @click="destroy(item.Uuid, index, item.Host)" style="background-color: #D2B48C; border-bottom: 1px white solid"  role="presentation"><a role="menuitem" tabindex="-1">强制断电</a></li>
-      					<li @click="pause(item.Uuid, index, item.Host)" style="background-color: rgb(255, 211, 0);" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
       					<li style="background-color: rgb(255, 211, 0)"  role="presentation">
 							<a @click="migrate(item.Uuid, item.Host, item.Cpu, item.Mem, item.Os, item.Owner, item.Ip, item.Comment)" role="menuitem" tabindex="-1">迁移</a>
+						</li>
+      					<li style="background-color: rgb(255, 211, 0)"  role="presentation">
+							<a @click="migratelive(item.Uuid, item.Host, item.Cpu, item.Mem, item.Os, item.Owner, item.Ip, item.Comment)" style="border-bottom: 1px white solid" role="menuitem" tabindex="-1">热迁移</a>
 						</li>
                         <li style="background-color: #C0C0C0;"  role="presentation">
                             <a @click="changeparam(item.Uuid, item.Ip, item.Os, item.Host, item.Cpu, item.Mem, item.Owner, item.Comment)" role="menuitem" tabindex="-1">修改配置</a>
@@ -168,6 +171,18 @@ export default {
 			this.$store.state.changeparam.comment = comment
             },
 
+        migratelive: function (uuid, host, cpu, mem, os, owner, ip, comment) {
+            this.$emit("toParent", "migratevmlive");
+			this.$store.state.vm.uuid = uuid
+			this.$store.state.vm.host = host
+			this.$store.state.vm.cpu = cpu
+			this.$store.state.vm.mem = mem
+			this.$store.state.vm.os = os
+			this.$store.state.vm.owner = owner
+			this.$store.state.vm.ip = ip
+			this.$store.state.vm.comment = comment
+            },
+
        	migrate: function (uuid, host, cpu, mem, os, owner, ip, comment) {
             this.$emit("toParent", "migratevm");
 			this.$store.state.vm.uuid = uuid
@@ -220,6 +235,19 @@ export default {
 					}
 				}
 			},
+
+        /*
+        migratelive: function (content) {
+            var apiurl = `/api/vm/migratelive`
+            this.$http.get(apiurl, { params: { content: this.content} } ).then(response => {
+                if (response.data.res === null) {
+                    alert("未查询到")
+                    } else {
+            	    this.comment(response.data.res)
+                    }
+            })
+		},
+        */
 
         search: function (content) {
             var apiurl = `/api/vm/search`

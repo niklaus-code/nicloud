@@ -105,15 +105,15 @@ func Changeconfig(uuid string, host string, vcpu int, oldcpu int,  vmem int, old
   return nil
 }
 
-func GetVmByUuid(uuid string) *Vms {
+func GetVmByUuid(uuid string) (*Vms, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
-    return nil
+    return nil, nil
   }
 
   v := &Vms{}
   dbs.Where("uuid = ?", uuid).First(v)
-  return v
+  return v, nil
 }
 
 func GetVmByIp(ip string) *Vms {
@@ -163,7 +163,10 @@ type Vms_archive struct {
 }
 
 func Delete(uuid string, datacenter string, storage string) (error) {
-  vminfo := GetVmByUuid(uuid)
+  vminfo, err := GetVmByUuid(uuid)
+  if err != nil {
+    return err
+  }
   host := vminfo.Host
 
   storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
@@ -362,13 +365,17 @@ func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, v
 }
 
 
-func MigrateVm(uuid string, host string, migrate_host string) error {
-  s, err := VmStatus(uuid, host)
+func MigrateVm(uuid string, migrate_host string) error {
+  vm, err := GetVmByUuid(uuid)
+  if err != nil {
+    return err
+  }
+
+  s, err := VmStatus(uuid, vm.Host)
   if s == "开机" {
     return vmerror.Error{Message: "云主机需要关机状态"}
   }
 
-  vm := GetVmByUuid(uuid)
   err = libvirtd.DefineVm(vm.Vmxml, migrate_host)
   if err != nil {
     return err
@@ -383,6 +390,30 @@ func MigrateVm(uuid string, host string, migrate_host string) error {
   }
 
   err = libvirtd.Undefine(vm.Host, vm.Uuid)
+  if err != nil {
+    return err
+  }
+
+  return err
+}
+
+func MigrateVmlive(uuid string,  migrate_host string) error {
+  vm, err := GetVmByUuid(uuid)
+  if err != nil {
+    return err
+  }
+
+  s, err := VmStatus(uuid, vm.Host)
+  if s != "运行" && s != "暂停" {
+    return vmerror.Error{Message: "云主机需要开机或者暂停状态"}
+  }
+
+  migratelive := libvirtd.Migratevmlive(uuid, vm.Host, migrate_host)
+  if migratelive != nil {
+    return migratelive
+  }
+
+  err = libvirtd.DefineVm(vm.Vmxml, migrate_host)
   if err != nil {
     return err
   }

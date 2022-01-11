@@ -33,6 +33,7 @@ import createip from '@/components/createip'
 import createhost from '@/components/createhost'
 import createceph from '@/components/createceph'
 import migratevm from '@/components/migratevm'
+import migratevmlive from '@/components/migratevmlive'
 import changeparam from '@/components/changeparam'
 import createdatacenter from '@/components/createdatacenter'
 import datacenter from '@/components/datacenter'
@@ -56,7 +57,7 @@ export default {
     },
 
     components: {
-        restorevm, createsnap, snap, vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
+        migratevmlive, restorevm, createsnap, snap, vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
     },
 
 

@@ -21,20 +21,21 @@ func Libvirtconn(host string) (*libvirt.Connect, error) {
   return conn, err
 }
 
-func Migratevmlive() error {
-  c, err := Libvirtconn("10.0.85.99")
-  d, err := Libvirtconn("10.0.85.92")
+func Migratevmlive(uuid string, shost string, dhost string) error {
+  c, err := Libvirtconn(shost)
+  d, err := Libvirtconn(dhost)
   if err != nil {
     return err
   }
-  a, err := c.LookupDomainByUUIDString("777e8cf6-1271-4e4f-81d4-ea4298cfb241")
+  a, err := c.LookupDomainByUUIDString(uuid)
   if err != nil {
     return err
   }
-  _, err = a.Migrate(d, 1, "ysman", "tcp://10.0.85.92", 1024)
+  _, err = a.Migrate(d, 1, uuid, fmt.Sprintf("tcp://%s", dhost), 1024)
   if err != nil {
     return err
   }
+
   return nil
 }
 

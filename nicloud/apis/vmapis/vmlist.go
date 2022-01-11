@@ -4,7 +4,6 @@ import (
   "fmt"
   "github.com/gin-gonic/gin"
   "github.com/go-playground/validator/v10"
-  ll "nicloud/libvirtd"
   "nicloud/utils"
   "nicloud/vm"
   "nicloud/vmerror"
@@ -40,11 +39,18 @@ func Search(c *gin.Context)  {
 }
 
 func GetVminfo(c *gin.Context) {
-  uuid := c.Query("uuid")
-  iplist := vm.GetVmByUuid(uuid)
   res := make(map[string]interface{})
-  res["res"] = iplist
+  uuid := c.Query("uuid")
+  iplist, err := vm.GetVmByUuid(uuid)
+  if err != nil {
+    res["res"] = iplist
+    res["err"] = err
+    c.JSON(200, res)
+    return
+  }
 
+  res["res"] = iplist
+  res["err"] = nil
   c.JSON(200, res)
 }
 
@@ -97,8 +103,10 @@ func Getvmlist(c *gin.Context) {
 }
 
 func MigrateVmlive(c *gin.Context) {
+  uuid := c.Query("uuid")
+  migratehost := c.Query("migratehost")
 
-  vmlist := ll.Migratevmlive()
+  vmlist := vm.MigrateVmlive(uuid, migratehost)
   res := make(map[string]interface{})
   res["res"] = vmlist
 
@@ -107,11 +115,9 @@ func MigrateVmlive(c *gin.Context) {
 
 func MigrateVm(c *gin.Context) {
   uuid := c.Query("uuid")
-  host := c.Query("host")
-
   migratehost := c.Query("migratehost")
 
-  vmlist := vm.MigrateVm(uuid, host, migratehost)
+  vmlist := vm.MigrateVm(uuid, migratehost)
   res := make(map[string]interface{})
   res["res"] = vmlist
 

@@ -4,17 +4,7 @@
                 <h4>迁移云主机</h4>
             </div>
 		<div class="col-sm-6 col-sm-offset-3" style="margin-top:20px">
-	 		<div class="col-sm-12 form-group">
-				<div class="col-sm-3">
-				    <div class="col-sm-10 col-sm-offset-1">
-        			    <label>uuid</label>
-				    </div>
-				</div>
-				<div class="col-sm-9">
-					{{uuid}}
-				</div>
-    		</div>
-	 		<div class="col-sm-12 form-group">
+	 		<div class="col-sm-12">
 				<div class="col-sm-3">
 				    <div class="col-sm-10 col-sm-offset-1">
         			<label>ip</label>
@@ -24,7 +14,17 @@
 					{{ip}}
 				</div>
     		</div>
-	 		<div class="col-sm-12 form-group">
+	 		<div class="col-sm-12">
+				<div class="col-sm-3">
+				    <div class="col-sm-10 col-sm-offset-1">
+        			    <label>uuid</label>
+				    </div>
+				</div>
+				<div class="col-sm-9">
+					{{uuid}}
+				</div>
+    		</div>
+	 		<div class="col-sm-12">
 				<div class="col-sm-3">
 				    <div class="col-sm-10 col-sm-offset-1">
         			<label>宿主机</label>
@@ -34,27 +34,17 @@
 					{{vmhost}}
 				</div>
     		</div>
-	 		<div class="col-sm-12 form-group">
+	 		<div class="col-sm-12">
 				<div class="col-sm-3">
 				    <div class="col-sm-10 col-sm-offset-1">
-        			<label>cpu</label>
+        			<label>CPU / 内存</label>
 				    </div>
 				</div>
 				<div class="col-sm-9">
-					{{cpu}}&nbsp核
+					{{cpu}}&nbsp核 / {{mem}}&nbspG
 				</div>
     		</div>
-	 		<div class="col-sm-12 form-group">
-				<div class="col-sm-3">
-				    <div class="col-sm-10 col-sm-offset-1">
-        			<label>内存</label>
-				    </div>
-				</div>
-				<div class="col-sm-9">
-					{{mem}}&nbspG
-				</div>
-    		</div>
-	 		<div class="col-sm-12 form-group">
+	 		<div class="col-sm-12">
 				<div class="col-sm-3">
 				    <div class="col-sm-10 col-sm-offset-1">
         			<label>系统</label>
@@ -64,7 +54,7 @@
 					{{os}}
 				</div>
     		</div>
-	 		<div class="col-sm-12 form-group">
+	 		<div class="col-sm-12">
 				<div class="col-sm-3">
 				    <div class="col-sm-10 col-sm-offset-1">
         			<label>创建者</label>
@@ -74,7 +64,7 @@
 					{{ owner }}
 				</div>
     		</div>
-	 		<div class="col-sm-12 form-group">
+	 		<div class="col-sm-12">
 				<div class="col-sm-3">
 				    <div class="col-sm-10 col-sm-offset-1">
         			<label>备注</label>
@@ -87,7 +77,7 @@
 	 		<div class="col-sm-12 form-group" style="margin-top:20px">
 				<div class="col-sm-3">
 				    <div class="col-sm-10 col-sm-offset-1">
-        			<button class="btn btn-info btn-sm" style="float:right" @click="migratevm()">迁移</button>
+        			<button class="btn btn-success btn-sm" style="float:right" @click="migratevm()">迁移</button>
 				    </div>
 				</div>
 				<div class="col-sm-9">
@@ -134,7 +124,7 @@ export default {
     methods: {
         migratevm: function () {
             var apiurl = `/api/vm/migratevm`
-            this.$http.get(apiurl, { params: { uuid: this.uuid , host: this.vmhost,  migratehost: this.hostvalue} } ).then(response => {
+            this.$http.get(apiurl, { params: { uuid: this.uuid, migratehost: this.hostvalue} } ).then(response => {
             	if (response.data.res) {
 						alert("迁移失败('"+response.data.res.Message+"')")
 					} else {
