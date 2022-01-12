@@ -44,7 +44,7 @@
 							<button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="mount('mountvdisk', item.Vdiskid, item.storage, item.pool)">
                 				挂载
             				</button>
-							<button v-else class="btn btn-warning btn-xs" type="button" @click="umount(item.Vm_ip, item.storage, item.datacenter, item.Vdiskid, index)">
+							<button v-else class="btn btn-warning btn-xs" type="button" @click="umount(item.Vm_ip, item.Vdiskid, index)">
                 				卸载
             				</button>
 							<button v-if="item.Status" class="btn btn-danger btn-xs" type="button" @click="deletevdisk(item.Vdiskid, index)">
