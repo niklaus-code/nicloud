@@ -1,6 +1,7 @@
 package vm
 
 import (
+  "encoding/base64"
   "errors"
   "fmt"
   "github.com/beevik/etree"
@@ -10,12 +11,12 @@ import (
   "nicloud/libvirtd"
   "nicloud/networks"
   "nicloud/osimage"
+  "nicloud/users"
   "nicloud/utils"
   vdisk "nicloud/vdisk"
   vmerror "nicloud/vmerror"
   "reflect"
   "time"
-  "encoding/base64"
 )
 
 type Vms struct {
@@ -24,7 +25,7 @@ type Vms struct {
 	Cpu         int `json:"cpu validate:"gt=0"`
 	Mem         int `json:"mem validate:"gt=0"`
 	Create_time time.Time
-	Owner       string  `json:"os" validate:"required"`
+	Owner       int  `json:"Owner" validate:"required"`
 	Comment     string
 	Vmxml       string
 	Status      string
@@ -154,7 +155,7 @@ func VmStatus(uuid string, host string) (string, error) {
 type Vms_archive struct {
   Uuid string
   Create_time time.Time
-  Owner string
+  Owner int
   Comment string
   Vmxml string
   Ip string
@@ -278,7 +279,6 @@ func Reboot(uuid string, host string) error {
   return nil
 }
 
-
 func Shutdown(uuid string, host string) error {
   /*start vm*/
   vm, err4 := libvirtd.GetDomain(host, uuid)
@@ -334,7 +334,7 @@ func Start(uuid string, host string) error {
 	return nil
 }
 
-func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, vmxml string, ip string, host string, image string, owner string) (string, error) {
+func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, vmxml string, ip string, host string, image string, owner int) (string, error) {
   /*save config to db*/
   dbs, err := db.NicloudDb()
   if err != nil {
@@ -433,7 +433,7 @@ func deletevmbyid(uuid string) error {
   return nil
 }
 
-func Create(datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, image string, owner string) (error) {
+func Create(datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, image string, owner int) (error) {
   mac, err := networks.Ipresource(ip)
   if err != nil {
     return err
@@ -508,7 +508,7 @@ func Getvmxmlby (ip string, storage string, datacenter string) (string, error) {
   v := &Vms{}
   errdb := dbs.Where("ip=? and storage=? and datacenter=?",ip, storage, datacenter).Find(v)
   if errdb.Error != nil {
-    return "", vmerror.Error{Message: errdb.Error.Error()}
+    return "", vmerror.Error{Message: "未找到数据"}
   }
   return v.Vmxml, nil
 }
@@ -538,18 +538,24 @@ func allvm(obj []Vms) []map[string]interface{}  {
 
     vncid := base(v.Uuid, v.Host)
     c["vncid"] = vncid
+    c["Owner"], err = users.GetUsernameById(v.Owner)
     mapc = append(mapc, c)
   }
   return mapc
 }
 
-func Getpagenumber(user string, offset int) (int, int, error) {
+func Getpagenumber(userid int, offset int) (int, int, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return 0, 0, err
   }
 
   var v []Vms
+  user, err := users.GetUsernameById(userid)
+
+  if err != nil {
+    return 0, 0, err
+  }
   if user == "admin" {
     dbs.Table("vms").Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Scan(&v)
   } else {
@@ -565,12 +571,17 @@ func Getpagenumber(user string, offset int) (int, int, error) {
   return pagenumber, len(v), nil
 }
 
-func VmList(user string, start int, offset int) ([]map[string]interface{}, error) {
+func VmList(userid int, start int, offset int) ([]map[string]interface{}, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
 	var v []Vms
+
+  user, err := users.GetUsernameById(userid)
+  if err != nil {
+    return nil, err
+  }
 
   if user == "admin" {
     dbs.Table("vms").Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Limit(offset).Offset((start-1)*offset).Scan(&v)

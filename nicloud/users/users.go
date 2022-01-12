@@ -45,7 +45,8 @@ func Login(username string, passwd string) (string, string, error) {
   u := &Vms_users{}
   dbs.Where("username=?", username).First(u)
   if u.Passwd == passwd {
-    token, err := createtoken(u.Username, strconv.Itoa(u.Id))
+    uid := strconv.Itoa(u.Id)
+    token, err := createtoken(u.Username, uid)
     if err != nil {
       return "", "", err
     }
@@ -53,4 +54,19 @@ func Login(username string, passwd string) (string, string, error) {
   } else {
     return "", "", vmerror.Error{Message: "登陆失败"}
   }
+}
+
+
+func GetUsernameById(userid int) (string, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return "", err
+  }
+  u := &Vms_users{}
+  errdb := dbs.Where("id=?", userid).First(u)
+  if errdb.Error != nil {
+    return "", errdb.Error
+  }
+
+  return u.Username, nil
 }

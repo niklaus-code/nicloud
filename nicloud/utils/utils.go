@@ -5,6 +5,7 @@ import (
   "github.com/gin-gonic/gin"
   uuid "github.com/satori/go.uuid"
   "strings"
+  "strconv"
 )
 
 func Createuuid() string {
@@ -13,16 +14,20 @@ func Createuuid() string {
   return u
 }
 
-func ParseToken(token string) (string, error) {
+func ParseToken(token string) (int, error) {
   jwtToken, err := jwt.ParseWithClaims(token, &jwt.StandardClaims{}, func(token *jwt.Token) (i interface{}, e error) {
     return []byte("nicloud"), nil
   })
   if err == nil && jwtToken != nil {
     if claim, ok := jwtToken.Claims.(*jwt.StandardClaims); ok && jwtToken.Valid {
-      return claim.Issuer, nil
+      uid, err := strconv.Atoi(claim.Id)
+      if err != nil {
+        return 0, err
+      }
+      return uid, nil
     }
   }
-  return "", err
+  return 0, err
 }
 
 //token auth middlehandle func

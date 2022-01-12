@@ -6,8 +6,10 @@ import (
   "nicloud/cephcommon"
   db "nicloud/dbs"
   "nicloud/libvirtd"
+  "nicloud/users"
   "nicloud/utils"
   "nicloud/vmerror"
+  "reflect"
   "strings"
   "time"
 )
@@ -20,7 +22,7 @@ type Vms_vdisks struct {
   Storage string  `json:"storage" validate:"required"`
   Datacenter string `json:"datacenter" validate:"required"`
   Vm_ip string
-  User string `json:"user" validate:"required"`
+  User int `json:"user" validate:"required"`
   Exist int8
   Status int
   Createtime string
@@ -61,7 +63,7 @@ func Updatevdiskbydelvm(datacenter string, storage string, vmip string) error {
 }
 
 
-func Add_vdisk(contain int, pool string, storage string, datacenter string, user string) error {
+func Add_vdisk(contain int, pool string, storage string, datacenter string, userid int) error {
   vdiskid := utils.Createuuid()
   c := &Vms_vdisks{
     Vdiskid: vdiskid,
@@ -69,7 +71,7 @@ func Add_vdisk(contain int, pool string, storage string, datacenter string, user
     Pool: pool,
     Storage: storage,
     Datacenter: datacenter,
-    User: user,
+    User: userid,
     Exist: 1,
     Status: 1,
     Createtime: time.Now().Format("2006-01-02 15:04:05"),
@@ -93,13 +95,14 @@ func Add_vdisk(contain int, pool string, storage string, datacenter string, user
 
 type Vms_vdisks_archives struct {
   Vdiskid string
+  Owner int
   Pool string
   Storage string
   Datacenter string
   Create_time time.Time
 }
 
-func adddiskachives(uuid string, pool string, storage string, datacenter string) (string, error) {
+func addiskachives(uuid string, pool string, storage string, datacenter string, ownerid int) (string, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return "", err
@@ -107,6 +110,7 @@ func adddiskachives(uuid string, pool string, storage string, datacenter string)
 
   diskachi := &Vms_vdisks_archives{
     Vdiskid: uuid,
+    Owner: ownerid,
     Pool: pool,
     Storage: storage,
     Datacenter: datacenter,
@@ -120,7 +124,7 @@ func adddiskachives(uuid string, pool string, storage string, datacenter string)
   return diskachi.Vdiskid, nil
 }
 
-func deletediskachives(uuid string) error {
+func deletedisk(uuid string) error {
   dbs, err := db.NicloudDb()
   if err != nil {
     return err
@@ -166,23 +170,23 @@ func Deletevdisk(uuid string) error {
     return err
   }
 
-  addachives, err := adddiskachives(uuid, vdiskinfo.Pool, vdiskinfo.Storage, vdiskinfo.Datacenter)
+  addachives, err := addiskachives(uuid, vdiskinfo.Pool, vdiskinfo.Storage, vdiskinfo.Datacenter, vdiskinfo.User)
   if err != nil {
     return err
   }
 
   errdb := dbs.Where("vdiskid=?", uuid).Delete(Vms_vdisks{})
   if errdb.Error != nil {
-    err = deletediskachives(addachives)
+    err = deletedisk(addachives)
     if err != nil {
       return err
     }
-    return vmerror.Error{Message: "delete vdisk fail"}
+    return vmerror.Error{Message: "删除硬盘失败"}
   }
 
   err = cephcommon.Rm_image(uuid, vdiskinfo.Pool)
   if err != nil {
-    return err
+    return vmerror.Error{Message: "删除块设备失败"}
   }
   return nil
 }
@@ -255,18 +259,49 @@ func Getdiskstatus(uuid string) (int, error) {
   return vdisk.Status, nil
 }
 
-func Getvdisk(user string) ([]*Vms_vdisks, error) {
+
+func mapvdisk(obj  []Vms_vdisks) ([]map[string]interface{}, error)  {
+  var mapc []map[string]interface{}
+
+  for _, v := range obj {
+    c := make(map[string]interface{})
+    m := reflect.TypeOf(v)
+    n := reflect.ValueOf(v)
+    for i := 0; i < m.NumField(); i++ {
+      c[m.Field(i).Name] = n.Field(i).Interface()
+    }
+
+    username, err := users.GetUsernameById(v.User)
+    if err != nil {
+      return nil, err
+    }
+    c["username"] = username
+    mapc = append(mapc, c)
+  }
+  return mapc, nil
+}
+
+func Getvdisk(userid int) ([]map[string]interface{}, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
-  c := []*Vms_vdisks{}
+  var c  []Vms_vdisks
+
+  user, err := users.GetUsernameById(userid)
+  if err != nil {
+    return nil, err
+  }
   if user == "admin" {
     dbs.Order("createtime desc").Find(&c)
   } else {
-    dbs.Where("user=?", user).Order("createtime desc").Find(&c)
+    dbs.Where("user=?", userid).Order("createtime desc").Find(&c)
   }
-  return c, err
+  mapvdisk, err := mapvdisk(c)
+  if err != nil {
+    return nil, err
+  }
+  return mapvdisk, err
 }
 
 func Umountvmstatus(datacenter string, storage string, vdiskid string) error {

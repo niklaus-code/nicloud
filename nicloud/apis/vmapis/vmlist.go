@@ -79,21 +79,23 @@ func Getvmlist(c *gin.Context) {
   }
 
   token := c.Request.Header.Get("token")
-  user, err := utils.ParseToken(token)
+  userid, err := utils.ParseToken(token)
   if err != nil {
     res["err"] = vmerror.Error{Message: "认证失败"}
     c.JSON(200, res)
     return
   }
   offset := 15
-	vmlist, err := vm.VmList(user, start, offset)
-	pagenumber, vmcount,  err := vm.Getpagenumber(user, offset)
+	vmlist, err := vm.VmList(userid, start, offset)
+
+	pagenumber, vmcount,  err := vm.Getpagenumber(userid, offset)
 	if err != nil {
     res["res"] = vmlist
     res["err"] = err
     c.JSON(200, res)
     return
   }
+
 	res["res"] = vmlist
   res["pagenumber"] = pagenumber
   res["vmcount"] = vmcount

@@ -50,7 +50,7 @@
                 		{{item.Comment}}
 				    </td>
         		    <td class="dropdown">
-					    <button class="btn btn-success btn-xs" @click="mount(item.Uuid, item.Ip, item.Host,item.Datacenter)" type="button">
+					    <button class="btn btn-success btn-xs" @click="mount(item.Uuid, item.Ip, item.Host)" type="button">
 						    挂载
 					    </button>
 					    <button @click="shutdown(item.Uuid, index, item.Host)" class="btn btn-warning btn-xs" type="button">
@@ -72,8 +72,6 @@ export default {
             dropup: "dropup",
             dropdown: "dropdown",
             vdiskid: "",
-            storage: "",
-            pool: "",
 			vmleft: "vmleft",
 			active: "",
 			content: "",
@@ -100,9 +98,9 @@ export default {
     },
 
     methods: {
-		mount: function (uuid, ip, host, datacenter ) {
+		mount: function (uuid, ip, host) {
          	var apiurl = `/api/vdisk/mountdisk`
-            this.$http.get(apiurl, { params: { vmid: uuid, ip: ip, host: host, storage: this.storage, pool: this.pool , datacenter: datacenter, vdiskid: this.vdiskid}} ).then(response => {
+            this.$http.get(apiurl, { params: { vmid: uuid, vdiskid: this.vdiskid}} ).then(response => {
 
 	    	if (response.data.err === null) {
             	alert("挂载成功")

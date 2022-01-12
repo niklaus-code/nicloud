@@ -15,7 +15,7 @@
         				<th>挂载云主机</th>
         				<th>存储集群</th>
 						<th>数据中心</th>
-        				<th>用户</th>
+        				<th>创建者</th>
         				<th>状态</th>
         				<th>创建时间</th>
 						<th>操作</th>
@@ -28,12 +28,12 @@
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
         				<td>{{item.Vdiskid}}</td>
-        				<td>{{item.contain}}G</td>
-        				<td>{{item.pool}}</td>
+        				<td>{{item.Contain}}G</td>
+        				<td>{{item.Pool}}</td>
         				<td>{{item.Vm_ip}}</td>
-        				<td>{{item.storage}}</td>
-        				<td>{{item.datacenter}}</td>
-        				<td>{{item.user}}</td>
+        				<td>{{item.Storage}}</td>
+        				<td>{{item.Datacenter}}</td>
+        				<td>{{item.username}}</td>
 				      <td>
                             <span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
                             <span v-else class="glyphicon glyphicon-remove"></span>
@@ -96,15 +96,15 @@ export default {
             this.$emit("toParent", router);
 			},
 
-		umount: function (vmip, storage, datacenter, vdiskid, index) {
+		umount: function (vmip, vdiskid, index) {
             var apiurl = `/api/vdisk/umountdisk`
-            this.$http.get(apiurl , { params: { vmip: vmip, storage: storage, datacenter: datacenter, vdiskid: vdiskid} }).then(response => {
+            this.$http.get(apiurl , { params: { vmip: vmip, vdiskid: vdiskid} }).then(response => {
 				if (response.data.err === null ) {
 					this.data[index].Status = 1
 					this.data[index].Vm_ip = ""
 					alert("卸载成功")
 				} else {
-					alert ("获取数据失败（"+response.data.err.Message+")")
+					alert ("获取数据失败（'"+response.data.err.Message+"')")
 					}
             })
         },

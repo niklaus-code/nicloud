@@ -3,6 +3,7 @@ package vdisk
 import (
   "github.com/gin-gonic/gin"
   "github.com/go-playground/validator/v10"
+  "nicloud/cephcommon"
   "nicloud/utils"
   vdisk "nicloud/vdisk"
   "nicloud/vm"
@@ -13,17 +14,19 @@ import (
 
 func Mountdisk(c *gin.Context) {
   vmid := c.Query("vmid")
-  ip := c.Query("ip")
-  storage := c.Query("storage")
-  datacenter := c.Query("datacenter")
-  pool := c.Query("pool")
-  host := c.Query("host")
   vdiskid := c.Query("vdiskid")
 
   vms := vm.Vms{}
   res := make(map[string]interface{})
 
-  s, err := vm.VmStatus(vmid, host)
+  vminfo, err := vm.GetVmByUuid(vmid)
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "获取云主机信息失败"}
+    c.JSON(200, res)
+    return
+  }
+
+  s, err := vm.VmStatus(vmid, vminfo.Host)
   if err != nil {
     res["err"] = err
     c.JSON(200, res)
@@ -36,15 +39,16 @@ func Mountdisk(c *gin.Context) {
     return
   }
 
-  xml, err := vm.Getvmxmlby(ip, storage, datacenter)
+  storageinfo, err := cephcommon.Cephinfobyname(vminfo.Datacenter, vminfo.Storage)
   if err != nil {
     res["err"] = vmerror.Error{Message: "获取云主机信息失败"}
     c.JSON(200, res)
     return
   }
+
   var rwLock sync.RWMutex
   rwLock.Lock()
-  err = vdisk.Mountdisk(ip,  host, storage, pool, datacenter, vdiskid, vms, xml)
+  err = vdisk.Mountdisk(vminfo.Ip, vminfo.Host, vminfo.Storage, storageinfo.Pool, vminfo.Datacenter, vdiskid, vms, vminfo.Vmxml)
   rwLock.Unlock()
   if err != nil {
     res["err"] = err
@@ -80,7 +84,7 @@ func Createvdisk(c *gin.Context) {
   datacenter := c.PostForm("datacenter")
 
   token := c.Request.Header.Get("token")
-  user, err := utils.ParseToken(token)
+  userid, err := utils.ParseToken(token)
   if err != nil {
     res["err"] = vmerror.Error{Message: "认证失败"}
     c.JSON(200, res)
@@ -92,7 +96,7 @@ func Createvdisk(c *gin.Context) {
     Pool: pool,
     Storage: storage,
     Datacenter: datacenter,
-    User: user,
+    User: userid,
   }
   validate := validator.New()
   err = validate.Struct(d)
@@ -104,7 +108,7 @@ func Createvdisk(c *gin.Context) {
 
   var rwLock sync.RWMutex
   rwLock.Lock()
-  err = vdisk.Add_vdisk(contain, pool, storage, datacenter, user)
+  err = vdisk.Add_vdisk(contain, pool, storage, datacenter, userid)
   rwLock.Unlock()
   res["err"] = err
 
@@ -113,8 +117,6 @@ func Createvdisk(c *gin.Context) {
 
 func Umountdisk(c *gin.Context) {
   vmip := c.Query("vmip")
-  storage := c.Query("storage")
-  datacenter := c.Query("datacenter")
   vdiskid := c.Query("vdiskid")
   res := make(map[string]interface{})
   vminfo := vm.GetVmByIp(vmip)
@@ -133,7 +135,7 @@ func Umountdisk(c *gin.Context) {
     return
   }
 
-  xml, err := vm.Getvmxmlby(vmip, storage, datacenter)
+  xml, err := vm.Getvmxmlby(vmip, vminfo.Storage, vminfo.Datacenter)
   if err != nil {
     res["err"] = err
     c.JSON(200, res)
@@ -143,7 +145,7 @@ func Umountdisk(c *gin.Context) {
   v := vm.Vms{}
   var rwLock sync.RWMutex
   rwLock.Lock()
-  err = vdisk.Umountdisk(vmip, storage, datacenter, vdiskid, xml, vminfo.Host, v)
+  err = vdisk.Umountdisk(vmip, vminfo.Storage, vminfo.Datacenter, vdiskid, xml, vminfo.Host, v)
   rwLock.Unlock()
   if err != nil {
     res["err"] = err
@@ -158,14 +160,14 @@ func  GetVdisk(c *gin.Context) {
   res := make(map[string]interface{})
 
   token := c.Request.Header.Get("token")
-  user, err := utils.ParseToken(token)
+  userid, err := utils.ParseToken(token)
   if err != nil {
     res["err"] = vmerror.Error{Message: "认证失败"}
     c.JSON(200, res)
     return
   }
 
-  r, err := vdisk.Getvdisk(user)
+  r, err := vdisk.Getvdisk(userid)
 
   res["res"] = r
   res["err"] = err
