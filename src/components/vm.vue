@@ -327,7 +327,7 @@ export default {
             this.$http.get(apiurl, { params: { uuid: uuid, datacenter:datacenter, storage: storage} }).then(response => {
 				if (response.data.err == null) {
 					alert("删除成功")
-					//this.data[index].Exist=0	
+					this.data[index].Exist=0	
 				} else {	
 					alert(response.data.err.Message)
 				}
