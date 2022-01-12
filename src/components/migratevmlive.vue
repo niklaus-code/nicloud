@@ -1,7 +1,7 @@
 <template>
 	<div>
              <div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
-                <h4>热迁移云主机</h4>
+                <h4>热迁移云主机 <span style="color: #C0C0C0; font-size:13px">&nbsp *迁移目标宿主机需开启selinux</span></h4>
             </div>
 		<div class="col-sm-6 col-sm-offset-3" style="margin-top:20px">
 	 		<div class="col-sm-12">
