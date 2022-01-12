@@ -26,7 +26,7 @@ type Vms struct {
 	Mem         int `json:"mem validate:"gt=0"`
 	Create_time time.Time
 	Owner       int  `json:"Owner" validate:"required"`
-	Comment     string
+	Comment     string  `json:"Comment" validate:"required"`
 	Vmxml       string
 	Status      string
 	Exist       int

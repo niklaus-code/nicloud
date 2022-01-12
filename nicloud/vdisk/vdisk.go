@@ -25,7 +25,7 @@ type Vms_vdisks struct {
   User int `json:"user" validate:"required"`
   Exist int8
   Status int
-  Comment string
+  Comment string `json:"Comment" validate:"required"`
   Createtime string
 }
 

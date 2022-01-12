@@ -102,7 +102,7 @@
 				<div class="col-sm-8">
                     <form role="form">
                         <div class="form-group">
-                            <input type="text" class="form-control" v-model="comment" placeholder="">
+                            <input type="text" class="form-control" v-model="comment" placeholder="*必填">
                         </div>
                     </form>
 				</div>
