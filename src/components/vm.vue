@@ -33,8 +33,8 @@
         		<th>操作</th>
       		</tr>
     	</thead>
-    	<tbody v-for="(item, index) in data">
-      		<tr v-if="item.Exist" class="table-dark text-dark" :id="item.Uuid">
+    	<tbody v-for="(item, index) in data" v-if="item.Exist">
+      		<tr class="table-dark text-dark" :id="item.Uuid">
 				<label class="checkbox-inline">
   					<input type="checkbox" v-model="item.Checkout"> 
 				</label>
@@ -327,7 +327,7 @@ export default {
             this.$http.get(apiurl, { params: { uuid: uuid, datacenter:datacenter, storage: storage} }).then(response => {
 				if (response.data.err == null) {
 					alert("删除成功")
-					this.data[index].Exist=0	
+					//this.data[index].Exist=0	
 				} else {	
 					alert(response.data.err.Message)
 				}
