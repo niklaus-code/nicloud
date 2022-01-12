@@ -146,12 +146,7 @@ func getdiskinfobyid(uuid string) (*Vms_vdisks, error) {
   return vdiskinfo, err
 }
 
-func Deletevdisk(uuid string, datacenter string, storage string) error {
-  storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
-  if err != nil {
-    return err
-  }
-
+func Deletevdisk(uuid string) error {
   checkmount, err := Getdiskstatus(uuid)
   if err != nil {
     return err
@@ -185,7 +180,7 @@ func Deletevdisk(uuid string, datacenter string, storage string) error {
     return vmerror.Error{Message: "delete vdisk fail"}
   }
 
-  err = cephcommon.Rm_image(uuid, storageinfo.Pool)
+  err = cephcommon.Rm_image(uuid, vdiskinfo.Pool)
   if err != nil {
     return err
   }

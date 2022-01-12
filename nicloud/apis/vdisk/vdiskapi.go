@@ -60,12 +60,10 @@ func Mountdisk(c *gin.Context) {
 
 func Deletevdisk(c *gin.Context)  {
   uuid := c.Query("uuid")
-  datacenter := c.Query("datacenter")
-  storage := c.Query("storage")
 
   var rwLock sync.RWMutex
   rwLock.Lock()
-  err := vdisk.Deletevdisk(uuid, datacenter, storage)
+  err := vdisk.Deletevdisk(uuid)
   rwLock.Unlock()
   res := make(map[string]interface{})
   res["err"] = err
