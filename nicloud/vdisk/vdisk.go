@@ -101,10 +101,11 @@ type Vms_vdisks_archives struct {
   Pool string
   Storage string
   Datacenter string
+  Comment string
   Create_time time.Time
 }
 
-func addiskachives(uuid string, pool string, storage string, datacenter string, ownerid int) (string, error) {
+func addiskachives(uuid string, pool string, storage string, datacenter string, ownerid int, comment string) (string, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return "", err
@@ -116,6 +117,7 @@ func addiskachives(uuid string, pool string, storage string, datacenter string, 
     Pool: pool,
     Storage: storage,
     Datacenter: datacenter,
+    Comment: comment,
     Create_time: time.Now(),
   }
 
@@ -152,7 +154,7 @@ func getdiskinfobyid(uuid string) (*Vms_vdisks, error) {
   return vdiskinfo, err
 }
 
-func Deletevdisk(uuid string) error {
+func Deletevdisk(uuid string, comment string) error {
   checkmount, err := Getdiskstatus(uuid)
   if err != nil {
     return err
@@ -172,7 +174,7 @@ func Deletevdisk(uuid string) error {
     return err
   }
 
-  addachives, err := addiskachives(uuid, vdiskinfo.Pool, vdiskinfo.Storage, vdiskinfo.Datacenter, vdiskinfo.User)
+  addachives, err := addiskachives(uuid, vdiskinfo.Pool, vdiskinfo.Storage, vdiskinfo.Datacenter, vdiskinfo.User, comment)
   if err != nil {
     return err
   }
