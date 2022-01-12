@@ -59,7 +59,7 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-4">
-        			<label>cpu/内存</label>
+        			<label>cpu / 内存</label>
 				</div>
 				<div class="col-sm-8">
         			<select class="col-sm-12" v-model="flavorvalue">
