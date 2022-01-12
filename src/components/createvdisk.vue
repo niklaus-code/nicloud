@@ -65,6 +65,20 @@
 				</div>
     		</div>
 			<div class="col-sm-12" style="margin-top:20px">
+	 		<div class="form-group">
+				<div class="col-sm-2 col-sm-offset-2">
+        			<label>备注</label>
+				</div>
+				<div class="col-sm-8">
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" v-model="comment" placeholder="">
+                        </div>
+                    </form>
+				</div>
+				</div>
+    		</div>
+			<div class="col-sm-12" style="margin-top:20px">
 				<div class="form-group">
 					<div class="col-sm-2 col-sm-offset-4">
   						<button type="submit" @click="createvdisk" class="btn btn-success">提交</button>
@@ -79,6 +93,8 @@
 export default {
     data () {
         return {
+            comment: "",
+
            	centervalue: "",
             datacenter: [],
 
@@ -152,7 +168,7 @@ export default {
 
             var apiurl = `/api/vdisk/createvdisk`
 
-            this.$http.post(apiurl,  this.$qs.stringify({ datacenter: this.centervalue, storage: this.storagevalue, pool: this.poolvalue, contain: this.containvalue})).then(response => {
+            this.$http.post(apiurl,  this.$qs.stringify({ datacenter: this.centervalue, storage: this.storagevalue, pool: this.poolvalue, contain: this.containvalue, comment: this.comment})).then(response => {
 				if (response.data.err === null) {
 					alert("创建成功!")
 					this.$emit("toParent", "disk");

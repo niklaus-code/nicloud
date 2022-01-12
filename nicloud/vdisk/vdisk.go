@@ -25,6 +25,7 @@ type Vms_vdisks struct {
   User int `json:"user" validate:"required"`
   Exist int8
   Status int
+  Comment string
   Createtime string
 }
 
@@ -63,7 +64,7 @@ func Updatevdiskbydelvm(datacenter string, storage string, vmip string) error {
 }
 
 
-func Add_vdisk(contain int, pool string, storage string, datacenter string, userid int) error {
+func Create_vdisk(contain int, pool string, storage string, datacenter string, userid int, comment string) error {
   vdiskid := utils.Createuuid()
   c := &Vms_vdisks{
     Vdiskid: vdiskid,
@@ -74,6 +75,7 @@ func Add_vdisk(contain int, pool string, storage string, datacenter string, user
     User: userid,
     Exist: 1,
     Status: 1,
+    Comment: comment,
     Createtime: time.Now().Format("2006-01-02 15:04:05"),
   }
 

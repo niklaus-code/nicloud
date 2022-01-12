@@ -82,6 +82,7 @@ func Createvdisk(c *gin.Context) {
   pool := c.PostForm("pool")
   storage := c.PostForm("storage")
   datacenter := c.PostForm("datacenter")
+  comment := c.PostForm("comment")
 
   token := c.Request.Header.Get("token")
   userid, err := utils.ParseToken(token)
@@ -108,7 +109,7 @@ func Createvdisk(c *gin.Context) {
 
   var rwLock sync.RWMutex
   rwLock.Lock()
-  err = vdisk.Add_vdisk(contain, pool, storage, datacenter, userid)
+  err = vdisk.Create_vdisk(contain, pool, storage, datacenter, userid, comment)
   rwLock.Unlock()
   res["err"] = err
 

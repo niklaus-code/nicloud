@@ -13,9 +13,8 @@
         				<th>容量</th>
         				<th>存储池</th>
         				<th>挂载云主机</th>
-        				<th>存储集群</th>
-						<th>数据中心</th>
         				<th>创建者</th>
+        				<th>备注</th>
         				<th>状态</th>
         				<th>创建时间</th>
 						<th>操作</th>
@@ -31,9 +30,8 @@
         				<td>{{item.Contain}}G</td>
         				<td>{{item.Pool}}</td>
         				<td>{{item.Vm_ip}}</td>
-        				<td>{{item.Storage}}</td>
-        				<td>{{item.Datacenter}}</td>
         				<td>{{item.username}}</td>
+        				<td>{{item.Comment}}</td>
 				      <td>
                             <span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
                             <span v-else class="glyphicon glyphicon-remove"></span>
