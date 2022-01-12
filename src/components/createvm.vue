@@ -3,14 +3,13 @@
 	 		<div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
                 <h4>创建云主机</h4>
 	 		</div>
-		<div  class="col-sm-9 col-sm-offset-1" style="margin-top:20px">
-		<div  class="col-sm-10 col-sm-offset-1" style="margin-top:20px">
+		<div  class="col-sm-8 col-sm-offset-1" style="margin-top:20px">
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-4">
         			<label>数据中心</label>
 				</div>
 				<div class="col-sm-8">
-        			<select class="col-sm-10" v-model="centervalue" @change="getvlan(centervalue)" @change="getstorage(centervalue)">
+        			<select class="col-sm-12" v-model="centervalue" @change="getvlan(centervalue)" @change="getstorage(centervalue)">
 					  <option value="">--请选择--</option>
   						<option  v-for="c in datacenter" :value="c.Datacenter">
 							{{ c.Datacenter }}
@@ -23,7 +22,7 @@
                     <label>存储集群</label>
                 </div>
                 <div class="col-sm-8">
-                    <select class="col-sm-10" v-model="storagevalue" @change="getpool()" @change="getimageby()">
+                    <select class="col-sm-12" v-model="storagevalue" @change="getpool()" @change="getimageby()">
 					  <option value="">--请选择--</option>
                         <option  v-for="c in storage" :value="c.Uuid">
                             {{ c.Uuid }}
@@ -37,7 +36,7 @@
         			<label>VLAN</label>
 				</div>
 				<div class="col-sm-8">
-        			<select class="col-sm-10" v-model="vlanvalue" @change="getip" @change="gethosts(centervalue)">
+        			<select class="col-sm-12" v-model="vlanvalue" @change="getip" @change="gethosts(centervalue)">
 					  <option value="">--请选择--</option>
   						<option  v-for="v in vlanlist" :value="v.Vlan">
 							{{ v.Vlan }}
@@ -50,7 +49,7 @@
         			<label>IP地址</label>
 				</div>
 				<div class="col-sm-8">
-	                <select class="col-sm-10" v-model="ipvalue">
+	                <select class="col-sm-12" v-model="ipvalue">
 					  	<option value="">--请选择--</option>
                     	<option  v-for="ip in iplist" :value="ip.Ipv4">
                         	{{ ip.Ipv4 }}
@@ -63,7 +62,7 @@
         			<label>cpu/内存</label>
 				</div>
 				<div class="col-sm-8">
-        			<select class="col-sm-10" v-model="flavorvalue">
+        			<select class="col-sm-12" v-model="flavorvalue">
   						<option  v-for="f in flavorlist" :value="f">
 							{{ f.Cpu}}核 / {{f.Mem}}G
 						</option>
@@ -75,7 +74,7 @@
         			<label>宿主机</label>
 				</div>
 				<div class="col-sm-8 title">
-        			<select class="col-sm-10" v-model="hostvalue">
+        			<select class="col-sm-12" v-model="hostvalue">
 					  	<option value="">--请选择--</option>
   						<option  v-for="host in hostlist" :value="host.Ipv4">
 							 {{ host.Ipv4 }} ({{host.Usedcpu}}/{{host.Cpu}}&nbsp核，{{host.Usedmem}}/{{host.Mem}}&nbspG ，{{host.count}}/{{host.Max_vms}}&nbsp个)
@@ -88,12 +87,24 @@
         			<label>镜像</label>
 				</div>
 				<div class="col-sm-8">
-        			<select class="col-sm-10" v-model="imagevalue">
+        			<select class="col-sm-12" v-model="imagevalue">
 					  <option value="">--请选择--</option>
   						<option  v-for="image in imagelist" :value="image.Osname">
 							{{ image.Osname }}
 						</option>
         			</select>
+				</div>
+    		</div>
+	 		<div class="col-sm-12 form-group">
+				<div class="col-sm-4">
+        			<label>备注</label>
+				</div>
+				<div class="col-sm-8">
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" v-model="comment" placeholder="">
+                        </div>
+                    </form>
 				</div>
     		</div>
 	 		<div class="col-sm-12 form-group">
@@ -106,7 +117,6 @@
 					<button class="btn btn-success btn-sm"  @click="createvm()">创建</button>
 				</div>
     		</div>
-    		</div>
 		</div>
 	</div>
 </template>
@@ -114,6 +124,8 @@
 export default {
     data () {
         return {
+            comment: "",
+
 			storage : [],
 			storagevalue: "",
 
@@ -191,7 +203,7 @@ export default {
 				alert("缺少信息!")
 				return
 			}
-            this.$http.post(apiurl, this.$qs.stringify({datacenter: this.centervalue, storage: this.storagevalue, vlan: this.vlanvalue,  cpu: this.flavorvalue.Cpu, mem:this.flavorvalue.Mem, ip: this.ipvalue, host: this.hostvalue, os: this.imagevalue})).then(response => {
+            this.$http.post(apiurl, this.$qs.stringify({datacenter: this.centervalue, storage: this.storagevalue, vlan: this.vlanvalue,  cpu: this.flavorvalue.Cpu, mem:this.flavorvalue.Mem, ip: this.ipvalue, host: this.hostvalue, os: this.imagevalue, comment: this.comment})).then(response => {
 				if (response.data.err === null) {
 					alert("创建成功! 是否查看虚拟机列表")
 					this.$emit("toParent", "vm");
@@ -252,17 +264,6 @@ export default {
   }
 </script>
 <style scoped>
-.title {
-	text-align: center;
-}
-
-.col-sm-9 {
-	padding-left:0px;
-}
-
-.col-sm-3 {
-	padding-right:30px;
-}
 label {
 	float: right;
     font-weight : 400;
@@ -278,9 +279,5 @@ select{
 
 .create {
     margin-top:8px
-}
-
-.details-content .article-cont p {
-    padding:30px 0 0 5px
 }
 </style>

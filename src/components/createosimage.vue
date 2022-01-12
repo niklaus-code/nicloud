@@ -187,11 +187,6 @@ export default {
   }
 </script>
 <style scoped>
-
-label {
-	float: right;
-}
-
 select{
 	height:30px;
     font-family: "微软雅黑";
@@ -199,20 +194,8 @@ select{
     border-radius: 5px;
 }
 
-.content {
-    box-shadow: 0 0 10px rgba(0,0,0,8);
-    border-radius: 10px/10px;
-    z-index: -1;
-    padding: 70px 0px 100px 0px;
-    margin-left: 0px;
-    margin-TOP: 50px;
-}
-
-.details-content .article-cont p {
-    padding:30px 0 0 5px
-}
-
 label {
+	float: right;
 	font-weight : 400;
 	margin-top: 5px;
 }

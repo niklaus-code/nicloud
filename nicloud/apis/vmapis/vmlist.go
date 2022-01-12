@@ -136,6 +136,7 @@ func Createvm(c *gin.Context) {
   datacenter := c.PostForm("datacenter")
   storage := c.PostForm("storage")
   vlan := c.PostForm("vlan")
+  comment := c.PostForm("comment")
 
   token := c.Request.Header.Get("token")
   user, err := utils.ParseToken(token)
@@ -165,7 +166,7 @@ func Createvm(c *gin.Context) {
   }
   var rwLock sync.RWMutex
   rwLock.Lock()
-  err = vm.Create(datacenter, storage, vlan, cpu, mem, ip, host, os, user)
+  err = vm.Create(datacenter, storage, vlan, cpu, mem, ip, host, os, user, comment)
   rwLock.Unlock()
   res["err"] = err
   c.JSON(200, res)

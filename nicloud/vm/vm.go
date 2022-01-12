@@ -334,7 +334,7 @@ func Start(uuid string, host string) error {
 	return nil
 }
 
-func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, vmxml string, ip string, host string, image string, owner int) (string, error) {
+func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, vmxml string, ip string, host string, image string, owner int, comment string) (string, error) {
   /*save config to db*/
   dbs, err := db.NicloudDb()
   if err != nil {
@@ -355,6 +355,7 @@ func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, v
 		Os:          image,
 		Datacenter: datacenter,
 		Storage: cephname,
+		Comment: comment,
 	}
 
 	err1 := dbs.Create(vm)
@@ -433,7 +434,7 @@ func deletevmbyid(uuid string) error {
   return nil
 }
 
-func Create(datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, image string, owner int) (error) {
+func Create(datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, image string, owner int, comment string) (error) {
   mac, err := networks.Ipresource(ip)
   if err != nil {
     return err
@@ -480,7 +481,7 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
     libvirtd.Undefine(host, u)
     return err
   }
-	newvm, err := savevm(datacenter, storage, u, cpu, mem, f, ip, host, image, owner)
+	newvm, err := savevm(datacenter, storage, u, cpu, mem, f, ip, host, image, owner, comment)
 	if err != nil {
     cephcommon.Rm_image(u, storageinfo.Pool)
     libvirtd.Undefine(host, u)
