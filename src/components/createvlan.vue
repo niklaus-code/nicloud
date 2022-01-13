@@ -157,7 +157,7 @@ export default {
 					alert("创建成功! 是否查看网络列表")
 					this.$emit("toParent", "network");
 				} else {
-					alert("创建失败(" + response.data.err.Message+ ")" )
+					alert(response.data.err)
 					}
 			})
 			},

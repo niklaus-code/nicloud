@@ -64,7 +64,7 @@ export default {
 					alert("创建成功! 是否查看数据中心列表")
 					this.$emit("toParent", "datacenter");
 				} else {
-					alert("创建失败(" + response.data.err.Message+ ")" )
+					alert(response.data.err)
 					}
 			})
 			},
