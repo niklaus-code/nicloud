@@ -99,6 +99,7 @@ func Createvdisk(c *gin.Context) {
     Storage: storage,
     Datacenter: datacenter,
     User: userid,
+    Comment: comment,
   }
   validate := validator.New()
   err = validate.Struct(d)

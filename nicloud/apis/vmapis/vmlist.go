@@ -90,7 +90,7 @@ func Getvmlist(c *gin.Context) {
 
 	pagenumber, vmcount,  err := vm.Getpagenumber(userid, offset)
 	if err != nil {
-    res["res"] = vmlist
+    res["res"] = nil
     res["err"] = err
     c.JSON(200, res)
     return
@@ -140,6 +140,7 @@ func Createvm(c *gin.Context) {
 
   token := c.Request.Header.Get("token")
   user, err := utils.ParseToken(token)
+
   if err != nil {
     res["err"] = vmerror.Error{Message: "认证失败"}
     c.JSON(200, res)
@@ -155,6 +156,7 @@ func Createvm(c *gin.Context) {
     Datacenter: datacenter,
     Storage: storage,
     Owner: user,
+    Comment: comment,
   }
 
   validate := validator.New()
