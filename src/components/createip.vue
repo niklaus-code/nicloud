@@ -91,7 +91,7 @@ export default {
 				if (response.data.err === null) {
 					alert("创建成功")
 					} else {
-					alert(response.data.res.Message)
+					alert(response.data.err)
 					}
 				})
 			},
