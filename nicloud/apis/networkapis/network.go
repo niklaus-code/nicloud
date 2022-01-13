@@ -121,7 +121,7 @@ func UpIp(c *gin.Context) {
   res := make(map[string]interface{})
 
   err := networks.OpIP(ipv4, vlan, 0)
-  res["res"] = err
+  res["err"] = err
   c.JSON(200, res)
 }
 
@@ -131,7 +131,7 @@ func DownIp(c *gin.Context) {
   res := make(map[string]interface{})
 
   err := networks.OpIP(ipv4, vlan, 1)
-  res["res"] = err
+  res["err"] = err
   c.JSON(200, res)
 }
 

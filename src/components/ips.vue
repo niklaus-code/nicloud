@@ -102,22 +102,22 @@ export default {
 		 upip: function (index, ip) {
             var apiurl = `/api/networks/upip`
             this.$http.get(apiurl, { params: {ipv4: ip, vlan: this.vlan}}).then(response => {
-            	if (response.data.res != null) {
-					alert(response.data.res)
+            	if (response.data.err === null) {
+					alert("已置为可用状态")
+					this.ips[index].Status = 0
 					} else {
-						alert("已置为可用状态")
-						this.ips[index].Status = 0
+					    alert(response.data.err.Message)
 						}
             })
         },
 		 downip: function (index, ip) {
             var apiurl = `/api/networks/downip`
             this.$http.get(apiurl, { params: {ipv4: ip, vlan: this.vlan}}).then(response => {
-            	if (response.data.res != null) {
-					alert(response.data.res)
+            	if (response.data.err === null) {
+					alert("已置为不可用状态")
+					this.ips[index].Status = 1
 					} else {
-						alert("已置为不可用状态")
-						this.ips[index].Status = 1
+					    alert(response.data.err.Message)
 						}
             })
         },
