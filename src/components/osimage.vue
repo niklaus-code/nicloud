@@ -81,7 +81,7 @@ export default {
 					alert("删除成功")
 					this.data[index].Status = 0
 					} else {
-					alert(response.data.err)
+					alert(response.data.err.Message)
 					}
             })
         },
