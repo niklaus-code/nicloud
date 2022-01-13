@@ -3,7 +3,7 @@
     <div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
         <h4>创建宿主机</h4>
     </div>
-    <div class="col-sm-4 col-sm-offset-4" style="margin-top:20px">
+    <div class="col-sm-6 col-sm-offset-2" style="margin-top:20px">
 	    <div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-3">
