@@ -88,10 +88,10 @@ export default {
 
             var apiurl = `/api/networks/createip`
             this.$http.get(apiurl, { params: {startip: this.startip, endip: this.endip, vlan: this.vlan, prefix: this.prefix, gateway: this.gateway} }).then(response => {
-				if (response.data.res === null) {
+				if (response.data.err === null) {
 					alert("创建成功")
 					} else {
-					alert("创建失败'(" + response.data.res.Message+"')")
+					alert(response.data.res.Message)
 					}
 				})
 			},
