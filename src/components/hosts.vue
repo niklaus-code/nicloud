@@ -78,11 +78,11 @@ export default {
 		deletehost: function (ip, index) {
             var apiurl = `/api/hosts/delete`
             this.$http.get(apiurl, { params: {ip: ip} } ).then(response => {
-			   if (response.data.res === null) {
+			   if (response.data.err === null) {
                     alert("删除成功")
 					this.data[index].Status=0
                     } else {
-                    alert("删除失败('"+response.data.res.Message+"')")  
+                    alert(response.data.err)  
                 }
             })
         },
