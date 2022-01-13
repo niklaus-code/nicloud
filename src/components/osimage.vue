@@ -77,11 +77,11 @@ export default {
 		delosimage: function (osname, index) {
             var apiurl = `/api/osimage/delimage`
             this.$http.get(apiurl, { params: {osname: osname} } ).then(response => {
-            	if (response.data.res === null) {
+            	if (response.data.err === null) {
 					alert("删除成功")
 					this.data[index].Status = 0
 					} else {
-					alert("删除失败(' "+ response.data.res.Message+"')")
+					alert(response.data.err)
 					}
             })
         },
