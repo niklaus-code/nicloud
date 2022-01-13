@@ -179,7 +179,7 @@ export default {
 					alert("更新成功!")
 					this.$emit("toParent", "osimage");
 				} else {
-					alert("更新失败(" + response.data.res.Message+ ")" )
+					alert(response.data.err)
 					}
 				})
 			},
