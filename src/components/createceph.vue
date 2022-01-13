@@ -162,7 +162,7 @@ export default {
 					alert("创建成功!")
 					this.$emit("toParent", "storage");
 				} else {
-					alert(response.data.err)
+					alert(response.data.err.Message)
 					}
 			})
 			},

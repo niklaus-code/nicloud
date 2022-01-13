@@ -101,17 +101,17 @@ func CreateIp(c *gin.Context) {
 
   res := make(map[string]interface{})
   if err != nil {
-    res["res"] = err
+    res["err"] = err
     c.JSON(400, res)
   }
 
   if prefix >= 32 || prefix < 8 {
-    res["res"] = err
+    res["err"] = err
     c.JSON(400, vmerror.Error{"参数错误"})
   }
 
   err = networks.Createip(startip, endip, vlan, prefix, gateway)
-  res["res"] = err
+  res["err"] = err
   c.JSON(200, res)
 }
 

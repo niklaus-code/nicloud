@@ -12,7 +12,7 @@ import (
 
 
 type Vms_os struct {
-  Id int  `json:"Id" validate:"required"`
+  Id int
   Osname string `json:"Osname" validate:"required"`
   Datacenter string `json:"Datacenter" validate:"required"`
   Storage string  `json:"Storage" validate:"required"`

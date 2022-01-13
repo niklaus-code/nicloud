@@ -68,7 +68,7 @@ export default {
 			   if (response.data.err === null) {
                     alert("删除成功")
                     } else {
-                    alert("删除失败('"+response.data.err.Message+"')")  
+                    alert(response.data.err.Message)  
                 }
             })
         },

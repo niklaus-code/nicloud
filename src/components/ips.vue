@@ -91,7 +91,7 @@ export default {
             var apiurl = `/api/networks/deleteip`
             this.$http.get(apiurl, { params: {ip: ip, vlan: this.vlan}}).then(response => {
             	if (response.data.err != null) {
-					alert("删除失败'("+response.data.err.Message+")'")
+					alert(response.data.err.Message)
 				} else {
 					alert("删除成功")
 					this.ips[index].Exist = false
@@ -103,7 +103,7 @@ export default {
             var apiurl = `/api/networks/upip`
             this.$http.get(apiurl, { params: {ipv4: ip, vlan: this.vlan}}).then(response => {
             	if (response.data.res != null) {
-					alert("操作失败'("+response.data.res+")'")
+					alert(response.data.res)
 					} else {
 						alert("已置为可用状态")
 						this.ips[index].Status = 0
@@ -114,7 +114,7 @@ export default {
             var apiurl = `/api/networks/downip`
             this.$http.get(apiurl, { params: {ipv4: ip, vlan: this.vlan}}).then(response => {
             	if (response.data.res != null) {
-					alert("操作失败'("+response.data.res+")'")
+					alert(response.data.res)
 					} else {
 						alert("已置为不可用状态")
 						this.ips[index].Status = 1

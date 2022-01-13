@@ -61,7 +61,7 @@ export default {
                     alert("删除成功")
 					this.data[index].Status=0
                     } else {
-                    alert("删除失败('"+response.data.res.Message+"')")  
+                    alert(response.data.err.Message)
                 }
             })
         },
@@ -72,7 +72,7 @@ export default {
 			   if (response.data.err === null) {
                     this.data = response.data.res
                     } else {
-                    alert(response.data.err)
+                    alert(response.data.err.Message)
                 }
             })
         },

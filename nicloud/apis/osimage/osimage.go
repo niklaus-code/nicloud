@@ -1,6 +1,7 @@
 package osimage
 
 import (
+  "fmt"
   "github.com/gin-gonic/gin"
   "github.com/go-playground/validator/v10"
   "nicloud/osimage"
@@ -98,6 +99,7 @@ func AddImage(c *gin.Context) {
   validate := validator.New()
   err := validate.Struct(o)
   if err != nil {
+    fmt.Println(err)
     res["err"] = vmerror.Error{Message: "参数错误"}
     c.JSON(400, res)
     return

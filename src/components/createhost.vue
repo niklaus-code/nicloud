@@ -156,7 +156,7 @@ export default {
 					alert("创建成功! 是否查看宿主机列表")
 					this.$emit("toParent", "hosts");
 				} else {
-					alert(response.data.err)
+					alert(response.data.err.Message)
 					}
 			})
 			},
