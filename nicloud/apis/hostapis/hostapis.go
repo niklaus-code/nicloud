@@ -60,13 +60,13 @@ func Createhost(c *gin.Context) {
   validate := validator.New()
   err := validate.Struct(h)
   if err != nil {
-    res["res"] = vmerror.Error{Message: err.Error()}
+    res["err"] = vmerror.Error{Message: err.Error()}
     c.JSON(400, res)
     return
   }
 
   err = vm.Createhost(datacenter, cpu, mem, ipv4, max_vms, vlan)
-  res["res"] = err
+  res["err"] = err
   c.JSON(200, res)
 }
 
