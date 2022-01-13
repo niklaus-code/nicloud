@@ -13,7 +13,7 @@ func DelImage(c *gin.Context) {
   res := make(map[string]interface{})
   r := osimage.Del(osname)
 
-  res["res"] = r
+  res["err"] = r
   c.JSON(200, res)
 }
 
