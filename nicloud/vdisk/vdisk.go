@@ -275,11 +275,12 @@ func mapvdisk(obj  []Vms_vdisks) ([]map[string]interface{}, error)  {
       c[m.Field(i).Name] = n.Field(i).Interface()
     }
 
-    username, err := users.GetUsernameById(v.User)
+    u, err := users.GetUserByUserID(v.User)
     if err != nil {
       return nil, err
     }
-    c["username"] = username
+
+    c["username"] = u.Username
     mapc = append(mapc, c)
   }
   return mapc, nil
@@ -292,11 +293,17 @@ func Getvdisk(userid int) ([]map[string]interface{}, error) {
   }
   var c  []Vms_vdisks
 
-  user, err := users.GetUsernameById(userid)
+  user, err := users.GetUserByUserID(userid)
   if err != nil {
     return nil, err
   }
-  if user == "admin" {
+
+  role, err := users.GetRoleByRoleId(user.Role)
+  if err != nil {
+    return nil, err
+  }
+
+  if  role.Rolename == "admin" {
     dbs.Order("createtime desc").Find(&c)
   } else {
     dbs.Where("user=?", userid).Order("createtime desc").Find(&c)

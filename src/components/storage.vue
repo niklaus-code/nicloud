@@ -76,7 +76,11 @@ export default {
 		getceph: function (ip) {
             var apiurl = `/api/storage/get`
             this.$http.get(apiurl).then(response => {
-            	this.data = response.data.res
+			   if (response.data.err === null) {
+            	    this.data = response.data.res
+                } else {
+                    alert(response.data.err)
+                    }
             })
         },
         }

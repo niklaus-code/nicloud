@@ -13,7 +13,7 @@ type Vms_users struct {
   Username string
   Passwd string
   Email string
-  Admin int
+  Role int
 }
 
 func createtoken(username string, userid string) (string, error) {
@@ -57,16 +57,35 @@ func Login(username string, passwd string) (string, string, error) {
 }
 
 
-func GetUsernameById(userid int) (string, error) {
+func GetUserByUserID(userid int) (*Vms_users, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
-    return "", err
+    return nil, err
   }
   u := &Vms_users{}
   errdb := dbs.Where("id=?", userid).First(u)
   if errdb.Error != nil {
-    return "", errdb.Error
+    return nil, errdb.Error
   }
 
-  return u.Username, nil
+  return u, nil
+}
+
+type Vms_roles struct {
+  Id int
+  Rolename string
+}
+
+func GetRoleByRoleId(roleid int) (*Vms_roles, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  r := &Vms_roles{}
+  errdb := dbs.Where("id=?", roleid).First(r)
+  if errdb.Error != nil {
+    return nil, errdb.Error
+  }
+
+  return r, nil
 }

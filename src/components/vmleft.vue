@@ -45,6 +45,7 @@ export default {
 					},
 				{
 				name: "统计",
+				router: "count"
 					},
 				],
         }
@@ -56,6 +57,10 @@ export default {
               },
 
         	toParent: function (item) {
+                if (item === "count") {
+                    alert("暂未开放")
+                    return
+                    }
 				this.$emit("toParent", item);
             	},
 		}

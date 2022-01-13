@@ -89,7 +89,11 @@ export default {
 		getosimage: function () {
             var apiurl = `/api/osimage/getimage`
             this.$http.get(apiurl).then(response => {
-            	this.data = response.data.res
+            	if (response.data.err === null) {
+            	    this.data = response.data.res
+                } else {
+					alert(response.data.err)
+                    }
             })
         },
      }

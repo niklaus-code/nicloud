@@ -24,7 +24,6 @@ func main() {
 	v2 := r.Group("/api/vm")
 	{
 	  v2.Use(utils.Tokenauth())
-
 		v2.GET("getvm", vmapis.Getvmlist)
 		v2.POST("create", vmapis.Createvm)
 		v2.GET("operation/:id", vmapis.Operation)
@@ -46,6 +45,7 @@ func main() {
 
   v3 := r.Group("/api/machine")
   {
+    v3.Use(utils.Tokenauth())
     v3.GET("getmachinelist", machineapis.Getmachinelist)
     v3.GET("addmachine", machineapis.Addmachine)
     v3.GET("delmachine", machineapis.Delmachine)
@@ -57,12 +57,14 @@ func main() {
 
   v4 := r.Group("/api/networks")
   {
-    //v2.Use(utils.Tokenauth())
-    v4.POST("createvlan", networkapis.Add)
+    v4.Use(utils.Tokenauth())
     v4.GET("getvlan", networkapis.Get)
     v4.GET("getvlanbydatacenter", networkapis.Getvlanbydatacenter)
     v4.GET("getip", networkapis.GetIplist)
     v4.GET("getallip", networkapis.GetallIp)
+
+    v4.Use(utils.RoleAuth())
+    v4.POST("createvlan", networkapis.Add)
     v4.GET("createip", networkapis.CreateIp)
     v4.GET("downip", networkapis.DownIp)
     v4.GET("upip", networkapis.UpIp)
@@ -73,20 +75,25 @@ func main() {
 
   v5 := r.Group("/api/hosts")
   {
-    v2.Use(utils.Tokenauth())
-    v5.GET("delete", hostapis.Delhost)
-    v5.GET("gethostsby", hostapis.Gethostinfo)
-    v5.POST("createhost", hostapis.Createhost)
-    v5.GET("gethosts", hostapis.GetHosts)
-    v5.GET("addcomment", hostapis.Addcomment)
+    v5.Use(utils.Tokenauth())
     v5.GET("gethostsbydatacenter", hostapis.GetHostsbydatacenter)
+    v5.GET("gethosts", hostapis.GetHosts)
+    v5.GET("gethostsby", hostapis.Gethostinfo)
+
+    v5.Use(utils.RoleAuth())
+    v5.GET("delete", hostapis.Delhost)
+    v5.POST("createhost", hostapis.Createhost)
+    v5.GET("addcomment", hostapis.Addcomment)
+
   }
 
   v6 := r.Group("/api/osimage")
   {
-    v2.Use(utils.Tokenauth())
+    v6.Use(utils.Tokenauth())
     v6.GET("getimageby", osimage.GetImageby)
     v6.GET("getimage", osimage.GetImage)
+
+    v6.Use(utils.RoleAuth())
     v6.POST("updateimage", osimage.UpdateImage)
     v6.POST("createimage", osimage.AddImage)
     v6.GET("delimage", osimage.DelImage)
@@ -94,25 +101,28 @@ func main() {
 
   v7 := r.Group("/api/storage")
   {
-    v2.Use(utils.Tokenauth())
+    v7.Use(utils.Tokenauth())
     v7.GET("get", cephapis.GetStorage)
-    v7.POST("add", cephapis.Addceph)
-    v7.GET("delete", cephapis.Delete)
     v7.GET("getpool", cephapis.Getpool)
 
+    v7.Use(utils.RoleAuth())
+    v7.POST("add", cephapis.Addceph)
+    v7.GET("delete", cephapis.Delete)
   }
 
   v8 := r.Group("/api/datacenter")
   {
-    v2.Use(utils.Tokenauth())
+    v8.Use(utils.Tokenauth())
     v8.GET("getdatacenter", datacenterapis.GetDatacenter)
+
+    v8.Use(utils.RoleAuth())
     v8.POST("adddatacenter", datacenterapis.AddDatacenter)
     v8.GET("deldatacenter", datacenterapis.DelDatacenter)
   }
 
   v9 := r.Group("/api/vdisk")
   {
-    v2.Use(utils.Tokenauth())
+    v9.Use(utils.Tokenauth())
     v9.GET("umountdisk", vdisk.Umountdisk)
     v9.GET("mountdisk", vdisk.Mountdisk)
     v9.GET("deletevdisk", vdisk.Deletevdisk)

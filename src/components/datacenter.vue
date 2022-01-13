@@ -69,7 +69,11 @@ export default {
 		getdatacenter: function (ip) {
             var apiurl = `/api/datacenter/getdatacenter`
             this.$http.get(apiurl).then(response => {
-            	this.data = response.data.res
+			   if (response.data.err === null) {
+                    this.data = response.data.res
+                    } else {
+                    alert(response.data.err)
+                }
             })
         },
         }

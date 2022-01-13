@@ -539,7 +539,8 @@ func allvm(obj []Vms) []map[string]interface{}  {
 
     vncid := base(v.Uuid, v.Host)
     c["vncid"] = vncid
-    c["Owner"], err = users.GetUsernameById(v.Owner)
+    owner, _ := users.GetUserByUserID(v.Owner)
+    c["Owner"] = owner.Username
     mapc = append(mapc, c)
   }
   return mapc
@@ -552,15 +553,20 @@ func Getpagenumber(userid int, offset int) (int, int, error) {
   }
 
   var v []Vms
-  user, err := users.GetUsernameById(userid)
-
+  user, err := users.GetUserByUserID(userid)
   if err != nil {
     return 0, 0, err
   }
-  if user == "admin" {
+
+  role, err := users.GetRoleByRoleId(user.Role)
+  if err != nil {
+    return 0, 0, err
+  }
+
+  if role.Rolename == "admin" {
     dbs.Table("vms").Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Scan(&v)
   } else {
-    dbs.Table("vms").Order("create_time desc").Where("owner=?", user).Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Scan(&v)
+    dbs.Table("vms").Order("create_time desc").Where("owner=?", userid).Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Scan(&v)
   }
   remainder := len(v)%offset
   var pagenumber int
@@ -579,12 +585,17 @@ func VmList(userid int, start int, offset int) ([]map[string]interface{}, error)
   }
 	var v []Vms
 
-  user, err := users.GetUsernameById(userid)
+  user, err := users.GetUserByUserID(userid)
   if err != nil {
     return nil, err
   }
 
-  if user == "admin" {
+  role, err := users.GetRoleByRoleId(user.Role)
+  if err != nil {
+    return nil, err
+  }
+
+  if role.Rolename == "admin" {
     dbs.Table("vms").Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Limit(offset).Offset((start-1)*offset).Scan(&v)
   } else {
     dbs.Table("vms").Order("create_time desc").Where("owner=?", userid).Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Limit(offset).Offset((start-1)*offset).Scan(&v)

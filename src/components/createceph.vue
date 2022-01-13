@@ -158,11 +158,11 @@ export default {
             var apiurl = `/api/storage/add`
 
             this.$http.post(apiurl,  this.$qs.stringify({ name: this.name, pool: this.pool, datacenter: this.centervalue, ceph_secret: this.ceph_secret, port: this.port, ips: this.ips, comment: this.comment})).then(response => {
-				if (response.data.res === null) {
+				if (response.data.err === null) {
 					alert("创建成功!")
 					this.$emit("toParent", "storage");
 				} else {
-					alert("创建失败(" + response.data.res.Message+ ")" )
+					alert("创建失败(" + response.data.err+ ")" )
 					}
 			})
 			},
