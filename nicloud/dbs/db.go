@@ -10,10 +10,11 @@ import (
 var (
   config, _ = c.Exportconfig()
   nicloud = config.Nicloudb
+  serveroom = config.Machinedb
 )
 
 func MachineDb() (*gorm.DB,error) {
-  db, err:=gorm.Open("mysql","machine:machine@(127.0.0.1:3306)/bigdata_machine?parseTime=true")
+  db, err:=gorm.Open("mysql",fmt.Sprintf("%s:%s@(%s:%s)/%s?parseTime=true"), serveroom.User, serveroom.Passwd, serveroom.Host, serveroom.Port, serveroom.Dbname)
   db.SingularTable(true)
   if err != nil {
     return nil, err

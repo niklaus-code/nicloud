@@ -8,3 +8,10 @@ port = 3306
 user = "nicloud"
 passwd = "nicloud"
 
+[serveroomdb]
+dbname = "bigdata_machine"
+host = "127.0.0.1"
+port = 3306
+user = "machine"
+passwd = "machine"
+

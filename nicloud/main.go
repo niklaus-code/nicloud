@@ -46,6 +46,7 @@ func main() {
   v3 := r.Group("/api/machine")
   {
     v3.Use(utils.Tokenauth())
+    v3.Use(utils.RoleAuth())
     v3.GET("getmachinelist", machineapis.Getmachinelist)
     v3.GET("addmachine", machineapis.Addmachine)
     v3.GET("delmachine", machineapis.Delmachine)

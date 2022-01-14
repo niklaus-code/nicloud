@@ -4,11 +4,20 @@ import "github.com/spf13/viper"
 
 type Config struct {
   Nicloudb Nicloudb
+  Machinedb Machinedb
   Page Page
 }
 
 type Page struct {
  Offset int
+}
+
+type Machinedb struct {
+  Dbname string
+  Host string
+  Port string
+  User string
+  Passwd string
 }
 
 type Nicloudb struct {
