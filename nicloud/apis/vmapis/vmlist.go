@@ -85,8 +85,10 @@ func Getvmlist(c *gin.Context) {
     c.JSON(200, res)
     return
   }
-  offset := 15
-	pagenumber, vmcount,  err := vm.Getpagenumber(userid, offset)
+
+
+
+	pagenumber, vmcount,  err := vm.Getpagenumber(userid)
 	if err != nil {
     res["res"] = nil
     res["err"] = err
@@ -94,7 +96,7 @@ func Getvmlist(c *gin.Context) {
     return
   }
 
-  vmlist, err := vm.VmList(userid, start, offset)
+  vmlist, err := vm.VmList(userid, start)
 
 	res["res"] = vmlist
   res["pagenumber"] = pagenumber

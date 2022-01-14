@@ -4,11 +4,34 @@ import (
   "github.com/dgrijalva/jwt-go"
   "github.com/gin-gonic/gin"
   uuid "github.com/satori/go.uuid"
+  "github.com/spf13/viper"
   "nicloud/users"
   "nicloud/vmerror"
   "strconv"
   "strings"
 )
+
+type Config struct {
+  Redis string
+  Page Page
+}
+
+type Page struct {
+  Offset int
+}
+
+var config Config
+func Pageset() (*Config, error) {
+  viper.SetConfigName("setting")
+  viper.AddConfigPath("./conf")
+
+  err := viper.ReadInConfig()
+  if err != nil {
+    return nil, err
+  }
+  viper.Unmarshal(&config)
+  return &config, err
+}
 
 func Createuuid() string {
   /*create uuid*/
