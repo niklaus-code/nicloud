@@ -15,10 +15,10 @@ var (
 )
 
 func MachineDb() (*gorm.DB,error) {
-  db, err:=gorm.Open("mysql",fmt.Sprintf("%s:%s@(%s:%s)/%s?parseTime=true"), serveroom.User, serveroom.Passwd, serveroom.Host, serveroom.Port, serveroom.Dbname)
+  db, err:=gorm.Open("mysql",fmt.Sprintf("%s:%s@(%s:%s)/%s?parseTime=true", serveroom.User, serveroom.Passwd, serveroom.Host, serveroom.Port, serveroom.Dbname))
   db.SingularTable(true)
   if err != nil {
-    return nil, err
+    return nil, vmerror.Error{Message: "数据库连接错误"}
   }
 
   sqlDB := db.DB()
