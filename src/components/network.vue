@@ -98,7 +98,7 @@ export default {
             	if (response.data.err === null) {
             	    this.data = response.data.res
                 } else {
-					alert(response.data.err)
+					alert(response.data.err.Message)
                     }
             })
         },

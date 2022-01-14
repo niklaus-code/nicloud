@@ -147,7 +147,7 @@ export default {
             if (response.data.err === null ) {
                  this.comment(response.data.res)
                 } else {
-                    alert(response.data.err)
+                    alert(response.data.err.Message)
                 }
             })
         },

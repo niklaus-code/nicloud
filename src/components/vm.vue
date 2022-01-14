@@ -236,19 +236,6 @@ export default {
 				}
 			},
 
-        /*
-        migratelive: function (content) {
-            var apiurl = `/api/vm/migratelive`
-            this.$http.get(apiurl, { params: { content: this.content} } ).then(response => {
-                if (response.data.res === null) {
-                    alert("未查询到")
-                    } else {
-            	    this.comment(response.data.res)
-                    }
-            })
-		},
-        */
-
         search: function (content) {
             var apiurl = `/api/vm/search`
             this.$http.get(apiurl, { params: { content: this.content} } ).then(response => {
@@ -316,7 +303,7 @@ export default {
                 this.pagenumber = start
                 this.comment(response.data.res)
 				} else {
-					alert(response.data.err)
+					alert(response.data.err.Message)
 					this.$router.push({name:"login"})
 					} 
             })   

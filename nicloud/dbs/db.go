@@ -5,6 +5,7 @@ import (
   "github.com/jinzhu/gorm"
   _ "github.com/jinzhu/gorm/dialects/mysql"
   c "nicloud/config"
+  "nicloud/vmerror"
   "time"
 )
 var (
@@ -30,7 +31,7 @@ func MachineDb() (*gorm.DB,error) {
 func NicloudDb() (*gorm.DB,error) {
   db, err:=gorm.Open("mysql",fmt.Sprintf("%s:%s@(%s:%s)/%s?parseTime=true&loc=Local", nicloud.User, nicloud.Passwd, nicloud.Host, nicloud.Port, nicloud.Dbname))
   if err != nil {
-    return nil, err
+    return nil, vmerror.Error{Message: "数据库连接错误"}
   }
 
   sqlDB := db.DB()
@@ -38,5 +39,5 @@ func NicloudDb() (*gorm.DB,error) {
   sqlDB.SetMaxOpenConns(1000)//最大连接数
   sqlDB.SetConnMaxLifetime(time.Second * 6)
 
-  return db, err
+  return db, nil
 }

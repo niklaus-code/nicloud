@@ -82,7 +82,7 @@ export default {
             },
 
         rollback: function () {
-            alert("此操作暂不开放， 请联系管理员操作")
+            alert("回滚快照请联系管理员操作 (*＾-＾*)")
             return
             var apiurl = `/api/vm/rollback`
             this.$http.get(apiurl, { params: {uuid: this.uuid, datacenter: this.datacenter, storage: this.storage, snapname: this.snapvalue} }).then(response => {
@@ -105,7 +105,7 @@ export default {
 				if (response.data.res === null) {
 					alert("创建成功")
 					} else {
-					alert("创建失败'(" + response.data.res.Message+"')")
+					alert(response.data.res.Message)
 					}
 				})
 			},

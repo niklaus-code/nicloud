@@ -113,7 +113,7 @@ export default {
 				if (response.data.err === null ) {
             		this.data = response.data.res
 				} else {
-					alert ("获取数据失败（"+response.data.err.Message+")")
+					alert (response.data.err.Message)
 					}
             })
         },

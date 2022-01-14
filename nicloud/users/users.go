@@ -40,7 +40,7 @@ func createtoken(username string, userid string) (string, error) {
 func Login(username string, passwd string) (string, string, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
-    return "", "", err
+    return "", "", vmerror.Error{Message: "数据库连接错误"}
   }
   u := &Vms_users{}
   dbs.Where("username=?", username).First(u)
