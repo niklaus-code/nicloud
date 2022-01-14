@@ -11,7 +11,7 @@ import (
 var (
   config, _ = c.Exportconfig()
   nicloud = config.Nicloudb
-  serveroom = config.Machinedb
+  serveroom = config.Serveroomdb
 )
 
 func MachineDb() (*gorm.DB,error) {
