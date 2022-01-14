@@ -1,2 +1,10 @@
 [page]
 offset = 15
+
+[nicloudb]
+dbname = "nicloud"
+host = "127.0.0.1"
+port = 3306
+user = "nicloud"
+passwd = "nicloud"
+

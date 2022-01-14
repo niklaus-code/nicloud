@@ -7,6 +7,7 @@ import (
   "github.com/beevik/etree"
   _ "github.com/jinzhu/gorm/dialects/mysql" //这个一定要引入哦！！
   "nicloud/cephcommon"
+  c "nicloud/config"
   "nicloud/dbs"
   "nicloud/libvirtd"
   "nicloud/networks"
@@ -547,7 +548,7 @@ func allvm(obj []Vms) []map[string]interface{}  {
 }
 
 var (
-	config, _ = utils.Pageset()
+	config, _ = c.Exportconfig()
 	offset = config.Page.Offset
 )
 
