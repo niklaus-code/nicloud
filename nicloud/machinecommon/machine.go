@@ -29,7 +29,7 @@ type Machineroom struct {
   Guanliip string
   Yewuip string
   Beizhu string
-  Status string
+  Status int
 }
 
 func Searchmachine(content string) ([]*Machineroom, error)  {
@@ -115,10 +115,10 @@ func Addmacine(zichangmingcheng string, pingpai string,  Xinghao string, Xulieha
     Guanliip: guanliip,
     Yewuip: yewuip,
     Beizhu: beizhu,
-    Status: "",
+    Status: 1,
   }
 
-  db, err := db.NicloudDb()
+  db, err := db.MachineDb()
   if err != nil {
     return err
   }
