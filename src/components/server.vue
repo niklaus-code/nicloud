@@ -1,20 +1,19 @@
 <template>
 	<div>
-       <div class="btn-group col-md-1 col-md-offset-11" >
-           <strong>总数:<span>{{total}}<span></strong>
+       <div class="col-sm-12" style="margin-top:25px">
+           <strong style="float: right">总数:<span>{{total}}<span></strong>
         </div>
                
-        <div class="btn-group col-md-2 col-md-offset-10" style="margin-top:10px">
-            <input class="col-md-5" type="text" id="name" placeholder="" v-model="content">
-                <button class="btn btn-default btn-sm" style="margin-right:5px" @click="search()">
-                     <span class="glyphicon glyphicon-search"></span>筛选
-                </button>
-                <button class="btn btn-default btn-sm" @click="addserver">
-                    <span class="glyphicon glyphicon-cog"></span>增加机器
-                </button>
-
+        <div class="col-sm-4 col-sm-offset-8" style="margin-top:10px; margin-bottom: 30px; padding-right:0px">
+            <button  style="float: right;" class="btn btn-default btn-sm" @click="addserver">
+                <span class="glyphicon glyphicon-cog"></span>增加机器
+            </button>
+            <button style="float: right;"  class="btn btn-default btn-sm" @click="search()">
+                <span class="glyphicon glyphicon-search"></span>筛选
+            </button>
+            <input style="float: right;" class="col-md-5" type="text" id="name" placeholder="" v-model="content">
         </div>
-		<div class="machine">
+		<div>
 			<table class="table table-bordered">
 			   <thead>
       				<tr>
@@ -201,8 +200,10 @@ input {
 .pagination {
 	margin: 0
 }
+
+table {background-color: white}
+
 .machine {
-    margin-top:0;
 	background-color: white;
 }
 </style>
