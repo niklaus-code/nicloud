@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import login from '@/view/login'
-import serveroom from '@/view/machine'
-import createmachine from '@/view/createmachine'
+import serveroom from '@/view/serveroom'
 import nicloud from '@/view/nicloud'
 import store from '../store'
 
@@ -19,11 +18,6 @@ const router = new Router({
       path: '/nicloud',
       name: 'nicloud',
       component: nicloud
-    },
-    {
-      path: '/createmachine',
-      name: 'createmachine',
-      component: createmachine
     },
     {
       path: '/serveroom',

@@ -1,12 +1,8 @@
 <template>
 <div class="abc col-sm-12">
     	<div class="col-sm-3">
-            <router-link :to="{name:'nicloud'}">
-				<span>NICLOUD&nbsp/</span>
-			</router-link>
-			<router-link :to="{name:'serveroom'}">
-				<span>SERVEROOM</span>
-			</router-link>
+				<span @click="nicloud">NICLOUD&nbsp/</span>
+				<span @click="serverlist">SERVEROOM</span>
 		</div>
 		<div class="col-sm-2 col-sm-offset-7">
             <div style="float: right">
@@ -30,6 +26,15 @@ export default {
         this.getuser()
     },
     methods: {
+        nicloud: function () {
+            sessionStorage.setItem('router', "vm")
+            this.$router.push('nicloud')
+            },
+
+        serverlist: function () {
+            this.$emit("toParent", "server");
+            },
+
         index: function () {
             this.$emit("toParent", "vm");
             },

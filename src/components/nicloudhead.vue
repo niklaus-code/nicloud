@@ -2,9 +2,7 @@
 <div class="abc col-sm-12">
     	<div class="col-sm-3">
 				<span @click="index">NICLOUD&nbsp/</span>
-			<router-link :to="{name:'serveroom'}">
-				<span>SERVEROOM</span>
-			</router-link>
+				<span @click="serveroom">SERVEROOM</span>
 		</div>
 		<div class="col-sm-2 col-sm-offset-7">
             <div style="float: right">
@@ -28,6 +26,11 @@ export default {
         this.getuser()
     },
     methods: {
+        serveroom: function () {
+            sessionStorage.setItem('router', "server")
+
+            this.$router.push('serveroom')
+            },
         index: function () {
             this.$emit("toParent", "vm");
             },

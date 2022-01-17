@@ -1,23 +1,19 @@
 <template>
 	<div>
-		<machinehead> </machinehead>
-		 <nicloudhead> </nicloudhead>
-               <div class="btn-group col-md-1 col-md-offset-11" >
-                       <strong>总数:<span>{{total}}<span></strong>
-               </div>
+       <div class="btn-group col-md-1 col-md-offset-11" >
+           <strong>总数:<span>{{total}}<span></strong>
+        </div>
                
-               <div class="btn-group col-md-2 col-md-offset-10" style="margin-top:10px">
+        <div class="btn-group col-md-2 col-md-offset-10" style="margin-top:10px">
             <input class="col-md-5" type="text" id="name" placeholder="" v-model="content">
-            <button class="btn btn-default btn-sm" style="margin-right:5px" @click="search()">
-                 <span class="glyphicon glyphicon-search"></span>筛选
-            </button>
-        <router-link :to="{name:'createmachine'}">
-            <button class="btn btn-default btn-sm">
-                 <span class="glyphicon glyphicon-cog"></span>增加机器
-            </button>
-        </router-link>
+                <button class="btn btn-default btn-sm" style="margin-right:5px" @click="search()">
+                     <span class="glyphicon glyphicon-search"></span>筛选
+                </button>
+                <button class="btn btn-default btn-sm" @click="addserver">
+                    <span class="glyphicon glyphicon-cog"></span>增加机器
+                </button>
 
-    </div>
+        </div>
 		<div class="machine">
 			<table class="table table-bordered">
 			   <thead>
@@ -99,7 +95,6 @@
 	</div>
 </template>
 <script>
-import machinehead from '@/components/machinehead'
 
 export default {
     data () {
@@ -111,15 +106,22 @@ export default {
 			data: [],
 			}
 		},
-    components: {
-        machinehead
-    },
+
 	mounted: function () {
 		this.getmachinelist(1, 50)
 		this.getpagenumber()
+		this.refresh
 		},
 
 	methods: {
+        refresh: function () {
+             this.$emit("toParent", "server");
+            },
+
+        addserver: function () {
+             this.$emit("toParent", "addserver");
+            },
+
 		save: function (id, index) {
 			var apiurl = `/api/machine/update`
             this.$http.get(apiurl, { params: { id: id, c: this.comment } } ).then(response => {
@@ -127,7 +129,7 @@ export default {
 					this.data[index].cm = false
                     this.data[index].Beizhu = this.comment
                     }
-            })
+                })
 			},
 
 		dblclick: function (index) {
@@ -158,6 +160,7 @@ export default {
 			},
 
 		getmachinelist: function (startpage, offset) {
+             sessionStorage.setItem('router', "server")
 			this.onpage = startpage
 			var apiurl = `/api/machine/getmachinelist`
 			this.$http.get(apiurl, { params: { startpage: startpage, offset: offset }} ).then(response => {
