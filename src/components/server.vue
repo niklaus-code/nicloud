@@ -4,7 +4,7 @@
            <strong style="float: right">总数:<span>{{total}}<span></strong>
         </div>
                
-        <div class="col-sm-4 col-sm-offset-8" style="margin-top:10px; margin-bottom: 30px; padding-right:0px">
+        <div class="col-sm-4 col-sm-offset-8" style="margin-top:10px; margin-bottom: 30px;">
             <button  style="float: right;" class="btn btn-default btn-sm" @click="addserver">
                 <span class="glyphicon glyphicon-cog"></span>增加机器
             </button>
@@ -13,7 +13,7 @@
             </button>
             <input style="float: right;" class="col-md-5" type="text" id="name" placeholder="" v-model="content">
         </div>
-		<div>
+		<div class="col-sm-12">
 			<table class="table table-bordered">
 			   <thead>
       				<tr>
@@ -84,7 +84,7 @@
 				</tbody>
 			</table>
 		</div>
-		<div class="btn-group col-md-2  col-md-offset-5" style="margin-top:10px; padding-left:0">
+		<div class="btn-group col-md-4  col-md-offset-5" style="margin-top:10px; padding-left:0">
 			<ul class="pagination">
     			<li><a>&laquo;</a></li>
     			<li v-for="(item, index) in allpage"><a @click="getmachinelist(item, 50)" >{{item}}</a></li>
@@ -107,7 +107,11 @@ export default {
 		},
 
 	mounted: function () {
-		this.getmachinelist(1, 50)
+        var p = sessionStorage.getItem('serverpage')
+        if (typeof p === 'undefined' || p === null || p === '') {
+            p = 1
+        }
+		this.getmachinelist(p, 50)
 		this.getpagenumber()
 		this.refresh
 		},
@@ -159,7 +163,8 @@ export default {
 			},
 
 		getmachinelist: function (startpage, offset) {
-             sessionStorage.setItem('router', "server")
+            sessionStorage.setItem('router', "server")
+            sessionStorage.setItem('serverpage', startpage)
 			this.onpage = startpage
 			var apiurl = `/api/machine/getmachinelist`
 			this.$http.get(apiurl, { params: { startpage: startpage, offset: offset }} ).then(response => {

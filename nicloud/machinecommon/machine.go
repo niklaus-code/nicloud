@@ -72,7 +72,7 @@ func Machinelist(startpage int, offset int) ([]*Machineroom, error)  {
     return nil, err
   }
   var v []*Machineroom
-  db.Order("suoshujifang").Limit(offset).Offset(offsetpage).Find(&v)
+  db.Order("suoshujifang").Limit(offset).Offset(offsetpage).Order("suoshujifang").Order("jigui").Order("yewuip").Find(&v)
 
   return v, nil
 }
@@ -90,7 +90,7 @@ func Allpage() (int, int, error)  {
 
 func Addmacine(zichangmingcheng string, pingpai string,  Xinghao string, Xuliehao string,
   zichanbiaoqian string, danwei string, suoshubumen string,  zichanzerenbumen string, zerenren string,
-  suoshujifang string, jigui string,  jiguizichanbiaoqian string, weizhi string,  gaodu string,
+  suoshujifang string, jiguizichanbiaoqian string, weizhi string,  jigui string,  gaodu string,
   shebeizhuangtai int, edinggonglv string, yongdiandengji string, guanliip string, yewuip string,
   beizhu string) error {
 

@@ -131,7 +131,12 @@ export default {
     },
 
     mounted: function () {
-		this.getvm(1)
+        var p = sessionStorage.getItem('pagenumber')
+        if (typeof p === 'undefined' || p === null || p === '') {
+            p = 1
+        }
+
+		this.getvm(p)
     },
 
     methods: {
@@ -295,6 +300,7 @@ export default {
             },
 	
         getvm: function (start) {
+            sessionStorage.setItem('pagenumber', start)
             var apiurl = `/api/vm/getvm`
             this.$http.get(apiurl, { params: { start: start} }).then(response => {
 			if (response.data.err === null ) {
