@@ -10,8 +10,8 @@ import (
 
 type Vms_users struct {
   Id int
-  Username string
-  Passwd string
+  Username string `json:"Username" validate:"required"`
+  Passwd string `json:"Passwd" validate:"required"`
   Email string
   Role int
 }
