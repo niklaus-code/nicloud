@@ -124,7 +124,11 @@ export default {
 		 getip: function () {
             var apiurl = `/api/networks/getallip`
             this.$http.get(apiurl, { params: { vlan: this.vlan}}).then(response => {
-            	this.ips = response.data.res.Message
+            	if (response.data.err === null) {
+            	    this.ips = response.data.res
+                    } else {
+            	    alert(response.data.err.Message)
+                    }
             })
         },
   }

@@ -146,9 +146,10 @@ func GetIplist(c *gin.Context) {
 
 func GetallIp(c *gin.Context) {
   vlan := c.Query("vlan")
-  iplist := networks.AllIP(vlan)
+  iplist, err := networks.AllIP(vlan)
   res := make(map[string]interface{})
   res["res"] = iplist
+  res["err"] = err
 
   c.JSON(200, res)
 }
@@ -162,7 +163,12 @@ func DownloadExcel(c *gin.Context) {
   file, _ := os.OpenFile("test2.txt", os.O_RDWR|os.O_APPEND|os.O_CREATE, 0664)
   defer file.Close()
 
-  ipliststr := networks.Downloadips(vlan)
+  ipliststr, err := networks.Downloadips(vlan)
+  if err != nil {
+    con := bytes.NewReader([]byte(err.Error()))
+    http.ServeContent(c.Writer, c.Request, "asd", time.Now(), con)
+    return
+  }
   con := bytes.NewReader([]byte(ipliststr))
   http.ServeContent(c.Writer, c.Request, "asd", time.Now(), con)
 }

@@ -114,19 +114,24 @@ type Vms_ips struct {
   Create_time time.Time
 }
 
-func AllIP(vlan string) []*Vms_ips {
+func AllIP(vlan string) ([]*Vms_ips, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
-    return nil
+    return nil, err
   }
   var ip []*Vms_ips
-  dbs.Where("vlan=?", vlan).Order("create_time desc").Order("ipv4").Find(&ip)
-
-  return ip
+  errdb := dbs.Where("vlan=?", vlan).Order("create_time desc").Order("ipv4").Find(&ip)
+  if errdb.Error != nil {
+    return nil, vmerror.Error{Message: errdb.Error.Error()}
+  }
+  return ip, nil
 }
 
-func Downloadips(vlan string) string {
-  ips := AllIP(vlan)
+func Downloadips(vlan string) (string, error) {
+  ips, err := AllIP(vlan)
+  if err != nil {
+    return "", err
+  }
   var ipliststr string
   str1 := "host v_"
   for _, v := range ips {
@@ -139,7 +144,7 @@ func Downloadips(vlan string) string {
       ipliststr += ";}"
       ipliststr += "\n"
   }
-  return ipliststr
+  return ipliststr, nil
 }
 
 func IPlist(vlan string) []*Vms_ips {
