@@ -98,6 +98,7 @@ label {
 }
 
 th {
+    background-color: #e3e3e3;
 	font-weight: bold;
     color: black;
     text-align: center;
