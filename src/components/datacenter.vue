@@ -11,6 +11,7 @@
         				</th>
 						<th>数据中心</th>
 						<th>备注</th>
+						<th>状态</th>
 						<th>操作</th>
       				</tr>
     			</thead>
