@@ -1,13 +1,10 @@
 <template>
 <div style="padding-bottom: 5px">
    	<div class="col-sm-3">
+        <strong>
 		<span @click="index">NICLOUD&nbsp/</span>
 		<span @click="serveroom">SERVEROOM</span>
-	</div>
-	<div class="col-sm-2 col-sm-offset-7">
-        <div style="float: right">
-            <strong>{{username}} </strong> | <span :style="active" @mouseover="mouseOver" @mouseleave="leave" @click="out">退出</span>
-	    </div>
+        </strong>
 	</div>
 </div>
 
@@ -42,10 +39,6 @@ export default {
                 sessionStorage.setItem('username', this.$store.state.username)
                 this.username =  this.$store.state.username
                 }
-            },
-        out: function () {
-            sessionStorage.removeItem("token");
-            this.$router.push({name:"login"});
             },
 
         leave: function () {

@@ -6,7 +6,7 @@
 
 <style scoped>
 p {
-    margin-top: 10px;
+    margin-top: 8px;
     display:inline-block;
  }
 </style>

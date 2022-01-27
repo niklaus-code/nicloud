@@ -1,10 +1,16 @@
 <template>
-    <div style="padding-left: 20px;">
-        <ul class="list-group">
-            <li class="list-group-item" v-for="(item, index) in routelist" @click="choose(index)" @click="toParent(item.router)">
+    <div>
+        <div style="margin-top:50px ;text-shadow: black 1px;">
+            <strong class="glyphicon glyphicon-user">{{username}} </strong> | <span @click="logout">Logout</span>
+            
+        </div>
+        <div style="padding-left: 20px;">
+            <ul class="list-group">
+                <li class="list-group-item" v-for="(item, index) in routelist" @click="choose(index)" @click="toParent(item.router)">
                     <p :class=item.class> </p><p style="margin-left: 5px">{{item.name}}</p>
-            </li>
-        </ul>
+                </li>
+            </ul>
+        </div>
     </div>
 </template>
 
@@ -13,6 +19,7 @@
 export default {
     data () {
         return {
+            username: "",
 			selected: 0,
 			routelist: [
 				{
@@ -56,21 +63,40 @@ export default {
                 class: "glyphicon glyphicon-eye-open"
 					},
 				],
-        }
-    },
+            }
+        },
 
-	methods:{
-        	choose(index){
-				this.selected = index;
-              },
+    created: function () {
+        this.getuser()
+        },
 
-        	toParent: function (item) {
-                if (item === "count") {
-                    alert("暂未开放")
-                    return
-                    }
-				this.$emit("toParent", item);
-            	},
+	methods: {
+        logout: function () {
+            sessionStorage.removeItem("token");
+            this.$router.push({name:"login"});
+            },
+
+        getuser: function () {
+            var u = this.$store.state.username
+            if (u === null || typeof u === 'undefined' || u === '' || u === "undefined") {
+                this.username = sessionStorage.getItem('username')
+            } else {
+                sessionStorage.setItem('username', this.$store.state.username)
+                this.username =  this.$store.state.username
+                }
+            },
+
+       	choose(index){
+			this.selected = index;
+            },
+
+       	toParent: function (item) {
+            if (item === "count") {
+                alert("暂未开放")
+                return
+                }
+		    this.$emit("toParent", item);
+            },
 		}
 }
 </script>
