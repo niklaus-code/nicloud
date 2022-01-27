@@ -1,13 +1,10 @@
 <template>
 <div class="abc col-sm-12">
     	<div class="col-sm-3">
+            <strong>
 				<span @click="nicloud">NICLOUD&nbsp/</span>
 				<span @click="serverlist">SERVEROOM</span>
-		</div>
-		<div class="col-sm-2 col-sm-offset-7">
-            <div style="float: right">
-                <strong>{{username}} </strong> | <span :style="active" @mouseover="mouseOver" @mouseleave="leave" @click="out">退出</span>
-		    </div>
+            </strong>
 		</div>
 	</ul>
 </div>
@@ -76,7 +73,7 @@ a {
 
 .abc {
 	color: #FFF;
-    padding-top: 3px;
+    padding-top: 6px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;

@@ -88,10 +88,16 @@ export default {
 }
 
 .head {
-    background: #ff0;
-    background-color: #e3e3e3;
-    padding-top:10px;
-    padding-bottom:20px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    font-size: 15px;
+
+    color: #FFF;
+    background-color: #5B5B5B;
+    padding-top:6px;
+    padding-bottom:18px;
 }
 
 .mid {
