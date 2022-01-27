@@ -12,5 +12,6 @@ export default {
 
 <style>
 #app {
+  height: 100%; /*IE6不识别min-height*/
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
-    <div  class="col-md-1">
-        <ul class="list-group col-md-11 col-md-offset-1">
-            <li class="list-group-item" v-for="(item, index) in routelist" :class="{ sss: selected === index }" @click="choose(index)" @click="toParent(item.router)">
-                    <span >{{item.name}}</span>
+    <div style="padding-left: 20px;">
+        <ul class="list-group">
+            <li class="list-group-item" v-for="(item, index) in routelist" @click="choose(index)" @click="toParent(item.router)">
+                    <p :class=item.class> </p><p style="margin-left: 5px">{{item.name}}</p>
             </li>
         </ul>
     </div>
@@ -17,35 +17,43 @@ export default {
 			routelist: [
 				{
 				name: "云主机",
-				router: "vm"
+				router: "vm",
+                class: "glyphicon glyphicon-th-large"
 					},
 				{
 				name: "云盘",
-				router: "disk"
+				router: "disk",
+                class: "glyphicon glyphicon-hdd"
 					},
 				{
 				name: "系统镜像",
-				router: "osimage"
+				router: "osimage",
+                class: "glyphicon glyphicon-paperclip"
 					},
 				{
 				name: "网络",
-				router: "network"
+				router: "network",
+                class: "glyphicon glyphicon-plane"
 					},
 				{
 				name: "宿主机",
-				router: "hosts"
+				router: "hosts",
+                class: "glyphicon glyphicon-home"
 					},
 				{
 				name: "存储集群",
-				router: "storage"
+				router: "storage",
+                class: "glyphicon glyphicon-list-alt"
 					},
 				{
 				name: "数据中心",
-				router: "datacenter"
+				router: "datacenter",
+                class: "glyphicon glyphicon-globe"
 					},
 				{
 				name: "统计",
-				router: "count"
+				router: "count",
+                class: "glyphicon glyphicon-eye-open"
 					},
 				],
         }
@@ -68,17 +76,15 @@ export default {
 </script>
 
 <style scoped>
+
 li {
-	text-align: center 
-}
-.list-group-item {
-	background-color: #e3e3e3;
-	border: 0px;
+	text-align: left 
 }
 
-.sss {
-	#background-color: #fff;
-	color: red;
+.list-group-item {
+    background-color: #778899;
+	border: 0px;
+    color: white;
 }
 
 .list-group-item {
@@ -100,7 +106,10 @@ span {
 }
 
 a{
-	color: black;
+	color: white;
 }
 
+p {
+    display:inline-block;
+}
 </style>

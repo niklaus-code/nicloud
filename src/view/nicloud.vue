@@ -1,13 +1,18 @@
 <template>
-<div>
-    <nicloudhead @toParent="getMag"></nicloudhead>
-	<vmleft @toParent="getMag"></vmleft>
-	<div style="padding-right:15px" class="col-xs-11">
-	   	<div class="content1 whisper-content leacots-content details-content col-xs-12" style="background-color:white; float:left">
-			<component @toParent="getMag" v-bind:is="router"></component>
-		</div>
+<div class="contain col-md-12">
+    <div class="head">
+        <nicloudhead @toParent="getMag"></nicloudhead>
 	</div>
-    <vmbottom></vmbottom>
+    <div class="left col-md-1">
+        <vmleft @toParent="getMag"></vmleft>
+    </div>
+
+	<div  class="mid col-md-11">
+        <component @toParent="getMag" v-bind:is="router"></component>
+	</div>
+    <div class="foot">
+         <vmbottom></vmbottom>
+    </div>
 </div>
 </template>
 
@@ -74,13 +79,51 @@ export default {
   }
 </script>
 
-<style>
-.content1 {
-    box-shadow: 0 0 10px rgba(0,0,0,8);
-    border-radius: 10px/10px;
-    padding: 30px 0px 30px 0px;
-    margin-left: 0px;
-    margin-top: 30px;
-    margin-bottom: 50px;
+<style scoped>
+.contain {
+  min-height:100%;
+  height: auto !important;
+  height: 100%; /*IE6不识别min-height*/
+  position: relative;
+}
+
+.head {
+    background: #ff0;
+    background-color: #e3e3e3;
+    padding-top:10px;
+    padding-bottom:20px;
+}
+
+.mid {
+    padding-top:30px;
+    padding-bottom: 100px;/*等于footer的高度*/
+}
+
+.foot {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 39px;/*脚部的高度*/
+    clear:both;
+}
+
+.col-md-12 {
+    padding-left:0;
+    padding-right:0;
+}
+
+.left {
+    background-color: #778899;
+    bottom: 0;
+    min-height:100%;
+    height: auto !important;
+    height: 100%; /*IE6不识别min-height*/
+    position: absolute;
+    border-left: 1px solid #e3e3e3;
+    min-height:100%;
+}
+
+.col-md-11, .col-md-1, .col-md-12 {
+    display:inline-block;
 }
 </style>

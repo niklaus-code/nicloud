@@ -1,15 +1,14 @@
 <template>
-<div class="abc col-sm-12">
-    	<div class="col-sm-3">
-				<span @click="index">NICLOUD&nbsp/</span>
-				<span @click="serveroom">SERVEROOM</span>
-		</div>
-		<div class="col-sm-2 col-sm-offset-7">
-            <div style="float: right">
-                <strong>{{username}} </strong> | <span :style="active" @mouseover="mouseOver" @mouseleave="leave" @click="out">退出</span>
-		    </div>
-		</div>
-	</ul>
+<div style="padding-bottom: 5px">
+   	<div class="col-sm-3">
+		<span @click="index">NICLOUD&nbsp/</span>
+		<span @click="serveroom">SERVEROOM</span>
+	</div>
+	<div class="col-sm-2 col-sm-offset-7">
+        <div style="float: right">
+            <strong>{{username}} </strong> | <span :style="active" @mouseover="mouseOver" @mouseleave="leave" @click="out">退出</span>
+	    </div>
+	</div>
 </div>
 
 </template>
@@ -62,22 +61,8 @@ export default {
 </script>
 
 <style scoped>
-.outstyle {
-    background-color: red;
-}
-
 a {
 	color: #FFF;
 }
 
-.abc {
-	color: #FFF;
-    padding-top: 3px;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-    border-bottom-left-radius: 4px;
-    font-size: 15px;
-	background-color: #5B5B5B;
-}
 </style>

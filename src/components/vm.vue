@@ -402,6 +402,10 @@ export default {
 </script>
 
 <style scoped>
+.col-md-5 {
+    padding-right:0;
+}
+
 h5 {
     font-weight: 600;
 }
