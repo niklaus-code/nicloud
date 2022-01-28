@@ -93,7 +93,7 @@
       		</tr>
     	</tbody>
 	</table>
-    <div class="btn-group col-md-6" style="margin-top:20px">
+    <div class="btn-group col-md-6" style="margin-top:20px; margin-bottom:30px">
         <ul class="pagination">
             <li><a @click="down()">&laquo;</a></li>
             <li  v-for="(item, index) in totalpagenumber"><a @click="getvm(item)">{{item}}</a></li>

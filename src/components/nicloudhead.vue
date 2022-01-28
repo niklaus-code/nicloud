@@ -1,6 +1,6 @@
 <template>
-<div style="padding-bottom: 5px">
-   	<div class="col-sm-3">
+<div style="" style="background-color: #5b5b5b; color: white; padding: 5px">
+   	<div >
         <strong>
 		<span @click="index">NICLOUD&nbsp/</span>
 		<span @click="serveroom">SERVEROOM</span>

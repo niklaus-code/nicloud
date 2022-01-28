@@ -96,8 +96,8 @@ export default {
 
     color: #FFF;
     background-color: #5B5B5B;
-    padding-top:6px;
-    padding-bottom:18px;
+    padding-top:3px;
+    padding-bottom:3px;
 }
 
 .mid {
@@ -110,7 +110,7 @@ export default {
     bottom: 0;
     width: 100%;
     height: 39px;/*脚部的高度*/
-    clear:both;
+    clear: both;
 }
 
 .col-md-12 {
@@ -132,4 +132,5 @@ export default {
 .col-md-11, .col-md-1, .col-md-12 {
     display:inline-block;
 }
+
 </style>
