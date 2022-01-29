@@ -3,12 +3,14 @@
     <div class="head">
         <nicloudhead @toParent="getMag"></nicloudhead>
 	</div>
-    <div class="left col-md-1">
+    <div class="col-md-1 left">
         <vmleft @toParent="getMag"></vmleft>
     </div>
 
 	<div  class="mid col-md-11">
-        <component @toParent="getMag" v-bind:is="router"></component>
+        <div class="mm">
+            <component @toParent="getMag" v-bind:is="router"></component>
+	    </div>
 	</div>
     <div class="foot">
          <vmbottom></vmbottom>
@@ -81,14 +83,12 @@ export default {
 
 <style scoped>
 .contain {
-  min-height:100%;
-  height: auto !important;
-  height: 100%; /*IE6不识别min-height*/
-  position: relative;
+        height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 .head {
-    border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
     border-bottom-left-radius: 4px;
@@ -101,16 +101,21 @@ export default {
 }
 
 .mid {
-    padding-top:30px;
-    padding-bottom: 100px;/*等于footer的高度*/
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+}
+
+.mm {
+    padding-bottom: 60px;
 }
 
 .foot {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 39px;/*脚部的高度*/
-    clear: both;
+    position: relative;
+    margin-top: -60px; /*等于footer的高度*/
+    height: 30px;
+    clear:both;
+    background: #e3e3e3;
 }
 
 .col-md-12 {
@@ -119,12 +124,12 @@ export default {
 }
 
 .left {
+    padding-left:0;
+    padding-right:0;
     background-color: #778899;
     bottom: 0;
-    min-height:100%;
     height: auto !important;
     height: 100%; /*IE6不识别min-height*/
-    position: absolute;
     border-left: 1px solid #e3e3e3;
     min-height:100%;
 }

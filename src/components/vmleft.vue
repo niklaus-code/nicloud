@@ -1,15 +1,14 @@
 <template>
-    <div>
-        <div style="margin-top:50px ;text-shadow: black 1px;">
+    <div style="width:140; text-align: center;">
+        <div style=" text-align: center;margin-top:50px; margin-bottom: 50px ;text-shadow: black 1px;">
             <strong class="glyphicon glyphicon-user">{{username}} </strong> | <span @click="logout">Logout</span>
-            
         </div>
-        <div style="padding-left: 20px;">
-            <ul class="list-group">
-                <li class="list-group-item" v-for="(item, index) in routelist" @click="choose(index)" @click="toParent(item.router)">
-                    <p :class=item.class> </p><p style="margin-left: 5px">{{item.name}}</p>
-                </li>
-            </ul>
+        <div align="center" style="color: white; text-align: center; margin-left: 20px">
+            <table>
+                <tr  v-for="(item, index) in routelist" @click="choose(index)" @click="toParent(item.router)"><td><a>
+                    <p :class=item.class> </p><p style="margin-left: 5px;margin-top:12px">{{item.name}}</p>
+                </a></td></tr>
+            </table>
         </div>
     </div>
 </template>
@@ -103,19 +102,8 @@ export default {
 
 <style scoped>
 
-li {
-	text-align: left 
-}
-
-.list-group-item {
-    background-color: #778899;
-	border: 0px;
-    color: white;
-}
-
-.list-group-item {
-    padding-right: 0px;
-    padding-left: 0px;
+td {
+    float: left;
 }
 
 .col-md-1 {
