@@ -1,11 +1,9 @@
 <template>
-<div style="" style="background-color: #5b5b5b; color: white; padding: 5px">
-   	<div >
+<div style="background-color: #5b5b5b; color: white; ">
         <strong>
 		<span @click="index">NICLOUD&nbsp/</span>
 		<span @click="serveroom">SERVEROOM</span>
         </strong>
-	</div>
 </div>
 
 </template>

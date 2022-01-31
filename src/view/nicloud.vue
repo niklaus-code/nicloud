@@ -1,7 +1,14 @@
 <template>
 <div class="contain col-md-12">
-    <div class="head">
-        <nicloudhead @toParent="getMag"></nicloudhead>
+    <div class="head col-md-12"">
+        <div class="col-md-2" style="float:left">
+            <nicloudhead @toParent="getMag"></nicloudhead>
+	    </div>
+        <div class="col-md-2" style="float:right; margin-right:10px; text-align:right">
+            <p>
+                {{username}} | <span @click="logout">Logout<span>
+            </p>
+	    </div>
 	</div>
     <div class="col-md-1 left">
         <vmleft @toParent="getMag"></vmleft>
@@ -59,6 +66,7 @@ if (sessionStorage.getItem('router')) {
 export default {
     data () {
         return {
+            username: "",
 			router: sessionStorage.getItem('router'),
         }
     },
@@ -69,10 +77,26 @@ export default {
 
 
 	mounted: function () {
+        this.getuser()
 		
 		},
 
 	methods: {
+        logout: function () {
+            sessionStorage.removeItem("token");
+            this.$router.push({name:"login"});
+            },
+
+        getuser: function () {
+            var u = this.$store.state.username
+            if (u === null || typeof u === 'undefined' || u === '' || u === "undefined") {
+                this.username = sessionStorage.getItem('username')
+                } else {
+                sessionStorage.setItem('username', this.$store.state.username)
+                this.username =  this.$store.state.username
+                }
+                },
+
     	getMag(router) {
 			sessionStorage.setItem('router', router);
       		this.router = router;
@@ -137,5 +161,7 @@ export default {
 .col-md-11, .col-md-1, .col-md-12 {
     display:inline-block;
 }
-
+p {
+    margin-bottom:0
+}
 </style>

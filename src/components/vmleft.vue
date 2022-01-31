@@ -1,8 +1,5 @@
 <template>
-    <div style="width:140; text-align: center;">
-        <div style=" text-align: center;margin-top:50px; margin-bottom: 50px ;text-shadow: black 1px;">
-            <strong class="glyphicon glyphicon-user">{{username}} </strong> | <span @click="logout">Logout</span>
-        </div>
+    <div style="width:140; text-align: center;margin-top:50px">
         <div align="center" style="color: white; text-align: center; margin-left: 20px">
             <table>
                 <tr  v-for="(item, index) in routelist" @click="choose(index)" @click="toParent(item.router)"><td><a>
@@ -124,6 +121,6 @@ a{
 }
 
 p {
-    display:inline-block;
+  display:inline-block;
 }
 </style>
