@@ -95,7 +95,7 @@
         			</select>
 				</div>
     		</div>
-	 		<div class="col-sm-12 form-group">
+	 		<div class="col-sm-12 form-group" style="margin-bottom:-10px">
 				<div class="col-sm-4">
         			<label>备注</label>
 				</div>
