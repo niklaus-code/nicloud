@@ -1,6 +1,6 @@
 <template>
 		<div class="col-sm-12" style="margin-top:20px;">
-			<button class="btn btn-success btn-sm" type="button" @click="createvlan"  style="margin-bottom:30px">创建</button>
+			<button class="btn btn-success btn-sm" type="button" @click="createvlan"  style="margin-bottom:20px">创建</button>
 			<table class="table table-condensed .table-hover" style="text-align: center;">
     			<thead>
       				<tr>
