@@ -125,6 +125,8 @@ export default {
 }
 
 .mid {
+    padding-right:0;
+    padding-left:0;
     padding-top:30px;
     padding-bottom: 50px;
     min-height: 100%;
