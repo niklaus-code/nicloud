@@ -1,6 +1,6 @@
 <template>
 <div>
-      <div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
+      <div class="col-sm-12 form-group" style="border-bottom: 1px green solid;margin-top:30px">
                 <h4>创建云盘</h4>
             </div>
 		<div class="col-sm-8 col-sm-offset-1" style="margin-top:30px;margin-bottom:30px">
