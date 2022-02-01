@@ -113,9 +113,9 @@ export default {
 }
 
 .head {
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-    border-bottom-left-radius: 4px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
     font-size: 15px;
 
     color: #FFF;
@@ -154,7 +154,6 @@ export default {
     bottom: 0;
     height: auto !important;
     height: 100%; /*IE6不识别min-height*/
-    border-left: 1px solid #e3e3e3;
     min-height:100%;
 }
 
