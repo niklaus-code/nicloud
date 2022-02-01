@@ -4,7 +4,7 @@
                 <h4>创建IP</h4>
             </div>
 
-		<div class="col-sm-8 col-sm-offset-2" style="margin-top:30px;" >
+		<div class="col-sm-10 col-sm-offset-1" style="margin-top:30px;" >
 			<div class="col-sm-12">
 			<span class="vlaninfo">vlan信息</span>
 			</div>
@@ -21,11 +21,11 @@
 				网关：{{gateway}}
 			</div>
 		</div>
-		<div class="col-sm-8 col-sm-offset-2"  style="margin-top:30px; margin-bottom:30px" >
+		<div class="col-sm-10 col-sm-offset-1"  style="margin-top:30px; margin-bottom:30px" >
 			<div class="col-sm-12">
 				<span class="createip">生成IP & MAC</span>
 			</div>
-			<div class="col-sm-5 startip">
+			<div class="col-sm-4 startip">
 				<form class="form-inline" style="width:100%" >
   					<div class="form-group" style="width:100%" >
     					<label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
@@ -36,7 +36,7 @@
   					</div>
 				</form>
 			</div>
-			<div  class="col-sm-5 endip">
+			<div  class="col-sm-4 endip">
 				<form class="form-inline" style="width:90%" >
   					<div class="form-group" style="width:100%" >
     					<label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
@@ -47,7 +47,7 @@
   					</div>
 				</form>
 			</div>
-			<div  class="col-sm-2">
+			<div  class="col-sm-3">
   					<button type="submit" class="btn btn-sm btn-success" @click="create">生成IP & 入库</button>
   					<button type="submit" class="btn btn-sm btn-info" @click="ips">查看IP</button>
 			</div>
@@ -137,7 +137,7 @@ export default {
 .col-sm-3 {
 	margin-top:10px;
 }
-.col-sm-8 {
+.col-sm-10 {
 	padding: 10px;
 	border-style: solid;
 	border-color: #ddd;
