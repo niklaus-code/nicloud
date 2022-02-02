@@ -1,6 +1,6 @@
 <template>
-<div class="logincss col-sm-12" :style="loginbkimage">
-	<div class="col-sm-4 col-sm-offset-4" style="margin-top:250px; display: flex; align-items:center;">
+<div class="logincss col-sm-12" >
+	<div class="col-sm-4 col-sm-offset-4" style="margin-top:150px; display: flex; align-items:center;">
 		<form class="form-horizontal col-sm-12">
 
 			<div class="col-sm-6 col-sm-offset-3"> 
@@ -80,7 +80,7 @@ export default {
 	}
 
 .a {
-	border-radius: 30px;
+	border-radius: 15px;
 	background-color:rgba(255,255,255,0.30);
 }
 
