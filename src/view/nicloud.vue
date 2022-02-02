@@ -1,10 +1,10 @@
 <template>
 <div class="contain col-md-12">
     <div class="head col-md-12"">
-        <div class="col-md-2" style="float:left">
+        <div class="col-md-2" style="float:left; padding-left:10px">
             <nicloudhead @toParent="getMag"></nicloudhead>
 	    </div>
-        <div class="col-md-2" style="float:right; margin-right:10px; text-align:right">
+        <div class="col-md-2" style="float:right; padding-right:0;margin-right:10px; text-align:right">
             <p>
                 {{username}} | <span @click="logout">Logout<span>
             </p>
@@ -122,6 +122,8 @@ export default {
     background-color: #5B5B5B;
     padding-top:3px;
     padding-bottom:3px;
+    padding-right:3px;
+    padding-left:3px;
 }
 
 .mid {
