@@ -1,5 +1,5 @@
 <template>
-    <div style="width:140; text-align: center;margin-top:50px">
+    <div style="width:140; text-align: center;margin-top:75px">
         <div align="center" style="color: white; text-align: center; margin-left: 18px">
             <table>
                 <tr  v-for="(item, index) in routelist" @click="choose(index)" @click="toParent(item.router)"><td><a>
