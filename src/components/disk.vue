@@ -1,6 +1,6 @@
 <template>
-		<div class="col-sm-12" style="margin-top:20px">
-			<button class="btn btn-success btn-sm" @click="create('createvdisk')" type="button" style="margin-bottom:20px">创建</button>
+		<div class="col-sm-12" style="margin-top:20px; padding-left:0; padding-right:0">
+			<button class="btn btn-success btn-sm" @click="create('createvdisk')" type="button" style="margin-bottom:20px; margin-left:5px">创建</button>
 			<table class="table table-hover" style="text-align: center;">
     			<thead>
       				<tr>

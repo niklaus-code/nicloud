@@ -1,5 +1,12 @@
 <template>
+    <div>
+          <div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
+                          <h4>编辑镜像</h4>
+                                      </div>
+
+
 		<div class="col-sm-8 col-sm-offset-1">
+
 				<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-2 col-sm-offset-2">
@@ -92,6 +99,7 @@
 			</div>
 		</div>
 	</div>
+</div>
 </template>
 <script>
 export default {

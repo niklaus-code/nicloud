@@ -1,6 +1,6 @@
 <template>
-		<div class="col-sm-12" style="margin-top:20px">
-			<button @click="createstorage" class="btn btn-success btn-sm" type="button"  style="margin-bottom:20px">创建</button>
+		<div class="col-sm-12" style="margin-top:20px;padding-right:0; padding-left:0">
+			<button @click="createstorage" class="btn btn-success btn-sm" type="button"  style="margin-bottom:20px;margin-left:3px">创建</button>
 			<table class="table table-hover" style="text-align: center;">
     			<thead>
       				<tr>
