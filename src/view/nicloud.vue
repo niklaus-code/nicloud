@@ -120,8 +120,8 @@ export default {
 
     color: #FFF;
     background-color: #5B5B5B;
-    padding-top:3px;
-    padding-bottom:3px;
+    padding-top:5px;
+    padding-bottom:5px;
     padding-right:3px;
     padding-left:3px;
 }
