@@ -24,7 +24,7 @@
         		<th>实例名称</th>
         		<th>IP地址</th>
         		<th>镜像</th>
-        		<th>所属宿主机</th>
+        		<th style="min-width:90px">所属宿主机</th>
         		<th>CPU/内存</th>
         		<th>云盘</th>
         		<th>所属者</th>
