@@ -18,6 +18,7 @@
                     <li role="presentation">
                         <a role="menuitem" tabindex="-1" href="#">修改密码</a>
                     </li>
+                    <li role="presentation" class="divider"></li>
                     <li role="presentation">
                         <a @click="logout" role="menuitem" tabindex="-1" href="#"><span class="glyphicon glyphicon-log-out"></span>&nbspLogout</a>
                     </li>
