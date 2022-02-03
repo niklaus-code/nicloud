@@ -197,6 +197,11 @@ export default {
 </script>
 
 <style scoped>
+.col-sm-12 {
+    padding-right: 0;
+    padding-left: 0;
+    }
+
 input {
 	margin-right: 5px;
 	height: 29px;

@@ -1,12 +1,9 @@
 <template>
-<div class="abc col-sm-12">
-    	<div class="col-sm-3">
-            <strong>
-				<span @click="nicloud">NICLOUD&nbsp/</span>
-				<span @click="serverlist">SERVEROOM</span>
-            </strong>
-		</div>
-	</ul>
+<div style="padding-left:10px; background-color: #5b5b5b; color:#FFA500;padding-top:6px; padding-bottom: 6px; ">
+        <strong>
+		<span @click="index">NICLOUD&nbsp/</span>
+		<span @click="serveroom">SERVEROOM</span>
+        </strong>
 </div>
 
 </template>
@@ -23,17 +20,12 @@ export default {
         this.getuser()
     },
     methods: {
-        nicloud: function () {
+        serveroom: function () {
+             this.$emit("toParent", "server");
+            },
+        index: function () {
             sessionStorage.setItem('router', "vm")
             this.$router.push('nicloud')
-            },
-
-        serverlist: function () {
-            this.$emit("toParent", "server");
-            },
-
-        index: function () {
-            this.$emit("toParent", "vm");
             },
 
         getuser: function () {
@@ -44,10 +36,6 @@ export default {
                 sessionStorage.setItem('username', this.$store.state.username)
                 this.username =  this.$store.state.username
                 }
-            },
-        out: function () {
-            sessionStorage.removeItem("token");
-            this.$router.push({name:"login"});
             },
 
         leave: function () {
@@ -63,22 +51,8 @@ export default {
 </script>
 
 <style scoped>
-.outstyle {
-    background-color: red;
-}
-
 a {
-	color: #FFF;
+	color: #FFA500;
 }
 
-.abc {
-	color: #FFF;
-    padding-top: 6px;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-    border-bottom-left-radius: 4px;
-    font-size: 15px;
-	background-color: #5B5B5B;
-}
 </style>
