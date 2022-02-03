@@ -1,5 +1,5 @@
 <template>
-<div style="background-color: #5b5b5b; color: white; ">
+<div style="background-color: #5b5b5b; color:#FFA500 ; ">
         <strong>
 		<span @click="index">NICLOUD&nbsp/</span>
 		<span @click="serveroom">SERVEROOM</span>
@@ -53,7 +53,7 @@ export default {
 
 <style scoped>
 a {
-	color: #FFF;
+	color: #FFA500;
 }
 
 </style>

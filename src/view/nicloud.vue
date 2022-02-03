@@ -5,9 +5,24 @@
             <nicloudhead @toParent="getMag"></nicloudhead>
 	    </div>
         <div class="col-md-2" style="float:right; padding-right:0;margin-right:10px; text-align:right">
-            <p>
-                {{username}} | <span @click="logout">Logout<span>
-            </p>
+            <div class="dropdown">
+                <button type="button" class="btn dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown">
+                     <span class="glyphicon glyphicon-user"></span>
+                        {{username}}
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu  pull-right" role="menu" aria-labelledby="dropdownMenu1">
+                    <li role="presentation">
+                        <a role="menuitem" tabindex="-1" href="#">关于系统</a>
+                    </li>
+                    <li role="presentation">
+                        <a role="menuitem" tabindex="-1" href="#">修改密码</a>
+                    </li>
+                    <li role="presentation">
+                        <a @click="logout" role="menuitem" tabindex="-1" href="#"><span class="glyphicon glyphicon-log-out"></span>&nbspLogout</a>
+                    </li>
+                </ul>
+	        </div>
 	    </div>
 	</div>
     <div class="col-md-1 left">
@@ -168,5 +183,17 @@ export default {
 }
 p {
     margin-bottom:0
+}
+
+#dropdownMenu1 {
+    background-color: #5b5b5b;
+}
+
+.btn {
+    padding:0;
+}
+
+ul {
+    min-width:0;
 }
 </style>
