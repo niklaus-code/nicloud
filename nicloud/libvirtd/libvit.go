@@ -76,6 +76,7 @@ func GetDomain(host string, uuid string) (*libvirt.Domain, error) {
     return nil, err
   }
 
+  defer conn.Close()
   vm, err := conn.LookupDomainByUUIDString(uuid)
 
   if err != nil {

@@ -61,10 +61,6 @@ func GetVmStatus(c *gin.Context) {
   res := make(map[string]interface{})
   vmstate, err := vm.VmStatus(uuid, host)
 
-  if err != nil {
-    res["res"] = vmstate
-  }
-
   res["res"] = vmstate
   c.JSON(200, res)
 }

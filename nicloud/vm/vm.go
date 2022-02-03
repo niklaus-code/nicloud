@@ -149,8 +149,9 @@ func VmStatus(uuid string, host string) (string, error) {
 	if err1 != nil {
 		return "未发现云主机", err1
 	}
+    vm.Free()
 
-	return libvirtd.Vmstate[state], err1
+	return libvirtd.Vmstate[state], nil
 }
 
 type Vms_archive struct {
