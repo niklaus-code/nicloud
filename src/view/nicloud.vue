@@ -20,7 +20,7 @@
                     </li>
                     <li role="presentation" class="divider"></li>
                     <li role="presentation">
-                        <a role="menuitem" tabindex="-1" href="#">关于NICLOUD</a>
+                        <a role="menuitem" tabindex="-1" href="#" style="color: blue">关于NICLOUD</a>
                     </li>
                 </ul>
 	        </div>
