@@ -6,7 +6,7 @@
 	    </div>
         <div class="col-md-2" style="float:right; padding-right:0;margin-right:10px; text-align:right">
             <div class="dropdown">
-                <button type="button" class="btn dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown">
+                <button type="button" @mouseover="mouseover" :style="active" class="btn dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown">
                      <span class="glyphicon glyphicon-user"></span>
                         {{username}}
                     <span class="caret"></span>
@@ -82,6 +82,7 @@ if (sessionStorage.getItem('router')) {
 export default {
     data () {
         return {
+             active: "",
             username: "",
 			router: sessionStorage.getItem('router'),
         }
@@ -98,6 +99,10 @@ export default {
 		},
 
 	methods: {
+        mouseover: function () {
+            this.active = "color: white";
+            },
+
         logout: function () {
             sessionStorage.removeItem("token");
             this.$router.push({name:"login"});
