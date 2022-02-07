@@ -175,6 +175,9 @@ export default {
 }
 
 .left {
+    max-width: 120px;
+    min-width: 90px;
+
     padding-left:0;
     padding-right:0;
     background-color: #778899;
