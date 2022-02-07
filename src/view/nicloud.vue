@@ -1,9 +1,9 @@
 <template>
 <div class="contain col-md-12">
-    <div class="head col-md-12"">
+    <div class="head col-md-12" style="z-index: 100">
         <div class="col-md-2" style="float:left; padding-left:10px">
             <nicloudhead @toParent="getMag"></nicloudhead>
-	    </div>
+        </div>
         <div class="col-md-2" style="float:right; padding-right:0;margin-right:10px; text-align:right">
             <div class="dropdown">
                 <button type="button" @mouseover="mouseover" :style="active" class="btn dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown">
@@ -23,14 +23,15 @@
                         <a role="menuitem" tabindex="-1" href="#" style="color: blue">关于NICLOUD</a>
                     </li>
                 </ul>
-	        </div>
-	    </div>
-	</div>
-    <div class="col-md-1 left">
+               </div>
+           </div>
+    </div>
+
+    <div class="left">
         <vmleft @toParent="getMag"></vmleft>
     </div>
 
-	<div  class="mid col-md-11">
+	<div  class="mid" >
         <div class="mm">
             <component @toParent="getMag" v-bind:is="router"></component>
 	    </div>
@@ -148,6 +149,8 @@ export default {
 }
 
 .mid {
+    margin-top:30px;
+    margin-left:100px;
     padding-right:0;
     padding-left:0;
     padding-top:20px;
@@ -162,8 +165,9 @@ export default {
 }
 
 .foot {
+    margin-left:100px;
     position: relative;
-    margin-top: -60px; /*等于footer的高度*/
+    margin-top: -31px; /*等于footer的高度*/
     height: 30px;
     clear:both;
     background: #e3e3e3;
@@ -175,8 +179,11 @@ export default {
 }
 
 .left {
-    max-width: 120px;
-    min-width: 90px;
+    position: fixed;
+    float: left;
+    height: 100%;
+
+    width: 100px;
 
     padding-left:0;
     padding-right:0;

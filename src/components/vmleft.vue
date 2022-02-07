@@ -1,6 +1,6 @@
 <template>
-    <div style="width:140; text-align: center;margin-top:75px">
-        <div align="center" style="color: white; text-align: center; margin-left: 18px">
+    <div style="width:140; text-align: center;margin-top: 96px">
+        <div align="center" style="color: white; text-align: center; margin-left:13px">
             <table>
                 <tr  v-for="(item, index) in routelist" @click="choose(index)" @click="toParent(item.router)"><td><a>
                     <p :class=item.class> </p><p style="margin-left: 5px;margin-top:12px">{{item.name}}</p>
