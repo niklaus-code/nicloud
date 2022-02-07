@@ -1,13 +1,12 @@
 <template>
-<div class="logincss col-sm-12" >
-	<div class="col-sm-4 col-sm-offset-4" style="margin-top:150px; display: flex; align-items:center;">
+<div class="logincss" >
+	<div style="padding-top:150px; max-width: 400px; margin: 0 auto;">
 		<form class="form-horizontal col-sm-12">
 
 			<div class="col-sm-6 col-sm-offset-3"> 
                 <img src="./logo.png" width="100%">
             </div>
 
-			<div class="col-sm-12 a">
 			<div class="col-sm-12 login">
   				<div class="form-group">
     				<div class="col-sm-12">
@@ -24,7 +23,6 @@
       					<input type="button" @click="loginfun" value="登陆">
     				</div>
   				</div>
-  			</div>
   			</div>
 		</form>
   	</div>
@@ -79,11 +77,6 @@ export default {
 	width:100%
 	}
 
-.a {
-	border-radius: 15px;
-	background-color:rgba(255,255,255,0.30);
-}
-
 .glyphicon {
 	display: inline-block;
 	 background-repeat: no-repeat;
@@ -98,6 +91,8 @@ input {
 }
 
 .login {
+	border-radius: 15px;
+	background-color:rgba(255,255,255,0.30);
     font-weight:900;
 	margin-top:30px;
 	margin-bottom:10px;
