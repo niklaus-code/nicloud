@@ -58,6 +58,8 @@ func main() {
 
   v4 := r.Group("/api/networks")
   {
+    v4.GET("download_excel", networkapis.DownloadExcel)
+
     v4.Use(utils.Tokenauth())
     v4.GET("getvlan", networkapis.Get)
     v4.GET("getvlanbydatacenter", networkapis.Getvlanbydatacenter)
@@ -71,7 +73,7 @@ func main() {
     v4.GET("upip", networkapis.UpIp)
     v4.GET("delete", networkapis.Delete)
     v4.GET("deleteip", networkapis.Deleteip)
-    v4.GET("download_excel", networkapis.DownloadExcel)
+
   }
 
   v5 := r.Group("/api/hosts")

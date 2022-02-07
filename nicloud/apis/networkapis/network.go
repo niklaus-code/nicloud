@@ -166,9 +166,9 @@ func DownloadExcel(c *gin.Context) {
   ipliststr, err := networks.Downloadips(vlan)
   if err != nil {
     con := bytes.NewReader([]byte(err.Error()))
-    http.ServeContent(c.Writer, c.Request, "asd", time.Now(), con)
+    http.ServeContent(c.Writer, c.Request, "vlan"+vlan, time.Now(), con)
     return
   }
   con := bytes.NewReader([]byte(ipliststr))
-  http.ServeContent(c.Writer, c.Request, "asd", time.Now(), con)
+  http.ServeContent(c.Writer, c.Request, "vlan"+vlan, time.Now(), con)
 }
