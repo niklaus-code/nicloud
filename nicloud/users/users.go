@@ -12,9 +12,9 @@ type Vms_users struct {
   Id int
   Username string `json:"Username" validate:"required"`
   Passwd string `json:"Passwd" validate:"required"`
-  Email string  `json:"Passwd" validate:"email"`
+  Email string  `json:"Email" validate:"email"`
   Role int  `json:"Role" validate:"oneof=1 2"`
-  Mobile string `json:"Role" validate:"len=11" validate:"startswith=1"`
+  Mobile string `json:"Mobile" validate:"len=11" validate:"startswith=1"`
   Create_time time.Time
 }
 
