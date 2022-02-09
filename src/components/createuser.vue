@@ -103,6 +103,10 @@ export default {
         },
 
     methods: {
+        toParent: function () {
+            this.$emit("toParent", "user");
+            },
+
         getroles: function () {
             var apiurl = `/api/user/getroles`
             this.$http.get(apiurl).then(response => {
@@ -120,6 +124,7 @@ export default {
             this.$http.post(apiurl,  this.$qs.stringify({ username: this.user, passwd: this.passwd, email: this.email, mobile: this.mobile, role: this.rolevalue})).then(response => {
 				if (response.data.err === null) {
 					alert("创建成功!")
+                    this.toParent()
 				} else {
 					alert(response.data.err.Message)
 					}
