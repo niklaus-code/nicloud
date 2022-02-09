@@ -5,6 +5,7 @@ import (
   "github.com/gin-gonic/gin"
   "github.com/go-playground/validator/v10"
   "nicloud/users"
+  vm2 "nicloud/vm"
   "nicloud/vmerror"
   "strconv"
 )
@@ -12,11 +13,20 @@ import (
 func DelUser(c *gin.Context) {
   res := make(map[string]interface{})
   id, err := strconv.Atoi(c.Query("id"))
+
   if err != nil {
     res["err"] = err
     c.JSON(400, res)
     return
   }
+
+  checkuser := vm2.Checkuser(id)
+  if checkuser != nil {
+    res["err"] = checkuser
+    c.JSON(200, res)
+    return
+  }
+
   err = users.DelUser(id)
   res["err"] = err
   c.JSON(200, res)

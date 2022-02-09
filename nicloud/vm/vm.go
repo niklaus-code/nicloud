@@ -546,7 +546,7 @@ func allvm(obj []Vms) []map[string]interface{}  {
         c["Owner"] = nil
     } else {
     	c["Owner"] = owner.Username
-	}
+	  }
     mapc = append(mapc, c)
   }
   return mapc
@@ -719,3 +719,16 @@ func RollbackSnap(vmid string, snapname string, datacenter string, storage strin
   return nil
 }
 
+func Checkuser(userid int) error{
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+  var v []*Vms
+  dbs.Where("owner=?", userid).Find(&v)
+
+  if len(v) > 0 {
+    return vmerror.Error{Message: "请先删除用户关联云主机"}
+  }
+  return nil
+}
