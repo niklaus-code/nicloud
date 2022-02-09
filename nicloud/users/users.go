@@ -4,6 +4,7 @@ import (
   "github.com/dgrijalva/jwt-go"
   db "nicloud/dbs"
   "nicloud/vmerror"
+  "reflect"
   "strconv"
   "time"
 )
@@ -55,17 +56,39 @@ func Createuser(username string, passwd string, email string, roleid int, mobile
   return nil
 }
 
-func GetUsers() ([]*Vms_users, error){
+func mapuser(obj []Vms_users) []map[string]interface{}  {
+  var mapc []map[string]interface{}
+
+  for _, v := range obj {
+    c := make(map[string]interface{})
+    m := reflect.TypeOf(v)
+    n := reflect.ValueOf(v)
+    for i := 0; i < m.NumField(); i++ {
+      c[m.Field(i).Name] = n.Field(i).Interface()
+    }
+
+    role, err := GetRoleByRoleId(v.Role)
+    if err != nil {
+      c["Role"] = "nil"
+    } else {
+      c["Role"] = role.Rolename
+    }
+    mapc = append(mapc, c)
+  }
+  return mapc
+}
+
+func GetUsers() ([]map[string]interface{}, error){
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
-  var u []*Vms_users
+  var u []Vms_users
   dberr := dbs.Find(&u)
   if dberr.Error != nil {
     return nil, dberr.Error
   }
-  return u, nil
+  return mapuser(u), nil
 }
 
 func createtoken(username string, userid string) (string, error) {

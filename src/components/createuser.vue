@@ -121,7 +121,6 @@ export default {
 				if (response.data.err === null) {
 					alert("创建成功!")
 				} else {
-					alert(1111)
 					alert(response.data.err.Message)
 					}
 			    })
