@@ -544,8 +544,9 @@ func allvm(obj []Vms) []map[string]interface{}  {
     owner, err := users.GetUserByUserID(v.Owner)
     if err != nil {
         c["Owner"] = nil
-    }
-    c["Owner"] = owner.Username
+    } else {
+    	c["Owner"] = owner.Username
+	}
     mapc = append(mapc, c)
   }
   return mapc
