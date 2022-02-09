@@ -20,7 +20,7 @@
     			</thead>
 
 				<tbody v-for="(item, index) in data">
-      				<tr class="table-dark text-dark" :id="item.Uuid">
+      				<tr class="table-dark text-dark" v-if="item.status">
         				<label class="checkbox-inline">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
@@ -31,7 +31,7 @@
         				<td>{{item.Mobile}}</td>
         				<td>{{item.Create_time}}</td>
 		    			<td style="min-width:92px">
-							<button class="btn btn-danger btn-xs" type="button" @click="delosimage(item.Osname, index)">
+							<button class="btn btn-danger btn-xs" type="button" @click="deluser(item.Id, index)">
                 				删除
             				</button>
         				</td>
@@ -49,7 +49,7 @@ export default {
     },
 
 	mounted: function () {
-		this.getosimage()
+		this.getuser()
 		},
 
     methods: {
@@ -57,32 +57,29 @@ export default {
             this.$emit("toParent", "createuser");
             },
 
-		editosimage: function (id, osname, cephblockdevice, snapimage, xml) {
-			this.$store.state.osimage.id = id
-            this.$store.state.osimage.osname = osname
-            this.$store.state.osimage.cephblockdevice = cephblockdevice
-            this.$store.state.osimage.snap = snapimage
-            this.$store.state.osimage.xml = xml
-			this.$emit("toParent", "updateosimage");
-            },
-
-		delosimage: function (osname, index) {
-            var apiurl = `/api/osimage/delimage`
-            this.$http.get(apiurl, { params: {osname: osname} } ).then(response => {
+		deluser: function (id, index) {
+            var apiurl = `/api/user/deluser`
+            this.$http.get(apiurl, { params: {id: id} } ).then(response => {
             	if (response.data.err === null) {
 					alert("删除成功")
-					this.data[index].Status = 0
+					this.data[index].status = false
 					} else {
 					alert(response.data.err.Message)
 					}
             })
         },
 
-		getosimage: function () {
+		getuser: function () {
             var apiurl = `/api/user/getuser`
             this.$http.get(apiurl).then(response => {
+                let rr = response.data.res
             	if (response.data.err === null) {
-            	    this.data = response.data.res
+                    var d = new Array()
+                    for (var v in rr) {
+                        rr[v]["status"] = true
+                        d.push(rr[v])
+                        }
+                    this.data = rr
                 } else {
 					alert(response.data.err.Message)
                     }

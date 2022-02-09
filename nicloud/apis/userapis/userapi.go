@@ -6,7 +6,21 @@ import (
   "github.com/go-playground/validator/v10"
   "nicloud/users"
   "nicloud/vmerror"
+  "strconv"
 )
+
+func DelUser(c *gin.Context) {
+  res := make(map[string]interface{})
+  id, err := strconv.Atoi(c.Query("id"))
+  if err != nil {
+    res["err"] = err
+    c.JSON(400, res)
+    return
+  }
+  err = users.DelUser(id)
+  res["err"] = err
+  c.JSON(200, res)
+}
 
 func GetAllRoles(c *gin.Context) {
   res := make(map[string]interface{})
@@ -52,6 +66,7 @@ func Createuser(c *gin.Context) {
   res["err"] = err
   c.JSON(200, res)
 }
+
 
 func GetUser(c *gin.Context) {
   res := make(map[string]interface{})

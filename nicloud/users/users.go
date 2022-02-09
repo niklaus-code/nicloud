@@ -19,6 +19,21 @@ type Vms_users struct {
   Create_time time.Time
 }
 
+func DelUser(userid int) error {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  r := &Vms_users{}
+  errdb := dbs.Where("id=?", userid).Delete(r)
+  if errdb.Error != nil {
+    return errdb.Error
+  }
+
+  return nil
+}
+
 func Getrolebyrolename(rolename string) (*Vms_roles, error) {
   dbs, err := db.NicloudDb()
   if err != nil {

@@ -30,6 +30,7 @@ func main() {
     v1.GET("getuser", userapis.GetUser)
     v1.POST("createuser", userapis.Createuser)
     v1.GET("getroles", userapis.GetAllRoles)
+    v1.GET("deluser", userapis.DelUser)
   }
 	v2 := r.Group("/api/vm")
 	{
