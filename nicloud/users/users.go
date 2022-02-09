@@ -12,8 +12,60 @@ type Vms_users struct {
   Id int
   Username string `json:"Username" validate:"required"`
   Passwd string `json:"Passwd" validate:"required"`
-  Email string
-  Role int
+  Email string  `json:"Passwd" validate:"email"`
+  Role int  `json:"Role" validate:"oneof=1 2"`
+  Mobile string `json:"Role" validate:"len=11" validate:"startswith=1"`
+  Create_time time.Time
+}
+
+func Getrolebyrolename(rolename string) (*Vms_roles, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+
+  r := &Vms_roles{}
+  errdb := dbs.Where("rolename=?", rolename).First(r)
+  if errdb.Error != nil {
+    return nil, errdb.Error
+  }
+
+  return r, err
+}
+
+func Createuser(username string, passwd string, email string, roleid int, mobile string) error {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  u := &Vms_users{
+    Username: username,
+    Passwd: passwd,
+    Email: email,
+    Role: roleid,
+    Mobile: mobile,
+    Create_time: time.Now(),
+  }
+  errdb := dbs.Create(u)
+  if errdb.Error != nil {
+    return errdb.Error
+  }
+
+  return nil
+}
+
+func GetUsers() ([]*Vms_users, error){
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  var u []*Vms_users
+  dberr := dbs.Find(&u)
+  if dberr.Error != nil {
+    return nil, dberr.Error
+  }
+  return u, nil
 }
 
 func createtoken(username string, userid string) (string, error) {
@@ -83,6 +135,21 @@ func GetRoleByRoleId(roleid int) (*Vms_roles, error) {
   }
   r := &Vms_roles{}
   errdb := dbs.Where("id=?", roleid).First(r)
+  if errdb.Error != nil {
+    return nil, errdb.Error
+  }
+
+  return r, nil
+}
+
+func GetrAllRoles() ([]*Vms_roles,error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+
+  var r []*Vms_roles
+  errdb := dbs.Find(&r)
   if errdb.Error != nil {
     return nil, errdb.Error
   }

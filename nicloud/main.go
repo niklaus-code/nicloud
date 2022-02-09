@@ -12,14 +12,24 @@ import (
   "nicloud/apis/userapis"
   "nicloud/apis/vdisk"
   "nicloud/apis/vmapis"
+  //_ "nicloud/docs"
   "nicloud/utils"
 )
 
+// @title Gin swagger
+// @version 1.0
+// @description NICLOUD
+// @BasePath /api/vm
+
 func main() {
   r := gin.Default()
+  //r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
   v1 := r.Group("/api/user")
   {
     v1.POST("login", userapis.Login)
+    v1.GET("getuser", userapis.GetUser)
+    v1.POST("createuser", userapis.Createuser)
+    v1.GET("getroles", userapis.GetAllRoles)
   }
 	v2 := r.Group("/api/vm")
 	{

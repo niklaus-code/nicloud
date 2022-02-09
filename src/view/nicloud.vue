@@ -1,7 +1,7 @@
 <template>
 <div class="contain col-md-12">
     <div class="head col-md-12" style="z-index: 100">
-        <div class="col-md-3" style="float:left; padding-left:10px">
+        <div class="col-md-2" style="float:left; padding-left:10px">
             <nicloudhead @toParent="getMag"></nicloudhead>
         </div>
         <div class="col-md-2" style="float:right; padding-right:0;margin-right:10px; text-align:right">
@@ -14,6 +14,9 @@
                 <ul class="dropdown-menu  pull-right" role="menu" aria-labelledby="dropdownMenu1">
                     <li role="presentation">
                         <a role="menuitem" tabindex="-1" href="#">修改密码</a>
+                    </li>
+                    <li role="presentation">
+                        <a @click="usermanage" role="menuitem" tabindex="-1">用户管理</a>
                     </li>
                     <li role="presentation">
                         <a @click="logout" role="menuitem" tabindex="-1" href="#"><span class="glyphicon glyphicon-log-out"></span>&nbspLogout</a>
@@ -72,6 +75,8 @@ import vmbottom from '@/components/vmbottom'
 import snap from '@/components/snap'
 import createsnap from '@/components/createsnap'
 import restorevm from '@/components/restorevm'
+import user from '@/components/user'
+import createuser from '@/components/createuser'
 
 var initroute 
 if (sessionStorage.getItem('router')) {
@@ -90,7 +95,7 @@ export default {
     },
 
     components: {
-        migratevmlive, restorevm, createsnap, snap, vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
+        createuser, user, migratevmlive, restorevm, createsnap, snap, vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
     },
 
 
@@ -100,6 +105,10 @@ export default {
 		},
 
 	methods: {
+        usermanage: function () {
+    	    this.getMag("user");
+            },
+
         mouseover: function () {
             this.active = "color: white";
             },
@@ -150,11 +159,11 @@ export default {
 
 .mid {
     margin-top:30px;
-    margin-left:115px;
+    margin-left:100px;
     padding-right:0;
     padding-left:0;
     padding-top:20px;
-    padding-bottom: 20px;
+    padding-bottom: 50px;
     min-height: 100%;
     height: auto !important;
     height: 100%;
@@ -165,11 +174,11 @@ export default {
 }
 
 .foot {
-    margin-left:115px;
+    margin-left:100px;
     position: relative;
     margin-top: -31px; /*等于footer的高度*/
     height: 30px;
-    clear: both;
+    clear:both;
     background: #e3e3e3;
 }
 
@@ -183,7 +192,7 @@ export default {
     float: left;
     height: 100%;
 
-    width: 115px;
+    width: 100px;
 
     padding-left:0;
     padding-right:0;
