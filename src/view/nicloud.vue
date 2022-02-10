@@ -1,7 +1,7 @@
 <template>
 <div class="contain col-md-12">
     <div class="head col-md-12" style="z-index: 100">
-        <div class="col-md-2" style="float:left; padding-left:10px">
+        <div class="col-md-3" style="float:left; padding-left:10px">
             <nicloudhead @toParent="getMag"></nicloudhead>
         </div>
         <div class="col-md-2" style="float:right; padding-right:0;margin-right:10px; text-align:right">
@@ -159,7 +159,7 @@ export default {
 
 .mid {
     margin-top:30px;
-    margin-left:100px;
+    margin-left:120px;
     padding-right:0;
     padding-left:0;
     padding-top:20px;
@@ -174,7 +174,7 @@ export default {
 }
 
 .foot {
-    margin-left:100px;
+    margin-left:120px;
     position: relative;
     margin-top: -31px; /*等于footer的高度*/
     height: 30px;
@@ -192,7 +192,7 @@ export default {
     float: left;
     height: 100%;
 
-    width: 100px;
+    width: 120px;
 
     padding-left:0;
     padding-right:0;
