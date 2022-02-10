@@ -27,6 +27,9 @@ func main() {
   v1 := r.Group("/api/user")
   {
     v1.POST("login", userapis.Login)
+
+    v1.Use(utils.Tokenauth())
+    v1.Use(utils.RoleAuth())
     v1.GET("getuser", userapis.GetUser)
     v1.POST("createuser", userapis.Createuser)
     v1.GET("getroles", userapis.GetAllRoles)
