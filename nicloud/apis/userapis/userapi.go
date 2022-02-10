@@ -1,10 +1,10 @@
 package userapis
 
 import (
-  "fmt"
   "github.com/gin-gonic/gin"
   "github.com/go-playground/validator/v10"
   "nicloud/users"
+  "nicloud/utils"
   vm2 "nicloud/vm"
   "nicloud/vmerror"
   "strconv"
@@ -66,13 +66,14 @@ func Createuser(c *gin.Context) {
   validate := validator.New()
   err = validate.Struct(r)
   if err != nil {
-    fmt.Println(err)
     res["err"] = vmerror.Error{Message: "参数错误"}
     c.JSON(400, res)
     return
   }
 
-  err = users.Createuser(username, passwd, email, roleobj.Id, mobile)
+  encryption := utils.Encryption(passwd)
+
+  err = users.Createuser(username, encryption, email, roleobj.Id, mobile)
   res["err"] = err
   c.JSON(200, res)
 }
@@ -97,7 +98,9 @@ func Login(c *gin.Context) {
   passwd := c.PostForm("passwd")
   res := make(map[string]interface{})
 
-  t, u,  err := users.Login(username, passwd)
+  encryption := utils.Encryption(passwd)
+
+  t, u,  err := users.Login(username, encryption)
   if err != nil {
     res["err"] = vmerror.Error{Message: "登陆失败"}
     c.JSON(200, res)
