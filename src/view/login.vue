@@ -13,14 +13,15 @@
       					<input v-model="username" class="form-control passwd" :style="userimage" placeholder="账号">
     				</div>
   				</div>
-  				<div class="form-group">
+  				<div class="form-group" style="margin-bottom:5px;">
     				<div class="col-sm-12">
       					<input v-model="passwd" type="password" :style="passimage" class="form-control passwd" placeholder="密码">
     				</div>
   				</div>
+                <p style="margin-left:3px; color: #59BF74; font-weight:300; font-size:13px">忘记密码？<p>
   				<div class="form-group">
     				<div class="col-sm-12">
-      					<input type="button" @click="loginfun" value="登陆">
+      					<input type="button" style="background-color: #59BF74" @click="loginfun" value="登陆">
     				</div>
   				</div>
   			</div>
