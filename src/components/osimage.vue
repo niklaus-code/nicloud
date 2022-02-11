@@ -1,6 +1,13 @@
 <template>
 		<div class="col-sm-12" style="margin-top:20px; padding-right:0; padding-left:0">
-			<button class="btn btn-success btn-sm" type="button" @click="toParent"  style="margin-bottom:20px; margin-left:5px">创建</button>
+			<button class="btn btn-success btn-sm" type="button" @click="toParent"  style="margin-bottom:20px; margin-left:5px">创建系统镜像<span class="glyphicon glyphicon-plus" style="margin-left: 5px"></span></button>
+            
+            <ul class="breadcrumb">
+                <li><a href="#">全部镜像</a></li>
+                <li><a href="#">基础镜像</a></li>
+                <li><a href="#">用户镜像</a></li>
+            </ul>
+
 			<table class="table table-hover" style="text-align: center;">
     			<thead>
       				<tr>
@@ -10,9 +17,11 @@
         					</label>
         				</th>
         				<th>镜像名称</th>
+        				<th>镜像类别</th>
         				<th>块设备</th>
         				<th>快照名称</th>
         				<th>XML</th>
+        				<th>所属用户</th>
         				<th>存储集群</th>
         				<th>数据中心</th>
 						<th>状态</th>
@@ -26,9 +35,11 @@
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
         				<td>{{item.Osname}}</td>
+        				<td>{{item.sort}}</td>
         				<td>{{item.Cephblockdevice}}</td>
         				<td>{{item.Snapimage}}</td>
         				<td class="tdxml" width="30%">{{item.Xml}}</td>
+        				<td>{{item.owner}}</td>
         				<td>{{item.Storage}}</td>
         				<td>{{item.Datacenter}}</td>
 						<td>
@@ -141,4 +152,9 @@ th {
     text-align: center;
 }
 
+.breadcrumb {
+    background-color: #FFF;
+    margin-bottom: 0;
+    padding-left: 10px;
+}
 </style>

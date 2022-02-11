@@ -6,13 +6,17 @@ import (
   "nicloud/cephcommon"
   db "nicloud/dbs"
   "nicloud/networks"
+  "nicloud/users"
   "nicloud/vmerror"
+  "reflect"
   "strings"
 )
 
 
 type Vms_os struct {
   Id int
+  Sort int `json:"Sort" validate:"required"`
+  Owner int `json:"Owner" validate:"required"`
   Osname string `json:"Osname" validate:"required"`
   Datacenter string `json:"Datacenter" validate:"required"`
   Storage string  `json:"Storage" validate:"required"`
@@ -20,6 +24,24 @@ type Vms_os struct {
   Snapimage string  `json:"Snapimage" validate:"required"`
   Xml string  `json:"Xml" validate:"required"`
   Status int8
+}
+
+type Vms_osimage_sort struct {
+  Id int
+  Sort string
+}
+
+func get_osimage_sortbyid(id int) (*Vms_osimage_sort, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  var o Vms_osimage_sort
+  data := dbs.Where("id=?", id).First(&o)
+  if data.Error != nil {
+    return nil, data.Error
+  }
+  return &o, nil
 }
 
 func Del(osname string) error {
@@ -80,14 +102,46 @@ func Add(datacenter string, storage string,osname string, cephblockdevice string
   return nil
 }
 
-func Get() ([]*Vms_os, error) {
+func maposimage(obj []Vms_os) []map[string]interface{}  {
+  var mapc []map[string]interface{}
+
+  for _, v := range obj {
+    c := make(map[string]interface{})
+    m := reflect.TypeOf(v)
+    n := reflect.ValueOf(v)
+    for i := 0; i < m.NumField(); i++ {
+      c[m.Field(i).Name] = n.Field(i).Interface()
+    }
+
+    sort, err := get_osimage_sortbyid(v.Sort)
+    if err != nil {
+      c["sort"] = nil
+    } else {
+      c["sort"] = sort.Sort
+    }
+
+    owner, err := users.GetUserByUserID(v.Owner)
+    if err != nil {
+      c["owner"] = nil
+    } else {
+      c["owner"] = owner.Username
+    }
+    mapc = append(mapc, c)
+  }
+  return mapc
+}
+
+func Get() ([]map[string]interface{}, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
-  var v []*Vms_os
-  dbs.Find(&v)
-  return v, nil
+  var v []Vms_os
+  data := dbs.Find(&v)
+  if data.Error != nil {
+    return nil, data.Error
+  }
+  return maposimage(v), nil
 }
 
 func Getimageby(datacenter string, storage string) ([]*Vms_os, error) {

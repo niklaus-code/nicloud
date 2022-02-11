@@ -1,6 +1,6 @@
 <template>
 		<div class="col-sm-12" style="margin-top:20px; padding-right:0; padding-left:0">
-			<button class="btn btn-success btn-sm" @click="createhost" type="button"  style="margin-bottom:20px; margin-left: 5px">创建</button>
+			<button class="btn btn-success btn-sm" @click="createhost" type="button"  style="margin-bottom:20px; margin-left: 5px">创建数据中心<span class="glyphicon glyphicon-plus" style="margin-left: 5px"></span></button>
 			<table class="table table-hover" style="text-align: center;">
     			<thead>
       				<tr>
