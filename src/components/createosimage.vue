@@ -1,6 +1,6 @@
 <template>
 <div>
-      <div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
+      <div class="col-sm-12 form-group" style="border-bottom: 1px green solid; margin-top:30px">
                 <h4>创建镜像</h4>
             </div>
 
@@ -30,6 +30,21 @@
 							<option value="">--请选择--</option>
                         	<option  v-for="c in storage" :value="c.Uuid">
                             	{{ c.Uuid }}
+                        	</option>
+                    	</select>
+					</div>
+				</div>
+    		</div>
+			<div class="col-sm-12" style="margin-top:20px">
+	 			<div class="form-group">
+					<div class="col-sm-2 col-sm-offset-2">
+        				<label>镜像类别</label>
+					</div>
+					<div class="col-sm-8">
+				    	<select class="col-sm-12" v-model="sortvalue">
+							<option value="">--请选择--</option>
+                        	<option v-for="s in sort" :value="s">
+                            	{{ s.sort }}
                         	</option>
                     	</select>
 					</div>
@@ -105,6 +120,12 @@
 export default {
     data () {
         return {
+            sortvalue: {},
+            sort: [
+                {id: 1, sort: "基础镜像"},
+                {id: 2, sort: "用户镜像"},
+                ],
+
            	centervalue: "",
             datacenter: [],
 

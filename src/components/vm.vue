@@ -5,10 +5,10 @@
         </div>
         <div class="col-md-5" style="float: right; margin-bottom:20px">
 		    <button class="btn btn-default btn-sm" @click="create()" style="float: right">
-		        <span class="glyphicon glyphicon-cog"></span>创建实例
+		        <span class="glyphicon glyphicon-new-window"></span> 创建实例
 		    </button>
 		    <button class="btn btn-default btn-sm" style="margin-right:5px" @click="search()" style="float: right">
-	            <span class="glyphicon glyphicon-search"></span>筛选
+	            <span class="glyphicon glyphicon-search"></span> 筛选
 		    </button>
 		    <input class="col-md-6" type="text" id="name" placeholder="" v-model="content" style="float: right">
         </div>
