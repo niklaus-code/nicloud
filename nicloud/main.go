@@ -109,6 +109,7 @@ func main() {
     v6.Use(utils.Tokenauth())
     v6.GET("getimageby", osimage.GetImageby)
     v6.GET("getimage", osimage.GetImage)
+    v6.GET("getimagesort", osimage.GetImageSort)
 
     v6.Use(utils.RoleAuth())
     v6.POST("updateimage", osimage.UpdateImage)

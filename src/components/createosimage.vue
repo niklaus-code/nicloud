@@ -120,7 +120,7 @@
 export default {
     data () {
         return {
-            sortvalue: {},
+            sortvalue: "",
             sort: [
                 {id: 1, sort: "基础镜像"},
                 {id: 2, sort: "用户镜像"},
@@ -194,7 +194,7 @@ export default {
 
             var apiurl = `/api/osimage/createimage`
 
-            this.$http.post(apiurl, this.$qs.stringify({osname: this.osimage, datacenter: this.centervalue, storage: this.storagevalue, cephblockdevice: this.cephblockdevice, snapimage: this.snapimage, xml: this.xml})).then(response => {
+            this.$http.post(apiurl, this.$qs.stringify({osname: this.osimage, datacenter: this.centervalue, storage: this.storagevalue, cephblockdevice: this.cephblockdevice, snapimage: this.snapimage, xml: this.xml, sort: this.sortvalue.id})).then(response => {
 				if (response.data.err === null) {
 					alert("创建成功!")
                 	this.$emit("toParent", "osimage");

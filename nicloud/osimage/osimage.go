@@ -44,6 +44,20 @@ func get_osimage_sortbyid(id int) (*Vms_osimage_sort, error) {
   return &o, nil
 }
 
+
+func Get_osimage_sort() ([]*Vms_osimage_sort, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  var o []*Vms_osimage_sort
+  data := dbs.Find(&o)
+  if data.Error != nil {
+    return nil, data.Error
+  }
+  return o, nil
+}
+
 func Del(osname string) error {
   dbs, err := db.NicloudDb()
   if err != nil {
@@ -79,7 +93,7 @@ func Update(id int, datacenter string, storage string, osname string,  snapimage
   return nil
 }
 
-func Add(datacenter string, storage string,osname string, cephblockdevice string, snapimage string, xml string) error {
+func Add(datacenter string, storage string,osname string, cephblockdevice string, snapimage string, xml string, sort int, owner int) error {
   os := &Vms_os{
     Datacenter: datacenter,
     Storage: storage,
@@ -88,6 +102,8 @@ func Add(datacenter string, storage string,osname string, cephblockdevice string
     Snapimage: snapimage,
     Xml: xml,
     Status: 1,
+    Sort: sort,
+    Owner: owner,
   }
   dbs, err := db.NicloudDb()
   if err != nil {
@@ -102,8 +118,21 @@ func Add(datacenter string, storage string,osname string, cephblockdevice string
   return nil
 }
 
-func maposimage(obj []Vms_os) []map[string]interface{}  {
+func Maposimage(user int, sort int) ([]map[string]interface{}, error)  {
   var mapc []map[string]interface{}
+  var obj []Vms_os
+  var err error
+  if sort == 0 {
+    obj, err = Get(user, sort)
+    if err != nil  {
+      return nil, err
+    }
+  } else {
+    obj, err = Getimagebysort(user, sort)
+    if err != nil  {
+      return nil, err
+    }
+  }
 
   for _, v := range obj {
     c := make(map[string]interface{})
@@ -128,10 +157,10 @@ func maposimage(obj []Vms_os) []map[string]interface{}  {
     }
     mapc = append(mapc, c)
   }
-  return mapc
+  return mapc, nil
 }
 
-func Get() ([]map[string]interface{}, error) {
+func Get(user int, sort int) ([]Vms_os, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
@@ -141,7 +170,17 @@ func Get() ([]map[string]interface{}, error) {
   if data.Error != nil {
     return nil, data.Error
   }
-  return maposimage(v), nil
+  return v, nil
+}
+
+func Getimagebysort(userid int, sortid int) ([]Vms_os, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  var v []Vms_os
+  dbs.Where("owner=? and sort=?", userid, sortid).Find(&v)
+  return v, nil
 }
 
 func Getimageby(datacenter string, storage string) ([]*Vms_os, error) {

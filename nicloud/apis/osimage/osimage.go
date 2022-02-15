@@ -5,6 +5,7 @@ import (
   "github.com/gin-gonic/gin"
   "github.com/go-playground/validator/v10"
   "nicloud/osimage"
+  "nicloud/utils"
   "nicloud/vmerror"
   "strconv"
 )
@@ -57,9 +58,31 @@ func UpdateImage(c *gin.Context) {
 }
 
 func GetImage(c *gin.Context) {
+  res := make(map[string]interface{})
+  token := c.Request.Header.Get("token")
+  user, err := utils.ParseToken(token)
+
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "认证失败"}
+    c.JSON(200, res)
+    return
+  }
+
+  sort,_ := strconv.Atoi(c.Query("sort"))
+
+  var r []map[string]interface{}
+
+  r, err = osimage.Maposimage(user, sort)
+  res["res"] = r
+  res["err"] = err
+  c.JSON(200, res)
+}
+
+
+func GetImageSort(c *gin.Context) {
 
   res := make(map[string]interface{})
-  r, err := osimage.Get()
+  r, err := osimage.Get_osimage_sort()
 
   res["res"] = r
   res["err"] = err
@@ -85,9 +108,21 @@ func AddImage(c *gin.Context) {
   snapname := c.PostForm("snapimage")
   cephblockdevice := c.PostForm("cephblockdevice")
   xml :=c.PostForm("xml")
+  sort,_ := strconv.Atoi(c.PostForm("sort"))
+
   res := make(map[string]interface{})
+  token := c.Request.Header.Get("token")
+  user, err := utils.ParseToken(token)
+
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "认证失败"}
+    c.JSON(200, res)
+    return
+  }
 
   o := osimage.Vms_os{
+    Sort: sort,
+    Owner: user,
     Datacenter: datacenter,
     Storage: storage,
     Osname: osname,
@@ -97,7 +132,7 @@ func AddImage(c *gin.Context) {
   }
 
   validate := validator.New()
-  err := validate.Struct(o)
+  err = validate.Struct(o)
   if err != nil {
     fmt.Println(err)
     res["err"] = vmerror.Error{Message: "参数错误"}
@@ -105,7 +140,7 @@ func AddImage(c *gin.Context) {
     return
   }
 
-  err = osimage.Add(datacenter, storage, osname, cephblockdevice, snapname, xml)
+  err = osimage.Add(datacenter, storage, osname, cephblockdevice, snapname, xml, sort , user)
 
   res["err"] = err
   c.JSON(200, res)

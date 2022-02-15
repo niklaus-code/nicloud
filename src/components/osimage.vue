@@ -3,9 +3,8 @@
 			<button class="btn btn-success btn-sm" type="button" @click="toParent"  style="margin-bottom:20px; margin-left:5px">创建系统镜像<span class="glyphicon glyphicon-plus" style="margin-left: 5px"></span></button>
             
             <ul class="breadcrumb">
-                <li><a href="#">全部镜像</a></li>
-                <li><a href="#">基础镜像</a></li>
-                <li><a href="#">用户镜像</a></li>
+                <li><a @click="getosimage(0)">全部镜像</a></li>
+                <li v-for="(item, index) in osimagesort"><a @click="getosimage(item.Id)">{{item.Sort}}</a></li>
             </ul>
 
 			<table class="table table-hover" style="text-align: center;">
@@ -64,11 +63,17 @@ export default {
     data () {
         return {
 			data: [],
+            osimagesort: [],
         }
     },
 
 	mounted: function () {
-		this.getosimage()
+        var sortid = sessionStorage.getItem('sortid')
+        if (sortid === null || typeof sortid === 'undefined' || sortid === '' || sortid === "undefined") {
+            sortid = 0
+            }    
+		this.getosimage(sortid)
+		this.getosimagesort()
 		},
 
     methods: {
@@ -97,9 +102,21 @@ export default {
             })
         },
 
-		getosimage: function () {
-            var apiurl = `/api/osimage/getimage`
+		getosimagesort: function () {
+            var apiurl = `/api/osimage/getimagesort`
             this.$http.get(apiurl).then(response => {
+            	if (response.data.err === null) {
+            	    this.osimagesort = response.data.res
+                } else {
+					alert(response.data.err.Message)
+                    }
+            })
+        },
+
+		getosimage: function (sortid) {
+            sessionStorage.setItem('sortid', sortid)
+            var apiurl = `/api/osimage/getimage`
+            this.$http.get(apiurl, { params: {sort: sortid} }).then(response => {
             	if (response.data.err === null) {
             	    this.data = response.data.res
                 } else {
