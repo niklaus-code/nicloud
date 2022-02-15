@@ -1,5 +1,5 @@
 <template>
-    <div style="width:140; text-align: center;margin-top: 143px">
+    <div style="width:140; text-align: center;margin-top: 138px">
         <div align="center" style="color: white; text-align: left; margin-left: 16px">
             <ul>
                 <li  v-for="(item, index) in routelist" @click="choose(index)" @click="toParent(item.router)">
