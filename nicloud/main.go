@@ -95,6 +95,7 @@ func main() {
     v5.Use(utils.Tokenauth())
     v5.GET("gethostsbydatacenter", hostapis.GetHostsbydatacenter)
     v5.GET("gethosts", hostapis.GetHosts)
+    v5.GET("countdomains", hostapis.ListDomains)
     v5.GET("gethostsby", hostapis.Gethostinfo)
 
     v5.Use(utils.RoleAuth())

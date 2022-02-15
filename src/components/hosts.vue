@@ -59,7 +59,6 @@
 export default {
     data () {
         return {
-            vmnum: false,
 			data: [],
 			cpu: "",
 			mem: "",
@@ -74,10 +73,6 @@ export default {
 		},
 
     methods: {
-        over: function () {
-            this.vmnum = true
-            },
-
 		createhost: function () {
 			this.$emit("toParent", "createhost");
 			},
@@ -128,24 +123,40 @@ export default {
 
         comment: function(res) {
             var d = new Array()
-                for (var v in res) {
-                    if (res[v]["Comment"].length > 0) {
-                        res[v]["flag"] = false
-                        res[v]["flag2"] = true
-                        } else {
-                            res[v]["flag2"] = false
-                            res[v]["flag"] = true
-                        }
+            for (var v in res) {
+                if (res[v]["Comment"].length > 0) {
+                    res[v]["flag"] = false
+                    res[v]["flag2"] = true
+                    } else {
+                        res[v]["flag2"] = false
+                        res[v]["flag"] = true
+                    }
                     res[v]["flag1"] = false
                     d.push(res[v])
-                this.data = d
+                    this.data = d
+                }
+            for (let v in this.data) {
+                //var r = this.getvmstatus(this.data[v].Uuid, this.data[v].Host)
+                //r.then(value => {
+                  //  this.data[v].Status = value
+                  //  })
+
+                var c = this.gethostvm(this.data[v].Ipv4)
+                c.then(value => {
+                    this.data[v].vmnum = value
+                    })
+                };
+            },
+
+        gethostvm: function(hostip) {
+            var apiurl = `/api/hosts/countdomains`
+            return this.$http.get(apiurl, { params: { host: hostip}} ).then(response => {
+                if (response.data.err === null ) {
+                    return response.data.res
+                    } else {
+                        return 0
                     }
-                for (let v in this.data) {
-                    var r = this.getvmstatus(this.data[v].Uuid, this.data[v].Host)
-                    r.then(value => {
-                        this.data[v].Status = value
-                        },
-                    )}
+                })
             },
 
 		gethost: function (ip) {
@@ -158,7 +169,7 @@ export default {
                 }
             })
         },
-        }
+     }
   }
 </script>
 <style scoped>

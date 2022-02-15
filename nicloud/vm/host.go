@@ -33,12 +33,12 @@ func Allhosts(hosts []Vm_hosts) []map[string]interface{}  {
     for i := 0; i < m.NumField(); i++ {
       c[m.Field(i).Name] = n.Field(i).Interface()
     }
-    vmnum, err := listdomains(v.Ipv4)
-    if err != nil {
-      c["vmnum"] = nil
-    } else {
-      c["vmnum"] = vmnum
-    }
+    //vmnum, err := listdomains(v.Ipv4)
+    //if err != nil {
+    //  c["vmnum"] = nil
+    //} else {
+    c["vmnum"] = ""
+    //}
     mapc = append(mapc, c)
   }
   return mapc
@@ -270,7 +270,7 @@ func Addcomment(ip string, c string) error {
   return nil
 }
 
-func listdomains(host string) (int, error) {
+func ListDomains(host string) (int, error) {
   l, err := libvirtd.Listdomains(host)
   return len(l), err
 }

@@ -8,6 +8,16 @@ import (
   "strconv"
 )
 
+func ListDomains(c *gin.Context) {
+  host := c.Query("host")
+  countvm, err := vm.ListDomains(host)
+  res := make(map[string]interface{})
+  res["res"] = countvm
+  res["err"] = err
+
+  c.JSON(200, res)
+}
+
 func GetHosts(c *gin.Context) {
   hostlist, err := vm.Hosts()
   res := make(map[string]interface{})
