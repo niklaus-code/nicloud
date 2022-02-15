@@ -182,6 +182,11 @@ export default {
     background: #e3e3e3;
 }
 
+.dropdown-menu  li  a {
+    padding-right: 13px;
+    padding-left: 13px;
+    }
+
 .col-md-12 {
     padding-left:0;
     padding-right:0;
