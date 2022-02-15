@@ -14,7 +14,8 @@
         				<th>ip地址</th>
         				<th>cpu</th>
         				<th>内存</th>
-        				<th>可创建数量</th>
+        				<th>可创建数</th>
+        				<th>实际虚拟机数</th>
 						<th>备注</th>
 						<th>操作</th>
       				</tr>
@@ -31,6 +32,7 @@
         				<td>{{item.Usedcpu}}核/{{item.Cpu}}核</td>
         				<td>{{item.Usedmem}}G/{{item.Mem}}G</td>
         				<td>{{item.count}}/{{item.Max_vms}}</td>
+        				<td>{{item.vmnum}}</td>
                         <td>
                             <span v-if='item.flag2' @click="c(index)">
                                 {{item.Comment}}
@@ -57,6 +59,7 @@
 export default {
     data () {
         return {
+            vmnum: false,
 			data: [],
 			cpu: "",
 			mem: "",
@@ -71,6 +74,10 @@ export default {
 		},
 
     methods: {
+        over: function () {
+            this.vmnum = true
+            },
+
 		createhost: function () {
 			this.$emit("toParent", "createhost");
 			},

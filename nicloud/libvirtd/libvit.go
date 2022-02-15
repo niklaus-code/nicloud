@@ -23,6 +23,9 @@ func Libvirtconn(host string) (*libvirt.Connect, error) {
 
 func Migratevmlive(uuid string, shost string, dhost string) error {
   c, err := Libvirtconn(shost)
+  if err != nil {
+    return err
+  }
   d, err := Libvirtconn(dhost)
   if err != nil {
     return err
@@ -82,5 +85,20 @@ func GetDomain(host string, uuid string) (*libvirt.Domain, error) {
   if err != nil {
     return nil, err
   }
+  return vm, nil
+}
+
+func Listdomains(host string) ([]string, error) {
+  conn, err :=  Libvirtconn(host)
+  if err != nil {
+    return nil, err
+  }
+
+  defer conn.Close()
+  vm, err := conn.ListDefinedDomains()
+  if err != nil {
+    return nil, err
+  }
+  fmt.Println(vm)
   return vm, nil
 }

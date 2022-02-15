@@ -2,6 +2,7 @@ package vm
 
 import (
   db "nicloud/dbs"
+  "nicloud/libvirtd"
   "nicloud/vmerror"
   "reflect"
 )
@@ -20,10 +21,10 @@ type Vm_hosts struct {
   Comment     string
 }
 
-func Allhosts(obj []Vm_hosts) []map[string]interface{}  {
+func Allhosts(hosts []Vm_hosts) []map[string]interface{}  {
   var mapc []map[string]interface{}
 
-  for _, v := range obj {
+  for _, v := range hosts {
     c := make(map[string]interface{})
     c["count"] = CountHosts(v.Ipv4)
 
@@ -31,6 +32,12 @@ func Allhosts(obj []Vm_hosts) []map[string]interface{}  {
     n := reflect.ValueOf(v)
     for i := 0; i < m.NumField(); i++ {
       c[m.Field(i).Name] = n.Field(i).Interface()
+    }
+    vmnum, err := listdomains(v.Ipv4)
+    if err != nil {
+      c["vmnum"] = nil
+    } else {
+      c["vmnum"] = vmnum
     }
     mapc = append(mapc, c)
   }
@@ -211,7 +218,6 @@ func Gethostinfo(ip string) []map[string]interface{} {
   return res
 }
 
-
 func Hosts() ([]map[string]interface{}, error) {
     db, err := db.NicloudDb()
     if err != nil {
@@ -262,4 +268,9 @@ func Addcomment(ip string, c string) error {
     return dberr.Error
   }
   return nil
+}
+
+func listdomains(host string) (int, error) {
+  l, err := libvirtd.Listdomains(host)
+  return len(l), err
 }
