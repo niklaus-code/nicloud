@@ -138,7 +138,7 @@ export default {
 
 <style scoped>
 .contain {
-        height: 100%;
+    height: 100%;
     margin: 0;
     padding: 0;
 }
@@ -158,7 +158,6 @@ export default {
 }
 
 .mid {
-    margin-top:30px;
     margin-left:120px;
     padding-right:0;
     padding-left:0;
@@ -170,6 +169,7 @@ export default {
 }
 
 .mm {
+    padding-top:30px;
     padding-bottom: 60px;
 }
 
