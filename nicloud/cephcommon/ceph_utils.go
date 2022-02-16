@@ -138,14 +138,26 @@ func  image_ctx(ctx *rados.IOContext, cephblock string) *rbd.Image {
 
 func RbdClone(id string, cephblock string, snap string, pool string) (string, error) {
   ioctx, err := ceph_ioctx(pool)
+
+  //openimage
+  o, err := rbd.OpenImage(ioctx, cephblock, snap)
   if err != nil {
-    return "", err
+    return "", vmerror.Error{Message: err.Error()}
   }
+
   img_ctx := image_ctx(ioctx, cephblock)
+
+  //保护快照 important
+  snapshot := o.GetSnapshot(snap)
+  snapisprotected, _ := snapshot.IsProtected()
+
+  if snapisprotected == false {
+    err = snapshot.Protect()
+  }
 
   _, err = img_ctx.Clone(snap, ioctx, id, rbd.FeatureLayering, 12)
   if err != nil {
-    return "", err
+    return "", vmerror.Error{Message: err.Error()}
   }
   return id, nil
 }
