@@ -83,7 +83,7 @@ export default {
     			} else {
 				this.vlan = sessionStorage.getItem('vlan')
         		}
-            this.downloadurl = "http://127.0.0.1/api/networks/download_excel?vlan="+this.vlan
+            this.downloadurl = "http://10.0.85.90/api/networks/download_excel?vlan="+this.vlan
 
             },
 

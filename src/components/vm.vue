@@ -22,12 +22,12 @@
 					</label>
 				</th>
         		<th>实例名称</th>
-        		<th>IP地址</th>
-        		<th>镜像</th>
-        		<th style="min-width:90px">所属宿主机</th>
+        		<th>IP地址 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
+        		<th>镜像 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
+        		<th style="min-width:90px">所属宿主机 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
         		<th>CPU/内存</th>
         		<th>云盘</th>
-        		<th>所属者</th>
+        		<th>所属者 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
         		<th>备注</th>
         		<th>状态</th>
         		<th>操作</th>
@@ -451,4 +451,13 @@ th {
 .pagination li a {
     color: #000;
 }
+
+.glyphicon {
+    top: 2px
+}
+
+.btn-xs {
+    padding-right: 0;
+    padding-left: 0;
+    }
 </style>
