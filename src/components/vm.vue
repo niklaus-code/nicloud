@@ -310,6 +310,7 @@ export default {
             },
 	
         getvm: function (start, item) {
+            this.cpagenumber = start
             sessionStorage.setItem('pagenumber', start)
             var apiurl = `/api/vm/getvm`
             this.$http.get(apiurl, { params: { start: start, item: item} }).then(response => {
