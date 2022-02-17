@@ -27,7 +27,7 @@ type Vms struct {
 	Mem         int `json:"mem validate:"gt=0"`
 	Create_time time.Time
 	Owner       int  `json:"Owner" validate:"required"`
-	Comment     string  `json:"Comment" validate:"required"`
+	Comment     string
 	Vmxml       string
 	Status      string
 	Exist       int
@@ -589,7 +589,18 @@ func Getpagenumber(userid int) (int, int, error) {
   return pagenumber, len(v), nil
 }
 
-func VmList(userid int, start int) ([]map[string]interface{}, error) {
+//判断奇数偶数
+var odd =0
+
+func VmList(userid int, start int, item string) ([]map[string]interface{}, error) {
+  odd = odd + 1
+  var order string
+  if odd%2 == 0 {
+    order = "desc"
+  } else {
+    order = "asc"
+  }
+
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
@@ -607,9 +618,9 @@ func VmList(userid int, start int) ([]map[string]interface{}, error) {
   }
 
   if role.Rolename == "admin" {
-    dbs.Table("vms").Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Limit(offset).Offset((start-1)*offset).Scan(&v)
+    dbs.Table("vms").Order(fmt.Sprintf("%s %s", item, order)).Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Limit(offset).Offset((start-1)*offset).Scan(&v)
   } else {
-    dbs.Table("vms").Order("create_time desc").Where("owner=?", userid).Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Limit(offset).Offset((start-1)*offset).Scan(&v)
+    dbs.Table("vms").Order(fmt.Sprintf("%s %s", item, order)).Where("owner=?", userid).Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Limit(offset).Offset((start-1)*offset).Scan(&v)
   }
 
   return allvm(v), nil
@@ -637,7 +648,7 @@ func SearchVm(c string) ([]map[string]interface{}, error) {
   }
   var v []Vms
   i := fmt.Sprintf("ip like %s or comment like %s or host like %s", "'%"+c+"%'", "'%"+c+"%'",  "'%"+c+"%'")
-  dbs.Where(i).Find(&v)
+  dbs.Where(i).Order("create_time desc").Find(&v)
   return allvm(v), nil
 }
 

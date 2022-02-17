@@ -22,12 +22,12 @@
 					</label>
 				</th>
         		<th>实例名称</th>
-        		<th>IP地址 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
-        		<th>镜像 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
-        		<th style="min-width:90px">所属宿主机 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
+        		<th @click="getvm(cpagenumber, 'ip')">IP地址 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
+        		<th @click="getvm(cpagenumber, 'os')">镜像 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
+        		<th @click="getvm(cpagenumber, 'host')" style="min-width:90px">所属宿主机 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
         		<th>CPU/内存</th>
         		<th>云盘</th>
-        		<th>所属者 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
+        		<th @click="getvm(cpagenumber, 'owner')">所属者 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
         		<th>备注</th>
         		<th>状态</th>
         		<th>操作</th>
@@ -96,7 +96,7 @@
     <div class="btn-group col-md-6" style="margin-top:20px; margin-bottom:30px">
         <ul class="pagination">
             <li><a @click="down()">&laquo;</a></li>
-            <li  v-for="(item, index) in totalpagenumber"><a @click="getvm(item)">{{item}}</a></li>
+            <li  v-for="(item, index) in totalpagenumber"><a @click="getvm(item, 'create_time')">{{item}}</a></li>
             <li><a @click="up()">&raquo;</a></li>
         </ul>
 	</div>
@@ -111,6 +111,7 @@ export default {
             comments: "",
             totalpagenumber: "pagenumber",
             pagenumber: 1,
+            cpagenumber: 1,
             dropup: "dropup",
             dropdown: "dropdown",
 			active: "",
@@ -141,9 +142,11 @@ export default {
         var p = sessionStorage.getItem('pagenumber')
         if (typeof p === 'undefined' || p === null || p === '') {
             p = 1
+            this.cpagenumber = 1
         }
+        this.cpagenumber = p
 
-		this.getvm(p)
+		this.getvm(p, "create_time")
     },
 
     methods: {
@@ -273,43 +276,43 @@ export default {
 
         up: function() {
             if (Number(this.pagenumber) < Number(this.totalpagenumber)) {
-                this.getvm(Number(this.pagenumber)+1)
+                this.getvm(Number(this.pagenumber)+1, 'create_time')
                 }
             },
 
         down: function() {
             if (Number(this.pagenumber) > 1 ) {
-                this.getvm(Number(this.pagenumber)-1)
+                this.getvm(Number(this.pagenumber)-1, 'create_time')
                 }
                 },
 
 
         comment: function(res) {
             var d = new Array()
-            	for (var v in res) {
-                	if (res[v]["Comment"].length > 0) {
-                    	res[v]["flag"] = false
-                    	res[v]["flag2"] = true
-                    	} else {
-                    		res[v]["flag2"] = false
-                        	res[v]["flag"] = true
-                    	}
-                	res[v]["flag1"] = false
-                	d.push(res[v])
-				this.data = d
-                	}
-				for (let v in this.data) {
-					var r = this.getvmstatus(this.data[v].Uuid, this.data[v].Host)
-					r.then(value => {
-						this.data[v].Status = value
-						},
-					)}
+            for (var v in res) {
+               	if (res[v]["Comment"].length > 0) {
+                   	res[v]["flag"] = false
+                   	res[v]["flag2"] = true
+                   	} else {
+                   		res[v]["flag2"] = false
+                       	res[v]["flag"] = true
+                   	}
+               	res[v]["flag1"] = false
+               	d.push(res[v])
+			this.data = d
+               	}
+			for (let v in this.data) {
+				var r = this.getvmstatus(this.data[v].Uuid, this.data[v].Host)
+				r.then(value => {
+					this.data[v].Status = value
+					},
+				)}
             },
 	
-        getvm: function (start) {
+        getvm: function (start, item) {
             sessionStorage.setItem('pagenumber', start)
             var apiurl = `/api/vm/getvm`
-            this.$http.get(apiurl, { params: { start: start} }).then(response => {
+            this.$http.get(apiurl, { params: { start: start, item: item} }).then(response => {
 			if (response.data.err === null ) {
                 this.totalpagenumber = response.data.pagenumber
                 this.vmcount = response.data.vmcount
@@ -319,8 +322,8 @@ export default {
 					alert(response.data.err.Message)
 					this.$router.push({name:"login"})
 					} 
-            })   
-        },
+                })   
+            },
 
         deletevm: function (uuid, datacenter, storage, index) {
             var apiurl = `/api/vm/delete`
@@ -330,9 +333,9 @@ export default {
 					this.data[index].Exist=0	
 				} else {	
 					alert(response.data.err.Message)
-				}
-            })
-        },
+				    }
+                })
+            },
     
         restore: function (uuid, ip, os, host,datacenter, storage , owner, comment) {
             this.$emit("toParent", "restorevm");
@@ -354,8 +357,8 @@ export default {
                     } else {
                         alert("关机错误（'"+response.data.err.Message+"'）")
                     }
-            })
-        },
+                })
+            },
 
 
         destroy: function (uuid, index, host) {

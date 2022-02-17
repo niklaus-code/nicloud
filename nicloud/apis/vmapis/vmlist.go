@@ -69,6 +69,7 @@ func GetVmStatus(c *gin.Context) {
 func Getvmlist(c *gin.Context) {
   res := make(map[string]interface{})
   start, err := strconv.Atoi(c.Query("start"))
+  item := c.Query("item")
   if err != nil {
     res["err"] = vmerror.Error{Message: "参数错误"}
     c.JSON(200, res)
@@ -93,7 +94,7 @@ func Getvmlist(c *gin.Context) {
     return
   }
 
-  vmlist, err := vm.VmList(userid, start)
+  vmlist, err := vm.VmList(userid, start, item)
 
 	res["res"] = vmlist
   res["pagenumber"] = pagenumber
@@ -155,7 +156,6 @@ func Createvm(c *gin.Context) {
     Datacenter: datacenter,
     Storage: storage,
     Owner: user,
-    Comment: comment,
   }
 
   validate := validator.New()
