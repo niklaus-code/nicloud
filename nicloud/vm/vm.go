@@ -595,7 +595,7 @@ var odd =0
 func VmList(userid int, start int, item string) ([]map[string]interface{}, error) {
   odd = odd + 1
   var order string
-  if odd%2 == 0 {
+  if odd%2 == 0 || item == "create_time" {
     order = "desc"
   } else {
     order = "asc"
