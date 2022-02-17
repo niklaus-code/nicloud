@@ -131,6 +131,13 @@ export default {
     },
 
     mounted: function () {
+        let self = this
+        document.onkeydown = function(e) {
+            let ev = document.all ? window.event : e
+            if (ev.keyCode === 13) {
+                self.search()
+            }
+        }
         var p = sessionStorage.getItem('pagenumber')
         if (typeof p === 'undefined' || p === null || p === '') {
             p = 1
