@@ -590,7 +590,9 @@ func Getpagenumber(userid int) (int, int, error) {
 }
 
 //判断奇数偶数
-var odd =0
+var odd = 0
+var startpage = 1
+var order = "desc"
 
 func VmList(userid int, start int, item string) ([]map[string]interface{}, error) {
   odd = odd + 1
@@ -618,7 +620,7 @@ func VmList(userid int, start int, item string) ([]map[string]interface{}, error
   }
 
   if role.Rolename == "admin" {
-    dbs.Table("vms").Order(fmt.Sprintf("%s %s", item, order)).Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Limit(offset).Offset((start-1)*offset).Scan(&v)
+    dbs.Raw(fmt.Sprintf("select * from (select * from vms  order by create_time desc limit 2) v order by v.ip %s", order)).Scan(&v)
   } else {
     dbs.Table("vms").Order(fmt.Sprintf("%s %s", item, order)).Where("owner=?", userid).Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Limit(offset).Offset((start-1)*offset).Scan(&v)
   }
