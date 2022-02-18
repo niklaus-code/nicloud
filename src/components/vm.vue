@@ -96,7 +96,7 @@
     <div class="btn-group col-md-6" style="margin-top:20px; margin-bottom:30px">
         <ul class="pagination">
             <li><a @click="down()">&laquo;</a></li>
-            <li  v-for="(item, index) in totalpagenumber"><a @click="getvm(item, 'create_time')">{{item}}</a></li>
+            <li  v-for="(item, index) in totalpagenumber"><a @click="getvm(item, sortitem)">{{item}}</a></li>
             <li><a @click="up()">&raquo;</a></li>
         </ul>
 	</div>
@@ -107,6 +107,7 @@
 export default {
     data () {
         return {
+            sortitem: "create_time",
             vmcount: 0,
             comments: "",
             totalpagenumber: "pagenumber",
@@ -276,13 +277,13 @@ export default {
 
         up: function() {
             if (Number(this.pagenumber) < Number(this.totalpagenumber)) {
-                this.getvm(Number(this.pagenumber)+1, 'create_time')
+                this.getvm(Number(this.pagenumber)+1, this.sortitem)
                 }
             },
 
         down: function() {
             if (Number(this.pagenumber) > 1 ) {
-                this.getvm(Number(this.pagenumber)-1, 'create_time')
+                this.getvm(Number(this.pagenumber)-1, this.sortitem)
                 }
                 },
 
@@ -310,6 +311,7 @@ export default {
             },
 	
         getvm: function (start, item) {
+            this.sortitem = item
             this.cpagenumber = start
             sessionStorage.setItem('pagenumber', start)
             var apiurl = `/api/vm/getvm`
