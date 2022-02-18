@@ -620,7 +620,7 @@ func VmList(userid int, start int, item string) ([]map[string]interface{}, error
   }
 
   if role.Rolename == "admin" {
-    dbs.Raw(fmt.Sprintf("select * from (select * from vms  order by create_time desc limit 2) v order by v.ip %s", order)).Scan(&v)
+    dbs.Debug().Raw(fmt.Sprintf("select * from (select * from vms  order by create_time desc limit %d offset %d) v order by create_time %s", offset, (start-1)*offset, order)).Scan(&v)
   } else {
     dbs.Table("vms").Order(fmt.Sprintf("%s %s", item, order)).Where("owner=?", userid).Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Limit(offset).Offset((start-1)*offset).Scan(&v)
   }
