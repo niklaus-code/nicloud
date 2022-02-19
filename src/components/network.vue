@@ -36,7 +36,7 @@
 							<button class="btn btn-success btn-xs" type="button" @click="createip(item.Vlan, item.Bridge, item.Network, item.Prefix, item.Gateway)">
                 				增加IP
             				</button>
-							<button class="btn btn-success btn-xs" type="button" @click="ips(item.Vlan)">
+							<button class="btn btn-primary btn-xs" type="button" @click="ips(item.Vlan)">
                 				查看IP
             				</button>
 							<button class="btn btn-danger btn-xs" type="button" @click="deletevlan(item.Vlan, index)">
