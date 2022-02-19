@@ -24,12 +24,12 @@
         		<th>实例名称</th>
         		<th @click="getvm(cpagenumber, 'ip')">IP地址 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
         		<th @click="getvm(cpagenumber, 'os')">镜像 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
-        		<th @click="getvm(cpagenumber, 'host')" style="min-width:90px">所属宿主机 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
+        		<th @click="getvm(cpagenumber, 'host')" style="min-width:90px">宿主机 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
         		<th>CPU/内存</th>
         		<th>云盘</th>
-        		<th @click="getvm(cpagenumber, 'owner')">所属者 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
+        		<th style="min-width:74px" @click="getvm(cpagenumber, 'owner')">所属者 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
         		<th>备注</th>
-        		<th>状态</th>
+        		<th style="min-width:44px">状态</th>
         		<th>操作</th>
       		</tr>
     	</thead>
