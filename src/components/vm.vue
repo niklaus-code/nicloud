@@ -42,7 +42,7 @@
        			<td>{{item.Ip}}</td>
        			<td>{{item.Os}}</td>
        			<td>{{item.Host}}</td>
-       			<td  style="min-width:80px">{{item.Cpu}}核 / {{item.Mem}}G</td>
+       			<td  style="min-width: 95px">{{item.Cpu}}核 / {{item.Mem}}G</td>
        			<td>
 					<ul>
 						<li v-for="(k, v) in item.disk">
