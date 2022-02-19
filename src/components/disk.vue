@@ -41,8 +41,7 @@
 							<button class="btn btn-success btn-xs" type="button">
                 				创建快照
             				</button>
-							<!-- <button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="mount(, item.Storage, item.Pool, index)"> -->
-							<button v-if="item.Status" class="btn btn-success btn-xs" type="button" @click="mount('mountvdisk', item.Vdiskid, item.storage, item.pool)">
+							<button v-if="item.Status" class="btn btn-primary btn-xs" type="button" @click="mount('mountvdisk', item.Vdiskid, item.storage, item.pool)">
                 				挂载
             				</button>
 							<button v-else class="btn btn-warning btn-xs" type="button" @click="umount(item.Vm_ip, item.Vdiskid, index)">
