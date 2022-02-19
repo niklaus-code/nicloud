@@ -16,14 +16,14 @@
         					</label>
         				</th>
         				<th>镜像名称</th>
-        				<th>镜像类别</th>
+        				<th style="min-width:72px">镜像类别</th>
         				<th>块设备</th>
         				<th>快照名称</th>
         				<th>XML</th>
-        				<th>所属用户</th>
+        				<th style="min-width:72px">所属用户</th>
         				<th>存储集群</th>
-        				<th>数据中心</th>
-						<th>状态</th>
+        				<th style="min-width:72px">数据中心</th>
+						<th style="min-width:44px">状态</th>
 						<th>操作</th>
       				</tr>
     			</thead>

@@ -415,6 +415,12 @@ export default {
 </script>
 
 <style scoped>
+ul {
+    left: -60px;
+    right:0;
+    min-width: 140px;
+}
+
 .col-md-5 {
     padding-right:0;
 }
