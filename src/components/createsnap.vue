@@ -1,10 +1,10 @@
 <template>
 <div>
-      <div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
-                <h4>云主机 & 创建快照</h4>
+      <div class="col-sm-12 form-group" style="border-bottom: 1px green solid;">
+                <h4>云主机 & 快照管理</h4>
             </div>
 
-        <div class="col-sm-10 col-sm-offset-1 choose">
+        <div class="col-sm-10 col-sm-offset-1 choose" >
             <div class="col-sm-12" >
                 <div class="col-sm-2" >
                     <label>IP :</label>
@@ -59,7 +59,9 @@
                             <td>{{c.Snap}}</td>
                             <td>{{c.Create_time}}</td>
                             <td>
-                                <button type="button" class="btn btn-success btn-xs" @click="rollback(c.Snap)">从此快照恢复</button>
+                                <button type="button" class="btn btn-success btn-xs" @click="rollback(c.Snap)">以此快照恢复</button>
+                                <button type="button" class="btn btn-primary btn-xs" @click="rollback(c.Snap)">以此创建镜像</button>
+                                <button type="button" class="btn btn-danger btn-xs" @click="rollback(c.Snap)">删除快照</button>
                             </td>
                         </tr>
                     </tbody>
@@ -195,7 +197,7 @@ export default {
 }
 
 .choose {
-	padding: 10px;
+    padding-top: 20px;
 	border-style: solid;
 	border-color: #ddd;
 	border-width: 1px;
