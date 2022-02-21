@@ -21,7 +21,7 @@ type Vms_os struct {
   Datacenter string `json:"Datacenter" validate:"required"`
   Storage string  `json:"Storage" validate:"required"`
   Cephblockdevice string  `json:"Cephblockdevice" validate:"required"`
-  Snapimage string  `json:"Snapimage" validate:"required"`
+  Snapimage string
   Xml string  `json:"Xml" validate:"required"`
   Status int8
 }
@@ -93,13 +93,25 @@ func Update(id int, datacenter string, storage string, osname string,  snapimage
   return nil
 }
 
-func Add(datacenter string, storage string,osname string, cephblockdevice string, snapimage string, xml string, sort int, owner int) error {
+func Add(datacenter string, storage string,osname string, cephblockdevice string, xml string, sort int, owner int, createsnap bool) error {
+  snap := ""
+  if createsnap {
+    storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
+    if err != nil {
+      return err
+    }
+    snap, err = cephcommon.CreateSnapAndProtect(storageinfo.Pool, cephblockdevice)
+    if err != nil {
+      return err
+    }
+  }
+
   os := &Vms_os{
     Datacenter: datacenter,
     Storage: storage,
     Osname: osname,
     Cephblockdevice: cephblockdevice,
-    Snapimage: snapimage,
+    Snapimage: snap,
     Xml: xml,
     Status: 1,
     Sort: sort,

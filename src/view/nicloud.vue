@@ -73,7 +73,6 @@ import createdatacenter from '@/components/createdatacenter'
 import datacenter from '@/components/datacenter'
 import vmbottom from '@/components/vmbottom'
 import snap from '@/components/snap'
-import createsnap from '@/components/createsnap'
 import restorevm from '@/components/restorevm'
 import user from '@/components/user'
 import createuser from '@/components/createuser'
@@ -95,7 +94,7 @@ export default {
     },
 
     components: {
-        createuser, user, migratevmlive, restorevm, createsnap, snap, vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
+        createuser, user, migratevmlive, restorevm, snap, vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
     },
 
 

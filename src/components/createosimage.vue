@@ -50,25 +50,25 @@
 					</div>
 				</div>
     		</div>
-				<div class="col-sm-12" style="margin-top:20px">
-	 		<div class="form-group">
-				<div class="col-sm-2 col-sm-offset-2">
-        			<label>镜像名称</label>
-				</div>
-				<div class="col-sm-8">
-					<form role="form">
-  						<div class="form-group">
-    						<input type="text" class="form-control" v-model="osimage" placeholder="">
-  						</div>
-					</form>
-				</div>
+			<div class="col-sm-12" style="margin-top:20px">
+	 		    <div class="form-group">
+				    <div class="col-sm-2 col-sm-offset-2">
+        			    <label>镜像名称</label>
+				    </div>
+				    <div class="col-sm-8">
+					    <form role="form">
+  						    <div class="form-group">
+    						    <input type="text" class="form-control" v-model="osimage" placeholder="">
+  						    </div>
+					    </form>
+				    </div>
 				</div>
     		</div>
-				<div class="col-sm-12">
-	 		<div class="form-group">
-				<div class="col-sm-2 col-sm-offset-2">
-        			<label>ceph块</label>
-				</div>
+			<div class="col-sm-12" style="margin-top: 6px">
+	 		    <div class="form-group">
+				    <div class="col-sm-2 col-sm-offset-2">
+        			    <label>ceph块名称</label>
+				    </div>
 				<div class="col-sm-8">
 					<form role="form">
   						<div class="form-group">
@@ -78,24 +78,24 @@
 				</div>
 				</div>
     		</div>
-				<div class="col-sm-12">
-	 		<div class="form-group">
-				<div class="col-sm-2 col-sm-offset-2">
-        			<label>快照名称</label>
-				</div>
-				<div class="col-sm-8">
-					<form role="form">
-  						<div class="form-group">
-    						<input type="text" class="form-control" v-model="snapimage" placeholder="">
-  						</div>
-					</form>
-				</div>
+			<div class="col-sm-12" style="margin-top: 6px">
+	 		    <div class="form-group">
+				    <div class="col-sm-2 col-sm-offset-2">
+        			    <label>快照名称</label>
+				    </div>
+				    <div class="col-sm-8">
+                        <div class="checkbox" style="margin-top:0">
+                            <label style="float: left">
+                                <input type="checkbox" @click="checkbox" style="margin-top: -6px"><span style="color: #999">勾选创建快照并以此为基础克隆镜像</span>
+                            </label>
+                        </div>
+				    </div>
 				</div>
     		</div>
-			<div class="col-sm-12">
+			<div class="col-sm-12" style="margin-top: 10px">
 	 			<div class="form-group">
 					<div class="col-sm-2 col-sm-offset-2">
-        				<label>xml</label>
+        				<label>镜像xml</label>
 					</div>
 					<div class="col-sm-8">
 						<form role="form">
@@ -134,8 +134,9 @@ export default {
 
 			osimage: "",
 			cephblockdevice: "",
-			snapimage: "",
 			xml: "",
+
+            checkboxobj: false,
         }
     },
 
@@ -145,6 +146,16 @@ export default {
     },
 
     methods: {
+        checkbox: function () {
+            if (this.checkboxobj == false ) {
+                alert("已勾选")
+                this.checkboxobj = true
+                } else {
+                    alert("已取消")
+                    this.checkboxobj = false
+                }
+            },
+
         getdatacenter: function () {
             var apiurl = `/api/datacenter/getdatacenter`
 
@@ -173,12 +184,11 @@ export default {
 		vlaninfo: function () {
             this.osimage = this.$route.query.osimage
             this.cephblockdevice = this.$route.query.cephblockdevice
-            this.snapimage = this.$route.query.snapimage
             this.xml = this.$route.query.xml
             },
 
-		check: function (osname, cephblockdevice, snapimage, xml) {
-			if (typeof osname === 'undefined' || osname === null || osname === ''|| typeof cephblockdevice === 'undefined' || cephblockdevice === null || cephblockdevice === '' || typeof snapimage === 'undefined' || snapimage === null || snapimage === '' ||typeof xml === 'undefined' || xml === null || xml === '') {
+		check: function (osname, cephblockdevice, xml) {
+			if (typeof osname === 'undefined' || osname === null || osname === ''|| typeof cephblockdevice === 'undefined' || cephblockdevice === null || cephblockdevice === '' ||typeof xml === 'undefined' || xml === null || xml === '') {
 				alert("缺少信息")
                 return true
             } else {
@@ -187,14 +197,14 @@ export default {
 			},
 
 		createosimage: function () {
-			if (this.check(this.osimage, this.cephblockdevice, this.snapimage, this.xml)) {
+			if (this.check(this.osimage, this.cephblockdevice, this.xml)) {
 				return 
 				}
 		
 
             var apiurl = `/api/osimage/createimage`
 
-            this.$http.post(apiurl, this.$qs.stringify({osname: this.osimage, datacenter: this.centervalue, storage: this.storagevalue, cephblockdevice: this.cephblockdevice, snapimage: this.snapimage, xml: this.xml, sort: this.sortvalue.id})).then(response => {
+            this.$http.post(apiurl, this.$qs.stringify({osname: this.osimage, datacenter: this.centervalue, storage: this.storagevalue, cephblockdevice: this.cephblockdevice, createsnap: this.checkboxobj, xml: this.xml, sort: this.sortvalue.id})).then(response => {
 				if (response.data.err === null) {
 					alert("创建成功!")
                 	this.$emit("toParent", "osimage");

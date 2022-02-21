@@ -1,7 +1,6 @@
 package osimage
 
 import (
-  "fmt"
   "github.com/gin-gonic/gin"
   "github.com/go-playground/validator/v10"
   "nicloud/osimage"
@@ -102,15 +101,22 @@ func GetImageby(c *gin.Context) {
 }
 
 func AddImage(c *gin.Context) {
+  res := make(map[string]interface{})
+
   datacenter := c.PostForm("datacenter")
   storage := c.PostForm("storage")
   osname := c.PostForm("osname")
-  snapname := c.PostForm("snapimage")
+  createsnap, err := strconv.ParseBool(c.PostForm("createsnap"))
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "参数错误"}
+    c.JSON(200, res)
+    return
+  }
+
   cephblockdevice := c.PostForm("cephblockdevice")
   xml :=c.PostForm("xml")
   sort,_ := strconv.Atoi(c.PostForm("sort"))
 
-  res := make(map[string]interface{})
   token := c.Request.Header.Get("token")
   user, err := utils.ParseToken(token)
 
@@ -126,7 +132,6 @@ func AddImage(c *gin.Context) {
     Datacenter: datacenter,
     Storage: storage,
     Osname: osname,
-    Snapimage: snapname,
     Cephblockdevice: cephblockdevice,
     Xml: xml,
   }
@@ -134,13 +139,12 @@ func AddImage(c *gin.Context) {
   validate := validator.New()
   err = validate.Struct(o)
   if err != nil {
-    fmt.Println(err)
     res["err"] = vmerror.Error{Message: "参数错误"}
     c.JSON(400, res)
     return
   }
 
-  err = osimage.Add(datacenter, storage, osname, cephblockdevice, snapname, xml, sort , user)
+  err = osimage.Add(datacenter, storage, osname, cephblockdevice,  xml, sort , user, createsnap)
 
   res["err"] = err
   c.JSON(200, res)

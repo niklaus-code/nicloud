@@ -620,7 +620,7 @@ func VmList(userid int, start int, item string) ([]map[string]interface{}, error
   }
 
   if role.Rolename == "admin" {
-    dbs.Debug().Raw(fmt.Sprintf("select * from (select * from vms  order by create_time desc limit %d offset %d) v order by %s %s", offset, (start-1)*offset,item, order)).Scan(&v)
+    dbs.Raw(fmt.Sprintf("select * from (select * from vms  order by create_time desc limit %d offset %d) v order by %s %s", offset, (start-1)*offset,item, order)).Scan(&v)
   } else {
     dbs.Table("vms").Order(fmt.Sprintf("%s %s", item, order)).Where("owner=?", userid).Order("create_time desc").Select([]string{"uuid", "name", "cpu", "mem", "owner", "comment", "status", "storage", "datacenter", "exist", "ip", "host", "os"}).Limit(offset).Offset((start-1)*offset).Scan(&v)
   }
@@ -728,6 +728,30 @@ func RollbackSnap(vmid string, snapname string, datacenter string, storage strin
   r := cephcommon.Rollback(vmid, snapname, storageinfo.Pool)
   if r != nil {
     return vmerror.Error{Message: r.Error()}
+  }
+  return nil
+}
+
+func DelSnap(vmid string, snapname string, datacenter string, storage string) error {
+  storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
+  if err != nil {
+    return err
+  }
+
+  r := cephcommon.Delsnap(vmid, snapname, storageinfo.Pool)
+  if r != nil {
+    return r
+  }
+
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  fmt.Println(vmid, snapname)
+  errdb := dbs.Model(Vms{}).Where("vm_uuid=? and snap=?", vmid, snapname).Delete(cephcommon.Vms_snaps{})
+  if errdb.Error != nil {
+    return errdb.Error
   }
   return nil
 }

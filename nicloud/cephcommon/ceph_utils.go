@@ -84,7 +84,7 @@ func Cephinfobyname(datacenter string, storage string)(*Vms_Ceph, error) {
   c := &Vms_Ceph{}
   errdb := dbs.Where("datacenter=? and uuid=?", datacenter, storage).First(c)
   if errdb.Error != nil {
-    return nil, errdb.Error
+    return nil, vmerror.Error{Message: errdb.Error.Error()}
   }
   return c, nil
 }
@@ -94,7 +94,7 @@ func CephConn() (*rados.Conn, error) {
   if err != nil {
     return nil, err
   }
-  err = conn.ReadDefaultConfigFile()
+  err = conn.ReadDefaultConfigFile() // /etc/ceph/ceph.conf
   if err != nil {
     return nil, err
   }
@@ -152,7 +152,7 @@ func RbdClone(id string, cephblock string, snap string, pool string) (string, er
   snapisprotected, _ := snapshot.IsProtected()
 
   if snapisprotected == false {
-    err = snapshot.Protect()
+    return "", vmerror.Error{Message: "镜像快照保护未设置"}
   }
 
   _, err = img_ctx.Clone(snap, ioctx, id, rbd.FeatureLayering, 12)
@@ -276,4 +276,48 @@ func Rollback(vmid string, snapname string, pool string) error {
     return err
   }
   return nil
+}
+
+func Delsnap(vmid string, snapname string, pool string) error {
+  img, err := Getimgbyname(vmid, pool)
+  if err != nil {
+    return err
+  }
+
+  s := img.GetSnapshot(snapname)
+  b, err := s.IsProtected()
+  if err != nil {
+    return err
+  }
+
+  if b {
+    err = s.Unprotect()
+    if err != nil {
+      return err
+    }
+  }
+  err = s.Remove()
+  if err != nil {
+    return err
+  }
+  return nil
+}
+
+func CreateSnapAndProtect(pool string, blockimage string) (string, error) {
+  img, err := Getimgbyname(blockimage, pool)
+  if err != nil {
+    return "", err
+  }
+
+  snapname := blockimage+"-snap-" +time.Now().Format("20060102 ")
+  snap, err := img.CreateSnapshot(snapname)
+  if err != nil {
+    return "", vmerror.Error{Message: "创建快照失败: " + err.Error()}
+  }
+
+  err = snap.Protect()
+  if err != nil {
+    return "", vmerror.Error{Message: err.Error()}
+  }
+  return snapname, nil
 }

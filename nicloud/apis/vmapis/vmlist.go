@@ -325,3 +325,23 @@ func Rollback(c *gin.Context)  {
   res["err"] = err
   c.JSON(200, res)
 }
+
+func DelSnap(c *gin.Context)  {
+  uuid := c.Query("uuid")
+  datacenter := c.Query("datacenter")
+  storage := c.Query("storage")
+  snapname := c.Query("snapname")
+
+  res := make(map[string]interface{})
+  err := vm.DelSnap(uuid, snapname,  datacenter, storage)
+
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "删除快照失败: " + err.Error()}
+  } else {
+    res["err"] = nil
+  }
+
+
+  c.JSON(200, res)
+}
+

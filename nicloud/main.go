@@ -54,6 +54,7 @@ func main() {
     v2.GET("rebuild", vmapis.Rebuild)
     v2.POST("createsnap", vmapis.Createsnap)
     v2.GET("getsnap", vmapis.Getsnap)
+    v2.DELETE("delsnap", vmapis.DelSnap)
     v2.GET("rollback", vmapis.Rollback)
 	}
 
