@@ -201,7 +201,7 @@ export default {
 
         getvm: function (start) {
             var apiurl = `/api/vm/getvm`
-            this.$http.get(apiurl, { params: { start: start} }).then(response => {
+            this.$http.get(apiurl, { params: { start: start, item: "create_time"} }).then(response => {
             if (response.data.err === null ) {
                 this.totalpagenumber = response.data.pagenumber
                 this.pagenumber = start

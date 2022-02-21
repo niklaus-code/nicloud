@@ -38,9 +38,6 @@
                         </td>
         				<td>{{item.Createtime}}</td>
 		    			<td>
-							<button class="btn btn-success btn-xs" type="button">
-                				创建快照
-            				</button>
 							<button v-if="item.Status" class="btn btn-primary btn-xs" type="button" @click="mount('mountvdisk', item.Vdiskid, item.storage, item.pool)">
                 				挂载
             				</button>

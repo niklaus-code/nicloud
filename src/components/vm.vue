@@ -416,6 +416,7 @@ export default {
 
 <style scoped>
 ul {
+    margin-bottom: 0;
     left: -60px;
     right:0;
     min-width: 140px;

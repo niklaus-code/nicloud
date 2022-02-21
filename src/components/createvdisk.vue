@@ -106,7 +106,7 @@ export default {
 			
 			containvalue: "", 
 			contain: [
-				100, 200, 500, 
+				100, 200, 500,1024 
 				], 
         }
     },
