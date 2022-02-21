@@ -55,13 +55,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="c in snap">
+                        <tr v-for="(c, index) in snap" v-if="c.Status">
                             <td>{{c.Snap}}</td>
                             <td>{{c.Create_time}}</td>
                             <td>
-                                <button type="button" class="btn btn-success btn-xs" @click="rollback(c.Snap)">以此快照恢复</button>
-                                <button type="button" class="btn btn-primary btn-xs" @click="rollback(c.Snap)">以此创建镜像</button>
-                                <button type="button" class="btn btn-danger btn-xs" @click="rmsnap(c.Snap)">删除快照</button>
+                                <button type="button" class="btn btn-success btn-xs" @click="rollback(c.Snap)">以此创建镜像</button>
+                                <button type="button" class="btn btn-primary btn-xs" @click="rollback(c.Snap)">以此快照恢复</button>
+                                <button type="button" class="btn btn-danger btn-xs" @click="rmsnap(c.Snap, index)">删除快照</button>
                             </td>
                         </tr>
                     </tbody>
@@ -117,12 +117,13 @@ export default {
             return
             },
 
-        rmsnap: function (snapname) {
+        rmsnap: function (snapname, index) {
             var param = {uuid: this.uuid, datacenter: this.datacenter, storage: this.storage, snapname: snapname}
             var apiurl = `/api/vm/delsnap`
             this.$http.delete(apiurl, {params: param} ).then(response => {
                 if (response.data.err == null) {
                     alert("删除成功")
+                    this.snap[index].Status = false
                 } else {    
                     alert(response.data.err.Message)
                 }

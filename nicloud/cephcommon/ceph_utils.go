@@ -217,6 +217,7 @@ type Vms_snaps struct {
   Storage string
   Snap string
   Create_time time.Time
+  Status bool
 }
 
 func Getimgbyname(imgname string, pool string) (*rbd.Image, error) {
@@ -249,6 +250,7 @@ func Createimgsnap(vmid string, datacenter string, storage string, snapname stri
    Storage: storage,
    Snap: snapname,
    Create_time: time.Now(),
+   Status: true,
   }
 
   dbs, err := db.NicloudDb()
