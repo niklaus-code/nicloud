@@ -135,9 +135,9 @@ func Downloadips(vlan string) (string, error) {
   var ipliststr string
   str1 := "host v_"
   for _, v := range ips {
+      ipliststr += str1
       ipliststr += v.Ipv4
       ipliststr += "{hardware ethernet "
-      ipliststr += str1
       ipliststr += v.Macaddr
       ipliststr += ";fixed-address "
       ipliststr += v.Ipv4
