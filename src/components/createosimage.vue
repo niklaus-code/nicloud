@@ -81,7 +81,7 @@
 			<div class="col-sm-12" style="margin-top: 6px">
 	 		    <div class="form-group">
 				    <div class="col-sm-2 col-sm-offset-2">
-        			    <label>快照名称</label>
+        			    <label>是否创建快照</label>
 				    </div>
 				    <div class="col-sm-8">
                         <div class="checkbox" style="margin-top:0">
