@@ -385,7 +385,7 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
   if len(disknum) >= 5 {
     return vmerror.Error{Message: "Maximum number of mounted to 5"}
   }
-  storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
+  storageinfo, err := cephcommon.Cephinfobyuuid(datacenter, storage)
   if err != nil {
     return err
   }

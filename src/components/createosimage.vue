@@ -29,7 +29,7 @@
 				    	<select class="col-sm-12" v-model="storagevalue">
 							<option value="">--请选择--</option>
                         	<option  v-for="c in storage" :value="c.Uuid">
-                            	{{ c.Uuid }}
+                            	{{ c.Name }}
                         	</option>
                     	</select>
 					</div>

@@ -9,7 +9,8 @@ import (
 )
 
 type Vms_Ceph struct {
-  Uuid string
+  Uuid string`json:"Uuid" validate:"required"`
+  Name string `json:"Name" validate:"required"`
   Pool string `json:"Pool" validate:"required"`
   Datacenter string `json:"Datacenter" validate:"required"`
   Ceph_secret string  `json:"Ceph_secret" validate:"required"`
@@ -33,9 +34,10 @@ func Delete(uuid string) error {
   return nil
 }
 
-func Add(name string, pool string, datacenter string, ceph_secret string, ips string, port string, comment  string) error {
+func Add(uuid string, name string, pool string, datacenter string, ceph_secret string, ips string, port string, comment  string) error {
   c := &Vms_Ceph{
     Uuid: name,
+    Name: name,
     Pool: pool,
     Datacenter: datacenter,
     Ceph_secret: ceph_secret,
@@ -76,7 +78,7 @@ func Getpool(datacenter string, storage string)([]*Vms_Ceph, error) {
   return c, nil
 }
 
-func Cephinfobyname(datacenter string, storage string)(*Vms_Ceph, error) {
+func Cephinfobyuuid(datacenter string, storage string)(*Vms_Ceph, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err

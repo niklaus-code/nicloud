@@ -1,25 +1,39 @@
 <template>
 <div>
-      <div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
-                <h4>创建存储</h4>
-            </div>
+    <div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
+        <h4>创建存储</h4>
+    </div>
 
-		<div class="col-sm-8 col-sm-offset-1" style="margin-top:30px; margin-bottom:30px">
-				<div class="col-sm-12">
+	<div class="col-sm-8 col-sm-offset-1" style="margin-top:30px; margin-bottom:30px">
+		<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>数据中心</label>
 				</div>
 				<div class="col-sm-8">
-					                   <select class="col-sm-12" v-model="centervalue">
+				    <select class="col-sm-12" v-model="centervalue">
                         <option  v-for="c in datacenter" :value="c.Datacenter">
                             {{ c.Datacenter }}
                         </option>
                     </select>
 				</div>
     		</div>
-    		</div>
-				<div class="col-sm-12" style="margin-top:20px">
+    	</div>
+		<div class="col-sm-12" style="margin-top:20px">
+	 		<div class="form-group">
+				<div class="col-sm-4">
+        			<label>存储名称</label>
+				</div>
+				<div class="col-sm-8">
+					<form role="form">
+  						<div class="form-group">
+    						<input type="text" class="form-control" v-model="storagename" placeholder="">
+  						</div>
+					</form>
+				</div>
+			</div>
+    	</div>
+		<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>ceph-uuid</label>
@@ -27,13 +41,13 @@
 				<div class="col-sm-8">
 					<form role="form">
   						<div class="form-group">
-    						<input type="text" class="form-control" v-model="name" placeholder="">
+    						<input type="text" class="form-control" v-model="uuid" placeholder="">
   						</div>
 					</form>
 				</div>
-				</div>
-    		</div>
-				<div class="col-sm-12">
+			</div>
+    	</div>
+		<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>数据池</label>
@@ -45,9 +59,9 @@
   						</div>
 					</form>
 				</div>
-				</div>
-    		</div>
-				<div class="col-sm-12">
+			</div>
+    	</div>
+		<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>密钥</label>
@@ -59,9 +73,9 @@
   						</div>
 					</form>
 				</div>
-				</div>
-    		</div>
-				<div class="col-sm-12">
+			</div>
+    	</div>
+		<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>hosts</label>
@@ -73,9 +87,9 @@
   						</div>
 					</form>
 				</div>
-				</div>
-    		</div>
-				<div class="col-sm-12">
+			</div>
+    	</div>
+		<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>端口</label>
@@ -87,9 +101,9 @@
   						</div>
 					</form>
 				</div>
-				</div>
-    		</div>
-				<div class="col-sm-12">
+			</div>
+    	</div>
+		<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>备注</label>
@@ -101,8 +115,8 @@
   						</div>
 					</form>
 				</div>
-				</div>
-    		</div>
+			</div>
+    	</div>
 		<div class="form-group" style="margin-top:20px" >
 			<div class="col-sm-2 col-sm-offset-7">
   				<button type="submit" @click="createceph" class="btn btn-success">提交</button>
@@ -118,12 +132,13 @@ export default {
 			centervalue: "",
             datacenter: [],
 
-			name: "",
+			uuid: "",
 			pool: "",
 			ceph_secret: "",
 			ips: "",
 			port: "",
 			comment: "",
+            storagename: "",
         }
     },
 
@@ -157,7 +172,7 @@ export default {
 		createceph: function () {
             var apiurl = `/api/storage/add`
 
-            this.$http.post(apiurl,  this.$qs.stringify({ name: this.name, pool: this.pool, datacenter: this.centervalue, ceph_secret: this.ceph_secret, port: this.port, ips: this.ips, comment: this.comment})).then(response => {
+            this.$http.post(apiurl,  this.$qs.stringify({ uuid: this.uuid, storagename: this.storagename,  pool: this.pool, datacenter: this.centervalue, ceph_secret: this.ceph_secret, port: this.port, ips: this.ips, comment: this.comment})).then(response => {
 				if (response.data.err === null) {
 					alert("创建成功!")
 					this.$emit("toParent", "storage");
@@ -171,7 +186,6 @@ export default {
   }
 </script>
 <style scoped>
-
 .form-control {
     height:30px;
 }
@@ -185,19 +199,6 @@ select{
     font-family: "微软雅黑";
     border: 1px #ccc solid;
     border-radius: 5px;
-}
-
-.content {
-    box-shadow: 0 0 10px rgba(0,0,0,8);
-    border-radius: 10px/10px;
-    z-index: -1;
-    padding: 100px 0px 100px 0px;
-    margin-left: 0px;
-    margin-TOP: 50px;
-}
-
-.details-content .article-cont p {
-    padding:30px 0 0 5px
 }
 
 label {

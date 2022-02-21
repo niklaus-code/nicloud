@@ -39,7 +39,7 @@ func Mountdisk(c *gin.Context) {
     return
   }
 
-  storageinfo, err := cephcommon.Cephinfobyname(vminfo.Datacenter, vminfo.Storage)
+  storageinfo, err := cephcommon.Cephinfobyuuid(vminfo.Datacenter, vminfo.Storage)
   if err != nil {
     res["err"] = vmerror.Error{Message: "获取云主机信息失败"}
     c.JSON(200, res)

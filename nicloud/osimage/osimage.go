@@ -96,7 +96,7 @@ func Update(id int, datacenter string, storage string, osname string,  snapimage
 func Add(datacenter string, storage string,osname string, cephblockdevice string, xml string, sort int, owner int, createsnap bool) error {
   snap := ""
   if createsnap {
-    storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
+    storageinfo, err := cephcommon.Cephinfobyuuid(datacenter, storage)
     if err != nil {
       return err
     }
@@ -161,6 +161,13 @@ func Maposimage(user int, sort int) ([]map[string]interface{}, error)  {
       c["sort"] = sort.Sort
     }
 
+    storageinfo, err := cephcommon.Cephinfobyuuid(v.Datacenter, v.Storage)
+    if err != nil {
+      c["storagename"] = nil
+    } else {
+      c["storagename"] = storageinfo.Name
+    }
+
     owner, err := users.GetUserByUserID(v.Owner)
     if err != nil {
       c["owner"] = nil
@@ -217,7 +224,7 @@ func getxml(osname string) (string, error) {
 }
 
 func Xml(datacenter string, storage string, vlan string,  vcpu int, vmem int, uuid string, mac string, image_name string, osname string, pool string) (string, error) {
-  storagename, err := cephcommon.Cephinfobyname(datacenter, storage)
+  storagename, err := cephcommon.Cephinfobyuuid(datacenter, storage)
   if err != nil {
     return "", err
   }

@@ -1,6 +1,7 @@
 package cephapis
 
 import (
+  "fmt"
   "github.com/gin-gonic/gin"
   "github.com/go-playground/validator/v10"
   "nicloud/cephcommon"
@@ -37,7 +38,8 @@ func Delete(c *gin.Context) {
 }
 
 func Addceph(c *gin.Context) {
-  name := c.PostForm("name")
+  uuid := c.PostForm("uuid")
+  name := c.PostForm("storagename")
   pool := c.PostForm("pool")
   datacenter := c.PostForm("datacenter")
   ceph_secret := c.PostForm("ceph_secret")
@@ -46,6 +48,8 @@ func Addceph(c *gin.Context) {
   comment := c.PostForm("comment")
 
   ce := cephcommon.Vms_Ceph{
+    Uuid: uuid,
+    Name: name,
     Pool: pool,
     Datacenter: datacenter,
     Ceph_secret: ceph_secret,
@@ -58,13 +62,17 @@ func Addceph(c *gin.Context) {
   validate := validator.New()
   err := validate.Struct(&ce)
   if err != nil {
+    fmt.Println(err.Error())
     res["err"] = vmerror.Error{Message: "参数错误"}
     c.JSON(400, res)
     return
   }
 
-  err = cephcommon.Add(name, pool, datacenter, ceph_secret, ips, port, comment)
-  res["res"] = err
-
+  err = cephcommon.Add(uuid, name, pool, datacenter, ceph_secret, ips, port, comment)
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "创建失败" + err.Error()}
+  } else {
+    res["err"] = err
+  }
   c.JSON(200, res)
 }

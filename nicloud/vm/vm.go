@@ -172,7 +172,7 @@ func Delete(uuid string, datacenter string, storage string) (error) {
   }
   host := vminfo.Host
 
-  storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
+  storageinfo, err := cephcommon.Cephinfobyuuid(datacenter, storage)
   if err != nil {
     return err
   }
@@ -454,7 +454,7 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
 	  return err
   }
 
-  storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
+  storageinfo, err := cephcommon.Cephinfobyuuid(datacenter, storage)
   if err != nil {
     return err
   }
@@ -680,7 +680,7 @@ func Rebuildimg(image string, storage string, datacenter string, old_uuid string
     return err
   }
 
-  storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
+  storageinfo, err := cephcommon.Cephinfobyuuid(datacenter, storage)
   if err != nil {
     return err
   }
@@ -694,7 +694,7 @@ func Rebuildimg(image string, storage string, datacenter string, old_uuid string
 }
 
 func Creatsnap(vmid string, datacenter string, storage string, snapname string) error {
-  storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
+  storageinfo, err := cephcommon.Cephinfobyuuid(datacenter, storage)
   if err != nil {
     return err
   }
@@ -720,7 +720,7 @@ func Getsnap(datacenter string, storage string, vmid string) ([]cephcommon.Vms_s
 }
 
 func RollbackSnap(vmid string, snapname string, datacenter string, storage string) error {
-  storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
+  storageinfo, err := cephcommon.Cephinfobyuuid(datacenter, storage)
   if err != nil {
     return err
   }
@@ -733,7 +733,7 @@ func RollbackSnap(vmid string, snapname string, datacenter string, storage strin
 }
 
 func DelSnap(vmid string, snapname string, datacenter string, storage string) error {
-  storageinfo, err := cephcommon.Cephinfobyname(datacenter, storage)
+  storageinfo, err := cephcommon.Cephinfobyuuid(datacenter, storage)
   if err != nil {
     return err
   }

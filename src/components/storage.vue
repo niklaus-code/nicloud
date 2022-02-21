@@ -9,6 +9,7 @@
             					<input type="checkbox" v-model="checkvalue" @click="checkbox()">
         					</label>
         				</th>
+        				<th>名称</th>
         				<th>UUID</th>
         				<th>数据池</th>
         				<th>secret</th>
@@ -25,6 +26,7 @@
         				<label class="checkbox-inline">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
+        				<td>{{item.Name}}</td>
         				<td>{{item.Uuid}}</td>
         				<td>{{item.Pool}}</td>
         				<td>{{item.Ceph_secret}}</td>

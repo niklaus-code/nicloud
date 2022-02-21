@@ -39,7 +39,7 @@
         				<td>{{item.Snapimage}}</td>
         				<td class="tdxml" width="30%">{{item.Xml}}</td>
         				<td>{{item.owner}}</td>
-        				<td>{{item.Storage}}</td>
+        				<td>{{item.storagename}}</td>
         				<td>{{item.Datacenter}}</td>
 						<td>
                             <span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
