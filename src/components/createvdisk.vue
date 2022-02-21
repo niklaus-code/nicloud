@@ -7,7 +7,7 @@
 			<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-2 col-sm-offset-2">
-        			<label>数据中心</label>
+        			<label>数据中心*</label>
 				</div>
 				<div class="col-sm-8">
 				    <select class="col-sm-12" v-model="centervalue" @change="getstorage(centervalue)">
@@ -22,7 +22,7 @@
 				<div class="col-sm-12" style="margin-top:20px">
 	 		<div class="form-group">
 				<div class="col-sm-2 col-sm-offset-2">
-        			<label>存储集群</label>
+        			<label>存储集群*</label>
 				</div>
 				<div class="col-sm-8">
 				    <select class="col-sm-12" v-model="storagevalue" @change="getpool">
@@ -37,7 +37,7 @@
 				<div class="col-sm-12" style="margin-top:20px">
 	 		<div class="form-group">
 				<div class="col-sm-2 col-sm-offset-2">
-        			<label>存储池</label>
+        			<label>存储池*</label>
 				</div>
 				<div class="col-sm-8">
 				    <select class="col-sm-12" v-model="poolvalue">
@@ -52,7 +52,7 @@
 			<div class="col-sm-12" style="margin-top:20px">
 	 		<div class="form-group">
 				<div class="col-sm-2 col-sm-offset-2">
-        			<label>容量</label>
+        			<label>容量*</label>
 				</div>
 				<div class="col-sm-8">
 				    <select class="col-sm-12" v-model="containvalue">
@@ -72,7 +72,7 @@
 				<div class="col-sm-8">
                     <form role="form">
                         <div class="form-group">
-                            <input type="text" class="form-control" v-model="comment" placeholder="*必填">
+                            <input type="text" class="form-control" v-model="comment" placeholder="">
                         </div>
                     </form>
 				</div>

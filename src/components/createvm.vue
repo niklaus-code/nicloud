@@ -6,7 +6,7 @@
 		<div  class="col-sm-8 col-sm-offset-1" style="margin-top:20px">
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-4">
-        			<label>数据中心</label>
+        			<label>数据中心*</label>
 				</div>
 				<div class="col-sm-8">
         			<select class="col-sm-12" v-model="centervalue" @change="getvlan(centervalue)" @change="getstorage(centervalue)">
@@ -19,7 +19,7 @@
     		</div>
            <div class="col-sm-12 form-group">
                 <div class="col-sm-4">
-                    <label>存储集群</label>
+                    <label>存储集群*</label>
                 </div>
                 <div class="col-sm-8">
                     <select class="col-sm-12" v-model="storagevalue" @change="getpool()" @change="getimageby()">
@@ -33,7 +33,7 @@
 
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-4">
-        			<label>VLAN</label>
+        			<label>VLAN*</label>
 				</div>
 				<div class="col-sm-8">
         			<select class="col-sm-12" v-model="vlanvalue" @change="getip" @change="gethosts(centervalue)">
@@ -46,7 +46,7 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-4">
-        			<label>IP地址</label>
+        			<label>IP地址*</label>
 				</div>
 				<div class="col-sm-8">
 	                <select class="col-sm-12" v-model="ipvalue">
@@ -59,7 +59,7 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-4">
-        			<label>cpu / 内存</label>
+        			<label>cpu / 内存*</label>
 				</div>
 				<div class="col-sm-8">
         			<select class="col-sm-12" v-model="flavorvalue">
@@ -71,7 +71,7 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-4">
-        			<label>宿主机</label>
+        			<label>宿主机*</label>
 				</div>
 				<div class="col-sm-8 title">
         			<select class="col-sm-12" v-model="hostvalue">
@@ -84,7 +84,7 @@
     		</div>
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-4">
-        			<label>镜像</label>
+        			<label>镜像*</label>
 				</div>
 				<div class="col-sm-8">
         			<select class="col-sm-12" v-model="imagevalue">
@@ -102,7 +102,7 @@
 				<div class="col-sm-8">
                     <form role="form">
                         <div class="form-group">
-                            <input type="text" class="form-control" v-model="comment" placeholder="*必填">
+                            <input type="text" class="form-control" v-model="comment" placeholder="">
                         </div>
                     </form>
 				</div>
