@@ -40,7 +40,7 @@
 				</label>
        			<td width="300px">{{item.Name}}</td>
        			<td>{{item.Ip}}</td>
-       			<td>{{item.Os}}</td>
+       			<td>{{item.osname}}</td>
        			<td>{{item.Host}}</td>
        			<td  style="min-width: 95px">{{item.Cpu}}核 / {{item.Mem}}G</td>
        			<td>
@@ -285,8 +285,7 @@ export default {
             if (Number(this.pagenumber) > 1 ) {
                 this.getvm(Number(this.pagenumber)-1, this.sortitem)
                 }
-                },
-
+            },
 
         comment: function(res) {
             var d = new Array()

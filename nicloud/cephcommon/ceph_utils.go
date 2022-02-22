@@ -86,7 +86,7 @@ func Cephinfobyuuid(datacenter string, storage string)(*Vms_Ceph, error) {
   c := &Vms_Ceph{}
   errdb := dbs.Where("datacenter=? and uuid=?", datacenter, storage).First(c)
   if errdb.Error != nil {
-    return nil, vmerror.Error{Message: errdb.Error.Error()}
+    return nil, err
   }
   return c, nil
 }
@@ -144,7 +144,7 @@ func RbdClone(id string, cephblock string, snap string, pool string) (string, er
   //openimage
   o, err := rbd.OpenImage(ioctx, cephblock, snap)
   if err != nil {
-    return "", vmerror.Error{Message: err.Error()}
+    return "", err
   }
 
   img_ctx := image_ctx(ioctx, cephblock)
@@ -159,7 +159,7 @@ func RbdClone(id string, cephblock string, snap string, pool string) (string, er
 
   _, err = img_ctx.Clone(snap, ioctx, id, rbd.FeatureLayering, 12)
   if err != nil {
-    return "", vmerror.Error{Message: err.Error()}
+    return "", err
   }
   return id, nil
 }
@@ -218,7 +218,7 @@ type Vms_snaps struct {
   Datacenter string
   Storage string
   Snap string
-  Create_time time.Time
+  Create_time time.Time `json:"Create_time"`
   Status bool
 }
 
@@ -246,25 +246,6 @@ func Createimgsnap(vmid string, datacenter string, storage string, snapname stri
     return err
   }
 
-  s := Vms_snaps{
-   Vm_uuid: vmid,
-   Datacenter: datacenter,
-   Storage: storage,
-   Snap: snapname,
-   Create_time: time.Now(),
-   Status: true,
-  }
-
-  dbs, err := db.NicloudDb()
-  if err != nil {
-    return err
-  }
-
-  errdb := dbs.Create(&s)
-  if errdb.Error !=nil {
-    return errdb.Error
-  }
-
   return nil
 }
 
@@ -282,13 +263,14 @@ func Rollback(vmid string, snapname string, pool string) error {
   return nil
 }
 
-func Delsnap(vmid string, snapname string, pool string) error {
-  img, err := Getimgbyname(vmid, pool)
+func Delsnap(imageid string, snapname string, pool string) error {
+  img, err := Getimgbyname(imageid, pool)
   if err != nil {
     return err
   }
 
   s := img.GetSnapshot(snapname)
+
   b, err := s.IsProtected()
   if err != nil {
     return err
@@ -307,21 +289,58 @@ func Delsnap(vmid string, snapname string, pool string) error {
   return nil
 }
 
-func CreateSnapAndProtect(pool string, blockimage string) (string, error) {
-  img, err := Getimgbyname(blockimage, pool)
+func CreateSnapAndProtect(pool string, imgid string) (string, error) {
+  img, err := Getimgbyname(imgid, pool)
   if err != nil {
     return "", err
   }
 
-  snapname := blockimage+"-snap-" +time.Now().Format("20060102 ")
-  snap, err := img.CreateSnapshot(snapname)
+  snapname := imgid+"-snap-" +time.Now().Format("200601021504")
+  _, err = img.CreateSnapshot(snapname)
   if err != nil {
-    return "", vmerror.Error{Message: "创建快照失败: " + err.Error()}
+    return "", err
   }
 
-  err = snap.Protect()
+  err = SnapProtect(imgid, pool, snapname)
   if err != nil {
-    return "", vmerror.Error{Message: err.Error()}
+    return "", err
   }
   return snapname, nil
+}
+
+func SnapProtect(imgid string, pool string, snapname string) error {
+  img, err := Getimgbyname(imgid, pool)
+  if err != nil {
+    return err
+  }
+
+  s := img.GetSnapshot(snapname)
+  b, err := s.IsProtected()
+  if err != nil {
+    return err
+  }
+
+  if b == false {
+    s.Protect()
+  }
+
+  return nil
+}
+
+
+func ListChildernImages(datacenter string, storage string, imageid string) ([]string, error) {
+  cephinfo, err := Cephinfobyuuid(datacenter, storage)
+  if err != nil {
+    return nil, err
+  }
+  img, err := Getimgbyname(imageid, cephinfo.Pool)
+  if err != nil {
+    return nil, err
+  }
+
+  _, images, err := img.ListChildren()
+  if err != nil {
+    return nil, err
+  }
+  return images, nil
 }

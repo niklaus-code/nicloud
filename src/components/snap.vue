@@ -1,92 +1,104 @@
 <template>
 <div>
-      <div class="col-sm-12 form-group" style="border-bottom: 1px green solid;">
-                <h4>云主机 & 快照管理</h4>
-            </div>
+    <div class="col-sm-12 form-group" style="border-bottom: 1px green solid; margin-top: 20px">
+        <div style="width: 150px; float: left; padding-top: 8px">
+            <h4>云主机 & 快照管理</h4>
+        </div>
+        <div style="margin-left: 30px; width: 160px; float: left; padding-top: 20px; color: red">
+            <h5>*删除快照为永久性删除</h5>
+        </div>
+        <div style="margin-left: 5px; width: 160px; float: left; padding-top: 20px; color: red">
+            <h5>*有子镜像快照无法删除</h5>
+        </div>
+    </div>
 
-        <div class="col-sm-10 col-sm-offset-1 choose" >
-            <div class="col-sm-12" >
-                <div class="col-sm-2" >
-                    <label>IP :</label>
-                </div>
-                <div class="col-sm-10" >
-                    {{ip}}
-                </div>
+    <div class="col-sm-10 col-sm-offset-1 choose" >
+        <div class="col-sm-12" >
+            <div class="col-sm-2" >
+                <label>IP :</label>
             </div>
-            <div class="col-sm-12" >
-                <div class="col-sm-2" >
-                    <label>UUID :</label>
-                </div>
-                <div class="col-sm-10" >
-                    {{uuid}}
-                </div>
-            </div>
-            <div class="col-sm-12" >
-                <div class="col-sm-2" >
-                    <label>备注 :</label>
-                </div>
-                <div class="col-sm-10" >
-                    {{comment}}
-                </div>
-            </div>
-            <div class="col-sm-12" >
-                <div class="col-sm-2" >
-                    <label>存储集群 :</label>
-                </div>
-                <div class="col-sm-10" >
-                    {{storage}}
-                </div>
-            </div>
-            <div class="col-sm-12" >
-                <div class="col-sm-2" >
-                    <label>数据中心 :</label>
-                </div>
-                <div class="col-sm-10" >
-                    {{datacenter}}
-                </div>
-            </div>
-            <div class="col-sm-12" style="margin-top:30px">
-                <table class="table table-bordered" style="text-align: center" v-if="lensnap">
-                    <thead>
-                        <tr>
-                            <th>快照列表</th>
-                            <th>创建时间</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(c, index) in snap" v-if="c.Status">
-                            <td>{{c.Snap}}</td>
-                            <td>{{c.Create_time}}</td>
-                            <td>
-                                <button type="button" class="btn btn-success btn-xs" @click="rollback(c.Snap)">以此创建镜像</button>
-                                <button type="button" class="btn btn-primary btn-xs" @click="rollback(c.Snap)">以此快照恢复</button>
-                                <button type="button" class="btn btn-danger btn-xs" @click="rmsnap(c.Snap, index)">删除快照</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="col-sm-10" >
+               {{ip}}
             </div>
         </div>
-		<div class="col-sm-10 col-sm-offset-1 choose"  style="margin-top:30px; margin-bottom:30px" >
-            <div class="col-sm-12" >
-                    <div class="col-sm-2">
-                        <h5>输入快照名称&nbsp</h5>
-                    </div>
-                    <div class="col-sm-4">
-                        <form role="form">
-                            <div class="form-group">
-                                <input type="text" class="form-control" v-model="snapvalue" placeholder="">
-                            </div>
-                        </form>
-                    </div>
-              </div>
-            <div class="col-sm-12" >
-                <div class="col-sm-2 col-sm-offset-2">
-                    <button @click="createsnap" type="button" class="btn btn-success btn-xs">创建</button>
-		        </div>
+        <div class="col-sm-12" >
+            <div class="col-sm-2" >
+                <label>UUID :</label>
+            </div>
+            <div class="col-sm-10" >
+                {{uuid}}
+            </div>
+        </div>
+        <div class="col-sm-12" >
+            <div class="col-sm-2" >
+                <label>备注 :</label>
+            </div>
+            <div class="col-sm-10" >
+                {{comment}}
+            </div>
+        </div>
+        <div class="col-sm-12" >
+            <div class="col-sm-2" >
+                <label>存储集群 :</label>
+            </div>
+            <div class="col-sm-10" >
+                {{storage}}
+            </div>
+        </div>
+        <div class="col-sm-12" >
+            <div class="col-sm-2" >
+                <label>数据中心 :</label>
+            </div>
+            <div class="col-sm-10" >
+                {{datacenter}}
+            </div>
+        </div>
+        <div class="col-sm-12" style="margin-top:30px">
+            <table class="table table-bordered" style="text-align: center" v-if="lensnap">
+                <thead>
+                    <tr>
+                        <th>快照列表</th>
+                        <th>创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(c, index) in snap" v-if="c.Status">
+                        <td>{{c.Snap}}</td>
+                        <td>{{c.Create_time}}</td>
+                        <td>
+                            <button type="button" class="btn btn-success btn-xs" @click="createsnap(true)">以此创建镜像</button>
+                            <button type="button" class="btn btn-primary btn-xs" @click="rollback(c.Snap)">以此快照恢复</button>
+                            <button type="button" class="btn btn-danger btn-xs" @click="rmsnap(c.Snap, index)">删除快照</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+	<div class="col-sm-10 col-sm-offset-1 choose"  style="margin-top:30px; margin-bottom:30px" >
+        <div class="col-sm-12" >
+           <div class="col-sm-2">
+               <h5>输入快照名称&nbsp</h5>
+           </div>
+           <div class="col-sm-4">
+               <form role="form">
+                   <div class="form-group">
+                       <input type="text" class="form-control" v-model="snapvalue" placeholder="">
+                   </div>
+               </form>
+           </div>
+          </div>
+        <div class="col-sm-12" style="padding-bottom: 10px">
+            <div class="col-sm-2 col-sm-offset-2">
+                <button @click="createsnap(false)" type="button" class="btn btn-success btn-xs">创建</button>
 		    </div>
 		</div>
+	</div>
+	<div class="col-sm-10 col-sm-offset-1 "  style="margin-top:30px; margin-bottom:30px" >
+        <div class="col-sm-12" style="padding-bottom: 10px; color: red">
+	    </div>
+	</div>
 </div>
 </template>
 <script>
@@ -130,10 +142,11 @@ export default {
             })
         },
 
-        createsnap: function () {
+        createsnap: function (protect) {
             var apiurl = `/api/vm/createsnap`
-            this.$http.post(apiurl, this.$qs.stringify({ uuid: this.uuid, datacenter: this.datacenter, storage: this.storage, snapname: this.snapvalue})).then(response => {
+            this.$http.post(apiurl, this.$qs.stringify({ uuid: this.uuid, datacenter: this.datacenter, storage: this.storage, snapname: this.snapvalue, protect: protect})).then(response => {
                 if (response.data.err == null) {
+                    alert("创建成功")
                     this.getsnap()
                 } else {    
                     alert(response.data.err.Message)
@@ -188,6 +201,14 @@ export default {
   }
 </script>
 <style scoped>
+h5 {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.form-group {
+    margin-bottom: 0;
+}
 
 .createip {
 	font-weight:500

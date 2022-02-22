@@ -84,8 +84,6 @@ func Getvmlist(c *gin.Context) {
     return
   }
 
-
-
 	pagenumber, vmcount,  err := vm.Getpagenumber(userid)
 	if err != nil {
     res["res"] = nil
@@ -132,7 +130,7 @@ func Createvm(c *gin.Context) {
   cpu, _ := strconv.Atoi(c.PostForm("cpu"))
   mem, _ := strconv.Atoi(c.PostForm("mem"))
   host := c.PostForm("host")
-  os := c.PostForm("os")
+  osid, _ := strconv.Atoi(c.PostForm("os"))
   datacenter := c.PostForm("datacenter")
   storage := c.PostForm("storage")
   vlan := c.PostForm("vlan")
@@ -152,7 +150,7 @@ func Createvm(c *gin.Context) {
     Cpu: cpu,
     Mem: mem,
     Host: host,
-    Os: os,
+    Os: osid,
     Datacenter: datacenter,
     Storage: storage,
     Owner: user,
@@ -167,9 +165,13 @@ func Createvm(c *gin.Context) {
   }
   var rwLock sync.RWMutex
   rwLock.Lock()
-  err = vm.Create(datacenter, storage, vlan, cpu, mem, ip, host, os, user, comment)
+  err = vm.Create(datacenter, storage, vlan, cpu, mem, ip, host, osid, user, comment)
   rwLock.Unlock()
-  res["err"] = err
+
+  res["err"] = nil
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "创建失败: " + err.Error()}
+  }
   c.JSON(200, res)
 }
 
@@ -225,7 +227,11 @@ func Changeconfig(c *gin.Context) {
   }
   res := make(map[string]interface{})
   err = vm.Changeconfig(id, host, cpu, oldcpu, mem, oldmem, vmhost)
-  res["err"] = err
+
+  res["err"] = nil
+  if err != nil {
+    res["err"] = vmerror.Error{Message: err.Error()}
+  }
   c.JSON(200, res)
 }
 
@@ -241,7 +247,10 @@ func DeleteVM(c *gin.Context) {
 	err := vm.Delete(uuid, datacenter, storage)
 	rwLock.Unlock()
 
-	res["err"] = err
+	res["err"] = nil
+	if err != nil {
+    res["err"] = vmerror.Error{Message: err.Error()}
+  }
 	c.JSON(200, res)
 }
 
@@ -272,7 +281,10 @@ func Operation(c *gin.Context) {
 	}
 
 	res["res"] = s
-	res["err"] = err
+	res["err"] = nil
+	if err != nil {
+    res["err"] = vmerror.Error{Message: err.Error()}
+  }
 	c.JSON(200, res)
 }
 
@@ -280,24 +292,56 @@ func Rebuild(c *gin.Context)  {
   uuid := c.Query("uuid")
   datacenter := c.Query("datacenter")
   storage := c.Query("storage")
-  osname := c.Query("osname")
+  osid, _ := strconv.Atoi(c.Query("osname"))
   host := c.Query("host")
 
   res := make(map[string]interface{})
-  err := vm.Rebuildimg(osname, storage, datacenter, uuid, host)
-  res["err"] = err
+  err := vm.Rebuildimg(osid, storage, datacenter, uuid, host)
+
+  res["err"] = nil
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "重置失败: " + err.Error()}
+  }
   c.JSON(200, res)
 }
 
 func Createsnap(c *gin.Context)  {
+  var err error
+
+  res := make(map[string]interface{})
+  token := c.Request.Header.Get("token")
+  userid, err := utils.ParseToken(token)
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "认证失败"}
+    c.JSON(200, res)
+    return
+  }
+
+  snapname := c.PostForm("snapname")
+
+  if len(snapname) == 0 {
+    c.JSON(400, res)
+    return
+  }
+
   uuid := c.PostForm("uuid")
   datacenter := c.PostForm("datacenter")
   storage := c.PostForm("storage")
-  snapname := c.PostForm("snapname")
+  protect, err := strconv.ParseBool(c.PostForm("protect"))
+  if err != nil {
+    c.JSON(400, res)
+    return
+  }
 
-  res := make(map[string]interface{})
-  err := vm.Creatsnap(uuid, datacenter, storage, snapname)
-  res["err"] = err
+  if protect == false {
+    err = vm.CreatSnap(uuid, datacenter, storage, snapname)
+  } else {
+    err = vm.SaveSnapToImg(uuid, datacenter, storage, snapname, userid)
+  }
+  res["err"] = nil
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "创建失败: " + err.Error()}
+  }
   c.JSON(200, res)
 }
 
@@ -309,7 +353,11 @@ func Getsnap(c *gin.Context)  {
   res := make(map[string]interface{})
   s, err := vm.Getsnap(datacenter, storage, uuid)
   res["res"] = s
-  res["err"] = err
+
+  res["err"] = nil
+  if err != nil {
+    res["err"] = vmerror.Error{Message: err.Error()}
+  }
   c.JSON(200, res)
 }
 
@@ -322,7 +370,10 @@ func Rollback(c *gin.Context)  {
   res := make(map[string]interface{})
   err := vm.RollbackSnap(uuid, snapname,  datacenter, storage)
 
-  res["err"] = err
+  res["err"] = nil
+  if err != nil {
+    res["err"] = vmerror.Error{Message: err.Error()}
+  }
   c.JSON(200, res)
 }
 
@@ -335,12 +386,10 @@ func DelSnap(c *gin.Context)  {
   res := make(map[string]interface{})
   err := vm.DelSnap(uuid, snapname,  datacenter, storage)
 
+  res["err"] = nil
   if err != nil {
     res["err"] = vmerror.Error{Message: "删除快照失败: " + err.Error()}
-  } else {
-    res["err"] = nil
   }
-
 
   c.JSON(200, res)
 }

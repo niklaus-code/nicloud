@@ -89,7 +89,7 @@
 				<div class="col-sm-8">
         			<select class="col-sm-12" v-model="imagevalue">
 					  <option value="">--请选择--</option>
-  						<option  v-for="image in imagelist" :value="image.Osname">
+  						<option  v-for="image in imagelist" :value="image.Id">
 							{{ image.Osname }}
 						</option>
         			</select>

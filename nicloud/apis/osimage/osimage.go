@@ -1,8 +1,10 @@
 package osimage
 
 import (
+  "fmt"
   "github.com/gin-gonic/gin"
   "github.com/go-playground/validator/v10"
+  "nicloud/cephcommon"
   "nicloud/osimage"
   "nicloud/utils"
   "nicloud/vmerror"
@@ -144,8 +146,30 @@ func AddImage(c *gin.Context) {
     return
   }
 
-  err = osimage.Add(datacenter, storage, osname, cephblockdevice,  xml, sort , user, createsnap)
+  snap := ""
+  if createsnap {
+    storageinfo, err := cephcommon.Cephinfobyuuid(datacenter, storage)
+    if err != nil {
+      res["err"] = vmerror.Error{Message: err.Error()}
+      c.JSON(200, res)
+      return
+    }
+    snap, err = cephcommon.CreateSnapAndProtect(storageinfo.Pool, cephblockdevice)
+    if err != nil {
+      res["err"] = vmerror.Error{Message: err.Error()}
+      fmt.Println(err)
+      c.JSON(200, res)
+      return
+    }
+  }
 
-  res["err"] = err
+  os := osimage.Vms_os{}
+  err = os.Add(datacenter, storage, osname, cephblockdevice,  xml, sort , user, snap)
+
+  res["err"] = nil
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "创建失败: "+ err.Error()}
+  }
+
   c.JSON(200, res)
 }

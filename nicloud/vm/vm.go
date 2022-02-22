@@ -33,7 +33,7 @@ type Vms struct {
 	Exist       int
 	Ip          string  `json:"ip" validate:"min=8,max=15"`
 	Host        string  `json:"host" validate:"min=8,max=15"`
-	Os          string  `json:"os" validate:"required"`
+	Os          int  `json:"os" validate:"required"`
 	Datacenter  string  `json:"datacenter" validate:"required"`
 	Storage     string  `json:"storage" validate:"required"`
 }
@@ -336,7 +336,7 @@ func Start(uuid string, host string) error {
 	return nil
 }
 
-func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, vmxml string, ip string, host string, image string, owner int, comment string) (string, error) {
+func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, vmxml string, ip string, host string, image int, owner int, comment string) (string, error) {
   /*save config to db*/
   dbs, err := db.NicloudDb()
   if err != nil {
@@ -436,7 +436,7 @@ func deletevmbyid(uuid string) error {
   return nil
 }
 
-func Create(datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, image string, owner int, comment string) (error) {
+func Create(datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, osid int, owner int, comment string) (error) {
   mac, err := networks.Ipresource(ip)
   if err != nil {
     return err
@@ -449,7 +449,7 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
 	//create a uuid
 	u := utils.Createuuid()
 
-	osinfo, err := osimage.Getosinfobyosname(image, storage)
+	osinfo, err := osimage.GetOsInfoById(storage, osid)
 	if err != nil {
 	  return err
   }
@@ -465,7 +465,7 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
 	 return err
   }
 
-	f, err := osimage.Xml(datacenter, storage, vlan,  vcpu, vmem, u, mac, imge_name, image, storageinfo.Pool)
+	f, err := osimage.Xml(datacenter, storage, vlan,  vcpu, vmem, u, mac, imge_name, osid, storageinfo.Pool)
 	if err != nil {
 	  cephcommon.Rm_image(u, storageinfo.Pool)
 	  return err
@@ -483,7 +483,7 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
     libvirtd.Undefine(host, u)
     return err
   }
-	newvm, err := savevm(datacenter, storage, u, cpu, mem, f, ip, host, image, owner, comment)
+	newvm, err := savevm(datacenter, storage, u, cpu, mem, f, ip, host, osid, owner, comment)
 	if err != nil {
     cephcommon.Rm_image(u, storageinfo.Pool)
     libvirtd.Undefine(host, u)
@@ -539,11 +539,17 @@ func allvm(obj []Vms) []map[string]interface{}  {
     }
     c["disk"] = vdisk
 
+    osinfo, err := osimage.GetOsInfoById(v.Storage, v.Os)
+    if err != nil {
+      return nil
+    }
+    c["osname"] = osinfo.Osname
+
     vncid := base(v.Uuid, v.Host)
     c["vncid"] = vncid
     owner, err := users.GetUserByUserID(v.Owner)
     if err != nil {
-        c["Owner"] = nil
+      c["Owner"] = nil
     } else {
     	c["Owner"] = owner.Username
 	  }
@@ -663,7 +669,7 @@ func Updatecomments(uuid string, comment string) (bool, error) {
   return true, nil
 }
 
-func Rebuildimg(image string, storage string, datacenter string, old_uuid string, host string) error {
+func Rebuildimg(osid int, storage string, datacenter string, old_uuid string, host string) error {
   vmstat, err := VmStatus(old_uuid, host)
   if err != nil {
     return err
@@ -675,7 +681,7 @@ func Rebuildimg(image string, storage string, datacenter string, old_uuid string
     }
   }
 
-  osinfo, err := osimage.Getosinfobyosname(image, storage)
+  osinfo, err := osimage.GetOsInfoById(storage, osid)
   if err != nil {
     return err
   }
@@ -693,7 +699,7 @@ func Rebuildimg(image string, storage string, datacenter string, old_uuid string
   return nil
 }
 
-func Creatsnap(vmid string, datacenter string, storage string, snapname string) error {
+func CreatSnap(vmid string, datacenter string, storage string, snapname string) error {
   storageinfo, err := cephcommon.Cephinfobyuuid(datacenter, storage)
   if err != nil {
     return err
@@ -703,20 +709,89 @@ func Creatsnap(vmid string, datacenter string, storage string, snapname string) 
   if c != nil {
     return c
   }
+
+  s := cephcommon.Vms_snaps{
+    Vm_uuid: vmid,
+    Datacenter: datacenter,
+    Storage: storage,
+    Snap: snapname,
+    Create_time: time.Now(),
+    Status: true,
+  }
+
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  errdb := dbs.Create(&s)
+  if errdb.Error !=nil {
+    return errdb.Error
+  }
   return nil
 }
 
-func Getsnap(datacenter string, storage string, vmid string) ([]cephcommon.Vms_snaps, error) {
+func SaveSnapToImg(vmid string, datacenter string, storage string, snapname string, userid int) error {
+  vminfo, err  := GetVmByUuid(vmid)
+  if err != nil {
+    return err
+  }
+
+  osinfo, err := osimage.GetOsInfoById(storage, vminfo.Os)
+
+  storageinfo, err := cephcommon.Cephinfobyuuid(datacenter, storage)
+  if err != nil {
+    return err
+  }
+
+  c := cephcommon.SnapProtect(vmid, storageinfo.Pool, snapname)
+  if c != nil {
+    return c
+  }
+
+  os := osimage.Vms_os{}
+  err = os.Add(datacenter, storage, snapname+"_"+osinfo.Osname, vmid, osinfo.Xml, 2, userid, snapname)
+  if err != nil {
+    return err
+  }
+  return nil
+}
+
+
+func mapsnap(snap []cephcommon.Vms_snaps) []map[string]interface{}  {
+  var mapc []map[string]interface{}
+
+  for _, v := range snap {
+    c := make(map[string]interface{})
+    m := reflect.TypeOf(v)
+    n := reflect.ValueOf(v)
+    for i := 0; i < m.NumField(); i++ {
+      c[m.Field(i).Name] = n.Field(i).Interface()
+    }
+
+    chilimages, err := cephcommon.ListChildernImages(v.Datacenter, v.Storage, v.Vm_uuid)
+    if err != nil {
+      c["chilimages"] = nil
+    } else {
+      c["chilimages"] = chilimages
+    }
+    mapc = append(mapc, c)
+  }
+  return mapc
+}
+
+func Getsnap(datacenter string, storage string, vmid string) ([]map[string]interface{} , error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
+
   snap := []cephcommon.Vms_snaps{}
   errdb := dbs.Where("datacenter=? and storage= ? and vm_uuid =?", datacenter, storage, vmid).Find(&snap)
   if errdb.Error != nil {
     return nil, errdb.Error
   }
-  return snap, nil
+  return mapsnap(snap), nil
 }
 
 func RollbackSnap(vmid string, snapname string, datacenter string, storage string) error {
@@ -727,7 +802,7 @@ func RollbackSnap(vmid string, snapname string, datacenter string, storage strin
 
   r := cephcommon.Rollback(vmid, snapname, storageinfo.Pool)
   if r != nil {
-    return vmerror.Error{Message: r.Error()}
+    return r
   }
   return nil
 }
@@ -748,7 +823,6 @@ func DelSnap(vmid string, snapname string, datacenter string, storage string) er
     return err
   }
 
-  fmt.Println(vmid, snapname)
   errdb := dbs.Model(Vms{}).Where("vm_uuid=? and snap=?", vmid, snapname).Delete(cephcommon.Vms_snaps{})
   if errdb.Error != nil {
     return errdb.Error

@@ -7,7 +7,6 @@ import (
   db "nicloud/dbs"
   "nicloud/networks"
   "nicloud/users"
-  "nicloud/vmerror"
   "reflect"
   "strings"
 )
@@ -93,20 +92,8 @@ func Update(id int, datacenter string, storage string, osname string,  snapimage
   return nil
 }
 
-func Add(datacenter string, storage string,osname string, cephblockdevice string, xml string, sort int, owner int, createsnap bool) error {
-  snap := ""
-  if createsnap {
-    storageinfo, err := cephcommon.Cephinfobyuuid(datacenter, storage)
-    if err != nil {
-      return err
-    }
-    snap, err = cephcommon.CreateSnapAndProtect(storageinfo.Pool, cephblockdevice)
-    if err != nil {
-      return err
-    }
-  }
-
-  os := &Vms_os{
+func (vmsos *Vms_os) Add(datacenter string, storage string, osname string, cephblockdevice string, xml string, sort int, owner int, snap string) error {
+  os := Vms_os{
     Datacenter: datacenter,
     Storage: storage,
     Osname: osname,
@@ -124,7 +111,7 @@ func Add(datacenter string, storage string,osname string, cephblockdevice string
 
   errdb := dbs.Create(&os)
   if errdb.Error != nil {
-    return vmerror.Error{Message: errdb.Error.Error()}
+    return errdb.Error
   }
 
   return nil
@@ -223,7 +210,7 @@ func getxml(osname string) (string, error) {
   return v[0].Xml, nil
 }
 
-func Xml(datacenter string, storage string, vlan string,  vcpu int, vmem int, uuid string, mac string, image_name string, osname string, pool string) (string, error) {
+func Xml(datacenter string, storage string, vlan string,  vcpu int, vmem int, uuid string, mac string, image_name string, osid int, pool string) (string, error) {
   storagename, err := cephcommon.Cephinfobyuuid(datacenter, storage)
   if err != nil {
     return "", err
@@ -238,13 +225,13 @@ func Xml(datacenter string, storage string, vlan string,  vcpu int, vmem int, uu
     return "", err
   }
 
-  f, err := getxml(osname)
+  osinfo, err := GetOsInfoById(storage, osid)
   if err != nil {
     return "", err
   }
 
   doc := etree.NewDocument()
-  err = doc.ReadFromString(f)
+  err = doc.ReadFromString(osinfo.Xml)
   if err != nil {
     return "", err
   }
@@ -299,13 +286,13 @@ func Xml(datacenter string, storage string, vlan string,  vcpu int, vmem int, uu
 }
 
 
-func Getosinfobyosname(osname string, storage string) (*Vms_os, error) {
+func GetOsInfoById(storage string, id int) (*Vms_os, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
 
   o := &Vms_os{}
-  dbs.Where("osname=? and storage=?", osname, storage).First(o)
-  return o, err
+  dbs.Where("id=? and storage=?", id, storage).First(o)
+  return o, nil
 }
