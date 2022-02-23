@@ -69,7 +69,7 @@
 					<button class="btn btn-info btn-xs dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
 						操作<span class="caret"></span>
 					</button>
-					<ul class="dropdown-menu" role="menu" aria-labelledby="menu1" style="width: 50px; left: 6px">
+					<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
       					<li @click="start(item.Uuid, index, item.Host)" style="background-color: green;" role="presentation"><a role="menuitem" tabindex="-1">开机</a></li>
       					<li @click="reboot(item.Uuid, index, item.Host)" style="background-color: green; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">重启</a></li>
       					<li @click="pause(item.Uuid, index, item.Host)" style="background-color: #D2B48C;" role="presentation"><a role="menuitem" tabindex="-1">暂停</a></li>
