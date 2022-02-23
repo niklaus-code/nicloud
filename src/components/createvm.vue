@@ -1,8 +1,8 @@
 <template>
     <div>
-	 		<div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
-                <h4>创建云主机</h4>
-	 		</div>
+	 	<div class="col-sm-12 form-group" style="margin-top:30px; border-bottom: 1px green solid">
+            <h4>创建云主机</h4>
+	    </div>
 		<div  class="col-sm-8 col-sm-offset-1" style="margin-top:20px">
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-4">
