@@ -57,12 +57,12 @@ func Get_osimage_sort() ([]*Vms_osimage_sort, error) {
   return o, nil
 }
 
-func Del(osname string) error {
+func Del(osid int) error {
   dbs, err := db.NicloudDb()
   if err != nil {
     return err
   }
-  err1 := dbs.Where("osname=?", osname).Delete(Vms_os{})
+  err1 := dbs.Where("id=?", osid).Delete(Vms_os{})
   if err1.Error != nil {
     return err1.Error
   }

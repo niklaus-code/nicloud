@@ -7,16 +7,37 @@ import (
   "nicloud/cephcommon"
   "nicloud/osimage"
   "nicloud/utils"
+  "nicloud/vm"
   "nicloud/vmerror"
   "strconv"
 )
 
 func DelImage(c *gin.Context) {
-  osname := c.Query("osname")
   res := make(map[string]interface{})
-  r := osimage.Del(osname)
+  osid, err := strconv.Atoi(c.Query("osid"))
+  if err != nil {
+    res["err"] = nil
+    c.JSON(400, res)
+    return
+  }
 
-  res["err"] = r
+  checkvmsandos, err := vm.GetVmbyOsId(osid)
+  if err != nil {
+    res["err"] = vmerror.Error{Message: err.Error()}
+    c.JSON(200, res)
+    return
+  }
+
+  if checkvmsandos {
+    err := osimage.Del(osid)
+    if err != nil {
+      res["err"] = vmerror.Error{Message: err.Error()}
+    }
+    res["err"] = nil
+  } else {
+    res["err"] = vmerror.Error{Message: "有关联云主机，无法删除"}
+  }
+
   c.JSON(200, res)
 }
 

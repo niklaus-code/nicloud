@@ -843,3 +843,21 @@ func Checkuser(userid int) error{
   }
   return nil
 }
+
+func GetVmbyOsId(osid int) (bool, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return false, err
+  }
+
+  var count int
+  errdb := dbs.Model(&Vms{}).Where("os=?", osid).Count(&count)
+  if errdb.Error != nil {
+    return false, errdb.Error
+  }
+  
+  if count > 0 {
+    return false, err
+  }
+  return true, nil
+}

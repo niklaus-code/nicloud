@@ -49,7 +49,7 @@
 							<button class="btn btn-info btn-xs" type="button" @click="editosimage(item.Id, item.Osname, item.Cephblockdevice, item.Snapimage, item.Xml)">
                 				编辑
             				</button>
-							<button class="btn btn-danger btn-xs" type="button" @click="delosimage(item.Osname, index)">
+							<button class="btn btn-danger btn-xs" type="button" @click="delosimage(item.Id, index)">
                 				删除
             				</button>
         				</td>
@@ -90,17 +90,17 @@ export default {
 			this.$emit("toParent", "updateosimage");
             },
 
-		delosimage: function (osname, index) {
+		delosimage: function (osid, index) {
             var apiurl = `/api/osimage/delimage`
-            this.$http.get(apiurl, { params: {osname: osname} } ).then(response => {
+            this.$http.get(apiurl, { params: {osid: osid }}).then(response => {
             	if (response.data.err === null) {
 					alert("删除成功")
 					this.data[index].Status = 0
 					} else {
 					alert(response.data.err.Message)
 					}
-            })
-        },
+                })
+            },
 
 		getosimagesort: function () {
             var apiurl = `/api/osimage/getimagesort`
