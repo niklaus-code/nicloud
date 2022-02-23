@@ -1,6 +1,6 @@
 <template>
 <div>
-    <div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
+    <div class="col-sm-12 form-group" style="margin-top:30px;border-bottom: 1px green solid">
         <h4>创建存储</h4>
     </div>
 
