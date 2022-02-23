@@ -70,7 +70,12 @@
                         <td>{{c.Snap}}</td>
                         <td>{{c.Create_time}}</td>
                         <td>
-                            <button type="button" class="btn btn-success btn-xs" @click="snaptoimage(c.Snap, true)">以此创建镜像</button>
+                            <button style="border: none; margin-right: 7px" v-if="createwait">
+                                <div style="width: 20px; height:20px;background-color: #FFF; margin-bottom: -6px">
+                                    <spinner></spinner>
+                                </div>
+                            </button>
+                            <button v-else type="button" class="btn btn-success btn-xs" @click="snaptoimage(c.Snap, true)">以此创建镜像</button>
                             <button type="button" class="btn btn-primary btn-xs" @click="rollback(c.Snap)">以此快照恢复</button>
                             <button type="button" class="btn btn-danger btn-xs" @click="rmsnap(c.Snap, index)">删除快照</button>
                         </td>
@@ -105,9 +110,13 @@
 </div>
 </template>
 <script>
+import spinner from '@/components/spinner'
+
+
 export default {
     data () {
         return {
+            createwait: false,
             snap: [],
             lensnap: 0,
             uuid: "",
@@ -125,6 +134,10 @@ export default {
         this.getsnap()
     },
 
+
+    components: {
+        spinner
+        },
 
     methods: {
         rollback: function (snapname) {
@@ -146,14 +159,16 @@ export default {
         },
 
         snaptoimage: function (snapname, protect) {
+            this.createwait = true
             var apiurl = `/api/vm/createsnap`
             this.$http.post(apiurl, this.$qs.stringify({ uuid: this.uuid, datacenter: this.datacenter, storage: this.storage, snapname: snapname, protect: protect})).then(response => {
-                if (response.data.err == null) {
+                if (response.data.err === null) {
                     alert("创建成功")
                     this.getsnap()
                 } else {    
                     alert(response.data.err.Message)
                     }
+                this.createwait = false
                 })
             },
 

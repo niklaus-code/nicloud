@@ -309,6 +309,7 @@ func Createsnap(c *gin.Context)  {
   var err error
 
   res := make(map[string]interface{})
+
   token := c.Request.Header.Get("token")
   userid, err := utils.ParseToken(token)
   if err != nil {
@@ -320,7 +321,6 @@ func Createsnap(c *gin.Context)  {
   snapname := c.PostForm("snapname")
 
   if len(snapname) == 0 {
-    fmt.Println(123123)
     c.JSON(400, res)
     return
   }
@@ -339,10 +339,13 @@ func Createsnap(c *gin.Context)  {
   } else {
     err = vm.SaveSnapToImg(uuid, datacenter, storage, snapname, userid)
   }
-  res["err"] = nil
+
   if err != nil {
     res["err"] = vmerror.Error{Message: "创建失败: " + err.Error()}
+  } else  {
+    res["err"] = nil
   }
+  
   c.JSON(200, res)
 }
 
