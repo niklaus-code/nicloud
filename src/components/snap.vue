@@ -1,13 +1,13 @@
 <template>
 <div>
     <div class="col-sm-12 form-group" style="border-bottom: 1px green solid; margin-top: 20px">
-        <div style="width: 150px; float: left; padding-top: 8px">
-            <h4>云主机 & 快照管理</h4>
+        <div style="width: 200px; float: left;">
+            <h3>云主机 & 快照管理</h3>
         </div>
-        <div style="margin-left: 30px; width: 160px; float: left; padding-top: 20px; color: red">
+        <div style="margin-left: 30px; width: 160px; float: left; color: red">
             <h5>*删除快照为永久性删除</h5>
         </div>
-        <div style="margin-left: 5px; width: 160px; float: left; padding-top: 20px; color: red">
+        <div style="margin-left: 5px; width: 160px; float: left; color: red">
             <h5>*有子镜像快照无法删除</h5>
         </div>
     </div>
@@ -79,7 +79,7 @@
 	<div class="col-sm-10 col-sm-offset-1 choose"  style="margin-top:30px; margin-bottom:30px" >
         <div class="col-sm-12" >
            <div class="col-sm-2">
-               <h5>输入快照名称&nbsp</h5>
+               <h5 style="margin-top: 8px">输入快照名称&nbsp</h5>
            </div>
            <div class="col-sm-4">
                <form role="form">
@@ -89,7 +89,7 @@
                </form>
            </div>
           </div>
-        <div class="col-sm-12" style="padding-bottom: 10px">
+        <div class="col-sm-12" style="padding-bottom: 10px; padding-top: 10px">
             <div class="col-sm-2 col-sm-offset-2">
                 <button @click="createsnap(false)" type="button" class="btn btn-success btn-xs">创建</button>
 		    </div>
@@ -201,8 +201,12 @@ export default {
   }
 </script>
 <style scoped>
+h3 {
+    margin-bottom: 0;
+}
+
 h5 {
-    margin-top: 0;
+    margin-top: 29px;
     margin-bottom: 0;
 }
 
@@ -222,6 +226,7 @@ h5 {
 }
 
 .choose {
+    margin-top: 30px;
     padding-top: 20px;
 	border-style: solid;
 	border-color: #ddd;
