@@ -320,6 +320,7 @@ func Createsnap(c *gin.Context)  {
   snapname := c.PostForm("snapname")
 
   if len(snapname) == 0 {
+    fmt.Println(123123)
     c.JSON(400, res)
     return
   }

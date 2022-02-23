@@ -10,6 +10,9 @@
         <div style="margin-left: 5px; width: 160px; float: left; color: red">
             <h5>*有子镜像快照无法删除</h5>
         </div>
+        <div style="margin-left: 5px; width: 180px; float: left; color: red">
+            <h5>*恢复快照需联系管理员操作</h5>
+        </div>
     </div>
 
     <div class="col-sm-10 col-sm-offset-1 choose" >
@@ -67,7 +70,7 @@
                         <td>{{c.Snap}}</td>
                         <td>{{c.Create_time}}</td>
                         <td>
-                            <button type="button" class="btn btn-success btn-xs" @click="createsnap(true)">以此创建镜像</button>
+                            <button type="button" class="btn btn-success btn-xs" @click="snaptoimage(c.Snap, true)">以此创建镜像</button>
                             <button type="button" class="btn btn-primary btn-xs" @click="rollback(c.Snap)">以此快照恢复</button>
                             <button type="button" class="btn btn-danger btn-xs" @click="rmsnap(c.Snap, index)">删除快照</button>
                         </td>
@@ -142,6 +145,18 @@ export default {
             })
         },
 
+        snaptoimage: function (snapname, protect) {
+            var apiurl = `/api/vm/createsnap`
+            this.$http.post(apiurl, this.$qs.stringify({ uuid: this.uuid, datacenter: this.datacenter, storage: this.storage, snapname: snapname, protect: protect})).then(response => {
+                if (response.data.err == null) {
+                    alert("创建成功")
+                    this.getsnap()
+                } else {    
+                    alert(response.data.err.Message)
+                    }
+                })
+            },
+
         createsnap: function (protect) {
             var apiurl = `/api/vm/createsnap`
             this.$http.post(apiurl, this.$qs.stringify({ uuid: this.uuid, datacenter: this.datacenter, storage: this.storage, snapname: this.snapvalue, protect: protect})).then(response => {
@@ -150,9 +165,9 @@ export default {
                     this.getsnap()
                 } else {    
                     alert(response.data.err.Message)
-                }
-            })
-        },
+                    }
+                })
+            },
 
         getsnap: function () {
             var apiurl = `/api/vm/getsnap`
