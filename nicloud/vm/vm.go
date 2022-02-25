@@ -430,6 +430,11 @@ func MigrateVmlive(uuid string,  desthost string) error {
     return errdb.Error
   }
 
+  err = libvirtd.Undefine(vm.Host, uuid)
+  if err != nil {
+    return err
+  }
+
   return err
 }
 
