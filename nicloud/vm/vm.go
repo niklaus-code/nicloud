@@ -400,7 +400,7 @@ func MigrateVm(uuid string, migrate_host string) error {
   return err
 }
 
-func MigrateVmlive(uuid string,  migrate_host string) error {
+func MigrateVmlive(uuid string,  desthost string) error {
   vm, err := GetVmByUuid(uuid)
   if err != nil {
     return err
@@ -411,14 +411,23 @@ func MigrateVmlive(uuid string,  migrate_host string) error {
     return vmerror.Error{Message: "云主机需要开机或者暂停状态"}
   }
 
-  migratelive := libvirtd.Migratevmlive(uuid, vm.Host, migrate_host)
+  migratelive := libvirtd.Migratevmlive(uuid, vm.Host, desthost)
   if migratelive != nil {
     return migratelive
   }
 
-  err = libvirtd.DefineVm(vm.Vmxml, migrate_host)
+  err = libvirtd.DefineVm(vm.Vmxml, desthost)
   if err != nil {
     return err
+  }
+
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+  errdb := dbs.Model(&Vms{}).Where("uuid=?", uuid).Update("host", desthost)
+  if errdb.Error != nil {
+    return errdb.Error
   }
 
   return err
@@ -855,7 +864,7 @@ func GetVmbyOsId(osid int) (bool, error) {
   if errdb.Error != nil {
     return false, errdb.Error
   }
-  
+
   if count > 0 {
     return false, err
   }
