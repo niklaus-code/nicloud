@@ -22,7 +22,7 @@
     			</thead>
 
 				<tbody v-for="(item, index) in data">
-      				<tr class="table-dark text-dark" :id="item.Uuid">
+      				<tr class="table-dark text-dark" :id="item.Uuid" v-if="item.Status">
         				<label class="checkbox-inline" style="width:10px">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>

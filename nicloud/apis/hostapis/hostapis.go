@@ -84,8 +84,12 @@ func Delhost(c *gin.Context) {
   res := make(map[string]interface{})
   ip := c.Query("ip")
 
-  r := vm.Deletehost(ip)
-  res["res"] = r
+  err := vm.Deletehost(ip)
+  res["err"] = nil
+  if err != nil {
+    res["err"] = vmerror.Error{Message: err.Error()}
+  }
+
   c.JSON(200, res)
 }
 
