@@ -221,7 +221,7 @@ export default {
 </script>
 <style scoped>
 .btn-sm {
-    padding:3px  3px 0 3px;
+    padding:1px  3px 0 3px;
 }
 
 select{
