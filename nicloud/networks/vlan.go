@@ -120,7 +120,7 @@ func AllIP(vlan string) ([]*Vms_ips, error) {
     return nil, err
   }
   var ip []*Vms_ips
-  errdb := dbs.Where("vlan=?", vlan).Order("create_time desc").Order("ipv4").Find(&ip)
+  errdb := dbs.Where("vlan=?", vlan).Order("length(ipv4)").Order("ipv4").Find(&ip)
   if errdb.Error != nil {
     return nil, vmerror.Error{Message: errdb.Error.Error()}
   }
@@ -152,10 +152,10 @@ func IPlist(vlan string) []*Vms_ips {
   if err != nil {
     return nil
   }
-  var ip []*Vms_ips
-  dbs.Where("vlan=? and status=0", vlan).Order("create_time desc").Find(&ip)
+  var ips []*Vms_ips
+  dbs.Where("vlan=? and status=0", vlan).Order("length(ipv4)").Order("ipv4").Find(&ips)
 
-  return ip
+  return ips
 }
 
 func Ipresource(ip string) (string, error) {

@@ -190,11 +190,12 @@ func GetFlavor(c *gin.Context) {
 	res := make(map[string]interface{})
 	s, err := vm.Flavor()
 	res["res"] = s
-	res["err"] = err
+  res["err"] = nil
+
 	if err != nil {
+    res["err"] = vmerror.Error{Message: err.Error()}
 		c.JSON(200, res)
 	}
-
 	c.JSON(200, res)
 }
 
@@ -345,7 +346,7 @@ func Createsnap(c *gin.Context)  {
   } else  {
     res["err"] = nil
   }
-  
+
   c.JSON(200, res)
 }
 
