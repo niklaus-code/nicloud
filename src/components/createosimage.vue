@@ -106,10 +106,12 @@
 					</div>
 				</div>
     		</div>
-			<div class="col-sm-12">
-				<div class="form-group" style="margin-top:20px" >
-					<div class="col-sm-2 col-sm-offset-4">
-  						<button type="submit" @click="createosimage" class="btn btn-success">提交</button>
+			<div class="col-sm-12" style=" margin-bottom:20px">
+				<div class="form-group" style="margin-top:20px;" >
+					<div class="col-sm-2 col-sm-offset-2">
+					</div>
+					<div class="col-sm-8" style="margin:0 auto; text-align: center;">
+  						<button type="submit" style="margin:0 auto" @click="createosimage" class="btn btn-success btn-sm">提交</button>
 					</div>
 				</div>
 			</div>
@@ -218,6 +220,10 @@ export default {
   }
 </script>
 <style scoped>
+.btn-sm {
+    padding: 2px 6px;
+}
+
 select{
 	height:30px;
     font-family: "微软雅黑";
