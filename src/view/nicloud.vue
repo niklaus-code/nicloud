@@ -175,7 +175,7 @@ export default {
 .foot {
     margin-left:120px;
     position: relative;
-    margin-top: -31px; /*等于footer的高度*/
+    margin-top: -30px; /*等于footer的高度*/
     height: 30px;
     clear:both;
     background: #e3e3e3;
