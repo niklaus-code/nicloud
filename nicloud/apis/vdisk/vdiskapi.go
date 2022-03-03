@@ -125,21 +125,20 @@ func Umountdisk(c *gin.Context) {
 
   s, err := vm.VmStatus(vminfo.Uuid, vminfo.Host)
   if err != nil {
-    res["err"] = err
+    res["err"] = vmerror.Error{Message: err.Error()}
     c.JSON(200, res)
     return
   }
 
   if s != "关机" {
-    res["err"] = vmerror.Error{Message: "cont mount disk, vm is " + s}
-    c.Abort()
+    res["err"] = vmerror.Error{Message: "卸载云盘，需要云主机处于关机状态"}
     c.JSON(200, res)
     return
   }
 
   xml, err := vm.Getvmxmlby(vmip, vminfo.Storage, vminfo.Datacenter)
   if err != nil {
-    res["err"] = err
+    res["err"] =vmerror.Error{Message: err.Error()}
     c.JSON(200, res)
     return
   }
@@ -149,12 +148,14 @@ func Umountdisk(c *gin.Context) {
   rwLock.Lock()
   err = vdisk.Umountdisk(vmip, vminfo.Storage, vminfo.Datacenter, vdiskid, xml, vminfo.Host, v)
   rwLock.Unlock()
+
+  res["err"] = nil
   if err != nil {
-    res["err"] = err
+    res["err"] = vmerror.Error{Message: err.Error()}
     c.JSON(200, res)
     return
   }
-  res["err"] = nil
+
   c.JSON(200, res)
 }
 
