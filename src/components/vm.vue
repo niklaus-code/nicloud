@@ -414,7 +414,7 @@ export default {
 </script>
 
 <style scoped>
-ul {
+.dropdown-menu {
     margin-bottom: 0;
     left: -60px;
     right:0;
