@@ -14,8 +14,8 @@ import (
 
 type Vms_os struct {
   Id int
-  Sort int `json:"Sort" validate:"required"`
-  Owner int `json:"Owner" validate:"required"`
+  Sort int
+  Owner int
   Osname string `json:"Osname" validate:"required"`
   Datacenter string `json:"Datacenter" validate:"required"`
   Storage string  `json:"Storage" validate:"required"`
@@ -248,6 +248,7 @@ func Xml(datacenter string, storage string, vlan string,  vcpu int, vmem int, uu
   name := doc.FindElement("./domain/name")
   name.CreateText(uuid)
 
+  fmt.Println(vmem)
   mem := doc.FindElement("./domain/memory")
   mem.CreateText(fmt.Sprintf("%d", vmem))
 

@@ -208,7 +208,7 @@ export default {
 					alert("创建成功! 是否查看虚拟机列表")
 					this.$emit("toParent", "vm");
 				} else {
-					alert("创建失败('"+response.data.err.Message+"')")
+					alert(response.data.err.Message)
 					}
 			})
 			},
