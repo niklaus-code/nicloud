@@ -1,5 +1,5 @@
 <template>
-		<div class="col-sm-12" style="margin-top:20px; padding-left:0; padding-right:0">
+		<div class="col-sm-12" style="margin-top: 30px; padding-left:0; padding-right:0">
 			<button class="btn btn-success btn-sm" @click="create('createvdisk')" type="button" style="margin-bottom:20px; margin-left:5px">创建云盘<span class="glyphicon glyphicon-plus" style="margin-left: 5px"></span></button>
 			<table class="table table-hover" style="text-align: center;">
     			<thead>
@@ -101,7 +101,7 @@ export default {
 					this.data[index].Vm_ip = ""
 					alert("卸载成功")
 				} else {
-					alert ("获取数据失败（'"+response.data.err.Message+"')")
+					alert (response.data.err.Message)
 					}
             })
         },
