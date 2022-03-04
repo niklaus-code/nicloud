@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="col-sm-12 vlan" style="margin-top:20px;">
-			<span>{{vlan}}&nbsp&&nbsp IP列表</span>
+			<span>{{vlan}}&nbsp&&nbsp IP列表({{countip}})</span>
             <button style="float: right" class="btn btn-success btn-sm"><a :href=downloadurl>导出IP列表</a></button>
 		</div>
 		<div class="col-sm-12" style="margin-top:20px;">
@@ -56,6 +56,7 @@
 export default {
     data () {
         return {
+            countip: 0,
 			vlan: "",
 			ips: [],
             downloadurl: ""
@@ -126,6 +127,7 @@ export default {
             this.$http.get(apiurl, { params: { vlan: this.vlan}}).then(response => {
             	if (response.data.err === null) {
             	    this.ips = response.data.res
+                    this.countip = response.data.res.length
                     } else {
             	    alert(response.data.err.Message)
                     }
