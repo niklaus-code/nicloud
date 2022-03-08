@@ -33,7 +33,7 @@
         				<label class="checkbox-inline">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
-        				<td>{{item.Osname}}</td>
+        				<td style="min-width: 125px">{{item.Osname}}</td>
         				<td>{{item.sort}}</td>
         				<td>{{item.Cephblockdevice}}</td>
         				<td>{{item.Snapimage}}</td>
@@ -45,7 +45,7 @@
                             <span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
                             <span v-else class="glyphicon glyphicon-remove"></span>
 		    			</td>
-		    			<td style="min-width:92px">
+		    			<td style="min-width: 125px">
 							<button class="btn btn-info btn-xs" type="button" @click="editosimage(item.Id, item.Osname, item.Cephblockdevice, item.Snapimage, item.Xml)">
                                 <span class="glyphicon glyphicon-edit"></span>
                 				编辑
