@@ -33,7 +33,7 @@
         				<label class="checkbox-inline">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
-        				<td style="min-width: 125px">{{item.Osname}}</td>
+        				<td style="min-width: 100px">{{item.Osname}}</td>
         				<td>{{item.sort}}</td>
         				<td>{{item.Cephblockdevice}}</td>
         				<td>{{item.Snapimage}}</td>
