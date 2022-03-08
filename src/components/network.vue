@@ -34,12 +34,15 @@
                         </td>
 		    			<td>
 							<button class="btn btn-success btn-xs" type="button" @click="createip(item.Vlan, item.Bridge, item.Network, item.Prefix, item.Gateway)">
+                                <span class="glyphicon glyphicon-plus"></span>
                 				增加IP
             				</button>
 							<button class="btn btn-primary btn-xs" type="button" @click="ips(item.Vlan)">
+                                <span class="glyphicon glyphicon-zoom-in"></span>
                 				查看IP
             				</button>
 							<button class="btn btn-danger btn-xs" type="button" @click="deletevlan(item.Vlan, index)">
+                                <span class="glyphicon glyphicon-trash"></span>
                 				删除
             				</button>
         				</td>

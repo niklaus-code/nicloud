@@ -29,6 +29,7 @@
 
 		    			<td>
 							<button class="btn btn-danger btn-xs" type="button" @click="deletedatacenter(item.Datacenter, index)">
+                                <span class="glyphicon glyphicon-trash"></span>
                 				删除
             				</button>
         				</td>

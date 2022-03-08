@@ -47,9 +47,11 @@
 		    			</td>
 		    			<td style="min-width:92px">
 							<button class="btn btn-info btn-xs" type="button" @click="editosimage(item.Id, item.Osname, item.Cephblockdevice, item.Snapimage, item.Xml)">
+                                <span class="glyphicon glyphicon-edit"></span>
                 				编辑
             				</button>
 							<button class="btn btn-danger btn-xs" type="button" @click="delosimage(item.Id, index)">
+                                <span class="glyphicon glyphicon-trash"></span>
                 				删除
             				</button>
         				</td>

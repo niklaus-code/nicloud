@@ -46,6 +46,7 @@
 
 		    			<td>
 							<button class="btn btn-danger btn-xs" type="button" @click="deletehost(item.Ipv4, index)">
+                                <span class="glyphicon glyphicon-trash"></span>
                 				删除
             				</button>
         				</td>

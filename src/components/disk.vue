@@ -39,12 +39,15 @@
         				<td>{{item.Createtime}}</td>
 		    			<td>
 							<button v-if="item.Status" class="btn btn-primary btn-xs" type="button" @click="mount('mountvdisk', item.Vdiskid, item.storage, item.pool)">
+                         	<span class="glyphicon glyphicon-floppy-open"></span>
                 				挂载
             				</button>
 							<button v-else class="btn btn-warning btn-xs" type="button" @click="umount(item.Vm_ip, item.Vdiskid, index)">
+                         	<span class="glyphicon glyphicon-floppy-save"></span>
                 				卸载
             				</button>
 							<button v-if="item.Status" class="btn btn-danger btn-xs" type="button" @click="deletevdisk(item.Vdiskid, item.Comment, index)">
+                                 <span class="glyphicon glyphicon glyphicon-trash"></span>
                 				销毁
             				</button>
         				</td>
