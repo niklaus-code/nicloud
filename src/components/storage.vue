@@ -38,6 +38,7 @@
 						</td>
 		    			<td>
 							<button class="btn btn-danger btn-xs" type="button" @click="deletestorage(item.Uuid, index)">
+                                <span class="glyphicon glyphicon-trash"></span>
                 				删除
             				</button>
         				</td>
