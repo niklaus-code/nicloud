@@ -1,8 +1,8 @@
 <template>
-		<div class="col-sm-12" style="margin-top:30px;padding-right:0; padding-left:0">
+		<div class="col-sm-12" style="margin-top: 10px;padding-right:0; padding-left:0">
 			<button class="btn btn-success btn-sm" @click="createhost" type="button"  style="margin-bottom:20px; margin-left:5px">创建宿主机<span class="glyphicon glyphicon-plus" style="margin-left: 5px"></span></button>
 
-            <div style="margin-top: 30px; border-bottom: 1px solid #9f0303;  border-top: 1px solid #9f0303; padding-top: 5px">
+            <div style="margin-top: 10px; border-bottom: 1px solid #9f0303;  border-top: 1px solid #9f0303; padding-top: 5px">
                 <h4 style="margin-left: 10px">数据中心</h4>
 			<table class="table1 table table-hover" style="text-align: center;">
     			<thead>
