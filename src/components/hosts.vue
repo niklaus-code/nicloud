@@ -22,10 +22,10 @@
       				<tr class="table-dark text-dark">
         				<td>怀柔</td>
         				<td>{{counthosts.Counthosts}}</td>
-        				<td>{{counthosts.Cpu}}</td>
-        				<td>{{counthosts.Mem}}</td>
-        				<td>{{counthosts.Usedcpu}}</td>
-        				<td>{{counthosts.Usedmem}}</td>
+        				<td>{{counthosts.Cpu}}核</td>
+        				<td>{{counthosts.Mem}}G</td>
+        				<td>{{counthosts.Usedcpu}}核</td>
+        				<td>{{counthosts.Usedmem}}G</td>
         				<td>{{counthosts.Cpu_percent}}%</td>
         				<td>{{counthosts.Mem_percent}}%</td>
 					</tr>
