@@ -1,9 +1,9 @@
 <template>
 	<div>
-             <div class="col-sm-12 form-group" style="border-bottom: 1px green solid">
-                <h4>热迁移云主机 <span style="color: #C0C0C0; font-size:13px">&nbsp *迁移目标宿主机需开启selinux</span></h4>
+        <div class="col-sm-12 form-group" style="margin-top:10px; border-bottom: 1px green solid">
+            <h4>热迁移云主机 <span style="color: #C0C0C0; font-size:13px">&nbsp *迁移目标宿主机需开启selinux</span></h4>
             </div>
-		<div class="col-sm-6 col-sm-offset-3" style="margin-top:20px">
+		<div class="col-sm-8 col-sm-offset-2" style="margin-top:20px">
 	 		<div class="col-sm-12">
 				<div class="col-sm-3">
 				    <div class="col-sm-10 col-sm-offset-1">
@@ -81,7 +81,7 @@
 				    </div>
 				</div>
 				<div class="col-sm-9">
-				    <select class="form-select col-sm-10" v-model="hostvalue">
+				    <select class="form-select col-sm-10" v-model="hostvalue" style="max-width: 400px">
                         <option  v-for="h in host"  :value="h.Ipv4" >
                             {{h.Ipv4}}&nbsp(cpu:{{h.Usedcpu}}/{{h.Cpu}}， &nbsp mem:{{h.Usedmem}}/{{h.Mem}}， &nbsp 数量:{{h.count}}/{{h.Max_vms}})
                         </option>
