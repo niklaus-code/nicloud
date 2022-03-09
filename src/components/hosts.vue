@@ -32,7 +32,7 @@
 				</tbody>
 			</table>
             </div>
-            <div style="margin-top: 50px; border-bottom: 1px solid green; border-top: 1px solid green; padding-top: 5px">
+            <div style="border-bottom: 1px solid green; border-top: 1px solid green; padding-top: 5px; margin-bottom: 30px">
             <h4 style="margin-left: 10px">宿主机</h4>
 			<table class="table2 table table-hover" style="text-align: center;">
     			<thead>
