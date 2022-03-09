@@ -7,12 +7,12 @@
 			<table class="table1 table table-hover" style="text-align: center;">
     			<thead>
       				<tr>
-        				<th style="border-left: 1px solid green">数据中心</th>
-        				<th>总宿主机数</th>
-        				<th>总CPU数</th>
-        				<th>总内存数</th>
-        				<th>已分配CPU</th>
-        				<th>已分配内存</th>
+        				<th>数据中心</th>
+        				<th>总物理机数</th>
+        				<th>总CPU数（核）</th>
+        				<th>总内存数（G）</th>
+        				<th>已分配CPU（核）</th>
+        				<th>已分配内存（G）</th>
         				<th>cpu使用率</th>
         				<th>内存使用率</th>
       				</tr>
@@ -20,7 +20,7 @@
 
 				<tbody>
       				<tr class="table-dark text-dark">
-        				<td>怀柔</td>
+        				<td>{{counthosts.Datacenter}}</td>
         				<td>{{counthosts.Counthosts}}</td>
         				<td>{{counthosts.Cpu}}核</td>
         				<td>{{counthosts.Mem}}G</td>

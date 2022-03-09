@@ -86,32 +86,49 @@ func Createhost(datacenter string, cpu int, mem int, ip string, num int, vlan st
   return nil
 }
 
-func getcpumem(ip string, cpu int, mem int) (map[string]int, error) {
+func checkcpumem(ip string, cpu int, mem int) error {
   db, err := db.NicloudDb()
   if err != nil {
-    return nil, err
+    return err
   }
   v := &Vm_hosts{}
   db.Where("ipv4 = ?", ip).Find(&v)
-  c := make(map[string]int)
 
   if cpu + v.Usedcpu > v.Cpu {
-    return nil, vmerror.Error{
+    return vmerror.Error{
       Message: "cpu资源不够",
     }
   }
   if mem + v.Usedmem > v.Mem {
-    return nil, vmerror.Error{
+    return vmerror.Error{
       "内存资源不够",
     }
   }
-  c["cpu"] = cpu + v.Usedcpu
-  c["mem"] = mem +v.Usedmem
 
-  return c, nil
+  return nil
 }
 
-func Freehost(ip string, cpu int, mem int) error {
+func (h Vm_hosts)downcpumem (ip string, cpu int, mem int) (int, int, error) {
+  host, err := h.gethostsbyip(ip)
+  if err != nil {
+    return 0, 0, err
+  }
+
+  c := host.Usedcpu - cpu
+  m := host.Usedmem - mem
+
+  if c < 0 {
+    c = 0
+  }
+
+  if m < 0 {
+    m = 0
+  }
+  return c, m, nil
+}
+
+func (h Vm_hosts)freecpumem (ip string, cpu int, mem int) error {
+  c, m, err := h.downcpumem(ip, cpu, mem)
   db, err := db.NicloudDb()
   if err != nil {
     return err
@@ -119,8 +136,8 @@ func Freehost(ip string, cpu int, mem int) error {
   var v Vm_hosts
   db.Where("ipv4 = ?", ip).Find(&v)
 
-  db.Model(&Vm_hosts{}).Where("ipv4=?", v.Ipv4).Update("usedcpu", v.Usedcpu-cpu)
-  db.Model(&Vm_hosts{}).Where("ipv4=?", v.Ipv4).Update("usedmem", v.Usedmem-mem)
+  db.Model(&Vm_hosts{}).Where("ipv4=?", v.Ipv4).Update("usedcpu", c)
+  db.Model(&Vm_hosts{}).Where("ipv4=?", v.Ipv4).Update("usedmem", m)
   return nil
 }
 
@@ -137,25 +154,36 @@ func GetHostVmNumber(ip string) (int, int, error) {
   return h.Created_vms, h.Max_vms, err
 }
 
-func Updatehostcpumem(ip string, cpu int, mem int) error {
-  c, m, err := checkcpumem(ip, cpu, mem)
+func (h Vm_hosts)Updatehostcpumem (ip string, cpu int, mem int) error {
+  err := checkcpumem(ip, cpu, mem)
   if err != nil {
     return err
   }
+
+  c, m, err := h.Addcpumem(ip, cpu, mem)
+  if err != nil {
+    return err
+  }
+
   db, err := db.NicloudDb()
   if err != nil {
     return err
   }
 
-  err1 := db.Model(&Vm_hosts{}).Where("ipv4=?", ip).Update("usedcpu", c).Update("usedmem", m)
-  if err1.Error != nil {
-    return err1.Error
+  errdb := db.Model(&Vm_hosts{}).Where("ipv4=?", ip).Update("usedcpu", c).Update("usedmem", m)
+  if errdb.Error != nil {
+    return errdb.Error
   }
   return nil
 }
 
-func Updatehost(ip string, cpu int, mem int) error {
-  c, m, err := checkcpumem(ip, cpu, mem)
+func (h Vm_hosts)Updatehost(ip string, cpu int, mem int) error {
+  err := checkcpumem(ip, cpu, mem)
+  if err != nil {
+    return err
+  }
+
+  c, m, err := h.Addcpumem(ip, cpu, mem)
   if err != nil {
     return err
   }
@@ -182,14 +210,10 @@ func Updatehost(ip string, cpu int, mem int) error {
   return nil
 }
 
-func checkcpumem(ip string, cpu int, mem int) (int, int, error) {
-  t, err := getcpumem(ip, cpu, mem)
-  if err != nil {
-    return 0, 0, err
-  }
-
-  c := t["cpu"]
-  m := t["mem"]
+func (h Vm_hosts)Addcpumem (ip string, cpu int, mem int) (int, int, error) {
+  host := GetVmByIp(ip)
+  c := host.Cpu + cpu
+  m := host.Mem + mem
 
   return c, m, nil
 }
@@ -243,20 +267,16 @@ func GetHostsbydatacenter(datacenter string, vlan string) ([]map[string]interfac
   return res, nil
 }
 
-func GetHostsbyvmip(vmip string) (*Vms,  error) {
+func (h Vm_hosts)gethostsbyip (ip string) (*Vm_hosts,  error) {
   db, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
-  vm := &Vms{}
-  errdb := db.Where("ip=?", vmip).Find(vm)
-  if errdb.Error != nil {
-    return nil, errdb.Error
-  }
+  var host Vm_hosts
+  db.Where("status=1 and ipv4=?", ip).First(&host)
 
-  return vm, nil
+  return &host, nil
 }
-
 
 func Addcomment(ip string, c string) error {
   db, err := db.NicloudDb()
@@ -284,6 +304,7 @@ type counthosts struct {
   Counthosts int
   Cpu_percent string
   Mem_percent string
+  Datacenter string
 }
 
 
@@ -294,7 +315,7 @@ func CountHost() (*counthosts, error) {
   }
 
   var c counthosts
-  sql := "select sum(mem) as mem, sum(cpu) as cpu, sum(usedcpu) as usedcpu, sum(usedmem) usedmem, count(ipv4) as counthosts from vm_hosts;"
+  sql := "select sum(mem) as mem, sum(cpu) as cpu, sum(usedcpu) as usedcpu, sum(usedmem) usedmem, count(ipv4) as counthosts, datacenter from vm_hosts;"
   dberr := dbs.Raw(sql).Scan(&c)
   if dberr.Error != nil {
     return nil, dberr.Error

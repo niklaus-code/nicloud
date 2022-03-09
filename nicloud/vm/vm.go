@@ -59,7 +59,8 @@ func Changeconfig(uuid string, host string, vcpu int, oldcpu int,  vmem int, old
     return vmerror.Error{Message: "云主机需要关机状态"}
   }
 
-  updatehost := Updatehostcpumem(host, vcpu-oldcpu, vmem-oldmem)
+  h := Vm_hosts{}
+  updatehost := h.Updatehostcpumem(host, vcpu-oldcpu, vmem-oldmem)
   if updatehost != nil {
     return updatehost
   }
@@ -225,7 +226,8 @@ func Delete(uuid string, datacenter string, storage string) (error) {
     return err2.Error
   }
 
-  err = Freehost(vminfo.Host, vminfo.Cpu, vminfo.Mem)
+  h := Vm_hosts{}
+  err = h.freecpumem(vminfo.Host, vminfo.Cpu, vminfo.Mem)
   if err != nil {
     return err
   }
@@ -491,7 +493,8 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
 	  return err
   }
 
-  err = Updatehost(host, cpu, mem)
+  h := Vm_hosts{}
+  err = h.Updatehost(host, cpu, mem)
   if  err != nil {
     cephcommon.Rm_image(u, storageinfo.Pool)
     libvirtd.Undefine(host, u)
@@ -501,7 +504,7 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
 	if err != nil {
     cephcommon.Rm_image(u, storageinfo.Pool)
     libvirtd.Undefine(host, u)
-    Freehost(host, cpu, mem)
+    h.freecpumem(host, cpu, mem)
 	  return err
   }
 
@@ -509,7 +512,7 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
   if err != nil {
     cephcommon.Rm_image(u, storageinfo.Pool)
     libvirtd.Undefine(host, u)
-    Freehost(host, cpu, mem)
+    h.freecpumem(host, cpu, mem)
     deletevmbyid(newvm)
     return  err
   }
