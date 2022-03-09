@@ -1,6 +1,7 @@
 package vm
 
 import (
+  "fmt"
   db "nicloud/dbs"
   "nicloud/libvirtd"
   "nicloud/vmerror"
@@ -273,4 +274,33 @@ func Addcomment(ip string, c string) error {
 func ListDomains(host string) (int, error) {
   l, err := libvirtd.Listdomains(host)
   return len(l), err
+}
+
+type counthosts struct {
+  Mem int
+  Cpu int
+  Usedmem int
+  Usedcpu int
+  Counthosts int
+  Cpu_percent string
+  Mem_percent string
+}
+
+
+func CountHost() (*counthosts, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+
+  var c counthosts
+  sql := "select sum(mem) as mem, sum(cpu) as cpu, sum(usedcpu) as usedcpu, sum(usedmem) usedmem, count(ipv4) as counthosts from vm_hosts;"
+  dberr := dbs.Raw(sql).Scan(&c)
+  if dberr.Error != nil {
+    return nil, dberr.Error
+  }
+  c.Cpu_percent = fmt.Sprintf("%.2f", float64(c.Usedcpu)/float64(c.Cpu)*100)
+  c.Mem_percent = fmt.Sprintf("%.2f", float64(c.Usedmem)/float64(c.Mem)*100)
+
+  return &c, nil
 }

@@ -1,7 +1,40 @@
 <template>
 		<div class="col-sm-12" style="margin-top:30px;padding-right:0; padding-left:0">
 			<button class="btn btn-success btn-sm" @click="createhost" type="button"  style="margin-bottom:20px; margin-left:5px">创建宿主机<span class="glyphicon glyphicon-plus" style="margin-left: 5px"></span></button>
-			<table class="table table-hover" style="text-align: center;">
+
+            <div style="margin-top: 30px; border-bottom: 1px solid #9f0303;  border-top: 1px solid #9f0303; padding-top: 5px">
+                <h4 style="margin-left: 10px">数据中心</h4>
+			<table class="table1 table table-hover" style="text-align: center;">
+    			<thead>
+      				<tr>
+        				<th style="border-left: 1px solid green">数据中心</th>
+        				<th>总宿主机数</th>
+        				<th>总CPU数</th>
+        				<th>总内存数</th>
+        				<th>已分配CPU</th>
+        				<th>已分配内存</th>
+        				<th>cpu使用率</th>
+        				<th>内存使用率</th>
+      				</tr>
+    			</thead>
+
+				<tbody>
+      				<tr class="table-dark text-dark">
+        				<td>怀柔</td>
+        				<td>{{counthosts.Counthosts}}</td>
+        				<td>{{counthosts.Cpu}}</td>
+        				<td>{{counthosts.Mem}}</td>
+        				<td>{{counthosts.Usedcpu}}</td>
+        				<td>{{counthosts.Usedmem}}</td>
+        				<td>{{counthosts.Cpu_percent}}%</td>
+        				<td>{{counthosts.Mem_percent}}%</td>
+					</tr>
+				</tbody>
+			</table>
+            </div>
+            <div style="margin-top: 50px; border-bottom: 1px solid green; border-top: 1px solid green; padding-top: 5px">
+            <h4 style="margin-left: 10px">宿主机</h4>
+			<table class="table2 table table-hover" style="text-align: center;">
     			<thead>
       				<tr>
         				<th>
@@ -12,8 +45,8 @@
         				<th>数据中心</th>
         				<th>网络</th>
         				<th>ip地址</th>
-        				<th>cpu</th>
-        				<th>内存</th>
+        				<th>已分配 / cpu（核）</th>
+        				<th>已分配 / 内存（G）</th>
         				<th>可创建数</th>
         				<th>实际虚拟机数</th>
 						<th>备注</th>
@@ -53,6 +86,7 @@
 					</tr>
 				</tbody>
 			</table>
+            </div>
 		</div>
 </template>
 <script>
@@ -60,6 +94,7 @@
 export default {
     data () {
         return {
+            counthosts: {},
 			data: [],
 			cpu: "",
 			mem: "",
@@ -71,6 +106,7 @@ export default {
 
 	mounted: function () {
 		this.gethost()
+		this.counthost()
 		},
 
     methods: {
@@ -160,6 +196,17 @@ export default {
                 })
             },
 
+		counthost: function () {
+            var apiurl = `/api/hosts/counthosts`
+            this.$http.get(apiurl).then(response => {
+            if (response.data.err === null ) {
+                this.counthosts = response.data.res
+                } else {
+                    alert(response.data.err.Message)
+                }
+            })
+        },
+
 		gethost: function (ip) {
             var apiurl = `/api/hosts/gethosts`
             this.$http.get(apiurl).then(response => {
@@ -203,13 +250,25 @@ label {
 
 .table tbody tr td {
     vertical-align: "middle";
+    border: none;
 }
 
-th {
-    background-color: #e3e3e3;
+.table1 th {
+    background-color: #e8d18d;
+    }
+
+.table2 th {
+    background-color: #e8d18d;
 	font-weight: bold;
     color: black;
     text-align: center;
+    border-bottom: none;
 }
 
+.table th {
+	font-weight: bold;
+    color: black;
+    text-align: center;
+    border-bottom: none;
+}
 </style>

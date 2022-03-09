@@ -101,3 +101,15 @@ func Gethostinfo(c *gin.Context) {
 
   c.JSON(200, res)
 }
+
+func Counthost(c *gin.Context) {
+  res := make(map[string]interface{})
+  r, err := vm.CountHost()
+  res["res"] = r
+  res["err"] = nil
+  if err != nil {
+    res["err"] = vmerror.Error{Message: err.Error()}
+  }
+
+  c.JSON(200, res)
+}
