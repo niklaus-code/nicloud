@@ -408,6 +408,12 @@ func MigrateVmlive(uuid string,  desthost string) error {
     return err
   }
 
+  h := Vm_hosts{}
+  checkhost := h.checkcpumem(desthost, vm.Cpu, vm.Mem)
+  if checkhost != nil {
+    return checkhost
+  }
+
   s, err := VmStatus(uuid, vm.Host)
   if s != "运行" && s != "暂停" {
     return vmerror.Error{Message: "云主机需要开机或者暂停状态"}
@@ -427,12 +433,25 @@ func MigrateVmlive(uuid string,  desthost string) error {
   if err != nil {
     return err
   }
+
   errdb := dbs.Model(&Vms{}).Where("uuid=?", uuid).Update("host", desthost)
   if errdb.Error != nil {
     return errdb.Error
   }
 
   err = libvirtd.Undefine(vm.Host, uuid)
+  if err != nil {
+    return err
+  }
+
+  //update desination  host
+  err = h.Updatehost(desthost, vm.Cpu, vm.Mem)
+  if err != nil {
+    return err
+  }
+
+  //update src host
+  err = h.freecpumem(vm.Host, vm.Cpu, vm.Mem)
   if err != nil {
     return err
   }
@@ -500,6 +519,7 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
     libvirtd.Undefine(host, u)
     return err
   }
+
 	newvm, err := savevm(datacenter, storage, u, cpu, mem, f, ip, host, osid, owner, comment)
 	if err != nil {
     cephcommon.Rm_image(u, storageinfo.Pool)

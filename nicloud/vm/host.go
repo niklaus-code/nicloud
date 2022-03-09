@@ -86,7 +86,7 @@ func Createhost(datacenter string, cpu int, mem int, ip string, num int, vlan st
   return nil
 }
 
-func checkcpumem(ip string, cpu int, mem int) error {
+func (h Vm_hosts)checkcpumem(ip string, cpu int, mem int) error {
   db, err := db.NicloudDb()
   if err != nil {
     return err
@@ -133,6 +133,7 @@ func (h Vm_hosts)freecpumem (ip string, cpu int, mem int) error {
   if err != nil {
     return err
   }
+
   var v Vm_hosts
   db.Where("ipv4 = ?", ip).Find(&v)
 
@@ -155,11 +156,6 @@ func GetHostVmNumber(ip string) (int, int, error) {
 }
 
 func (h Vm_hosts)Updatehostcpumem (ip string, cpu int, mem int) error {
-  err := checkcpumem(ip, cpu, mem)
-  if err != nil {
-    return err
-  }
-
   c, m, err := h.Addcpumem(ip, cpu, mem)
   if err != nil {
     return err
@@ -178,11 +174,6 @@ func (h Vm_hosts)Updatehostcpumem (ip string, cpu int, mem int) error {
 }
 
 func (h Vm_hosts)Updatehost(ip string, cpu int, mem int) error {
-  err := checkcpumem(ip, cpu, mem)
-  if err != nil {
-    return err
-  }
-
   c, m, err := h.Addcpumem(ip, cpu, mem)
   if err != nil {
     return err
@@ -211,9 +202,12 @@ func (h Vm_hosts)Updatehost(ip string, cpu int, mem int) error {
 }
 
 func (h Vm_hosts)Addcpumem (ip string, cpu int, mem int) (int, int, error) {
-  host := GetVmByIp(ip)
-  c := host.Cpu + cpu
-  m := host.Mem + mem
+  host, err := h.gethostsbyip(ip)
+  if err != nil {
+    return 0, 0, err
+  }
+  c := host.Usedcpu + cpu
+  m := host.Usedmem + mem
 
   return c, m, nil
 }
