@@ -1,6 +1,9 @@
 <template>
 		<div class="col-sm-12" style="margin-top: 10px; padding-left:0; padding-right:0">
-			<button class="btn btn-success btn-sm" @click="create('createvdisk')" type="button" style="margin-bottom:20px; margin-left:5px">创建云盘<span class="glyphicon glyphicon-plus" style="margin-left: 5px"></span></button>
+            <div style="padding-left: 5px; padding-right: 5px; margin-bottom: 20px">
+			    <button class="btn btn-success btn-sm" @click="create('createvdisk')" type="button" style="float: right; display:inline;">创建云盘<span class="glyphicon glyphicon-plus" style="margin-left: 5px"></span></button>
+		        <h5 style="display:inline;"><strong>云盘列表（{{countdisk}}）</strong></h5>
+            </div>
 			<table class="table table-hover" style="text-align: center;">
     			<thead>
       				<tr>
@@ -60,6 +63,7 @@
 export default {
     data () {
         return {
+            countdisk: 0,
 			data: [],
 			cpu: "",
 			mem: "",
@@ -114,6 +118,7 @@ export default {
             this.$http.get(apiurl).then(response => {
 				if (response.data.err === null ) {
             		this.data = response.data.res
+                    this.countdisk = response.data.res.length
 				} else {
 					alert (response.data.err.Message)
 					}
