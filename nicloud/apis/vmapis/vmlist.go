@@ -165,7 +165,7 @@ func Createvm(c *gin.Context) {
   }
   var rwLock sync.RWMutex
   rwLock.Lock()
-  err = vm.Create(datacenter, storage, vlan, cpu, mem, ip, host, osid, user, comment)
+  err = v.Create(datacenter, storage, vlan, cpu, mem, ip, host, osid, user, comment)
   rwLock.Unlock()
 
   res["err"] = nil

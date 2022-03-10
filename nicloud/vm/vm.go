@@ -471,7 +471,13 @@ func deletevmbyid(uuid string) error {
   return nil
 }
 
-func Create(datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, osid int, owner int, comment string) (error) {
+func (v Vms)Create (datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, osid int, owner int, comment string) (error) {
+  h := Vm_hosts{}
+  checkresoures := h.checkcpumem(host, cpu, mem)
+  if checkresoures != nil {
+    return checkresoures
+  }
+
   mac, err := networks.Ipresource(ip)
   if err != nil {
     return err
@@ -512,7 +518,6 @@ func Create(datacenter string,  storage string, vlan string, cpu int, mem int, i
 	  return err
   }
 
-  h := Vm_hosts{}
   err = h.Updatehost(host, cpu, mem)
   if  err != nil {
     cephcommon.Rm_image(u, storageinfo.Pool)
