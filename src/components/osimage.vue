@@ -1,12 +1,14 @@
 <template>
 		<div class="col-sm-12" style="margin-top: 10px; padding-right:0; padding-left:0">
-			<button class="btn btn-success btn-sm" type="button" @click="toParent"  style="margin-bottom:20px; margin-left:5px">创建系统镜像<span class="glyphicon glyphicon-plus" style="margin-left: 5px"></span></button>
-            
-            <ul class="breadcrumb">
-                <li><a @click="getosimage(0)">全部镜像</a></li>
-                <li v-for="(item, index) in osimagesort"><a @click="getosimage(item.Id)">{{item.Sort}}</a></li>
-            </ul>
-
+            <div class="col-md-7" style="padding-left: 0">
+                <ul class="breadcrumb">
+                    <li><a @click="getosimage(0)">全部镜像</a></li>
+                    <li v-for="(item, index) in osimagesort"><a @click="getosimage(item.Id)">{{item.Sort}}</a></li>
+                </ul>
+            </div>
+            <div class="col-md-5" style="float: right">
+			    <button class="btn btn-success btn-sm" type="button" @click="toParent"  style="float: right; margin-bottom:20px; margin-right: 5px">创建系统镜像<span class="glyphicon glyphicon-plus" style="margin-left: 5px"></span></button>
+            </div>
 			<table class="table table-hover" style="text-align: center;">
     			<thead>
       				<tr>
