@@ -1,6 +1,6 @@
 <template>
 		<div class="col-sm-12" style="margin-top: 10px;padding-right:0; padding-left:0">
-			<button class="btn btn-success btn-sm" type="button" @click="createvlan"  style="margin-bottom:20px; margin-left:5px">创建网络<span class="glyphicon glyphicon-plus" style="margin-left: 5px"></span></button>
+			<button class="btn btn-success btn-sm" type="button" @click="createvlan"  style="margin-bottom: 12px; margin-left:5px">创建网络<span class="glyphicon glyphicon-plus" style="margin-left: 5px"></span></button>
 			<table class="table table-condensed .table-hover" style="text-align: center;">
     			<thead>
       				<tr>

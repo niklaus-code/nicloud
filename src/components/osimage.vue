@@ -7,7 +7,7 @@
                 </ul>
             </div>
             <div class="col-md-5" style="float: right">
-			    <button class="btn btn-success btn-sm" type="button" @click="toParent"  style="float: right; margin-bottom:20px; margin-right: 5px">创建系统镜像<span class="glyphicon glyphicon-plus" style="margin-left: 5px"></span></button>
+			    <button class="btn btn-success btn-sm" type="button" @click="toParent"  style="float: right; margin-bottom: 12px; margin-right: 5px">创建系统镜像<span class="glyphicon glyphicon-plus" style="margin-left: 5px"></span></button>
             </div>
 			<table class="table table-hover" style="text-align: center;">
     			<thead>
