@@ -28,7 +28,7 @@
 				    <select class="col-sm-12" v-model="storagevalue" @change="getpool">
 						 <option value="">--请选择--</option>
                         <option  v-for="c in storage" :value="c.Uuid">
-                            {{ c.Name }}
+                            {{ c.Name }} (size: {{c.Remainder}} / {{c.Contain}} GB)
                         </option>
                     </select>
 				</div>

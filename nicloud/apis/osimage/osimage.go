@@ -12,6 +12,8 @@ import (
   "strconv"
 )
 
+var ceph cephcommon.Vms_Ceph
+
 func DelImage(c *gin.Context) {
   res := make(map[string]interface{})
   osid, err := strconv.Atoi(c.Query("osid"))
@@ -129,6 +131,7 @@ func AddImage(c *gin.Context) {
   datacenter := c.PostForm("datacenter")
   storage := c.PostForm("storage")
   osname := c.PostForm("osname")
+  size, _ := strconv.Atoi(c.PostForm("size"))
   createsnap, err := strconv.ParseBool(c.PostForm("createsnap"))
   if err != nil {
     res["err"] = vmerror.Error{Message: "参数错误"}
@@ -152,6 +155,7 @@ func AddImage(c *gin.Context) {
   o := osimage.Vms_os{
     Sort: sort,
     Owner: user,
+    Size: size,
     Datacenter: datacenter,
     Storage: storage,
     Osname: osname,
@@ -169,7 +173,7 @@ func AddImage(c *gin.Context) {
 
   snap := ""
   if createsnap {
-    storageinfo, err := cephcommon.Cephinfobyuuid(datacenter, storage)
+    storageinfo, err := ceph.Cephinfobyuuid(storage)
     if err != nil {
       res["err"] = vmerror.Error{Message: err.Error()}
       c.JSON(200, res)
@@ -184,8 +188,7 @@ func AddImage(c *gin.Context) {
     }
   }
 
-  os := osimage.Vms_os{}
-  err = os.Add(datacenter, storage, osname, cephblockdevice,  xml, sort , user, snap)
+  err = o.Add(datacenter, storage, osname, cephblockdevice,  xml, sort , user, snap, size)
 
   res["err"] = nil
   if err != nil {

@@ -12,6 +12,8 @@ type Vms_Ceph struct {
   Uuid string`json:"Uuid" validate:"required"`
   Name string `json:"Name" validate:"required"`
   Pool string `json:"Pool" validate:"required"`
+  Contain int `json:"Contain" validate:"required"`
+  Remainder int
   Datacenter string `json:"Datacenter" validate:"required"`
   Ceph_secret string  `json:"Ceph_secret" validate:"required"`
   Ips string  `json:"Ips" validate:"required"`
@@ -34,11 +36,12 @@ func Delete(uuid string) error {
   return nil
 }
 
-func Add(uuid string, name string, pool string, datacenter string, ceph_secret string, ips string, port string, comment  string) error {
+func (ceph Vms_Ceph)Add (uuid string, name string, pool string, datacenter string, ceph_secret string, ips string, port string, comment  string, contain int) error {
   c := &Vms_Ceph{
-    Uuid: name,
+    Uuid: uuid  ,
     Name: name,
     Pool: pool,
+    Contain: contain,
     Datacenter: datacenter,
     Ceph_secret: ceph_secret,
     Ips: ips,
@@ -54,11 +57,10 @@ func Add(uuid string, name string, pool string, datacenter string, ceph_secret s
   if errdb.Error != nil {
     return errdb.Error
   }
-  dbs.NewRecord(c)
   return nil
 }
 
-func Get()([]*Vms_Ceph, error) {
+func (ceph Vms_Ceph)Get() ([]*Vms_Ceph, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
@@ -66,6 +68,28 @@ func Get()([]*Vms_Ceph, error) {
   c := []*Vms_Ceph{}
   dbs.Find(&c)
   return c, nil
+}
+
+func (ceph Vms_Ceph)IncreaseContain(uuid string, contain int) error {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  cephinfo, err := ceph.Cephinfobyuuid(uuid)
+  if err != nil {
+    return err
+  }
+
+  if contain+cephinfo.Remainder > cephinfo.Contain {
+    return vmerror.Error{Message: "数据池容量不足"}
+  }
+
+  errdb := dbs.Model(ceph).Where("uuid=?", uuid).Update("remainder", contain+cephinfo.Remainder)
+  if errdb.Error != nil {
+    return err
+  }
+  return nil
 }
 
 func Getpool(datacenter string, storage string)([]*Vms_Ceph, error) {
@@ -78,13 +102,13 @@ func Getpool(datacenter string, storage string)([]*Vms_Ceph, error) {
   return c, nil
 }
 
-func Cephinfobyuuid(datacenter string, storage string)(*Vms_Ceph, error) {
+func (ceph Vms_Ceph)Cephinfobyuuid (uuid string)(*Vms_Ceph, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
   c := &Vms_Ceph{}
-  errdb := dbs.Where("datacenter=? and uuid=?", datacenter, storage).First(c)
+  errdb := dbs.Where("uuid=?", uuid).First(c)
   if errdb.Error != nil {
     return nil, err
   }
@@ -132,7 +156,6 @@ func Rm_image(uuid string, pool string) error {
   return nil
 }
 
-
 func  image_ctx(ctx *rados.IOContext, cephblock string) *rbd.Image {
   imagectx := rbd.GetImage(ctx, cephblock)
   return imagectx
@@ -164,7 +187,7 @@ func RbdClone(id string, cephblock string, snap string, pool string) (string, er
   return id, nil
 }
 
-func Createcephblock(uuid string, contain int, pool string) error {
+func (ceph Vms_Ceph)Createcephblock (uuid string, contain int, pool string) error {
   ioctx, err := ceph_ioctx(pool)
   if err != nil {
     return err
@@ -235,7 +258,7 @@ func Getimgbyname(imgname string, pool string) (*rbd.Image, error) {
   return errimg, nil
 }
 
-func Createimgsnap(vmid string, datacenter string, storage string, snapname string, pool string) error {
+func Createimgsnap(vmid string, snapname string, pool string) error {
   img, err := Getimgbyname(vmid, pool)
   if err != nil {
     return err
@@ -327,9 +350,8 @@ func SnapProtect(imgid string, pool string, snapname string) error {
   return nil
 }
 
-
-func ListChildernImages(datacenter string, storage string, imageid string) ([]string, error) {
-  cephinfo, err := Cephinfobyuuid(datacenter, storage)
+func (ceph Vms_Ceph)ListChildernImages(storage string, imageid string) ([]string, error) {
+  cephinfo, err := ceph.Cephinfobyuuid(storage)
   if err != nil {
     return nil, err
   }

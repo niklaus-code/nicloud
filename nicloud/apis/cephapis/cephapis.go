@@ -6,6 +6,7 @@ import (
   "github.com/go-playground/validator/v10"
   "nicloud/cephcommon"
   "nicloud/vmerror"
+  "strconv"
 )
 
 func  Getpool(c *gin.Context) {
@@ -20,7 +21,8 @@ func  Getpool(c *gin.Context) {
 }
 
 func  GetStorage(c *gin.Context) {
-  cephinfo, err := cephcommon.Get()
+  var ceph cephcommon.Vms_Ceph
+  cephinfo, err := ceph.Get()
   res := make(map[string]interface{})
   res["res"] = cephinfo
   res["err"] = err
@@ -41,16 +43,18 @@ func Addceph(c *gin.Context) {
   uuid := c.PostForm("uuid")
   name := c.PostForm("storagename")
   pool := c.PostForm("pool")
+  contain, _ := strconv.Atoi(c.PostForm("contain"))
   datacenter := c.PostForm("datacenter")
   ceph_secret := c.PostForm("ceph_secret")
   port := c.PostForm("port")
   ips := c.PostForm("ips")
   comment := c.PostForm("comment")
 
-  ce := cephcommon.Vms_Ceph{
+  ceph := cephcommon.Vms_Ceph{
     Uuid: uuid,
     Name: name,
     Pool: pool,
+    Contain: contain,
     Datacenter: datacenter,
     Ceph_secret: ceph_secret,
     Ips: ips,
@@ -60,7 +64,7 @@ func Addceph(c *gin.Context) {
   res := make(map[string]interface{})
 
   validate := validator.New()
-  err := validate.Struct(&ce)
+  err := validate.Struct(&ceph)
   if err != nil {
     fmt.Println(err.Error())
     res["err"] = vmerror.Error{Message: "参数错误"}
@@ -68,7 +72,7 @@ func Addceph(c *gin.Context) {
     return
   }
 
-  err = cephcommon.Add(uuid, name, pool, datacenter, ceph_secret, ips, port, comment)
+  err = ceph.Add(uuid, name, pool, datacenter, ceph_secret, ips, port, comment, contain)
   if err != nil {
     res["err"] = vmerror.Error{Message: "创建失败" + err.Error()}
   } else {

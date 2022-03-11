@@ -49,34 +49,44 @@
                     	</select>
 					</div>
 				</div>
-    		</div>
+			</div>
 			<div class="col-sm-12" style="margin-top:20px">
-	 		    <div class="form-group">
-				    <div class="col-sm-2 col-sm-offset-2">
-        			    <label>镜像名称</label>
+	 	        <div class="form-group">
+			        <div class="col-sm-2 col-sm-offset-2">
+        		        <label>镜像名称</label>
+			        </div>
+			        <div class="col-sm-3">
+				        <form role="form">
+  					        <div class="form-group">
+    					        <input type="text" class="form-control" v-model="osimage" placeholder="">
+  					        </div>
+				        </form>
+			        </div>
+		            <div class="col-sm-2" style="padding-left: 0; padding-right: 0">
+        			    <label>镜像大小（GB）</label>
 				    </div>
-				    <div class="col-sm-8">
+				    <div class="col-sm-3">
 					    <form role="form">
-  						    <div class="form-group">
-    						    <input type="text" class="form-control" v-model="osimage" placeholder="">
+  					        <div class="form-group">
+    					        <input type="text" class="form-control" v-model="size" placeholder="50">
   						    </div>
 					    </form>
 				    </div>
-				</div>
+    		    </div>
     		</div>
-			<div class="col-sm-12" style="margin-top: 6px">
-	 		    <div class="form-group">
-				    <div class="col-sm-2 col-sm-offset-2">
-        			    <label>ceph块名称</label>
-				    </div>
-				<div class="col-sm-8">
-					<form role="form">
-  						<div class="form-group">
-    						<input type="text" class="form-control" v-model="cephblockdevice" placeholder="">
-  						</div>
-					</form>
-				</div>
-				</div>
+			<div class="col-sm-12" style="margin-top:10px">
+	 	        <div class="form-group">
+			        <div class="col-sm-2 col-sm-offset-2">
+        		        <label>ceph块设备名称</label>
+			        </div>
+			        <div class="col-sm-3">
+				        <form role="form">
+  					        <div class="form-group">
+    					        <input type="text" class="form-control" v-model="cephblockdevice" placeholder="">
+  					        </div>
+				        </form>
+			        </div>
+    		    </div>
     		</div>
 			<div class="col-sm-12" style="margin-top: 6px">
 	 		    <div class="form-group">
@@ -122,6 +132,7 @@
 export default {
     data () {
         return {
+            size: "",
             sortvalue: "",
             sort: [
                 {id: 1, sort: "基础镜像"},
@@ -206,7 +217,7 @@ export default {
 
             var apiurl = `/api/osimage/createimage`
 
-            this.$http.post(apiurl, this.$qs.stringify({osname: this.osimage, datacenter: this.centervalue, storage: this.storagevalue, cephblockdevice: this.cephblockdevice, createsnap: this.checkboxobj, xml: this.xml, sort: this.sortvalue.id})).then(response => {
+            this.$http.post(apiurl, this.$qs.stringify({size: this.size, osname: this.osimage, datacenter: this.centervalue, storage: this.storagevalue, cephblockdevice: this.cephblockdevice, createsnap: this.checkboxobj, xml: this.xml, sort: this.sortvalue.id})).then(response => {
 				if (response.data.err === null) {
 					alert("创建成功!")
                 	this.$emit("toParent", "osimage");
@@ -220,9 +231,6 @@ export default {
   }
 </script>
 <style scoped>
-.btn-sm {
-}
-
 select{
 	height:30px;
     font-family: "微软雅黑";

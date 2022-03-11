@@ -341,10 +341,9 @@ func Createsnap(c *gin.Context)  {
     err = vm.SaveSnapToImg(uuid, datacenter, storage, snapname, userid)
   }
 
+  res["err"] = nil
   if err != nil {
     res["err"] = vmerror.Error{Message: "创建失败: " + err.Error()}
-  } else  {
-    res["err"] = nil
   }
 
   c.JSON(200, res)

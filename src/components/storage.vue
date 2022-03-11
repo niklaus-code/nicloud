@@ -12,6 +12,7 @@
         				<th>名称</th>
         				<th>UUID</th>
         				<th>数据池</th>
+        				<th>已用 / 总量（GB）</th>
         				<th>secret</th>
         				<th>hosts/port</th>
         				<th>数据中心</th>
@@ -29,6 +30,7 @@
         				<td>{{item.Name}}</td>
         				<td>{{item.Uuid}}</td>
         				<td>{{item.Pool}}</td>
+        				<td>{{item.Remainder}} / {{item.Contain}}</td>
         				<td>{{item.Ceph_secret}}</td>
         				<td>{{item.Ips}}/{{item.Port}}</td>
         				<td>{{item.Datacenter}}</td>

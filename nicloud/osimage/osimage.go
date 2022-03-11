@@ -16,6 +16,7 @@ type Vms_os struct {
   Id int
   Sort int
   Owner int
+  Size int `json:"Size" validate:"required"`
   Osname string `json:"Osname" validate:"required"`
   Datacenter string `json:"Datacenter" validate:"required"`
   Storage string  `json:"Storage" validate:"required"`
@@ -92,10 +93,11 @@ func Update(id int, datacenter string, storage string, osname string,  snapimage
   return nil
 }
 
-func (vmsos *Vms_os) Add(datacenter string, storage string, osname string, cephblockdevice string, xml string, sort int, owner int, snap string) error {
+func (vmsos *Vms_os) Add(datacenter string, storage string, osname string, cephblockdevice string, xml string, sort int, owner int, snap string, size int) error {
   os := Vms_os{
     Datacenter: datacenter,
     Storage: storage,
+    Size: size,
     Osname: osname,
     Cephblockdevice: cephblockdevice,
     Snapimage: snap,
@@ -148,7 +150,8 @@ func Maposimage(user int, sort int) ([]map[string]interface{}, error)  {
       c["sort"] = sort.Sort
     }
 
-    storageinfo, err := cephcommon.Cephinfobyuuid(v.Datacenter, v.Storage)
+    ceph := cephcommon.Vms_Ceph{}
+    storageinfo, err := ceph.Cephinfobyuuid(v.Storage)
     if err != nil {
       c["storagename"] = nil
     } else {
@@ -211,7 +214,8 @@ func getxml(osname string) (string, error) {
 }
 
 func Xml(datacenter string, storage string, vlan string,  vcpu int, vmem int, uuid string, mac string, image_name string, osid int, pool string) (string, error) {
-  storagename, err := cephcommon.Cephinfobyuuid(datacenter, storage)
+  ceph := cephcommon.Vms_Ceph{}
+  storagename, err := ceph.Cephinfobyuuid(storage)
   if err != nil {
     return "", err
   }
@@ -248,7 +252,6 @@ func Xml(datacenter string, storage string, vlan string,  vcpu int, vmem int, uu
   name := doc.FindElement("./domain/name")
   name.CreateText(uuid)
 
-  fmt.Println(vmem)
   mem := doc.FindElement("./domain/memory")
   mem.CreateText(fmt.Sprintf("%d", vmem))
 

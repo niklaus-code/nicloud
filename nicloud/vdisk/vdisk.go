@@ -64,13 +64,15 @@ func Updatevdiskbydelvm(datacenter string, storage string, vmip string) error {
 }
 
 
-func Create_vdisk(contain int, pool string, storage string, datacenter string, userid int, comment string) error {
+func (d Vms_vdisks)Create(contain int, pool string, cephid string, datacenter string, userid int, comment string) error {
+  ceph := cephcommon.Vms_Ceph{}
   vdiskid := utils.Createuuid()
+
   c := &Vms_vdisks{
     Vdiskid: vdiskid,
     Contain: contain,
     Pool: pool,
-    Storage: storage,
+    Storage: cephid,
     Datacenter: datacenter,
     User: userid,
     Exist: 1,
@@ -79,7 +81,7 @@ func Create_vdisk(contain int, pool string, storage string, datacenter string, u
     Createtime: time.Now().Format("2006-01-02 15:04:05"),
   }
 
-  err := cephcommon.Createcephblock(vdiskid, contain, pool)
+  err := ceph.Createcephblock(vdiskid, contain, pool)
   if err != nil {
     return err
   }
@@ -91,6 +93,11 @@ func Create_vdisk(contain int, pool string, storage string, datacenter string, u
   errdb := dbs.Create(&c)
   if errdb.Error != nil {
     return vmerror.Error{Message: errdb.Error.Error()}
+  }
+
+  increasecontain := ceph.IncreaseContain(cephid, contain)
+  if increasecontain != nil {
+    return increasecontain
   }
   return err
 }
@@ -382,10 +389,11 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
     return err
   }
 
+  ceph := cephcommon.Vms_Ceph{}
   if len(disknum) >= 5 {
     return vmerror.Error{Message: "Maximum number of mounted to 5"}
   }
-  storageinfo, err := cephcommon.Cephinfobyuuid(datacenter, storage)
+  storageinfo, err := ceph.Cephinfobyuuid(storage)
   if err != nil {
     return err
   }

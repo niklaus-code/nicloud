@@ -11,6 +11,7 @@ import (
   "strconv"
   "sync"
 )
+var ceph cephcommon.Vms_Ceph
 
 func Mountdisk(c *gin.Context) {
   vmid := c.Query("vmid")
@@ -39,7 +40,7 @@ func Mountdisk(c *gin.Context) {
     return
   }
 
-  storageinfo, err := cephcommon.Cephinfobyuuid(vminfo.Datacenter, vminfo.Storage)
+  storageinfo, err := ceph.Cephinfobyuuid(vminfo.Storage)
   if err != nil {
     res["err"] = vmerror.Error{Message: "获取云主机信息失败"}
     c.JSON(200, res)
@@ -81,7 +82,7 @@ func Createvdisk(c *gin.Context) {
   res := make(map[string]interface{})
   contain, _ := strconv.Atoi(c.PostForm("contain"))
   pool := c.PostForm("pool")
-  storage := c.PostForm("storage")
+  cephid := c.PostForm("storage")
   datacenter := c.PostForm("datacenter")
   comment := c.PostForm("comment")
 
@@ -96,7 +97,7 @@ func Createvdisk(c *gin.Context) {
   d := vdisk.Vms_vdisks{
     Contain: contain,
     Pool: pool,
-    Storage: storage,
+    Storage: cephid,
     Datacenter: datacenter,
     User: userid,
   }
@@ -110,7 +111,7 @@ func Createvdisk(c *gin.Context) {
 
   var rwLock sync.RWMutex
   rwLock.Lock()
-  err = vdisk.Create_vdisk(contain, pool, storage, datacenter, userid, comment)
+  err = d.Create(contain, pool, cephid, datacenter, userid, comment)
   rwLock.Unlock()
   res["err"] = err
 
