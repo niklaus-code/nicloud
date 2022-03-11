@@ -21,13 +21,14 @@
   						<input type="checkbox" v-model="checkvalue" @click="checkbox()"> 
 					</label>
 				</th>
-        		<th>实例名称</th>
+        	<!--	<th>实例名称</th>-->
         		<th @click="getvm(cpagenumber, 'ip')">IP地址 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
         		<th @click="getvm(cpagenumber, 'os')">镜像 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
         		<th @click="getvm(cpagenumber, 'host')" style="min-width:90px">宿主机 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
         		<th>CPU/内存</th>
         		<th>云盘</th>
         		<th style="min-width:74px" @click="getvm(cpagenumber, 'owner')">所属者 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
+        		<th>创建时间</th>
         		<th>备注</th>
         		<th style="min-width:44px">状态</th>
         		<th>操作</th>
@@ -38,7 +39,7 @@
 				<label class="checkbox-inline">
   					<input type="checkbox" v-model="item.Checkout"> 
 				</label>
-       			<td width="300px">{{item.Name}}</td>
+       		<!--	<td width="300px">{{item.Name}}</td> -->
        			<td>{{item.Ip}}</td>
        			<td>{{item.osname}}</td>
        			<td>{{item.Host}}</td>
@@ -51,6 +52,7 @@
 					</ul>
 				</td>
        			<td>{{item.Owner}}</td>
+       			<td>{{item.Create_time}}</td>
 				<td>
 	    			<span v-if='item.flag2' @click="c(index)">
                			{{item.Comment}}

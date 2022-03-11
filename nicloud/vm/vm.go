@@ -25,7 +25,7 @@ type Vms struct {
 	Name        string
 	Cpu         int `json:"cpu validate:"gt=0"`
 	Mem         int `json:"mem validate:"gt=0"`
-	Create_time time.Time
+	Create_time time.Time `json:"Create_time"`
 	Owner       int  `json:"Owner" validate:"required"`
 	Comment     string
 	Vmxml       string
@@ -572,7 +572,7 @@ func base(vmid string, vmip string) string {
 func allvm(obj []Vms) []map[string]interface{}  {
   var mapc []map[string]interface{}
 
-  for _, v := range obj {
+  for k, v := range obj {
     c := make(map[string]interface{})
     m := reflect.TypeOf(v)
     n := reflect.ValueOf(v)
@@ -591,6 +591,7 @@ func allvm(obj []Vms) []map[string]interface{}  {
       return nil
     }
     c["osname"] = osinfo.Osname
+    c["Create_time"] = obj[k].Create_time.Format("2006-01-02 15:04:05")
 
     vncid := base(v.Uuid, v.Host)
     c["vncid"] = vncid
