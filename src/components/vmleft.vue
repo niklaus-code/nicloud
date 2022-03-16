@@ -59,11 +59,11 @@ export default {
 				router: "datacenter",
                 class: "glyphicon glyphicon-globe"
 					},
-				{
-				name: "统计",
-				router: "count",
-                class: "glyphicon glyphicon-eye-open"
-					},
+				//{
+				//name: "统计",
+				//router: "count",
+               // class: "glyphicon glyphicon-eye-open"
+			//		},
 				],
             }
         },

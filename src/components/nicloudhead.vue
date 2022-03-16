@@ -1,7 +1,10 @@
 <template>
 <div style="color:#FFA500; margin-top: 2px">
+    <div style="margin-left: 141px">
         <strong>
+           <span class="glyphicon glyphicon-tasks"></span><span> Dashboard Overview </span>
         </strong>
+    </div>
 </div>
 
 </template>
@@ -54,4 +57,7 @@ a {
 	color: #FFA500;
 }
 
+.glyphicon {
+    top: 2px;
+}
 </style>

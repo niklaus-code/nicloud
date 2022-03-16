@@ -1,6 +1,6 @@
 <template>
 <div>
-    <div class="col-md-7">
+    <div class="col-md-7" style="padding-left: 24px">
         <h5>云主机列表({{vmcount}})<h5>
     </div>
     <div class="col-md-5" style="float: right; margin-bottom:20px">

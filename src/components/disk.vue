@@ -1,11 +1,11 @@
 <template>
 		<div style="margin-top: 10px">
-            <div class="col-md-7">
+            <div class="col-md-7" style="padding-left: 24px">
 		        <h5><strong>云盘列表（{{countdisk}}）</strong></h5>
             </div>
 
             <div style="float: right; margin-bottom: 12px" class="col-md-5">
-			    <button class="btn btn-success btn-sm" @click="create('createvdisk')" type="button" style="float: right; display:inline;">创建云盘<span class="glyphicon glyphicon-plus" style="margin-left: 5px"></span></button>
+			    <button class="btn btn-success btn-sm" @click="create('createvdisk')" type="button" style="float: right; margin-right: 5px; display:inline;">创建云盘<span class="glyphicon glyphicon-plus" style="margin-left: 5px"></span></button>
             </div>
 			<table class="table table-hover" style="text-align: center;">
     			<thead>

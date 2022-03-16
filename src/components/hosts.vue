@@ -1,7 +1,9 @@
 <template>
-		<div class="col-sm-12" style="margin-top: 10px;padding-right:0; padding-left:0">
-			<button class="btn btn-success btn-sm" @click="createhost" type="button"  style="margin-bottom: 12px; margin-left:5px">创建宿主机<span class="glyphicon glyphicon-plus" style="margin-left: 5px"></span></button>
-            <div style="border-bottom: 1px solid #9f0303;  border-top: 1px solid #9f0303; padding-top: 5px">
+		<div style="margin-top: 10px;padding-right:0; padding-left:0">
+            <div style="float: right;  margin-bottom: 12px" class="col-md-5">
+			    <button style="float: right; margin-right: 5px; display:inline;" class="btn btn-success btn-sm" @click="createhost" type="button">创建宿主机<span class="glyphicon glyphicon-plus" style="margin-left: 5px"></span></button>
+            </div>
+            <div class="col-md-12" style="border-bottom: 1px solid #9f0303;  border-top: 1px solid #9f0303; padding-top: 5px">
                 <h4 style="margin-left: 10px">数据中心</h4>
 			<table class="table1 table table-hover" style="text-align: center;">
     			<thead>
@@ -31,7 +33,7 @@
 				</tbody>
 			</table>
             </div>
-            <div style="border-bottom: 1px solid green; border-top: 1px solid green; padding-top: 5px; margin-bottom: 30px">
+            <div  class="col-md-12" style="border-bottom: 1px solid green; border-top: 1px solid green; padding-top: 5px; margin-bottom: 30px">
             <h4 style="margin-left: 10px">宿主机</h4>
 			<table class="table2 table table-hover" style="text-align: center;">
     			<thead>
@@ -220,6 +222,11 @@ export default {
   }
 </script>
 <style scoped>
+.col-md-12{
+    padding-right: 0;
+    padding-left: 0;
+    }
+
 select{
     font-family: "微软雅黑";
     border: 1px #1a1a1a solid;
