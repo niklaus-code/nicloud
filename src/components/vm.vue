@@ -3,11 +3,11 @@
     <div class="col-md-7" style="padding-left: 24px">
         <h5>云主机列表({{vmcount}})<h5>
     </div>
-    <div class="col-md-5" style="float: right; margin-bottom:20px">
+    <div class="col-md-5" style="float: right; margin-bottom: 20px">
 	    <button class="btn btn-default btn-sm" @click="create()" style="float: right">
 		    <span class="glyphicon glyphicon-new-window"></span> 创建实例
 		</button>
-		<button class="btn btn-default btn-sm" style="margin-right:5px" @click="search()" style="float: right">
+		<button class="btn btn-default btn-sm" style="margin-right: 5px" @click="search()" style="float: right">
 	        <span class="glyphicon glyphicon-search"></span> 筛选
 		</button>
         <input class="col-md-6" type="text" id="name" placeholder="" v-model="content" style="float: right">
@@ -453,9 +453,12 @@ table {
 	vertical-align: "middle";
 }
 
+.table  thead  tr  th {
+    border-bottom: 2px solid #846d6d;
+}
+
 th {
-	background-color: #e3e3e3;
-	font-weight: bold;
+	background-color: #77BB95;
 	color: black;
 	text-align: center;
 }
