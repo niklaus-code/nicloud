@@ -179,7 +179,7 @@ export default {
     margin-top: -30px; /*等于footer的高度*/
     height: 30px;
     clear:both;
-    background: #e3e3e3;
+    #background: #e3e3e3;
 }
 
 .dropdown-menu  li  a {
