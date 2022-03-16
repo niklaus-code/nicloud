@@ -1,9 +1,5 @@
 <template>
-<div style="padding-left:10px; background-color: #5b5b5b; color:#FFA500;padding-top:6px; padding-bottom: 6px; ">
-        <strong>
-		<span @click="index">NICLOUD&nbsp/</span>
-		<span @click="serveroom">SERVEROOM</span>
-        </strong>
+<div style="padding-left: 135px; background-color: #5b5b5b; color:#FFA500;padding-top:6px; padding-bottom: 6px; ">
 </div>
 
 </template>

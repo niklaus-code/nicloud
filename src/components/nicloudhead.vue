@@ -1,8 +1,6 @@
 <template>
-<div style="background-color: #5b5b5b; color:#FFA500; margin-top: 2px">
+<div style="color:#FFA500; margin-top: 2px">
         <strong>
-		<span @click="index">NICLOUD&nbsp/</span>
-		<span @click="serveroom">SERVEROOM</span>
         </strong>
 </div>
 

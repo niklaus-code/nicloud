@@ -1,6 +1,10 @@
 <template>
-    <div style="width:140; text-align: center;margin-top: 120px">
-        <div align="center" style="color: white; text-align: left; margin-left: 20px">
+<div>
+    <div style="margin-top: 35px">
+         <img src="./logo.jpg" width="100%">
+    </div>
+    <div style="width:140; text-align: center;margin-top: 120px; z-index: 2500">
+        <div align="center" style="color: white; text-align: left; margin-left: 30px">
             <ul>
                 <li  v-for="(item, index) in routelist" @click="choose(index)" @click="toParent(item.router)">
                     <p :class=item.class> </p>
@@ -9,6 +13,7 @@
             </ul>
         </div>
     </div>
+</div>
 </template>
 
 <script>

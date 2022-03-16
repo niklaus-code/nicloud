@@ -143,13 +143,14 @@ export default {
 }
 
 .head {
+    height: 35px;
+    border: 1px solid #a49595;
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
     border-bottom-left-radius: 2px;
     font-size: 15px;
 
     color: #FFF;
-    background-color: #5B5B5B;
     padding-top:5px;
     padding-bottom:5px;
     padding-right:3px;
@@ -157,7 +158,7 @@ export default {
 }
 
 .mid {
-    margin-left:120px;
+    margin-left:140px;
     padding-right:0;
     padding-left:0;
     padding-top:20px;
@@ -173,7 +174,7 @@ export default {
 }
 
 .foot {
-    margin-left:120px;
+    margin-left:140px;
     position: relative;
     margin-top: -30px; /*等于footer的高度*/
     height: 30px;
@@ -192,15 +193,16 @@ export default {
 }
 
 .left {
+    z-index: 2500;
     position: fixed;
     float: left;
     height: 100%;
 
-    width: 120px;
+    width: 140px;
 
     padding-left:0;
     padding-right:0;
-    background-color: #778899;
+    background-color: #393f44;
     bottom: 0;
     height: auto !important;
     height: 100%; /*IE6不识别min-height*/
