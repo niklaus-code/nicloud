@@ -13,6 +13,10 @@
             </ul>
         </div>
     </div>
+    <div style="position: absolute; bottom: 5px; width:100%; color: white; text-align:center;font-size: 13px">
+        <p>Copyright <span class="glyphicon glyphicon-copyright-mark" ></span> 2021</p>
+        <p>关于•联系•反馈<p>
+    </div>
 </div>
 </template>
 
