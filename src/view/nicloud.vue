@@ -144,7 +144,7 @@ export default {
 
 .head {
     height: 35px;
-    border: 1px solid #a49595;
+    border-bottom: 1px solid #a49595;
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
     border-bottom-left-radius: 2px;
