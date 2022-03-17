@@ -327,6 +327,10 @@ func (m Mac) String(vlan string, end int) string {
     vlan = vlan[len(vlan)-2 : len(vlan)]
   }
 
+  if len(vlan) == 1 {
+    vlan = "0"+vlan
+  }
+
   return fmt.Sprintf("c8:00:%02x:%02x:%s:%02x",m[0],m[1], vlan, end)
 }
 
