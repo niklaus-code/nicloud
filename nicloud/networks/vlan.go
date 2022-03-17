@@ -299,7 +299,7 @@ func Createip(startip string, endip string, vlan string, prefix int, gateway str
   for i:= startnum; i <= endnum ; i++ {
     ips := &Vms_ips{
       Ipv4: l[0]+"."+l[1]+"."+l[2]+"."+strconv.Itoa(i),
-      Macaddr: NewRandomMac().String(vlan, i),
+      Macaddr: NewRandomMac().String(l[2], i),
       Vlan: vlan,
       Status: 0,
       Exist: 1,
@@ -319,19 +319,7 @@ func Createip(startip string, endip string, vlan string, prefix int, gateway str
 type Mac [3]byte
 
 func (m Mac) String(vlan string, end int) string {
-  if len(vlan) == 1 {
-    vlan = "0"+vlan
-  }
-
-  if len(vlan) > 2 {
-    vlan = vlan[len(vlan)-2 : len(vlan)]
-  }
-
-  if len(vlan) == 1 {
-    vlan = "0"+vlan
-  }
-
-  return fmt.Sprintf("c8:00:%02x:%02x:%s:%02x",m[0],m[1], vlan, end)
+  return fmt.Sprintf("c8:00:%02x:%02x:%02x:%02x",m[0],m[1], vlan, end)
 }
 
 func NewRandomMac() Mac{
