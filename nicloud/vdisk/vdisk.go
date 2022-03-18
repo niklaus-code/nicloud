@@ -29,6 +29,19 @@ type Vms_vdisks struct {
   Createtime string
 }
 
+func (* Vms_vdisks) Addcomment(vdiskid string, comment string) error {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+  
+  errdb := dbs.Model(Vms_vdisks{}).Where("vdiskid=?", vdiskid).Update("comment", comment)
+  if errdb.Error != nil {
+    return errdb.Error
+  }
+  return nil
+}
+
 func Getdiskbyvm(vmip string) ([]*Vms_vdisks, error) {
   dbs, err := db.NicloudDb()
   if err != nil {

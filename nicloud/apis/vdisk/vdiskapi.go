@@ -160,7 +160,7 @@ func Umountdisk(c *gin.Context) {
   c.JSON(200, res)
 }
 
-func  GetVdisk(c *gin.Context) {
+func GetVdisk(c *gin.Context) {
   res := make(map[string]interface{})
 
   token := c.Request.Header.Get("token")
@@ -176,5 +176,18 @@ func  GetVdisk(c *gin.Context) {
   res["res"] = r
   res["err"] = err
 
+  c.JSON(200, res)
+}
+
+func AddComment(c *gin.Context)  {
+  res := make(map[string]interface{})
+  uuid := c.PostForm("uuid")
+  comment := c.PostForm("comment")
+  v := vdisk.Vms_vdisks{}
+  err := v.Addcomment(uuid, comment)
+  res["err"] = nil
+  if err != nil {
+    res["err"] = err
+  }
   c.JSON(200, res)
 }

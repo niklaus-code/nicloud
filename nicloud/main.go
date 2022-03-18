@@ -148,6 +148,7 @@ func main() {
     v9.GET("deletevdisk", vdisk.Deletevdisk)
     v9.POST("createvdisk", vdisk.Createvdisk)
     v9.GET("getvdisk", vdisk.GetVdisk)
+    v9.POST("addcomment", vdisk.AddComment)
   }
 
   r.Run("127.0.0.1:1992")

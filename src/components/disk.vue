@@ -37,8 +37,17 @@
         				<td>{{item.Pool}}</td>
         				<td>{{item.Vm_ip}}</td>
         				<td>{{item.username}}</td>
-        				<td>{{item.Comment}}</td>
-				      <td>
+                        <td>
+                            <span v-if='item.flag2' @click="c(index)">
+                                {{item.Comment}}
+                            </span>
+                            <li v-if='item.flag'><span class="glyphicon glyphicon-calendar" @click="edit(index)"></span></li>
+                            <div v-if='item.flag1'>
+                                <div><input type="text" v-model="comments"></div>
+                                <div><span  @click="input(index, item.Vdiskid)" class="glyphicon glyphicon-calendar"></span></div>
+                            </div>
+                        </td>
+				        <td>
                             <span v-if="item.Status"  class="glyphicon glyphicon-ok"></span>
                             <span v-else class="glyphicon glyphicon-remove"></span>
                         </td>
@@ -66,6 +75,7 @@
 export default {
     data () {
         return {
+            comments: "",
             countdisk: 0,
 			data: [],
 			cpu: "",
@@ -80,6 +90,29 @@ export default {
 		},
 
     methods: {
+        c: function (index) {
+            this.data[index].flag2 = false
+            this.data[index].flag1 = true
+            this.comments = this.data[index].Comment
+            },
+
+        edit: function (index) {
+            this.data[index].flag = false
+            this.data[index].flag1 = true
+            },
+
+        input: function (index, uuid) {
+            var apiurl = `/api/vdisk/addcomment`
+            this.$http.post(apiurl,  this.$qs.stringify({uuid: uuid, comment: this.comments} )).then(response => {
+                if (response.data) {
+                    this.data[index].Comment = this.comments
+                    }
+            })
+            this.data[index].flag = false
+            this.data[index].flag1 = false
+            this.data[index].flag2 = true
+            },
+
 	    create: function () {
                 this.$emit("toParent", "createvdisk");
                 },
@@ -116,11 +149,27 @@ export default {
             })
         },
 
+        comment: function(res) {
+            var d = new Array()
+            for (var v in res) {
+                if (res[v]["Comment"].length > 0) {
+                    res[v]["flag"] = false
+                    res[v]["flag2"] = true
+                    } else {
+                        res[v]["flag2"] = false
+                        res[v]["flag"] = true
+                    }
+                res[v]["flag1"] = false
+                d.push(res[v])
+            this.data = d
+                }
+            },
+
 		getvdisk: function (ip) {
             var apiurl = `/api/vdisk/getvdisk`
             this.$http.get(apiurl).then(response => {
 				if (response.data.err === null ) {
-            		this.data = response.data.res
+                    this.comment(response.data.res)
                     this.countdisk = response.data.res.length
 				} else {
 					alert (response.data.err.Message)
