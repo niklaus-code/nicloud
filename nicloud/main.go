@@ -94,7 +94,7 @@ func main() {
   v5 := r.Group("/api/hosts")
   {
     v5.Use(utils.Tokenauth())
-    v5.GET("gethostsbydatacenter", hostapis.GetHostsbydatacenter)
+    v5.GET("gethostsbydatacenter", hostapis.GetHostsbyvlan)
     v5.GET("gethosts", hostapis.GetHosts)
     v5.GET("countdomains", hostapis.ListDomains)
     v5.GET("gethostsby", hostapis.Gethostinfo)

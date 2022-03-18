@@ -1,7 +1,7 @@
 <template>
 <div class="contain col-md-12">
     <div class="head col-md-12" style="z-index: 100">
-        <div class="col-md-3" style="float:left; padding-left:10px">
+        <div class="col-md-5" style="float:left; padding-left:10px">
             <nicloudhead @toParent="getMag"></nicloudhead>
         </div>
         <div class="col-md-2" style="float:right; padding-right:0;margin-right:10px; text-align:right">

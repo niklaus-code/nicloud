@@ -61,7 +61,13 @@
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
         				<td>{{item.Datacenter}}</td>
-        				<td>{{item.Vlan}}</td>
+        				<td>
+                            <ul>
+                                <li v-for="(k, v) in item.vlan">
+                                    {{k.Vlan}}
+                                </li>
+                            </ul>
+                        </td>
         				<td>{{item.Ipv4}}</td>
         				<td>{{item.Usedcpu}}核/{{item.Cpu}}核</td>
         				<td>{{item.Usedmem}}G/{{item.Mem}}G</td>

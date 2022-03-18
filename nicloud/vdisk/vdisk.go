@@ -34,7 +34,7 @@ func (* Vms_vdisks) Addcomment(vdiskid string, comment string) error {
   if err != nil {
     return err
   }
-  
+
   errdb := dbs.Model(Vms_vdisks{}).Where("vdiskid=?", vdiskid).Update("comment", comment)
   if errdb.Error != nil {
     return errdb.Error

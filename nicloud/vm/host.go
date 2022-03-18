@@ -18,11 +18,17 @@ type Vm_hosts struct {
   Usedmem     int
   Usedcpu     int
   Status      int8
-  Vlan        string  `json:"vlan" validate:"required"`
   Comment     string
 }
 
+type Vms_vlan_map_hosts struct {
+  id int
+  Vlan string
+  Hosts string
+}
+
 func Allhosts(hosts []Vm_hosts) []map[string]interface{}  {
+  mapvlanhost := Vms_vlan_map_hosts{}
   var mapc []map[string]interface{}
 
   for _, v := range hosts {
@@ -34,17 +40,12 @@ func Allhosts(hosts []Vm_hosts) []map[string]interface{}  {
     for i := 0; i < m.NumField(); i++ {
       c[m.Field(i).Name] = n.Field(i).Interface()
     }
-    //vmnum, err := listdomains(v.Ipv4)
-    //if err != nil {
-    //  c["vmnum"] = nil
-    //} else {
     c["vmnum"] = ""
-    //}
+    c["vlan"], _ = mapvlanhost.Getvlanbyhost(v.Ipv4)
     mapc = append(mapc, c)
   }
   return mapc
 }
-
 
 func CountHosts(ip string) int {
   db, err := db.NicloudDb()
@@ -56,34 +57,91 @@ func CountHosts(ip string) int {
   return c
 }
 
-func Createhost(datacenter string, cpu int, mem int, ip string, num int, vlan string) error {
+func (h Vm_hosts)Createhost(datacenter string, cpu int, mem int, ip string, num int, vlan []string) error {
+  db, err := db.NicloudDb()
+  if err != nil {
+   return err
+  }
+  host := &Vm_hosts{
+   Datacenter: datacenter,
+   Cpu: cpu,
+   Mem: mem,
+   Ipv4: ip,
+   Max_vms: num,
+   Status: 1,
+   Usedcpu: 0,
+   Usedmem: 0,
+  }
+
+  res := db.Create(&host)
+  if res.Error != nil {
+   return vmerror.Error{Message: "数据插入失败"}
+  }
+
+  vlanmaphost := Vms_vlan_map_hosts{}
+  for _, v := range vlan {
+    err = vlanmaphost.Add(v, ip)
+    if err != nil {
+      return err
+    }
+  }
+  return nil
+}
+
+func (vh Vms_vlan_map_hosts)Add (vlan string, host string) error {
   db, err := db.NicloudDb()
   if err != nil {
     return err
   }
-  h := &Vm_hosts{
-    Datacenter: datacenter,
-    Cpu: cpu,
-    Mem: mem,
-    Ipv4: ip,
-    Max_vms: num,
-    Status: 1,
-    Usedcpu: 0,
-    Usedmem: 0,
+  s := &Vms_vlan_map_hosts{
     Vlan: vlan,
+    Hosts: host,
   }
 
-  err1 := db.Create(*h)
-  if err1.Error != nil {
-    return err1.Error
-  }
-
-  //return bool
-  res := db.NewRecord(&h)
-  if res == false {
+  res := db.Create(&s)
+  if res.Error != nil {
     return vmerror.Error{Message: "数据插入失败"}
   }
   return nil
+}
+
+func (vh Vms_vlan_map_hosts)Getvlanbyhost (host string) ([]*Vms_vlan_map_hosts, error) {
+  db, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  v := []*Vms_vlan_map_hosts{}
+  dberr := db.Where("hosts = ?", host).Find(&v)
+  if dberr.Error != nil {
+    return nil, dberr.Error
+  }
+  return v, err
+}
+
+func (vh Vms_vlan_map_hosts)Gethostbyvlan (vlan string) ([]*Vms_vlan_map_hosts, error) {
+  db, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  v := []*Vms_vlan_map_hosts{}
+  dberr := db.Where("vlan = ?", vlan).Find(&v)
+  if dberr.Error != nil {
+    return nil, dberr.Error
+  }
+  return v, err
+}
+
+func (vh Vms_vlan_map_hosts)Delhostmapvlan (hostip string) (error) {
+  db, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+  v := []*Vms_vlan_map_hosts{}
+  dberr := db.Where("hosts = ?", hostip).Delete(&v)
+  if dberr.Error != nil {
+    return dberr.Error
+  }
+  return err
 }
 
 func (h Vm_hosts)checkcpumem(ip string, cpu int, mem int) error {
@@ -212,7 +270,7 @@ func (h Vm_hosts)Addcpumem (ip string, cpu int, mem int) (int, int, error) {
   return c, m, nil
 }
 
-func Deletehost(ip string) error {
+func (h Vm_hosts)Deletehost(ip string) error {
   dbs, err := db.NicloudDb()
   if err != nil {
     return err
@@ -221,6 +279,12 @@ func Deletehost(ip string) error {
   dberr := dbs.Where("ipv4=?", ip).Delete(&Vm_hosts{})
   if dberr.Error != nil {
     return dberr.Error
+  }
+
+  vlanmaphost := Vms_vlan_map_hosts{}
+  delvlanmaphost := vlanmaphost.Delhostmapvlan(ip)
+  if delvlanmaphost != nil {
+    return delvlanmaphost
   }
 
   return nil
@@ -249,13 +313,23 @@ func Hosts() ([]map[string]interface{}, error) {
     return res, nil
   }
 
-func GetHostsbydatacenter(datacenter string, vlan string) ([]map[string]interface{},  error) {
+func (h Vm_hosts)GetHostsbyVlan(datacenter string, vlan string) ([]map[string]interface{},  error) {
+  vlanmaphost := Vms_vlan_map_hosts{}
+  vlanhosts, err  := vlanmaphost.Gethostbyvlan(vlan)
+  if err != nil {
+    return nil, err
+  }
+  var hostlist []string
+  for _, v := range vlanhosts {
+    hostlist = append(hostlist, v.Hosts)
+  }
+
   db, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
   var hosts []Vm_hosts
-  db.Where("status=1 and datacenter=? and vlan=?", datacenter, vlan).Find(&hosts)
+  db.Where("ipv4 IN (?)", hostlist).Find(&hosts)
 
   res := Allhosts(hosts)
   return res, nil
