@@ -9,7 +9,7 @@
             					<input type="checkbox" v-model="checkvalue" @click="checkbox()">
         					</label>
         				</th>
-        				<th>vlan</th>
+        				<th>VLAN子网</th>
         				<th>网桥</th>
         				<th>地址段</th>
 						<th>网关</th>

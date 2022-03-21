@@ -24,7 +24,7 @@
 				<div class="col-sm-12" style="margin-top:20px">
 	 		<div class="form-group">
 				<div class="col-sm-4">
-        			<label>vlan</label>
+        			<label>VLAN子网</label>
 				</div>
 				<div class="col-sm-8">
 					<form role="form">

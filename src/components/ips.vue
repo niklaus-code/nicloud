@@ -15,7 +15,7 @@
         				</th>
 						<th>IPv4</th>
 						<th>MACADDR</th>
-						<th>VLAN</th>
+						<th>VLAN子网</th>
 						<th>创建时间</th>
 						<th>状态</th>
 						<th>操作</th>
