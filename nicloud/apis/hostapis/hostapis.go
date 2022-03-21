@@ -128,3 +128,42 @@ func Counthost(c *gin.Context) {
 
   c.JSON(200, res)
 }
+
+func Gethostbyip(c *gin.Context) {
+  ip := c.Query("ip")
+  r, err := vm.Maphost(ip)
+  res := make(map[string]interface{})
+  res["err"] = nil
+  if err != nil {
+    res["err"] = err.Error()
+  }
+  res["res"] = r
+  c.JSON(200, res)
+}
+
+func Updatehostinfo(c *gin.Context) {
+  h := vm.Vm_hosts{}
+  ip := c.PostForm("ip")
+  cpu, _ := strconv.Atoi(c.PostForm("cpu"))
+  mem, _ := strconv.Atoi(c.PostForm("mem"))
+  num, _ := strconv.Atoi(c.PostForm("num"))
+  vlanlist := c.PostForm("vlan")
+  res := make(map[string]interface{})
+
+  var ss []string
+  err := json.Unmarshal([]byte(vlanlist), &ss)
+  if err != nil {
+    res["err"] = vmerror.Error{Message: err.Error()}
+    c.JSON(400, res)
+    return
+  }
+
+  err = h.Updatehostinfo(ip, cpu, mem, num, ss)
+
+  res["err"] = nil
+  if err != nil {
+    res["err"] = err.Error()
+  }
+
+  c.JSON(200, res)
+}

@@ -7,6 +7,9 @@ const store = new Vuex.Store({
   state: {
     username: "",
 	token: "",
+    host: {
+        ip: "",
+        },
     changeparam: {
 		uuid: "",
 		host: "",

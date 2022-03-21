@@ -65,12 +65,23 @@ func Getvlan() ([]*Vms_vlans, error) {
   if err != nil {
     return nil, err
   }
-  if err != nil {
-    return nil, err
-  }
+
   var f []*Vms_vlans
   dbs.Find(&f)
   return f, nil
+}
+
+func (h Vms_vlans)Gethostunselectedvlan (vlanlist []string) ([]*Vms_vlans, error) {
+  db, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  var v []*Vms_vlans
+  db.Not("vlan", vlanlist).Find(&v)
+  if len(vlanlist) == 0 {
+    db.Find(&v)
+  }
+  return v, nil
 }
 
 func Getvlanbydatacenter(datacenter string) ([]*Vms_vlans, error) {

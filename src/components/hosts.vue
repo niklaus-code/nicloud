@@ -43,13 +43,13 @@
             					<input type="checkbox" v-model="checkvalue" @click="checkbox()">
         					</label>
         				</th>
-        				<th>数据中心</th>
+        				<th>IP地址</th>
         				<th>网络</th>
-        				<th>ip地址</th>
         				<th>已分配 / cpu（核）</th>
         				<th>已分配 / 内存（G）</th>
         				<th>可创建数</th>
         				<th>实际虚拟机数</th>
+        				<th>数据中心</th>
 						<th>备注</th>
 						<th>操作</th>
       				</tr>
@@ -60,7 +60,7 @@
         				<label class="checkbox-inline" style="width:10px">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
-        				<td>{{item.Datacenter}}</td>
+        				<td>{{item.Ipv4}}</td>
         				<td>
                             <ul>
                                 <li v-for="(k, v) in item.vlan">
@@ -68,11 +68,11 @@
                                 </li>
                             </ul>
                         </td>
-        				<td>{{item.Ipv4}}</td>
         				<td>{{item.Usedcpu}}核/{{item.Cpu}}核</td>
         				<td>{{item.Usedmem}}G/{{item.Mem}}G</td>
         				<td>{{item.count}}/{{item.Max_vms}}</td>
         				<td>{{item.vmnum}}</td>
+        				<td>{{item.Datacenter}}</td>
                         <td>
                             <span v-if='item.flag2' @click="c(index)">
                                 {{item.Comment}}
@@ -85,6 +85,10 @@
                         </td>
 
 		    			<td>
+							<button class="btn btn-primary btn-xs" type="button" @click="updatehost(item.Ipv4, index)">
+                                <span class="glyphicon glyphicon-edit"></span>
+                				修改
+            				</button>
 							<button class="btn btn-danger btn-xs" type="button" @click="deletehost(item.Ipv4, index)">
                                 <span class="glyphicon glyphicon-trash"></span>
                 				删除
@@ -119,6 +123,11 @@ export default {
     methods: {
 		createhost: function () {
 			this.$emit("toParent", "createhost");
+			},
+
+		updatehost: function (ip, index) {
+			this.$emit("toParent", "updatehost");
+            this.$store.state.host.ip = ip
 			},
 
 		deletehost: function (ip, index) {

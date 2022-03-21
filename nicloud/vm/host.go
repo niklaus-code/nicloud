@@ -4,6 +4,7 @@ import (
   "fmt"
   db "nicloud/dbs"
   "nicloud/libvirtd"
+  "nicloud/networks"
   "nicloud/vmerror"
   "reflect"
 )
@@ -27,6 +28,28 @@ type Vms_vlan_map_hosts struct {
   Hosts string
 }
 
+func (h Vm_hosts)gethostunselectedvlan (ip string) ([]*networks.Vms_vlans, error) {
+  vlan := networks.Vms_vlans{}
+  hostmapvlan := Vms_vlan_map_hosts{}
+
+  hostvlans, err := hostmapvlan.Getvlanbyhost(ip)
+  if err != nil {
+    return nil, err
+  }
+
+  var vlanlist []string
+  for _, v := range hostvlans {
+    vlanlist = append(vlanlist, v.Vlan)
+  }
+
+  unseletdvlan, err := vlan.Gethostunselectedvlan(vlanlist)
+  if err != nil {
+    return nil, err
+  }
+
+  return unseletdvlan, nil
+}
+
 func Allhosts(hosts []Vm_hosts) []map[string]interface{}  {
   mapvlanhost := Vms_vlan_map_hosts{}
   var mapc []map[string]interface{}
@@ -45,6 +68,27 @@ func Allhosts(hosts []Vm_hosts) []map[string]interface{}  {
     mapc = append(mapc, c)
   }
   return mapc
+}
+
+func Maphost(ip string) (map[string]interface{}, error) {
+  h := Vm_hosts{}
+  host, err := h.Gethostsbyip(ip)
+  if err != nil {
+    return nil, err
+  }
+  mapvlanhost := Vms_vlan_map_hosts{}
+  c := make(map[string]interface{})
+  c["count"] = CountHosts(host.Ipv4)
+
+  m := reflect.TypeOf(*host)
+  n := reflect.ValueOf(*host)
+  c["vmnum"] = ""
+  for i := 0; i < m.NumField(); i++ {
+    c[m.Field(i).Name] = n.Field(i).Interface()
+  }
+  c["vlan"], _ = mapvlanhost.Getvlanbyhost(host.Ipv4)
+  c["unselectvlan"], _ = h.gethostunselectedvlan(ip)
+  return c, nil
 }
 
 func CountHosts(ip string) int {
@@ -167,7 +211,7 @@ func (h Vm_hosts)checkcpumem(ip string, cpu int, mem int) error {
 }
 
 func (h Vm_hosts)downcpumem (ip string, cpu int, mem int) (int, int, error) {
-  host, err := h.gethostsbyip(ip)
+  host, err := h.Gethostsbyip(ip)
   if err != nil {
     return 0, 0, err
   }
@@ -260,7 +304,7 @@ func (h Vm_hosts)Updatehost(ip string, cpu int, mem int) error {
 }
 
 func (h Vm_hosts)Addcpumem (ip string, cpu int, mem int) (int, int, error) {
-  host, err := h.gethostsbyip(ip)
+  host, err := h.Gethostsbyip(ip)
   if err != nil {
     return 0, 0, err
   }
@@ -270,7 +314,7 @@ func (h Vm_hosts)Addcpumem (ip string, cpu int, mem int) (int, int, error) {
   return c, m, nil
 }
 
-func (h Vm_hosts)Deletehost(ip string) error {
+func (h Vm_hosts)Deletehost (ip string) error {
   dbs, err := db.NicloudDb()
   if err != nil {
     return err
@@ -335,7 +379,7 @@ func (h Vm_hosts)GetHostsbyVlan(datacenter string, vlan string) ([]map[string]in
   return res, nil
 }
 
-func (h Vm_hosts)gethostsbyip (ip string) (*Vm_hosts,  error) {
+func (h Vm_hosts)Gethostsbyip (ip string) (*Vm_hosts,  error) {
   db, err := db.NicloudDb()
   if err != nil {
     return nil, err
@@ -392,4 +436,32 @@ func CountHost() (*counthosts, error) {
   c.Mem_percent = fmt.Sprintf("%.2f", float64(c.Usedmem)/float64(c.Mem)*100)
 
   return &c, nil
+}
+
+func (h Vm_hosts)Updatehostinfo(ip string, cpu int, mem int, maxnum int, vlanlist []string) error {
+  fmt.Println(ip)
+  fmt.Println(maxnum)
+  db, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  errdb := db.Model(&Vm_hosts{}).Where("ipv4=?", ip).Update("cpu", cpu).Update("mem", mem).Update("Max_vms", maxnum)
+  if errdb.Error != nil {
+    return errdb.Error
+  }
+
+  hostmapvlan := Vms_vlan_map_hosts{}
+  delhostmapvlan := hostmapvlan.Delhostmapvlan(ip)
+  if delhostmapvlan != nil {
+    return delhostmapvlan
+  }
+
+  for _, v := range vlanlist {
+    err := hostmapvlan.Add(v, ip)
+    if err != nil {
+      return err
+    }
+  }
+  return nil
 }

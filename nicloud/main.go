@@ -98,12 +98,14 @@ func main() {
     v5.GET("gethosts", hostapis.GetHosts)
     v5.GET("countdomains", hostapis.ListDomains)
     v5.GET("gethostsby", hostapis.Gethostinfo)
+    v5.GET("gethostsbyip", hostapis.Gethostbyip)
 
     v5.Use(utils.RoleAuth())
     v5.GET("counthosts", hostapis.Counthost)
     v5.GET("delete", hostapis.Delhost)
     v5.POST("createhost", hostapis.Createhost)
     v5.GET("addcomment", hostapis.Addcomment)
+    v5.POST("updatehost", hostapis.Updatehostinfo)
   }
 
   v6 := r.Group("/api/osimage")
