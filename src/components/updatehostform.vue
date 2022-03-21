@@ -4,7 +4,7 @@
 	    <div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
-        			<label style="margin-top:0 ">数据中心:</label>
+        			<label style="margin-top:0 ">数据中心</label>
 				</div>
 				<div class="col-sm-6">
                        {{ hostinfo.Datacenter }}
@@ -14,7 +14,7 @@
 		<div class="col-sm-12" style="margin-top: 10px">
 	 		<div class="form-group">
 				<div class="col-sm-4">
-        			<label style="margin-top:0 ">IP:</label>
+        			<label style="margin-top:0 ">IP</label>
 				</div>
 				<div class="col-sm-6">
                        {{ hostinfo.Ipv4 }}
@@ -24,7 +24,7 @@
 		<div class="col-sm-12" style="margin-top: 10px">
 	 		<div class="form-group">
 				<div class="col-sm-4">
-        			<label>网络</label>
+        			<label>VLAN子网</label>
 				</div>
                 <div class="col-sm-8" style="float: left">
                     <div style="width: 45%; float: left ">

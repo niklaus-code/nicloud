@@ -44,7 +44,7 @@
         					</label>
         				</th>
         				<th>IP地址</th>
-        				<th>网络</th>
+        				<th>VLAN子网</th>
         				<th>已分配 / cpu（核）</th>
         				<th>已分配 / 内存（G）</th>
         				<th>可创建数</th>
