@@ -4,7 +4,7 @@
 			<span>{{vlan}}&nbsp&&nbsp IP列表({{countip}})</span>
             <button style="float: right" class="btn btn-success btn-sm"><a :href=downloadurl>导出IP列表</a></button>
 		</div>
-		<div class="col-sm-12" style="margin-top:20px;">
+		<div class="col-sm-12" style="margin-top:20px; padding-left:0; padding-right:0">
 			<table class="table table-hover" style="text-align: center;">
     			<thead>
       				<tr>
