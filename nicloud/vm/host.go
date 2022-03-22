@@ -439,8 +439,6 @@ func CountHost() (*counthosts, error) {
 }
 
 func (h Vm_hosts)Updatehostinfo(ip string, cpu int, mem int, maxnum int, vlanlist []string) error {
-  fmt.Println(ip)
-  fmt.Println(maxnum)
   db, err := db.NicloudDb()
   if err != nil {
     return err

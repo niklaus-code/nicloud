@@ -239,13 +239,13 @@ func Changeconfig(c *gin.Context) {
 func DeleteVM(c *gin.Context) {
 
 	uuid := c.Query("uuid")
-  datacenter := c.Query("datacenter")
+  //datacenter := c.Query("datacenter")
   storage := c.Query("storage")
 
 	res := make(map[string]interface{})
   var rwLock sync.RWMutex
 	rwLock.Lock()
-	err := vm.Delete(uuid, datacenter, storage)
+	err := vm.Delete(uuid, storage)
 	rwLock.Unlock()
 
 	res["err"] = nil

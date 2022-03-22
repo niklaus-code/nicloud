@@ -289,7 +289,6 @@ func Xml(datacenter string, storage string, vlan string,  vcpu int, vmem int, uu
   return docstring, nil
 }
 
-
 func GetOsInfoById(storage string, id int) (*Vms_os, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
@@ -299,4 +298,22 @@ func GetOsInfoById(storage string, id int) (*Vms_os, error) {
   o := &Vms_os{}
   dbs.Where("id=? and storage=?", id, storage).First(o)
   return o, nil
+}
+
+
+func (o Vms_os)CheckOsbyUuid(uuid string) (bool, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return false, err
+  }
+
+  os := []*Vms_os{}
+  dberr := dbs.Where("Cephblockdevice=?", uuid).First(&os)
+  if dberr.Error != nil {
+    return false, dberr.Error
+  }
+  if len(os) > 0 {
+    return true, err
+  }
+  return false, nil
 }

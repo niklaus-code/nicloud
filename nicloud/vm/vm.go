@@ -166,7 +166,17 @@ type Vms_archive struct {
   Storage string
 }
 
-func Delete(uuid string, datacenter string, storage string) (error) {
+func Delete(uuid string, storage string) (error) {
+  o := osimage.Vms_os{}
+  check_cephblock_relate_os, err := o.CheckOsbyUuid(uuid)
+  if err != nil {
+    return  err
+  }
+
+  if check_cephblock_relate_os {
+    return vmerror.Error{Message: "系统快照关联基础镜像, 无法删除"}
+  }
+
   vminfo, err := GetVmByUuid(uuid)
   if err != nil {
     return err
