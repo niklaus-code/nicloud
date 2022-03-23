@@ -9,6 +9,7 @@
 - 归档：删除的云主机，云盘并非真正删除，可以根据需求保留时间，恢复
 
 **创建网桥脚本：**
+
 `yum install epel-release.noarch -y
 ifconfig eth0 0.0.0.0 up
 brctl addbr br85
