@@ -10,7 +10,7 @@
 
 **创建网桥脚本：**
 
-`yum install epel-release.noarch -y` 
+`yum install epel-release.noarch -y && yum install bridge-utils -t` 
 
 `ifconfig eth0 0.0.0.0 up`
 
