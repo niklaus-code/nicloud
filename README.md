@@ -10,13 +10,18 @@
 
 **创建网桥脚本：**
 
-`yum install epel-release.noarch -y
-ifconfig eth0 0.0.0.0 up
-brctl addbr br85
-brctl addif br85 eth0
-ifconfig br85 10.0.0.1/24 up
-route add default gw 10.0.0.254
-`
+`yum install epel-release.noarch -y`
+
+`ifconfig eth0 0.0.0.0 up`
+
+`brctl addbr br85`
+
+`brctl addif br85 eth0`
+
+`ifconfig br85 10.0.0.1/24 up`
+
+`route add default gw 10.0.0.254`
+
 ### 云主机列表页面
 ![avatar](./static/vm.png)
 ### 云硬盘列表页面
