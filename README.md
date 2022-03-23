@@ -13,6 +13,6 @@
 ### 镜像列表页面
 ![avatar](./static/os.png)
 ### 快照详情页
-![avatar](./static/os.png)
+![avatar](./static/snap.png)
 ### 网络列表页面
-![avatar](./static/os.png)
+![avatar](./static/network.png)
