@@ -6,6 +6,13 @@
 - 云盘创建，自定义容量，删除挂载等
 - 把系统快照保存为基础镜像
 - 归档：删除的云主机，云盘并非真正删除，可以根据需求保留时间，恢复
+`yum install epel-release.noarch -y
+ifconfig eth0 0.0.0.0 up
+brctl addbr br85
+brctl addif br85 eth0
+ifconfig br85 10.0.0.1/24 up
+route add default gw 10.0.0.254
+`
 ### 云主机列表页面
 ![avatar](./static/vm.png)
 ### 云硬盘列表页面
