@@ -10,6 +10,9 @@
 - 把系统快照保存为基础镜像
 - 归档：删除的云主机，云盘并非真正删除，可以根据需求保留时间，恢复
 
+**创建表脚本：**
+nicloud/scripts/modle_migrate.go
+
 **创建网桥脚本：**
 
 `yum install epel-release.noarch -y && yum install bridge-utils -y` 
