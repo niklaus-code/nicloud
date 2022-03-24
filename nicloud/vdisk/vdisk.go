@@ -15,7 +15,7 @@ import (
 )
 
 type Vms_vdisks struct {
-  Vdiskid string
+  Vdiskid string `gorm:"primary_key;"`
   Contain int `json:"contain" validate:"min=0,max=1024"`
   Diskname string
   Pool string `json:"pool" validate:"required"`
@@ -116,7 +116,7 @@ func (d Vms_vdisks)Create(contain int, pool string, cephid string, datacenter st
 }
 
 type Vms_vdisks_archives struct {
-  Vdiskid string
+  Vdiskid string `gorm:"primary_key;`
   Owner int
   Pool string
   Storage string

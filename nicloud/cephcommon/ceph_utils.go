@@ -9,8 +9,8 @@ import (
 )
 
 type Vms_Ceph struct {
-  Uuid string`json:"Uuid" validate:"required"`
-  Name string `json:"Name" validate:"required"`
+  Uuid string`gorm:"primary_key" json:"Uuid" validate:"required"`
+  Name string `gorm:"unique" json:"Name" validate:"required"`
   Pool string `json:"Pool" validate:"required"`
   Contain int `json:"Contain" validate:"required"`
   Remainder int
@@ -236,7 +236,7 @@ func Changename (uuid string, cephblock string, snap string, pool string, oldnam
 }
 
 type Vms_snaps struct {
-  Id int
+  Id int `gorm:"primary_key;AUTO_INCREMENT"`
   Vm_uuid string
   Datacenter string
   Storage string

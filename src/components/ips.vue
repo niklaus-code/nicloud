@@ -22,8 +22,8 @@
       				</tr>
     			</thead>
 
-				<tbody v-for="(item, index) in ips">
-      				<tr v-if="item.Exist" class="table-dark text-dark" :id="item.Ipv4">
+				<tbody v-if="item.Exist" v-for="(item, index) in ips">
+      				<tr class="table-dark text-dark" :id="item.Ipv4">
         				<label class="checkbox-inline">
             				<input type="checkbox" v-model="item.Checkout">
         				</label>

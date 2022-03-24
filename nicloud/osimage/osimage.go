@@ -13,21 +13,21 @@ import (
 
 
 type Vms_os struct {
-  Id int
+  Id int `gorm:"primary_key;AUTO_INCREMENT"`
   Sort int
   Owner int
   Size int `json:"Size" validate:"required"`
-  Osname string `json:"Osname" validate:"required"`
+  Osname string `gorm:"unique" json:"Osname" validate:"required"`
   Datacenter string `json:"Datacenter" validate:"required"`
   Storage string  `json:"Storage" validate:"required"`
   Cephblockdevice string  `json:"Cephblockdevice" validate:"required"`
   Snapimage string
-  Xml string  `json:"Xml" validate:"required"`
+  Xml string  `gorm:"size:65535" json:"Xml" validate:"required"`
   Status int8
 }
 
 type Vms_osimage_sort struct {
-  Id int
+  Id int `gorm:"primary_key;AUTO_INCREMENT"`
   Sort string
 }
 

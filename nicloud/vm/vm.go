@@ -21,17 +21,17 @@ import (
 )
 var ceph cephcommon.Vms_Ceph
 type Vms struct {
-	Uuid        string
+	Uuid        string `gorm:"primary_key;"`
 	Name        string
-	Cpu         int `json:"cpu validate:"gt=0"`
-	Mem         int `json:"mem validate:"gt=0"`
+	Cpu         int `json:"cpu validate: gt=0"`
+	Mem         int `json:"mem validate: gt=0"`
 	Create_time time.Time `json:"Create_time"`
 	Owner       int  `json:"Owner" validate:"required"`
 	Comment     string
-	Vmxml       string
-	Status      string
+	Vmxml       string `gorm:"size:65535"`
+  Status      string
 	Exist       int
-	Ip          string  `json:"ip" validate:"min=8,max=15"`
+	Ip          string  `gorm:"unique" json:"ip"`
 	Host        string  `json:"host" validate:"min=8,max=15"`
 	Os          int  `json:"os" validate:"required"`
 	Datacenter  string  `json:"datacenter" validate:"required"`

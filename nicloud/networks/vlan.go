@@ -11,7 +11,7 @@ import (
 )
 
 type Vms_vlans struct {
-  Datacenter string  `json:"Datacenter" validate:"required"`
+  Datacenter string  `gorm:"primary_key" json:"Datacenter" validate:"required"`
   Vlan string  `json:"Vlan" validate:"required"`
   Bridge string  `json:"Bridge" validate:"required"`
   Network string   `json:"Network" validate:"required"`
@@ -117,8 +117,8 @@ func split(item string) (bool, []string) {
 }
 
 type Vms_ips struct {
-  Ipv4 string
-  Macaddr string
+  Ipv4 string `gorm:"primary_key;"`
+  Macaddr string `gorm:"unique"`
   Status int8
   Vlan string
   Exist int8
@@ -330,7 +330,10 @@ func Createip(startip string, endip string, vlan string, prefix int, gateway str
 type Mac [3]byte
 
 func (m Mac) String(vlan string, end int) string {
-  return fmt.Sprintf("c8:00:%02x:%02x:%02x:%02x",m[0],m[1], vlan, end)
+  vlani, _ := strconv.Atoi(vlan)
+  buf := make([]byte, 255)
+  //fmt.Println(fmt.Sprintf("%02X, %02x", vlan, end))
+  return fmt.Sprintf("c8:00:%02x:%02x:%02x:%02x",m[0],m[1], buf[vlani], end)
 }
 
 func NewRandomMac() Mac{

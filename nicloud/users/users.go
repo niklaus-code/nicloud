@@ -10,12 +10,12 @@ import (
 )
 
 type Vms_users struct {
-  Id int
-  Username string `json:"Username" validate:"required"`
+  Id int `gorm:"primary_key;AUTO_INCREMENT"`
+  Username string `gorm:"unique;" json:"Username" validate:"required"`
   Passwd string `json:"Passwd" validate:"required"`
-  Email string  `json:"Email" validate:"email"`
+  Email string  `jgorm:"unique;" son:"Email" validate:"email"`
   Role int  `json:"Role" validate:"oneof=1 2"`
-  Mobile string `json:"Mobile" validate:"len=11" validate:"startswith=1"`
+  Mobile string `gorm:"unique;" json:"Mobile" validate:"len=11" validate:"startswith=1"`
   Create_time time.Time
 }
 

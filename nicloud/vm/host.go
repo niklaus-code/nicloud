@@ -10,20 +10,20 @@ import (
 )
 
 type Vm_hosts struct {
-  Datacenter  string  `json:"datacenter" validate:"required"`
-  Ipv4        string  `json:"ipv4" validate:"min=8,max=15"`
+  Ipv4        string `gorm:"primary_key" json:"ipv4" validate:"min=8,max=15"`
   Mem         int `json:"mem" validate:"gt=0"`
   Cpu         int `json:"cpu" validate:"gt=0"`
-  Max_vms     int `json:"max_vms" validate:"gt=0"`
+  Max_vms     int `gorm:"unique" json:"max_vms" validate:"gt=0"`
   Created_vms int
   Usedmem     int
   Usedcpu     int
+  Datacenter  string `json:"datacenter" validate:"required"`
   Status      int8
   Comment     string
 }
 
 type Vms_vlan_map_hosts struct {
-  id int
+  id int `gorm:"primary_key;AUTO_INCREMENT"`
   Vlan string
   Hosts string
 }

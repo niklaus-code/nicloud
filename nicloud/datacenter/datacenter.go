@@ -5,7 +5,7 @@ import (
 )
 
 type Vms_datacenter struct {
-  Datacenter string
+  Datacenter string `gorm:"unique"`
   Comment string
   Status int
 }
