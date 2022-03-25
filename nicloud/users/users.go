@@ -163,7 +163,7 @@ func GetUserByUserID(userid int) (*Vms_users, error) {
 
 type Vms_roles struct {
   Id int
-  Rolename string
+  Rolename string `gorm:"unique;"`
 }
 
 func GetRoleByRoleId(roleid int) (*Vms_roles, error) {

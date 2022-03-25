@@ -1,6 +1,8 @@
 package main
 
 import (
+  "flag"
+  "fmt"
   "nicloud/vdisk"
   "nicloud/vm"
 )
@@ -13,6 +15,10 @@ import "nicloud/users"
 
 
 func main()  {
+  username := flag.String("username", "admin", "123")
+  fmt.Println(&username)
+
+  return
   db, err := db.NicloudDb()
   if err != nil {
     return
@@ -90,10 +96,15 @@ func main()  {
     return
   }
 
-  r := users.Vms_roles{
+  admin := users.Vms_roles{
     Rolename: "admin",
   }
-  db.Create(&r)
+  db.Create(&admin)
+
+  user := users.Vms_roles{
+    Rolename: "user",
+  }
+  db.Create(&user)
 
   vms_users := users.Vms_users{}
   errdb = db.Set("gorm:table_options", "CHARSET=utf8").AutoMigrate(&vms_users)
