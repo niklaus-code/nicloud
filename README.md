@@ -12,7 +12,7 @@
 
 **迁移表脚本：**
 
-`cd nicloud/nicloud && go run scripts/modle_migrate.go`
+`cd nicloud/nicloud && go run scripts/model_migrate.go`
 
 **创建网桥脚本：**
 
