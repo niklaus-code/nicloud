@@ -2,6 +2,7 @@ package main
 
 import (
   "flag"
+  "fmt"
   "nicloud/utils"
   "nicloud/vdisk"
   "nicloud/vm"
@@ -19,6 +20,11 @@ func main()  {
   flag.StringVar(&username, "username","", "")
   flag.StringVar(&passwd, "passwd","", "")
   flag.Parse()
+
+  if username == "" || passwd == "" {
+    fmt.Println("Usage: go run scripts/model_migrate.go --userna admin  --passwd 123456")
+    return
+  }
 
   passwd = utils.Encryption(passwd)
 
@@ -100,12 +106,13 @@ func main()  {
   }
 
   admin := users.Vms_roles{
+    Id: 1,
     Rolename: "admin",
   }
   db.Create(&admin)
 
   user := users.Vms_roles{
-    Id: 1,
+    Id: 2,
     Rolename: "user",
   }
   db.Create(&user)

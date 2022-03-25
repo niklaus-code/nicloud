@@ -12,7 +12,7 @@
 
 **迁移表脚本 && 初始化管理员账户：**
 
-`cd nicloud/nicloud && go run scripts/model_migrate.go --userna admin  --passwd 123456`
+`cd nicloud/nicloud && go run scripts/model_migrate.go --username admin  --passwd 123456`
 
 **创建网桥脚本：**
 
