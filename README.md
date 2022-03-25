@@ -10,9 +10,9 @@
 - 把系统快照保存为基础镜像
 - 归档：删除的云主机，云盘并非真正删除，可以根据需求保留时间，恢复
 
-**迁移表脚本：**
+**迁移表脚本 && 初始化管理员账户：**
 
-`cd nicloud/nicloud && go run scripts/model_migrate.go`
+`cd nicloud/nicloud && go run scripts/model_migrate.go --userna admin  --passwd 123456`
 
 **创建网桥脚本：**
 

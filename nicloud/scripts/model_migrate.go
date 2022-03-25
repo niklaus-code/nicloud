@@ -2,7 +2,7 @@ package main
 
 import (
   "flag"
-  "fmt"
+  "nicloud/utils"
   "nicloud/vdisk"
   "nicloud/vm"
 )
@@ -13,12 +13,15 @@ import "nicloud/networks"
 import "nicloud/osimage"
 import "nicloud/users"
 
-
 func main()  {
-  username := flag.String("username", "admin", "123")
-  fmt.Println(&username)
+  var username string
+  var passwd string
+  flag.StringVar(&username, "username","", "")
+  flag.StringVar(&passwd, "passwd","", "")
+  flag.Parse()
 
-  return
+  passwd = utils.Encryption(passwd)
+
   db, err := db.NicloudDb()
   if err != nil {
     return
@@ -102,6 +105,7 @@ func main()  {
   db.Create(&admin)
 
   user := users.Vms_roles{
+    Id: 1,
     Rolename: "user",
   }
   db.Create(&user)
@@ -113,11 +117,11 @@ func main()  {
   }
 
   u := users.Vms_users{
-    Username: "admin",
-    Passwd: "6421823f634a011fe9ad2db2f5d3661e3b87c35179f6982052c03e31eedb96a9",
-    Email: "mys@cnic.cn",
+    Username: username,
+    Passwd: passwd,
+    Email: "",
     Role: 1,
-    Mobile: "18811546275",
+    Mobile: "",
   }
   db.Create(&u)
 
