@@ -14,6 +14,11 @@
 
 `cd nicloud/nicloud && go run scripts/model_migrate.go --username admin  --passwd 123456`
 
+**table都采用utf8编码，如果出现乱码可以设置数据库编码。在 `/etc/my.conf.d/mariadb.conf` 中加入**
+
+`character-set-server=utf8`
+
+
 **创建网桥脚本：**
 
 `yum install epel-release.noarch -y && yum install bridge-utils -y` 

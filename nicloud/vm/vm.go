@@ -160,7 +160,7 @@ type Vms_archive struct {
   Create_time time.Time
   Owner int
   Comment string
-  Vmxml string
+  Vmxml string `gorm:"size:65535"`
   Ip string
   Datacenter string
   Storage string

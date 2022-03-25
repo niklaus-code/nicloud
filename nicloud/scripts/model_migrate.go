@@ -22,7 +22,7 @@ func main()  {
   flag.Parse()
 
   if username == "" || passwd == "" {
-    fmt.Println("Usage: go run scripts/model_migrate.go --userna admin  --passwd 123456")
+    fmt.Println("Usage: go run scripts/model_migrate.go --username admin  --passwd 123456")
     return
   }
 
@@ -98,6 +98,18 @@ func main()  {
   if errdb.Error != nil {
     return
   }
+
+  os_base := osimage.Vms_osimage_sort{
+    Id: 1,
+    Sort: "基础镜像",
+  }
+  db.Create(&os_base)
+
+  os_user := osimage.Vms_osimage_sort{
+    Id: 2,
+    Sort: "用户镜像",
+  }
+  db.Create(&os_user)
 
   vms_roles := users.Vms_roles{}
   errdb = db.Set("gorm:table_options", "CHARSET=utf8").AutoMigrate(&vms_roles)

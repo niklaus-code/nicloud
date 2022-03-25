@@ -169,10 +169,14 @@ export default {
             var apiurl = `/api/vdisk/getvdisk`
             this.$http.get(apiurl).then(response => {
 				if (response.data.err === null ) {
-                    this.comment(response.data.res)
-                    this.countdisk = response.data.res.length
+                    if (response.data.res === null) {
+                        this.countdisk = 0
+                        } else {
+                        this.comment(response.data.res)
+                        this.countdisk = response.data.res.length
+                        }
 				} else {
-					alert (response.data.err.Message)
+					alert (response.data.err)
 					}
             })
         },

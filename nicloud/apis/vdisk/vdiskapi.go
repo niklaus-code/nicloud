@@ -172,9 +172,11 @@ func GetVdisk(c *gin.Context) {
   }
 
   r, err := vdisk.Getvdisk(userid)
-
   res["res"] = r
-  res["err"] = err
+  res["err"] = nil
+  if err != nil {
+    res["err"] = err.Error()
+  }
 
   c.JSON(200, res)
 }
