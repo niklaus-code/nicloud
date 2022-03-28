@@ -179,7 +179,9 @@ func AddImage(c *gin.Context) {
       c.JSON(200, res)
       return
     }
-    snap, err = cephcommon.CreateSnapAndProtect(storageinfo.Pool, cephblockdevice)
+
+    ceph := cephcommon.Vms_Ceph{}
+    snap, err = ceph.CreateSnapAndProtect(storageinfo.Pool, cephblockdevice)
     if err != nil {
       res["err"] = vmerror.Error{Message: err.Error()}
       fmt.Println(err)

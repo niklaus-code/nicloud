@@ -140,20 +140,20 @@ func rename(img  *rbd.Image, blockname string) error {
   return nil
 }
 
-func Rm_image(uuid string, pool string) error {
-  ioctx, err := ceph_ioctx(pool)
+func (c Vms_Ceph)Rm_image(uuid string, pool string) (string, error) {
+  ioctx, err := c.ceph_ioctx(pool)
   if err != nil {
-    return err
+    return "", err
   }
 
   img := rbd.GetImage(ioctx, uuid)
   Archive_img := "x_"+(time.Now().Format("20060102150405"))+uuid
   err = rename(img, Archive_img)
   if err != nil {
-    return err
+    return "", err
   }
 
-  return nil
+  return Archive_img, nil
 }
 
 func  image_ctx(ctx *rados.IOContext, cephblock string) *rbd.Image {
@@ -161,8 +161,8 @@ func  image_ctx(ctx *rados.IOContext, cephblock string) *rbd.Image {
   return imagectx
 }
 
-func RbdClone(id string, cephblock string, snap string, pool string) (string, error) {
-  ioctx, err := ceph_ioctx(pool)
+func (c Vms_Ceph)RbdClone(id string, cephblock string, snap string, pool string) (string, error) {
+  ioctx, err := c.ceph_ioctx(pool)
 
   //openimage
   o, err := rbd.OpenImage(ioctx, cephblock, snap)
@@ -188,7 +188,7 @@ func RbdClone(id string, cephblock string, snap string, pool string) (string, er
 }
 
 func (ceph Vms_Ceph)Createcephblock (uuid string, contain int, pool string) error {
-  ioctx, err := ceph_ioctx(pool)
+  ioctx, err := ceph.ceph_ioctx(pool)
   if err != nil {
     return err
   }
@@ -200,7 +200,7 @@ func (ceph Vms_Ceph)Createcephblock (uuid string, contain int, pool string) erro
   return nil
 }
 
-func ceph_ioctx(pool string) (*rados.IOContext, error){
+func (c Vms_Ceph)ceph_ioctx(pool string) (*rados.IOContext, error){
   conn, err := CephConn()
   if err != nil {
     return nil, vmerror.Error{Message: "ceph 连接失败"}
@@ -213,16 +213,16 @@ func ceph_ioctx(pool string) (*rados.IOContext, error){
   return ioctx, nil
 }
 
-func Changename (uuid string, cephblock string, snap string, pool string, oldname string) error {
-  ioctx, err := ceph_ioctx(pool)
+func (c Vms_Ceph)Changename (uuid string, cephblock string, snap string, pool string, oldname string) error {
+  ioctx, err := c.ceph_ioctx(pool)
   if err != nil {
     return err
   }
-  img, err := RbdClone(uuid, cephblock, snap, pool)
+  img, err := c.RbdClone(uuid, cephblock, snap, pool)
   if err != nil {
     return err
   }
-  err = Rm_image(oldname, pool)
+  _, err = c.Rm_image(oldname, pool)
   if err != nil {
     return err
   }
@@ -245,8 +245,8 @@ type Vms_snaps struct {
   Status bool
 }
 
-func Getimgbyname(imgname string, pool string) (*rbd.Image, error) {
-  ctx, err := ceph_ioctx(pool)
+func (c Vms_Ceph)Getimgbyname(imgname string, pool string) (*rbd.Image, error) {
+  ctx, err := c.ceph_ioctx(pool)
   if err != nil {
     return nil, err
   }
@@ -258,8 +258,8 @@ func Getimgbyname(imgname string, pool string) (*rbd.Image, error) {
   return errimg, nil
 }
 
-func Createimgsnap(vmid string, snapname string, pool string) error {
-  img, err := Getimgbyname(vmid, pool)
+func (c Vms_Ceph)Createimgsnap(vmid string, snapname string, pool string) error {
+  img, err := c.Getimgbyname(vmid, pool)
   if err != nil {
     return err
   }
@@ -272,8 +272,8 @@ func Createimgsnap(vmid string, snapname string, pool string) error {
   return nil
 }
 
-func Rollback(vmid string, snapname string, pool string) error {
-  img, err := Getimgbyname(vmid, pool)
+func (c Vms_Ceph)Rollback(vmid string, snapname string, pool string) error {
+  img, err := c.Getimgbyname(vmid, pool)
   if err != nil {
     return err
   }
@@ -286,8 +286,8 @@ func Rollback(vmid string, snapname string, pool string) error {
   return nil
 }
 
-func Delsnap(imageid string, snapname string, pool string) error {
-  img, err := Getimgbyname(imageid, pool)
+func (c Vms_Ceph)Delsnap(imageid string, snapname string, pool string) error {
+  img, err := c.Getimgbyname(imageid, pool)
   if err != nil {
     return err
   }
@@ -312,8 +312,8 @@ func Delsnap(imageid string, snapname string, pool string) error {
   return nil
 }
 
-func CreateSnapAndProtect(pool string, imgid string) (string, error) {
-  img, err := Getimgbyname(imgid, pool)
+func (c Vms_Ceph)CreateSnapAndProtect(pool string, imgid string) (string, error) {
+  img, err := c.Getimgbyname(imgid, pool)
   if err != nil {
     return "", err
   }
@@ -324,15 +324,15 @@ func CreateSnapAndProtect(pool string, imgid string) (string, error) {
     return "", err
   }
 
-  err = SnapProtect(imgid, pool, snapname)
+  err = c.SnapProtect(imgid, pool, snapname)
   if err != nil {
     return "", err
   }
   return snapname, nil
 }
 
-func SnapProtect(imgid string, pool string, snapname string) error {
-  img, err := Getimgbyname(imgid, pool)
+func (c Vms_Ceph)SnapProtect(imgid string, pool string, snapname string) error {
+  img, err := c.Getimgbyname(imgid, pool)
   if err != nil {
     return err
   }
@@ -350,12 +350,12 @@ func SnapProtect(imgid string, pool string, snapname string) error {
   return nil
 }
 
-func (ceph Vms_Ceph)ListChildernImages(storage string, imageid string) ([]string, error) {
-  cephinfo, err := ceph.Cephinfobyuuid(storage)
+func (c Vms_Ceph)ListChildernImages(storage string, imageid string) ([]string, error) {
+  cephinfo, err := c.Cephinfobyuuid(storage)
   if err != nil {
     return nil, err
   }
-  img, err := Getimgbyname(imageid, cephinfo.Pool)
+  img, err := c.Getimgbyname(imageid, cephinfo.Pool)
   if err != nil {
     return nil, err
   }
@@ -365,4 +365,22 @@ func (ceph Vms_Ceph)ListChildernImages(storage string, imageid string) ([]string
     return nil, err
   }
   return images, nil
+}
+
+func (c Vms_Ceph)Delimgpermanent(storage string, uuid string) error {
+  cephinfo, err := c.Cephinfobyuuid(storage)
+  if err != nil {
+    return err
+  }
+
+  ctx, err := c.ceph_ioctx(cephinfo.Pool)
+  if err != nil {
+    return err
+  }
+
+  err = rbd.TrashRemove(ctx, uuid, true)
+  if len(err.Error()) > 0 {
+    return err
+  }
+  return nil
 }

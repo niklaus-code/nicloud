@@ -51,7 +51,7 @@ func main()  {
     return
   }
 
-  vms_archives := vm.Vms_archive{}
+  vms_archives := vm.Vms_archives{}
   errdb = db.Set("gorm:table_options", "CHARSET=utf8").AutoMigrate(&vms_archives)
   if errdb.Error != nil {
     return

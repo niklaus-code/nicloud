@@ -208,7 +208,8 @@ func Deletevdisk(uuid string, comment string) error {
     return vmerror.Error{Message: "删除硬盘失败"}
   }
 
-  err = cephcommon.Rm_image(uuid, vdiskinfo.Pool)
+  c := cephcommon.Vms_Ceph{}
+  _, err = c.Rm_image(uuid, vdiskinfo.Pool)
   if err != nil {
     return vmerror.Error{Message: "删除块设备失败"}
   }

@@ -48,6 +48,7 @@
 <script>
 
 import foot from '@/components/footer'
+import vm_archive from '@/components/vm_archive'
 import nicloudhead from '@/components/nicloudhead'
 import vmleft from '@/components/vmleft'
 import vm from '@/components/vm'
@@ -95,7 +96,7 @@ export default {
     },
 
     components: {
-        updatehost, createuser, user, migratevmlive, restorevm, snap, vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
+        vm_archive, updatehost, createuser, user, migratevmlive, restorevm, snap, vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
     },
 
 

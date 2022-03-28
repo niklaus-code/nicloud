@@ -42,15 +42,15 @@ func GetVminfo(c *gin.Context) {
   res := make(map[string]interface{})
   uuid := c.Query("uuid")
   iplist, err := vm.GetVmByUuid(uuid)
+
+  res["res"] = iplist
+  res["err"] = nil
   if err != nil {
-    res["res"] = iplist
     res["err"] = err
     c.JSON(200, res)
     return
   }
 
-  res["res"] = iplist
-  res["err"] = nil
   c.JSON(200, res)
 }
 
@@ -399,3 +399,50 @@ func DelSnap(c *gin.Context)  {
   c.JSON(200, res)
 }
 
+func GetVmArchive(c *gin.Context)  {
+  ar := vm.Vms_archives{}
+  res := make(map[string]interface{})
+  token := c.Request.Header.Get("token")
+  userid, err := utils.ParseToken(token)
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "认证失败"}
+    c.JSON(200, res)
+    return
+  }
+  pagenumber, vmcount,  err := vm.Getvmarchivepagenumber(userid)
+  if err != nil {
+    res["res"] = nil
+    res["err"] = err
+    c.JSON(200, res)
+    return
+  }
+
+  r, err := ar.GetVmArchive()
+
+  res["res"] = r
+  res["pagenumber"] = pagenumber
+  res["vmcount"] = vmcount
+  res["err"] = nil
+  if err != nil {
+    res["err"] = vmerror.Error{Message: err.Error()}
+  }
+
+  c.JSON(200, res)
+}
+
+func Delvmpermanent(c *gin.Context) {
+  uuid := c.Query("uuid")
+  storage := c.Query("storage")
+  res := make(map[string]interface{})
+
+  v := vm.Vms_archives{}
+
+  del := v.Delvmpermanent(storage, uuid)
+  res["err"] = nil
+  if del != nil {
+    res["err"] = vmerror.Error{Message: del.Error()}
+    c.JSON(200, res)
+    return
+  }
+  c.JSON(200, res)
+}

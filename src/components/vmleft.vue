@@ -48,8 +48,8 @@ export default {
                     "router": "",
                     },
                     {
-                    "name": "云主机归档",
-                    "router": "",
+                    "name": "归档列表",
+                    "router": "vm_archive",
                     },
                     ],
                 check_downmenu: false,
@@ -65,7 +65,7 @@ export default {
                     "router": "disk",
                     },
                     {
-                    "name": "云盘归档列表",
+                    "name": "归档列表",
                     "router": "disk",
                     },
                     ],

@@ -56,6 +56,8 @@ func main() {
     v2.GET("getsnap", vmapis.Getsnap)
     v2.DELETE("delsnap", vmapis.DelSnap)
     v2.GET("rollback", vmapis.Rollback)
+    v2.GET("getvmarchive", vmapis.GetVmArchive)
+    v2.GET("delvmpermanent", vmapis.Delvmpermanent)
 	}
 
   v3 := r.Group("/api/machine")
