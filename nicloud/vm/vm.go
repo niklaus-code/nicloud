@@ -727,7 +727,7 @@ func Updatecomments(uuid string, comment string) (bool, error) {
   return true, nil
 }
 
-func Rebuildimg(osid int, storage string, datacenter string, old_uuid string, host string) error {
+func (v Vms)Rebuildimg(osid int, storage string, datacenter string, old_uuid string, host string) error {
   vmstat, err := VmStatus(old_uuid, host)
   if err != nil {
     return err
@@ -753,6 +753,11 @@ func Rebuildimg(osid int, storage string, datacenter string, old_uuid string, ho
   err = cephcommon.Changename(uuid, osinfo.Cephblockdevice, osinfo.Snapimage, storageinfo.Pool, old_uuid)
   if err != nil {
     return err
+  }
+
+  updateos := v.Updataosbyuuid(old_uuid, osid)
+  if updateos != nil {
+    return updateos
   }
   return nil
 }
@@ -924,4 +929,17 @@ func GetVmbyOsId(osid int) (bool, error) {
     return false, err
   }
   return true, nil
+}
+
+
+func (v Vms)Updataosbyuuid(uuid string, osid int) error {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+  errdb := dbs.Model(&Vms{}).Where("uuid=?", uuid).Update("os", osid)
+  if errdb.Error != nil {
+    return err
+  }
+  return nil
 }

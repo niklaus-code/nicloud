@@ -55,7 +55,7 @@
                     <div class="form-group">
                         <select class="col-sm-12" v-model="osimagevalue">
                             <option value="">--请选择--</option>
-                            <option  v-for="c in osimage" :value="c.Osname">
+                            <option  v-for="c in osimage" :value="c.Id">
                                 {{ c.Osname}}
                             </option>
                         </select>

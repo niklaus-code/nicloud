@@ -297,7 +297,8 @@ func Rebuild(c *gin.Context)  {
   host := c.Query("host")
 
   res := make(map[string]interface{})
-  err := vm.Rebuildimg(osid, storage, datacenter, uuid, host)
+  v := vm.Vms{}
+  err := v.Rebuildimg(osid, storage, datacenter, uuid, host)
 
   res["err"] = nil
   if err != nil {

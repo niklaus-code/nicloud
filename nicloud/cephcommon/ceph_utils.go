@@ -147,7 +147,7 @@ func Rm_image(uuid string, pool string) error {
   }
 
   img := rbd.GetImage(ioctx, uuid)
-  Archive_img := "x_"+(time.Now().Format("200601021504"))+uuid
+  Archive_img := "x_"+(time.Now().Format("20060102150405"))+uuid
   err = rename(img, Archive_img)
   if err != nil {
     return err
