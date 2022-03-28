@@ -1040,7 +1040,6 @@ func (v Vms_archives)Delvmpermanent(storage string, uuid string) error {
   }
 
   c := cephcommon.Vms_Ceph{}
-  uuid = "x_20220328160741c051b6ed-660c-4b9d-944e-c8c748ec0905"
   delcephimg:= c.Delimgpermanent(storage, uuid)
   if delcephimg != nil {
     return delcephimg

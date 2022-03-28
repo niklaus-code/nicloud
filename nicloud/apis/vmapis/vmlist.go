@@ -431,9 +431,15 @@ func GetVmArchive(c *gin.Context)  {
 }
 
 func Delvmpermanent(c *gin.Context) {
+  //暂时不开放次接口
+  res := make(map[string]interface{})
+  res["err"] = vmerror.Error{Message: "暂时不开放次接口"}
+  c.JSON(200, res)
+  return
+
   uuid := c.Query("uuid")
   storage := c.Query("storage")
-  res := make(map[string]interface{})
+
 
   v := vm.Vms_archives{}
 
