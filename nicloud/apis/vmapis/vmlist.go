@@ -400,8 +400,15 @@ func DelSnap(c *gin.Context)  {
 }
 
 func GetVmArchive(c *gin.Context)  {
-  ar := vm.Vms_archives{}
   res := make(map[string]interface{})
+  startpage, err := strconv.Atoi(c.Query("startpage"))
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "认证失败"}
+    c.JSON(400, res)
+    return
+  }
+  ar := vm.Vms_archives{}
+
   token := c.Request.Header.Get("token")
   userid, err := utils.ParseToken(token)
   if err != nil {
@@ -417,7 +424,7 @@ func GetVmArchive(c *gin.Context)  {
     return
   }
 
-  r, err := ar.GetVmArchive()
+  r, err := ar.GetVmArchive(startpage)
 
   res["res"] = r
   res["pagenumber"] = pagenumber

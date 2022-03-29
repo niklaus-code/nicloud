@@ -58,7 +58,7 @@
     <div class="btn-group col-md-6" style="margin-top:20px; margin-bottom:30px">
         <ul class="pagination">
             <li><a @click="down()">&laquo;</a></li>
-            <li v-for="(item, index) in totalpagenumber"><a @click="getvm(item, sortitem)">{{item}}</a></li>
+            <li v-for="(item, index) in totalpagenumber"><a @click="getvmarchive(item)">{{item}}</a></li>
             <li><a @click="up()">&raquo;</a></li>
         </ul>
 	</div>
@@ -71,6 +71,7 @@ export default {
         return {
             data: [],
             vmcount: 0,
+            cpagenumber: 1,
 			}
     },
 
@@ -89,7 +90,7 @@ export default {
         }
         this.cpagenumber = p
 
-		this.getvmarchive(p, "create_time")
+		this.getvmarchive(this.cpagenumber)
     },
 
     methods: {
@@ -103,12 +104,13 @@ export default {
                     }
                 })
             },
-        getvmarchive: function (start, item) {
+
+        getvmarchive: function (start) {
             this.sortitem = item
             this.cpagenumber = start
             sessionStorage.setItem('pagenumber', start)
             var apiurl = `/api/vm/getvmarchive`
-            this.$http.get(apiurl, { params: { start: start, item: item} }).then(response => {
+            this.$http.get(apiurl, { params: { startpage: start} }).then(response => {
 			if (response.data.err === null ) {
                 this.data = response.data.res
                 this.totalpagenumber = response.data.pagenumber

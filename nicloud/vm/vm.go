@@ -232,14 +232,14 @@ func Mapvmarchive(obj []Vms_archives) []map[string]interface{}  {
   return mapc
 }
 
-func (arch Vms_archives)GetVmArchive() ([]map[string]interface{}, error) {
+func (arch Vms_archives)GetVmArchive(startpage int) ([]map[string]interface{}, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
 
   a := []Vms_archives{}
-  dberr := dbs.Find(&a)
+  dberr := dbs.Order("archive_time desc").Order("create_time desc").Limit(offset).Offset((startpage-1)*offset).Find(&a)
   if dberr.Error != nil {
     return nil, err
   }
