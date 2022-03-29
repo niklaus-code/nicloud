@@ -94,6 +94,18 @@ export default {
     },
 
     methods: {
+        up: function() {
+            if (Number(this.pagenumber) < Number(this.totalpagenumber)) {
+                this.getvmarchive(Number(this.pagenumber)+1)
+                }
+            },
+
+        down: function() {
+            if (Number(this.pagenumber) > 1 ) {
+                this.getvmarchive(Number(this.pagenumber)-1)
+                }
+            },
+
         delvmpermanent: function (id, storage) {
             var apiurl = `/api/vm/delvmpermanent`
             this.$http.get(apiurl, { params: { uuid: id , storage: storage} }).then(response => {
