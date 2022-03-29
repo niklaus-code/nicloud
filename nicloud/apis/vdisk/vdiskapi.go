@@ -77,7 +77,6 @@ func Deletevdisk(c *gin.Context)  {
   c.JSON(200, res)
 }
 
-
 func Createvdisk(c *gin.Context) {
   res := make(map[string]interface{})
   contain, _ := strconv.Atoi(c.PostForm("contain"))
@@ -191,5 +190,20 @@ func AddComment(c *gin.Context)  {
   if err != nil {
     res["err"] = err
   }
+  c.JSON(200, res)
+}
+
+func GetVdiskArchive(c *gin.Context)  {
+  res := make(map[string]interface{})
+  vd := vdisk.Vms_vdisks_archives{}
+
+  r, err := vd.GetVmArchive()
+
+  res["res"] = r
+  res["err"] = nil
+  if err != nil {
+    res["err"] = vmerror.Error{Message: err.Error()}
+  }
+
   c.JSON(200, res)
 }

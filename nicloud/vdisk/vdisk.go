@@ -4,6 +4,7 @@ import (
   "fmt"
   "github.com/beevik/etree"
   "nicloud/cephcommon"
+  c "nicloud/config"
   db "nicloud/dbs"
   "nicloud/libvirtd"
   "nicloud/users"
@@ -26,7 +27,7 @@ type Vms_vdisks struct {
   Exist int8
   Status int
   Comment string
-  Createtime string
+  Createtime time.Time
 }
 
 func (* Vms_vdisks) Addcomment(vdiskid string, comment string) error {
@@ -91,7 +92,7 @@ func (d Vms_vdisks)Create(contain int, pool string, cephid string, datacenter st
     Exist: 1,
     Status: 1,
     Comment: comment,
-    Createtime: time.Now().Format("2006-01-02 15:04:05"),
+    Createtime: time.Now(),
   }
 
   err := ceph.Createcephblock(vdiskid, contain, pool)
@@ -123,9 +124,10 @@ type Vms_vdisks_archives struct {
   Datacenter string
   Comment string
   Create_time time.Time
+  Archive_time time.Time
 }
 
-func addiskachives(uuid string, pool string, storage string, datacenter string, ownerid int, comment string) (string, error) {
+func addiskachives(uuid string, pool string, storage string, datacenter string, ownerid int, comment string, create_time time.Time) (string, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return "", err
@@ -138,7 +140,8 @@ func addiskachives(uuid string, pool string, storage string, datacenter string, 
     Storage: storage,
     Datacenter: datacenter,
     Comment: comment,
-    Create_time: time.Now(),
+    Create_time: create_time,
+    Archive_time: time.Now(),
   }
 
   errdb := dbs.Create(diskachi)
@@ -194,14 +197,8 @@ func Deletevdisk(uuid string, comment string) error {
     return err
   }
 
-  addachives, err := addiskachives(uuid, vdiskinfo.Pool, vdiskinfo.Storage, vdiskinfo.Datacenter, vdiskinfo.User, comment)
-  if err != nil {
-    return err
-  }
-
   errdb := dbs.Where("vdiskid=?", uuid).Delete(Vms_vdisks{})
   if errdb.Error != nil {
-    err = deletedisk(addachives)
     if err != nil {
       return err
     }
@@ -209,9 +206,14 @@ func Deletevdisk(uuid string, comment string) error {
   }
 
   c := cephcommon.Vms_Ceph{}
-  _, err = c.Rm_image(uuid, vdiskinfo.Pool)
+  delid, err := c.Rm_image(uuid, vdiskinfo.Pool)
   if err != nil {
     return vmerror.Error{Message: "删除块设备失败"}
+  }
+
+  _, err = addiskachives(delid, vdiskinfo.Pool, vdiskinfo.Storage, vdiskinfo.Datacenter, vdiskinfo.User, comment, vdiskinfo.Createtime)
+  if err != nil {
+    return err
   }
   return nil
 }
@@ -507,5 +509,47 @@ func updatexmlbyip(xml string, ip string, vms interface{}) error {
   }
 
   return nil
+}
+
+var (
+  config, _ = c.Exportconfig()
+  offset = config.Page.Offset
+)
+
+func Mapvdiskarchive(obj []Vms_vdisks_archives) []map[string]interface{}  {
+  var mapc []map[string]interface{}
+
+  for _, v := range obj {
+    c := make(map[string]interface{})
+    m := reflect.TypeOf(v)
+    n := reflect.ValueOf(v)
+    for i := 0; i < m.NumField(); i++ {
+      c[m.Field(i).Name] = n.Field(i).Interface()
+    }
+
+    owner, err := users.GetUserByUserID(v.Owner)
+    c["owner"] = owner.Username
+    if err != nil {
+      c["owner"] = nil
+    }
+
+    mapc = append(mapc, c)
+  }
+  return mapc
+}
+
+func (vd Vms_vdisks_archives)GetVmArchive() ([]map[string]interface{}, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+
+  d := []Vms_vdisks_archives{}
+  dberr := dbs.Order("archive_time desc").Order("create_time desc").Find(&d)
+  if dberr.Error != nil {
+    return nil, err
+  }
+
+  return Mapvdiskarchive(d), nil
 }
 

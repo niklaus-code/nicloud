@@ -78,6 +78,7 @@ import snap from '@/components/snap'
 import restorevm from '@/components/restorevm'
 import user from '@/components/user'
 import createuser from '@/components/createuser'
+import vdisk_archive from '@/components/vdisk_archive'
 
 var initroute 
 if (sessionStorage.getItem('router')) {
@@ -96,7 +97,7 @@ export default {
     },
 
     components: {
-        vm_archive, updatehost, createuser, user, migratevmlive, restorevm, snap, vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
+        vdisk_archive, vm_archive, updatehost, createuser, user, migratevmlive, restorevm, snap, vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
     },
 
 

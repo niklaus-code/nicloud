@@ -66,7 +66,7 @@ export default {
                     },
                     {
                     "name": "归档列表",
-                    "router": "disk",
+                    "router": "vdisk_archive",
                     },
                     ],
                 check_downmenu: false,
