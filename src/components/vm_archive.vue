@@ -106,7 +106,6 @@ export default {
             },
 
         getvmarchive: function (start) {
-            this.sortitem = item
             this.cpagenumber = start
             sessionStorage.setItem('pagenumber', start)
             var apiurl = `/api/vm/getvmarchive`
