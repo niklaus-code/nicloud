@@ -117,7 +117,7 @@ func (d Vms_vdisks)Create(contain int, pool string, cephid string, datacenter st
 }
 
 type Vms_vdisks_archives struct {
-  Vdiskid string `gorm:"primary_key;`
+  Vdiskid string `gorm:"size:100"`
   Owner int
   Pool string
   Storage string
