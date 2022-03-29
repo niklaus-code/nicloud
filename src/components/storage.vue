@@ -12,7 +12,7 @@
         				<th>名称</th>
         				<th>UUID</th>
         				<th>数据池</th>
-        				<th>存储容量（GB）</th>
+        				<th>存储容量（TB）</th>
         				<th>secret</th>
         				<th>hosts/port</th>
         				<th>数据中心</th>
