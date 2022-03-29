@@ -109,10 +109,10 @@ func (d Vms_vdisks)Create(contain int, pool string, cephid string, datacenter st
     return vmerror.Error{Message: errdb.Error.Error()}
   }
 
-  increasecontain := ceph.IncreaseContain(cephid, contain)
-  if increasecontain != nil {
-    return increasecontain
-  }
+  //increasecontain := ceph.IncreaseContain(cephid, contain)
+  //if increasecontain != nil {
+  //  return increasecontain
+  //}
   return err
 }
 

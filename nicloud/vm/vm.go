@@ -638,10 +638,10 @@ func (v Vms)Create (datacenter string,  storage string, vlan string, cpu int, me
     return  err
   }
 
-  increasecontain := ceph.IncreaseContain(storage, osinfo.Size)
-  if increasecontain != nil {
-    return increasecontain
-  }
+  //increasecontain := ceph.IncreaseContain(storage, osinfo.Size)
+  //if increasecontain != nil {
+  //  return increasecontain
+  //}
 
 	return nil
 }
@@ -907,10 +907,10 @@ func SaveSnapToImg(vmid string, datacenter string, storage string, snapname stri
     return err
   }
 
-  increasecontain := ceph.IncreaseContain(storage, osinfo.Size)
-  if increasecontain != nil {
-    return increasecontain
-  }
+  //increasecontain := ceph.IncreaseContain(storage, osinfo.Size)
+  //if increasecontain != nil {
+  //  return increasecontain
+  //}
   return nil
 }
 

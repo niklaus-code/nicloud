@@ -54,7 +54,7 @@ func Addceph(c *gin.Context) {
     Uuid: uuid,
     Name: name,
     Pool: pool,
-    Contain: contain,
+    //Contain: contain,
     Datacenter: datacenter,
     Ceph_secret: ceph_secret,
     Ips: ips,

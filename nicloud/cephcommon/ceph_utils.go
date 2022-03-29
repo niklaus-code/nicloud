@@ -1,6 +1,7 @@
 package cephcommon
 
 import (
+  "fmt"
   "github.com/ceph/go-ceph/rados"
   rbd "github.com/ceph/go-ceph/rbd"
   "nicloud/dbs"
@@ -12,8 +13,8 @@ type Vms_Ceph struct {
   Uuid string`gorm:"primary_key" json:"Uuid" validate:"required"`
   Name string `gorm:"unique" json:"Name" validate:"required"`
   Pool string `json:"Pool" validate:"required"`
-  Contain int `json:"Contain" validate:"required"`
-  Remainder int
+  Contain string
+  Remainder string
   Datacenter string `json:"Datacenter" validate:"required"`
   Ceph_secret string  `json:"Ceph_secret" validate:"required"`
   Ips string  `json:"Ips" validate:"required"`
@@ -41,7 +42,7 @@ func (ceph Vms_Ceph)Add (uuid string, name string, pool string, datacenter strin
     Uuid: uuid  ,
     Name: name,
     Pool: pool,
-    Contain: contain,
+    //Contain: contain,
     Datacenter: datacenter,
     Ceph_secret: ceph_secret,
     Ips: ips,
@@ -61,36 +62,50 @@ func (ceph Vms_Ceph)Add (uuid string, name string, pool string, datacenter strin
 }
 
 func (ceph Vms_Ceph)Get() ([]*Vms_Ceph, error) {
+  conn, err := CephConn()
+  if err != nil {
+    return nil, err
+  }
+
+  clusterstat, err := conn.GetClusterStats()
+  if err != nil {
+    return nil, err
+  }
+
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
   c := []*Vms_Ceph{}
   dbs.Find(&c)
+  for _, v := range c {
+    v.Contain = fmt.Sprintf("%.2f", float64(clusterstat.Kb)/float64(1024*1024*1024))
+    v.Remainder = fmt.Sprintf("%.2f", float64(clusterstat.Kb_used)/float64(1024*1024*1024))
+  }
   return c, nil
 }
 
-func (ceph Vms_Ceph)IncreaseContain(uuid string, contain int) error {
-  dbs, err := db.NicloudDb()
-  if err != nil {
-    return err
-  }
-
-  cephinfo, err := ceph.Cephinfobyuuid(uuid)
-  if err != nil {
-    return err
-  }
-
-  if contain+cephinfo.Remainder > cephinfo.Contain {
-    return vmerror.Error{Message: "数据池容量不足"}
-  }
-
-  errdb := dbs.Model(ceph).Where("uuid=?", uuid).Update("remainder", contain+cephinfo.Remainder)
-  if errdb.Error != nil {
-    return err
-  }
-  return nil
-}
+//func (ceph Vms_Ceph)IncreaseContain(uuid string, contain int) error {
+//  dbs, err := db.NicloudDb()
+//  if err != nil {
+//    return err
+//  }
+//
+//  cephinfo, err := ceph.Cephinfobyuuid(uuid)
+//  if err != nil {
+//    return err
+//  }
+//
+//  if contain+cephinfo.Remainder > cephinfo.Contain {
+//    return vmerror.Error{Message: "数据池容量不足"}
+//  }
+//
+//  errdb := dbs.Model(ceph).Where("uuid=?", uuid).Update("remainder", contain+cephinfo.Remainder)
+//  if errdb.Error != nil {
+//    return err
+//  }
+//  return nil
+//}
 
 func Getpool(datacenter string, storage string)([]*Vms_Ceph, error) {
   dbs, err := db.NicloudDb()
@@ -117,6 +132,7 @@ func (ceph Vms_Ceph)Cephinfobyuuid (uuid string)(*Vms_Ceph, error) {
 
 func CephConn() (*rados.Conn, error) {
   conn, err := rados.NewConn()
+
   if err != nil {
     return nil, err
   }
@@ -141,7 +157,7 @@ func rename(img  *rbd.Image, blockname string) error {
 }
 
 func (c Vms_Ceph)Rm_image(uuid string, pool string) (string, error) {
-  ioctx, err := c.ceph_ioctx(pool)
+  ioctx, err := c.Ceph_ioctx(pool)
   if err != nil {
     return "", err
   }
@@ -156,13 +172,13 @@ func (c Vms_Ceph)Rm_image(uuid string, pool string) (string, error) {
   return Archive_img, nil
 }
 
-func  image_ctx(ctx *rados.IOContext, cephblock string) *rbd.Image {
+func image_ctx(ctx *rados.IOContext, cephblock string) *rbd.Image {
   imagectx := rbd.GetImage(ctx, cephblock)
   return imagectx
 }
 
 func (c Vms_Ceph)RbdClone(id string, cephblock string, snap string, pool string) (string, error) {
-  ioctx, err := c.ceph_ioctx(pool)
+  ioctx, err := c.Ceph_ioctx(pool)
 
   //openimage
   o, err := rbd.OpenImage(ioctx, cephblock, snap)
@@ -188,7 +204,7 @@ func (c Vms_Ceph)RbdClone(id string, cephblock string, snap string, pool string)
 }
 
 func (ceph Vms_Ceph)Createcephblock (uuid string, contain int, pool string) error {
-  ioctx, err := ceph.ceph_ioctx(pool)
+  ioctx, err := ceph.Ceph_ioctx(pool)
   if err != nil {
     return err
   }
@@ -200,7 +216,7 @@ func (ceph Vms_Ceph)Createcephblock (uuid string, contain int, pool string) erro
   return nil
 }
 
-func (c Vms_Ceph)ceph_ioctx(pool string) (*rados.IOContext, error){
+func (c Vms_Ceph)Ceph_ioctx(pool string) (*rados.IOContext, error){
   conn, err := CephConn()
   if err != nil {
     return nil, vmerror.Error{Message: "ceph 连接失败"}
@@ -214,7 +230,7 @@ func (c Vms_Ceph)ceph_ioctx(pool string) (*rados.IOContext, error){
 }
 
 func (c Vms_Ceph)Changename (uuid string, cephblock string, snap string, pool string, oldname string) error {
-  ioctx, err := c.ceph_ioctx(pool)
+  ioctx, err := c.Ceph_ioctx(pool)
   if err != nil {
     return err
   }
@@ -246,7 +262,7 @@ type Vms_snaps struct {
 }
 
 func (c Vms_Ceph)Getimgbyname(imgname string, pool string) (*rbd.Image, error) {
-  ctx, err := c.ceph_ioctx(pool)
+  ctx, err := c.Ceph_ioctx(pool)
   if err != nil {
     return nil, err
   }
@@ -373,7 +389,7 @@ func (c Vms_Ceph)Delimgpermanent(storage string, uuid string) error {
     return err
   }
 
-  ctx, err := c.ceph_ioctx(cephinfo.Pool)
+  ctx, err := c.Ceph_ioctx(cephinfo.Pool)
   if err != nil {
     return err
   }
