@@ -1,13 +1,11 @@
 <template>
 	<div>
-		<serverhead @toParent="getMag"> </serverhead>
-		 <component @toParent="getMag" v-bind:is="router"></component>
+        <server></server>
 	<div>
 </template>
 
 <script>
 import server from '@/components/server'
-import serverhead from '@/components/serverhead'
 import addserver from '@/components/addserver'
 
 export default {
@@ -18,7 +16,7 @@ export default {
     },
 
     components: {
-       	server, serverhead, addserver
+       	server,addserver
     },
 	
 	mounted: function () {
