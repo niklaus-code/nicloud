@@ -109,6 +109,9 @@ export default {
   }
 </script>
 <style scoped>
+.table  thead  tr  th {
+    border-bottom: 2px solid #846d6d;
+}
 
 select{
     font-family: "微软雅黑";

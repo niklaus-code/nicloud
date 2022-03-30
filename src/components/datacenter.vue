@@ -86,6 +86,9 @@ export default {
     margin-bottom: 30px;
 }
 
+.table  thead  tr  th {
+    border-bottom: 2px solid #846d6d;
+}
 
 .details-content .article-cont p {
     padding:30px 0 0 5px

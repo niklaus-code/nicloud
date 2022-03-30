@@ -217,4 +217,8 @@ th {
     text-align: center;
 }
 
+.table  thead  tr  th {
+    border-bottom: 2px solid #846d6d;
+}
+
 </style>

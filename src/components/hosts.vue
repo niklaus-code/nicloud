@@ -237,6 +237,10 @@ export default {
   }
 </script>
 <style scoped>
+.table  thead  tr  th {
+    border-bottom: 2px solid #846d6d;
+}
+
 .col-md-12{
     padding-right: 0;
     padding-left: 0;
