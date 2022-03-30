@@ -6,9 +6,8 @@
         </div>
     </div>
 
-    <div class="col-sm-10 col-sm-offset-1 choose" >
-        <div class="col-sm-12" style="margin-top:30px">
-            <table class="table table-bordered" style="text-align: center">
+    <div class="col-sm-10 col-sm-offset-1" style="padding: 0; margin-top: 30px">
+            <table class="table table-bordered" style="text-align: center; width: 100%">
                 <thead>
                     <tr>
                         <th>编号</th>
@@ -25,9 +24,7 @@
                 </tbody>
             </table>
         </div>
-    </div>
 	<div class="col-sm-10 col-sm-offset-1 choose"  style="margin-top:30px; margin-bottom:30px" >
-        <div class="col-sm-12" >
            <div class="col-sm-2">
                <h5 style="margin-top: 8px">CPU&nbsp</h5>
            </div>
@@ -48,7 +45,6 @@
                    </div>
                </form>
            </div>
-        </div>
         <div class="col-sm-12" style="padding-bottom: 10px; padding-top: 10px">
             <div class="col-sm-2 col-sm-offset-2">
                 <button @click="createflavor()" type="button" class="btn btn-success btn-xs">新增配置</button>
@@ -146,7 +142,6 @@ h5 {
 }
 
 .col-sm-10  {
-    padding-left: 0px;
 }
 
 .col-sm-3  {
