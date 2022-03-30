@@ -100,7 +100,7 @@ label {
 }
 
 th {
-    background-color: #e3e3e3;
+    background-color: #e8d18d;
 	font-weight: bold;
     color: black;
     text-align: center;
