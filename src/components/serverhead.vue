@@ -1,5 +1,6 @@
 <template>
-<div style="padding-left: 135px; background-color: #5b5b5b; color:#FFA500;padding-top:6px; padding-bottom: 6px; ">
+<div style="padding-left: 35px; background-color: #5b5b5b; color:#FFA500;">
+    <span style="margin-bottom:3px; margin-left: 20px; font-size: 20px">serveroom</span>
 </div>
 
 </template>

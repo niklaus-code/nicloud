@@ -1,10 +1,7 @@
 <template>
 	<div>
-       <div class="col-sm-12" style="margin-top:25px">
-           <strong style="float: right">总数:<span>{{total}}<span></strong>
-        </div>
-               
-        <div class="col-sm-4 col-sm-offset-8" style="margin-top:10px; margin-bottom: 30px;">
+        <div class="col-sm-12" style="margin-top: 30px; margin-bottom: 30px;">
+           <strong style="margin-left: 20px">总机器数:<span>{{total}}<span></strong>
             <button  style="float: right;" class="btn btn-default btn-sm" @click="addserver">
                 <span class="glyphicon glyphicon-cog"></span>增加机器
             </button>
@@ -118,11 +115,11 @@ export default {
 
 	methods: {
         refresh: function () {
-             this.$emit("toParent", "server");
+            this.$emit("toParent", "server");
             },
 
         addserver: function () {
-             this.$emit("toParent", "addserver");
+            this.$emit("toParent", "addserver");
             },
 
 		save: function (id, index) {
