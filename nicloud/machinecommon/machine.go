@@ -72,7 +72,7 @@ func Machinelist(startpage int, offset int) ([]*Machineroom, error)  {
     return nil, err
   }
   var v []*Machineroom
-  db.Order("suoshujifang").Limit(offset).Offset(offsetpage).Order("suoshujifang").Order("jigui").Order("yewuip").Find(&v)
+  db.Order("suoshujifang").Limit(offset).Offset(offsetpage).Order("suoshujifang").Order("jigui").Order("weizhi").Order("yewuip").Find(&v)
 
   return v, nil
 }

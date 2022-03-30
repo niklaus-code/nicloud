@@ -173,12 +173,12 @@ export default {
 					}
 
 				this.data = d
-				for (let b in this.data) {
-					var r = this.ping(this.data[b].Yewuip)
-					r.then(value => {
-						this.data[b].Status = value
-						},
-					)}
+				//for (let b in this.data) {
+			//		var r = this.ping(this.data[b].Yewuip)
+		//			r.then(value => {
+		//				this.data[b].Status = value
+		//				},
+		//			)}
             })
 			},
 
