@@ -1,6 +1,6 @@
 <template>
-<div style="background-color: #5b5b5b; color:#FFA500;">
-    <span @click="serveroom" style="margin-bottom:3px; margin-left: 20px; font-size: 20px">SERVEROOM</span>
+<div style="background-color: #5b5b5b; color:#FFA500; padding-top: 2px">
+    <span @click="serveroom" style="margin-bottom:3px; margin-left: 20px; font-size: 18px">SERVEROOM</span>
 </div>
 
 </template>

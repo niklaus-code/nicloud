@@ -1,6 +1,6 @@
 <template>
 	<div>
-        <serverhead></serverhead>
+        <serverhead  @toParent="getMag"></serverhead>
         <component @toParent="getMag" v-bind:is="router"></component>
 	<div>
 </template>
