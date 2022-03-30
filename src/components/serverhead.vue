@@ -1,6 +1,6 @@
 <template>
 <div style="padding-left: 20px; background-color: #5b5b5b; color:#FFA500;">
-    <span style="margin-bottom:3px; margin-left: 20px; font-size: 20px">serveroom</span>
+    <span @click="serveroom" style="margin-bottom:3px; margin-left: 20px; font-size: 20px">serveroom</span>
 </div>
 
 </template>
@@ -20,6 +20,7 @@ export default {
         serveroom: function () {
              this.$emit("toParent", "server");
             },
+
         index: function () {
             sessionStorage.setItem('router', "vm")
             this.$router.push('nicloud')
