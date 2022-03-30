@@ -25,7 +25,7 @@
                     <select class="col-sm-12" v-model="storagevalue" @change="getpool()" @change="getimageby()">
 					  <option value="">--请选择--</option>
                         <option  v-for="c in storage" :value="c.Uuid">
-                            {{ c.Name }} (size: {{c.Remainder}} / {{c.Contain}} GB)
+                            {{ c.Name }} (size（TB）: {{c.Remainder}} / {{c.Contain}})
                         </option>
                     </select>
                 </div>
@@ -158,7 +158,7 @@ export default {
 
 	mounted: function () {
 		this.getdatacenter()
-        this.getflavor () 
+        this.getflavor() 
 		},
 
     methods: {
@@ -190,6 +190,9 @@ export default {
             this.$http.get(apiurl).then(response => {
                 if (response.data.err === null) {
                     this.datacenter = response.data.res
+                    this.centervalue = response.data.res[0].Datacenter
+                    this.getstorage(this.centervalue)
+                    this.getvlan(this.centervalue)
                 } else {
                     alert("获取数据失败(" + response.data.err.Message+ ")" )
                     }
