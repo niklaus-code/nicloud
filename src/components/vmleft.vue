@@ -45,7 +45,7 @@ export default {
                     },
                     {
                     "name": "规格列表",
-                    "router": "",
+                    "router": "vm_flavor",
                     },
                     {
                     "name": "归档列表",

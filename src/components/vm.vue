@@ -364,7 +364,6 @@ export default {
                 })
             },
 
-
         destroy: function (uuid, index, host) {
             var apiurl = `/api/vm/operation/1`
             this.$http.get(apiurl, { params: { uuid: uuid, host: host } }).then(response => {

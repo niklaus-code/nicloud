@@ -23,8 +23,8 @@ var ceph cephcommon.Vms_Ceph
 type Vms struct {
 	Uuid        string `gorm:"primary_key;"`
 	Name        string
-	Cpu         int `json:"cpu validate: gt=0"`
-	Mem         int `json:"mem validate: gt=0"`
+	Cpu         int `json:"cpu" validate:"gt=0"`
+	Mem         int `json:"mem" validate:"gt=0"`
 	Create_time time.Time `json:"Create_time"`
 	Owner       int  `json:"Owner" validate:"required"`
 	Comment     string
@@ -779,8 +779,25 @@ func VmList(userid int, start int, item string) ([]map[string]interface{}, error
 }
 
 type Vm_flavors struct {
-	Cpu int
-	Mem int
+	Cpu int `gorm:"index;unique_index:name_d" json:"Cpu" validate:"gt=0"`
+	Mem int `gorm:"unique_index:name_d" json:"Mem" validate:"gt=0"`
+}
+
+func (f Vm_flavors)Createflavor(cpu int, mem int) error {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+  flav := Vm_flavors{
+    Cpu: cpu,
+    Mem: mem,
+  }
+
+  dberr := dbs.Create(&flav)
+  if dberr.Error != nil {
+    return dberr.Error
+  }
+  return nil
 }
 
 func Flavor() ([]*Vm_flavors, error) {

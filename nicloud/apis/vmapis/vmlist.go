@@ -459,3 +459,31 @@ func Delvmpermanent(c *gin.Context) {
   }
   c.JSON(200, res)
 }
+
+func CreateFlavor(c *gin.Context) {
+  res := make(map[string]interface{})
+  cpu, _ := strconv.Atoi(c.Query("cpu"))
+  mem, _ := strconv.Atoi(c.Query("mem"))
+
+  f := vm.Vm_flavors{
+    Cpu: cpu,
+    Mem: mem,
+  }
+
+  validate := validator.New()
+  err := validate.Struct(f)
+  if err != nil {
+    res["err"] = vmerror.Error{Message: "参数错误"}
+    c.JSON(400, res)
+    return
+  }
+
+  err = f.Createflavor(cpu, mem)
+  res["err"] = nil
+  if err != nil {
+    res["err"] = vmerror.Error{Message: err.Error()}
+    c.JSON(200, res)
+    return
+  }
+  c.JSON(200, res)
+}

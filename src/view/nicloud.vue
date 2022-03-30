@@ -79,6 +79,7 @@ import restorevm from '@/components/restorevm'
 import user from '@/components/user'
 import createuser from '@/components/createuser'
 import vdisk_archive from '@/components/vdisk_archive'
+import vm_flavor from '@/components/vm_flavor'
 
 var initroute 
 if (sessionStorage.getItem('router')) {
@@ -90,14 +91,14 @@ if (sessionStorage.getItem('router')) {
 export default {
     data () {
         return {
-             active: "",
+            active: "",
             username: "",
 			router: sessionStorage.getItem('router'),
         }
     },
 
     components: {
-        vdisk_archive, vm_archive, updatehost, createuser, user, migratevmlive, restorevm, snap, vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
+        vm_flavor, vdisk_archive, vm_archive, updatehost, createuser, user, migratevmlive, restorevm, snap, vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
     },
 
 

@@ -67,6 +67,7 @@ func main() {
     v2.GET("rollback", vmapis.Rollback)
     v2.GET("getvmarchive", vmapis.GetVmArchive)
     v2.GET("delvmpermanent", vmapis.Delvmpermanent)
+    v2.GET("createflavor", vmapis.CreateFlavor)
 	}
 
   v3 := r.Group("/api/machine")
