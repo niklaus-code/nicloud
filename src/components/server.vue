@@ -1,7 +1,7 @@
 <template>
 	<div>
         <div class="col-sm-12" style="margin-top: 30px; margin-bottom: 30px;">
-           <strong style="margin-left: 20px">总机器数:<span>{{total}}<span></strong>
+           <strong style="margin-left: 35px">总机器数:<span>{{total}}<span></strong>
             <button  style="float: right;" class="btn btn-default btn-sm" @click="addserver">
                 <span class="glyphicon glyphicon-cog"></span>增加机器
             </button>
