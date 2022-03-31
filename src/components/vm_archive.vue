@@ -109,7 +109,7 @@ export default {
 
         search: function () {
             var apiurl = `/api/vm/searchvmachives`
-            this.$http.get(apiurl, { params: { contain: this.contain} }).then(response => {
+            this.$http.get(apiurl, { params: { content: this.content} }).then(response => {
 			    if (response.data.err === null ) {
                     this.data = response.data.res
                     this.vmcount = response.data.res.length
