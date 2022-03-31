@@ -461,12 +461,12 @@ func Delvmpermanent(c *gin.Context) {
 }
 
 func SearchVMArchive(c *gin.Context) {
-  contain := c.Query("contain")
+  content:= c.Query("content")
   res := make(map[string]interface{})
 
   v := vm.Vms_archives{}
 
-  s, err := v.SearchVMArchives(contain)
+  s, err := v.SearchVMArchives(content)
   res["err"] = nil
   res["res"] = s
   if err != nil {
