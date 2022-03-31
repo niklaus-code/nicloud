@@ -8,11 +8,11 @@
             <ul>
                 <li v-for="(item, index) in routelist">
                     <p :class=item.class> </p>
-                    <p @click="toParent(item.router)" @click="fun_downmenu(index)" style="margin-left: 2px;margin-top:12px;padding-right: 10px">{{item.name}}</p>
+                    <p @click="toParent(item.router)" @click="fun_downmenu(index)" style="margin-left: 2px;margin-top:12px;padding-right: 10px"><a href="javascript:void()">{{item.name}}</a></p>
                     <span v-if="item.check_downmenu_icon" @click="fun_downmenu(index)"  style="top: 3px; height: 6px;width: 6px" class="glyphicon glyphicon-triangle-bottom"></span>
                     <ul v-if="item.check_downmenu">
                         <li v-for="(item, index) in item.downmenu">
-                            <p @click="toParent(item.router)" style="font-size: 12px; margin-left: 16px;"><a style="color: #fb5555">{{item.name}}</a><p>
+                            <p @click="toParent(item.router)" style="font-size: 12px; margin-left: 16px;"><a href="javascript:void()" style="color: #fb5555">{{item.name}}</a><p>
                         </li>
                     </ul>
                 </li>

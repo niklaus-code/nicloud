@@ -22,12 +22,12 @@
 					</label>
 				</th>
         	<!--	<th>实例名称</th>-->
-        		<th @click="getvm(cpagenumber, 'ip')">IP地址 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
-        		<th @click="getvm(cpagenumber, 'os')">镜像 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
-        		<th @click="getvm(cpagenumber, 'host')" style="min-width:90px">宿主机 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
+        		<th @click="getvm(cpagenumber, 'ip')"><a href="javascript:void()">IP地址<span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></a></th>
+        		<th @click="getvm(cpagenumber, 'os')"><a href="javascript:void()">镜像 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></a></th>
+        		<th @click="getvm(cpagenumber, 'host')" style="min-width:90px"><a href="javascript:void()">宿主机 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></a></th>
         		<th>CPU/内存</th>
         		<th>云盘</th>
-        		<th style="min-width:74px" @click="getvm(cpagenumber, 'owner')">所属者 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></th>
+        		<th style="min-width:74px" @click="getvm(cpagenumber, 'owner')"><a href="javascript:void()">所属者 <span style="height: 5px" class="glyphicon glyphicon-sort btn-xs"></span></a></th>
         		<th>创建时间</th>
         		<th>备注</th>
         		<th style="min-width:44px">状态</th>
@@ -460,6 +460,10 @@ th {
 	background-color: #77BB95;
 	color: black;
 	text-align: center;
+}
+
+th a {
+    color: black;
 }
 
 .glyphicon {
