@@ -7,7 +7,7 @@
 		<button class="btn btn-default btn-sm" style="margin-right: 5px" @click="search()" style="float: right">
 	        <span class="glyphicon glyphicon-search"></span> 筛选
 		</button>
-        <input class="col-md-6" type="text" id="name" placeholder="" v-model="content" style="float: right">
+        <input class="col-md-6" type="text" id="name" placeholder="支持IP、备注搜索" v-model="content" style="float: right">
     </div>
 	<div style="margin-top:10px">
 	<table class="table table-hover" style="text-align: center;">
