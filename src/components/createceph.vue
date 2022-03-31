@@ -64,20 +64,6 @@
 		<div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
-        			<label>容量（GB）</label>
-				</div>
-				<div class="col-sm-8">
-					<form role="form">
-  						<div class="form-group">
-    						<input type="text" class="form-control" v-model="contain" placeholder="1024">
-  						</div>
-					</form>
-				</div>
-			</div>
-    	</div>
-		<div class="col-sm-12">
-	 		<div class="form-group">
-				<div class="col-sm-4">
         			<label>密钥</label>
 				</div>
 				<div class="col-sm-8">
@@ -145,7 +131,6 @@ export default {
         return {
 			centervalue: "",
             datacenter: [],
-            contain: "",
 
 			uuid: "",
 			pool: "",
@@ -187,7 +172,7 @@ export default {
 		createceph: function () {
             var apiurl = `/api/storage/add`
 
-            this.$http.post(apiurl,  this.$qs.stringify({ uuid: this.uuid, storagename: this.storagename,  pool: this.pool, contain: this.contain, datacenter: this.centervalue, ceph_secret: this.ceph_secret, port: this.port, ips: this.ips, comment: this.comment})).then(response => {
+            this.$http.post(apiurl,  this.$qs.stringify({ uuid: this.uuid, storagename: this.storagename,  pool: this.pool, datacenter: this.centervalue, ceph_secret: this.ceph_secret, port: this.port, ips: this.ips, comment: this.comment})).then(response => {
 				if (response.data.err === null) {
 					alert("创建成功!")
 					this.$emit("toParent", "storage");

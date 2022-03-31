@@ -6,7 +6,6 @@ import (
   "github.com/go-playground/validator/v10"
   "nicloud/cephcommon"
   "nicloud/vmerror"
-  "strconv"
 )
 
 func  Getpool(c *gin.Context) {
@@ -43,7 +42,6 @@ func Addceph(c *gin.Context) {
   uuid := c.PostForm("uuid")
   name := c.PostForm("storagename")
   pool := c.PostForm("pool")
-  contain, _ := strconv.Atoi(c.PostForm("contain"))
   datacenter := c.PostForm("datacenter")
   ceph_secret := c.PostForm("ceph_secret")
   port := c.PostForm("port")
@@ -72,7 +70,7 @@ func Addceph(c *gin.Context) {
     return
   }
 
-  err = ceph.Add(uuid, name, pool, datacenter, ceph_secret, ips, port, comment, contain)
+  err = ceph.Add(uuid, name, pool, datacenter, ceph_secret, ips, port, comment)
   if err != nil {
     res["err"] = vmerror.Error{Message: "创建失败" + err.Error()}
   } else {

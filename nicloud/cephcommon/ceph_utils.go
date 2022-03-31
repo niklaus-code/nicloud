@@ -37,12 +37,11 @@ func Delete(uuid string) error {
   return nil
 }
 
-func (ceph Vms_Ceph)Add (uuid string, name string, pool string, datacenter string, ceph_secret string, ips string, port string, comment  string, contain int) error {
+func (ceph Vms_Ceph)Add (uuid string, name string, pool string, datacenter string, ceph_secret string, ips string, port string, comment  string) error {
   c := &Vms_Ceph{
     Uuid: uuid  ,
     Name: name,
     Pool: pool,
-    //Contain: contain,
     Datacenter: datacenter,
     Ceph_secret: ceph_secret,
     Ips: ips,
@@ -54,7 +53,7 @@ func (ceph Vms_Ceph)Add (uuid string, name string, pool string, datacenter strin
   if err != nil {
     return err
   }
-  errdb := dbs.Create(c)
+  errdb := dbs.Debug().Create(c)
   if errdb.Error != nil {
     return errdb.Error
   }
