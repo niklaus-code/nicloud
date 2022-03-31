@@ -460,6 +460,23 @@ func Delvmpermanent(c *gin.Context) {
   c.JSON(200, res)
 }
 
+func SearchVMArchive(c *gin.Context) {
+  contain := c.Query("contain")
+  res := make(map[string]interface{})
+
+  v := vm.Vms_archives{}
+
+  s, err := v.SearchVMArchives(contain)
+  res["err"] = nil
+  res["res"] = s
+  if err != nil {
+    res["err"] = vmerror.Error{Message: err.Error()}
+    c.JSON(200, res)
+    return
+  }
+  c.JSON(200, res)
+}
+
 func CreateFlavor(c *gin.Context) {
   res := make(map[string]interface{})
   cpu, _ := strconv.Atoi(c.Query("cpu"))

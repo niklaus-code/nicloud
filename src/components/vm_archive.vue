@@ -69,6 +69,7 @@
 export default {
     data () {
         return {
+            content: "",
             data: [],
             vmcount: 0,
             cpagenumber: 1,
@@ -104,6 +105,18 @@ export default {
             if (Number(this.pagenumber) > 1 ) {
                 this.getvmarchive(Number(this.pagenumber)-1)
                 }
+            },
+
+        search: function () {
+            var apiurl = `/api/vm/searchvmachives`
+            this.$http.get(apiurl, { params: { contain: this.contain} }).then(response => {
+			    if (response.data.err === null ) {
+                    this.data = response.data.res
+                    this.vmcount = response.data.res.length
+                    } else {
+					alert(response.data.err.Message)
+                    }
+                })
             },
 
         delvmpermanent: function (id, storage) {

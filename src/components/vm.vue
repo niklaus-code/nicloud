@@ -261,6 +261,7 @@ export default {
                     alert("未查询到")
                     } else {
             	    this.comment(response.data.res)
+                    this.vmcount = response.data.res.length
                     }
             })
 		},

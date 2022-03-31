@@ -1068,3 +1068,18 @@ func (v Vms_archives)Delvmpermanent(storage string, uuid string) error {
   }
   return nil
 }
+
+func (v Vms_archives)SearchVMArchives(contain string) ([]*Vms_archives, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  var vmarchives []*Vms_archives
+  i := fmt.Sprintf("ip like %s or comment like %s", "'%"+contain+"%'", "'%"+contain+"%'")
+  errdb := dbs.Where(i).Order("archive_time desc").Find(&vmarchives)
+
+  if errdb.Error != nil {
+    return nil, err
+  }
+  return vmarchives, nil
+}
