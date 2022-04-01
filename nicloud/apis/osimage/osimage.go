@@ -131,7 +131,6 @@ func AddImage(c *gin.Context) {
   datacenter := c.PostForm("datacenter")
   storage := c.PostForm("storage")
   osname := c.PostForm("osname")
-  size, _ := strconv.Atoi(c.PostForm("size"))
   createsnap, err := strconv.ParseBool(c.PostForm("createsnap"))
   if err != nil {
     res["err"] = vmerror.Error{Message: "参数错误"}
@@ -155,7 +154,6 @@ func AddImage(c *gin.Context) {
   o := osimage.Vms_os{
     Sort: sort,
     Owner: user,
-    Size: size,
     Datacenter: datacenter,
     Storage: storage,
     Osname: osname,
@@ -190,7 +188,7 @@ func AddImage(c *gin.Context) {
     }
   }
 
-  err = o.Add(datacenter, storage, osname, cephblockdevice,  xml, sort , user, snap, size)
+  err = o.Add(datacenter, storage, osname, cephblockdevice,  xml, sort , user, snap)
 
   res["err"] = nil
   if err != nil {

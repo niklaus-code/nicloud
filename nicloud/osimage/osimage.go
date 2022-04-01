@@ -16,7 +16,6 @@ type Vms_os struct {
   Id int `gorm:"primary_key;AUTO_INCREMENT"`
   Sort int
   Owner int
-  Size int `json:"Size" validate:"required"`
   Osname string `gorm:"unique" json:"Osname" validate:"required"`
   Datacenter string `json:"Datacenter" validate:"required"`
   Storage string  `json:"Storage" validate:"required"`
@@ -93,11 +92,10 @@ func Update(id int, datacenter string, storage string, osname string,  snapimage
   return nil
 }
 
-func (vmsos *Vms_os) Add(datacenter string, storage string, osname string, cephblockdevice string, xml string, sort int, owner int, snap string, size int) error {
+func (vmsos *Vms_os) Add(datacenter string, storage string, osname string, cephblockdevice string, xml string, sort int, owner int, snap string) error {
   os := Vms_os{
     Datacenter: datacenter,
     Storage: storage,
-    Size: size,
     Osname: osname,
     Cephblockdevice: cephblockdevice,
     Snapimage: snap,

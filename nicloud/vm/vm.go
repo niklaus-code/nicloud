@@ -919,7 +919,7 @@ func SaveSnapToImg(vmid string, datacenter string, storage string, snapname stri
   }
 
   os := osimage.Vms_os{}
-  err = os.Add(datacenter, storage, snapname+"_"+osinfo.Osname, vmid, osinfo.Xml, 2, userid, snapname, 11)
+  err = os.Add(datacenter, storage, snapname+"_"+osinfo.Osname, vmid, osinfo.Xml, 2, userid, snapname)
   if err != nil {
     return err
   }
