@@ -440,7 +440,7 @@ func GetVmArchive(c *gin.Context)  {
 func Delvmpermanent(c *gin.Context) {
   //暂时不开放次接口
   res := make(map[string]interface{})
-  res["err"] = vmerror.Error{Message: "暂时不开放次接口"}
+  res["err"] = vmerror.Error{Message: "暂时不开放此接口"}
   c.JSON(200, res)
   return
 

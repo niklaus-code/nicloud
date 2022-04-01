@@ -816,7 +816,7 @@ func SearchVm(c string) ([]map[string]interface{}, error) {
     return nil, err
   }
   var v []Vms
-  i := fmt.Sprintf("ip like %s or comment like %s or host like %s", "'%"+c+"%'", "'%"+c+"%'",  "'%"+c+"%'")
+  i := fmt.Sprintf("uuid like %s or ip like %s or comment like %s or host like %s", "'%"+c+"%'", "'%"+c+"%'", "'%"+c+"%'", "'%"+c+"%'")
   dbs.Where(i).Order("create_time desc").Find(&v)
   return allvm(v), nil
 }
