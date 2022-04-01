@@ -62,16 +62,6 @@
   					        </div>
 				        </form>
 			        </div>
-		            <div class="col-sm-2" style="padding-left: 0; padding-right: 0">
-        			    <label>镜像大小（GB）</label>
-				    </div>
-				    <div class="col-sm-3">
-					    <form role="form">
-  					        <div class="form-group">
-    					        <input type="text" class="form-control" v-model="size" placeholder="50">
-  						    </div>
-					    </form>
-				    </div>
     		    </div>
     		</div>
 			<div class="col-sm-12" style="margin-top:10px">
