@@ -2,6 +2,7 @@ package vm
 
 import (
   "fmt"
+  "github.com/jinzhu/gorm"
   db "nicloud/dbs"
   "nicloud/libvirtd"
   "nicloud/networks"
@@ -275,32 +276,34 @@ func (h Vm_hosts)Updatehostcpumem (ip string, cpu int, mem int) error {
   return nil
 }
 
-func (h Vm_hosts)Updatehost(ip string, cpu int, mem int) error {
+func (h Vm_hosts)Updatehost(ip string, cpu int, mem int) (*gorm.DB, error) {
   c, m, err := h.Addcpumem(ip, cpu, mem)
   if err != nil {
-    return err
+    return nil, err
   }
 
   vms_num, max_num, err := GetHostVmNumber(ip)
   if err != nil {
-    return err
+    return nil, err
   }
 
   if vms_num + 1 > max_num {
-    return vmerror.Error{Message: "超过宿主机可以创建的最大数量"}
+    return nil, vmerror.Error{Message: "超过宿主机可以创建的最大数量"}
   }
 
   db, err := db.NicloudDb()
   if err != nil {
-    return err
+    return nil, err
   }
 
-  err1 := db.Model(&Vm_hosts{}).Where("ipv4=?", ip).Update("usedcpu", c).Update("usedmem", m).Update(" Created_vms", vms_num + 1)
-  if err1.Error != nil {
-    return err1.Error
+  tx := db.Begin()
+  err = tx.Model(&Vm_hosts{}).Where("ipv4=?", ip).Update("usedcpu", c).Update("usedmem", m).Update(" Created_vms", vms_num + 1).Error
+  if err != nil {
+    tx.Rollback()
+    return nil, err
   }
 
-  return nil
+  return tx, nil
 }
 
 func (h Vm_hosts)Addcpumem (ip string, cpu int, mem int) (int, int, error) {

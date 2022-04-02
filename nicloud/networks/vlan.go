@@ -1,7 +1,9 @@
 package networks
 
 import (
+  "errors"
   "fmt"
+  "github.com/jinzhu/gorm"
   "nicloud/dbs"
   vmerror "nicloud/vmerror"
   "math/rand"
@@ -200,13 +202,19 @@ func Deleteip(ipv4 string, vlan string) error {
  return nil
 }
 
-func Updateipstatus(ipv4 string, status int) (error) {
+func Updateipstatus(ipv4 string, status int) (*gorm.DB, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
-    return err
+    return nil, err
   }
-  dbs.Model(&Vms_ips{}).Where("ipv4=?", ipv4).Update("status", status)
-  return nil
+
+  tx := dbs.Begin()
+  err = tx.Model(&Vms_ips{}).Where("ipv4=?", ipv4).Update("status", status).Error
+  if err != nil {
+    tx.Rollback()
+    return nil, err
+  }
+  return tx, nil
 }
 
 func OpIP(ipv4 string, vlan string, op int) error {

@@ -5,6 +5,7 @@ import (
   "errors"
   "fmt"
   "github.com/beevik/etree"
+  "github.com/jinzhu/gorm"
   _ "github.com/jinzhu/gorm/dialects/mysql" //这个一定要引入哦！！
   "nicloud/cephcommon"
   c "nicloud/config"
@@ -298,7 +299,7 @@ func Delete(uuid string, storage string) (error) {
   }
 
 	dbs.Model(&Vms{}).Where("uuid=?", uuid).Delete(&Vms{})
-	err = networks.Updateipstatus(vminfo.Ip, 0)
+	updateipstatus_tx, err := networks.Updateipstatus(vminfo.Ip, 0)
 	if err != nil {
 	  return err
   }
@@ -318,22 +319,26 @@ func Delete(uuid string, storage string) (error) {
   }
   err2 := dbs.Create(*v)
   if err2.Error != nil {
+    updateipstatus_tx.Rollback()
     return err2.Error
   }
 
   h := Vm_hosts{}
   err = h.freecpumem(vminfo.Host, vminfo.Cpu, vminfo.Mem)
   if err != nil {
+    updateipstatus_tx.Rollback()
     return err
   }
 
   updatevdisk := vdisk.Updatevdiskbydelvm(vminfo.Datacenter, vminfo.Storage, vminfo.Ip)
   if updatevdisk != nil {
+    updateipstatus_tx.Rollback()
     return updatevdisk
   }
 
   err = libvirtd.Undefine(host, uuid)
   if err != nil {
+    updateipstatus_tx.Rollback()
     return err
   }
 	return nil
@@ -433,11 +438,11 @@ func Start(uuid string, host string) error {
 	return nil
 }
 
-func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, vmxml string, ip string, host string, image int, owner int, comment string) (string, error) {
+func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, vmxml string, ip string, host string, image int, owner int, comment string) (*gorm.DB, error) {
   /*save config to db*/
   dbs, err := db.NicloudDb()
   if err != nil {
-    return "", err
+    return nil, err
   }
 	vm := &Vms{
 		Uuid:        uuid,
@@ -457,13 +462,14 @@ func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, v
 		Comment: comment,
 	}
 
-	err1 := dbs.Create(vm)
-	if err1.Error != nil {
-	    return "", err1.Error
+	tx := dbs.Begin()
+	err = tx.Create(vm).Error
+	if err != nil {
+	  tx.Rollback()
+	  return tx, err
   }
-	return vm.Uuid, err1.Error
+	return tx, err
 }
-
 
 func MigrateVm(uuid string, migrate_host string) error {
   vm, err := GetVmByUuid(uuid)
@@ -540,7 +546,7 @@ func MigrateVmlive(uuid string,  desthost string) error {
   }
 
   //update desination  host
-  err = h.Updatehost(desthost, vm.Cpu, vm.Mem)
+  updatehost_tx, err := h.Updatehost(desthost, vm.Cpu, vm.Mem)
   if err != nil {
     return err
   }
@@ -548,22 +554,11 @@ func MigrateVmlive(uuid string,  desthost string) error {
   //update src host
   err = h.freecpumem(vm.Host, vm.Cpu, vm.Mem)
   if err != nil {
+    updatehost_tx.Rollback()
     return err
   }
-
+  updatehost_tx.Commit()
   return err
-}
-
-func deletevmbyid(uuid string) error {
-  dbs, err := db.NicloudDb()
-  if err != nil {
-    return err
-  }
-  errdb := dbs.Model(Vms{}).Where("uuid=?", uuid).Delete(Vms{})
-  if errdb.Error != nil {
-    return errdb.Error
-  }
-  return nil
 }
 
 func (v Vms)Create (datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, osid int, owner int, comment string) (error) {
@@ -614,35 +609,33 @@ func (v Vms)Create (datacenter string,  storage string, vlan string, cpu int, me
 	  return err
   }
 
-  err = h.Updatehost(host, cpu, mem)
+  updatehost_tx, err := h.Updatehost(host, cpu, mem)
   if  err != nil {
     c.Rm_image(u, storageinfo.Pool)
     libvirtd.Undefine(host, u)
     return err
   }
 
-	newvm, err := savevm(datacenter, storage, u, cpu, mem, f, ip, host, osid, owner, comment)
+	savevm_tx, err := savevm(datacenter, storage, u, cpu, mem, f, ip, host, osid, owner, comment)
 	if err != nil {
     c.Rm_image(u, storageinfo.Pool)
     libvirtd.Undefine(host, u)
-    h.freecpumem(host, cpu, mem)
+    updatehost_tx.Rollback()
 	  return err
   }
 
-  err = networks.Updateipstatus(ip, 1)
+  updateipstatus_tx, err := networks.Updateipstatus(ip, 1)
   if err != nil {
     c.Rm_image(u, storageinfo.Pool)
     libvirtd.Undefine(host, u)
-    h.freecpumem(host, cpu, mem)
-    deletevmbyid(newvm)
+    savevm_tx.Rollback()
+    updatehost_tx.Rollback()
     return  err
   }
 
-  //increasecontain := ceph.IncreaseContain(storage, osinfo.Size)
-  //if increasecontain != nil {
-  //  return increasecontain
-  //}
-
+  updateipstatus_tx.Commit()
+  savevm_tx.Commit()
+  updatehost_tx.Commit()
 	return nil
 }
 
