@@ -1,7 +1,6 @@
 package networks
 
 import (
-  "errors"
   "fmt"
   "github.com/jinzhu/gorm"
   "nicloud/dbs"
