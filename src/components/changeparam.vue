@@ -45,12 +45,6 @@ export default {
             comment: "",
             configvalue: {},
             config : [
-                {cpu: 1, mem: 1},
-                {cpu: 2, mem: 4},
-                {cpu: 4, mem: 8},
-                {cpu: 8, mem: 16},
-                {cpu: 16, mem: 32},
-                {cpu: 32, mem: 64},
                 ],
         }
     },
@@ -61,6 +55,13 @@ export default {
 
 
     methods: {
+        getflavor: function () {
+            var apiurl = `/api/vm/getflavor`
+            this.$http.get(apiurl).then(response => {
+            this.config = response.data.res
+            })
+        },
+
         changeconfig: function () {
             var apiurl = `/api/vm/changeconfig`
             this.$http.get(apiurl, { params: {uuid: this.uuid, host: this.host, cpu: this.configvalue.cpu, oldcpu: this.cpu, oldmem: this.mem,  mem: this.configvalue.mem, vmhost: this.host} }).then(response => {
