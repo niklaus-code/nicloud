@@ -527,12 +527,23 @@ func MigrateVm(uuid string, migrate_host string) error {
     return err
   }
 
+  h := Vm_hosts{}
+  tx_updatehost, err := h.Updatehost(migrate_host, vm.Cpu, vm.Mem)
+  if  err != nil {
+    libvirtd.Undefine(migrate_host, uuid)
+    tx.Rollback()
+    return err
+  }
+
   err = libvirtd.Undefine(vm.Host, vm.Uuid)
   if err != nil {
     tx.Rollback()
+    tx_updatehost.Rollback()
     libvirtd.Undefine(migrate_host, uuid)
     return err
   }
+  
+  tx_updatehost.Commit()
   tx.Commit()
   return err
 }
