@@ -41,3 +41,15 @@ func NicloudDb() (*gorm.DB,error) {
 
   return db, nil
 }
+
+func Tx_commot(dblist []*gorm.DB)  {
+  for _, v := range dblist {
+    v.Commit()
+  }
+}
+
+func Tx_rollback(dblist []*gorm.DB)  {
+  for _, v := range dblist {
+    v.Rollback()
+  }
+}

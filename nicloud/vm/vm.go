@@ -317,6 +317,8 @@ func Delete(uuid string, storage string) (error) {
     return err
   }
 
+  dblist := []*gorm.DB{}
+
   c := cephcommon.Vms_Ceph{}
 	delimgid, err := c.Rm_image(uuid, storageinfo.Pool)
   if err != nil {
@@ -326,13 +328,13 @@ func Delete(uuid string, storage string) (error) {
   tx := dbs.Begin()
 	tx_delvm := dbs.Model(&Vms{}).Where("uuid=?", uuid).Delete(&Vms{}).Error
 	if tx_delvm != nil {
-	  tx.Rollback()
+    db.Tx_rollback(append(dblist, tx))
 	  c.RenameBlock(delimgid, uuid)
   }
 
   tx_updateipstatus, err := networks.Updateipstatus(vminfo.Ip, 0)
 	if err != nil {
-	  tx.Rollback()
+    db.Tx_rollback(append(dblist, tx))
     c.RenameBlock(delimgid, uuid)
 	  return err
   }
@@ -340,8 +342,7 @@ func Delete(uuid string, storage string) (error) {
   archives := Vms_archives{}
   tx_savearchives, err := archives.savevmarchives(delimgid, vminfo.Create_time, vminfo.Owner, vminfo.Comment, vminfo.Vmxml, vminfo.Ip, vminfo.Host, vminfo.Os, vminfo.Datacenter, vminfo.Storage)
   if err != nil {
-    tx.Rollback()
-    tx_updateipstatus.Rollback()
+    db.Tx_rollback(append(dblist, tx, tx_updateipstatus))
     c.RenameBlock(delimgid, uuid)
     return err
   }
@@ -349,40 +350,26 @@ func Delete(uuid string, storage string) (error) {
   h := Vm_hosts{}
   tx_freecpumem, err := h.freecpumem(vminfo.Host, vminfo.Cpu, vminfo.Mem)
   if err != nil {
-    tx.Rollback()
-    tx_updateipstatus.Rollback()
-    tx_savearchives.Rollback()
+    db.Tx_rollback(append(dblist, tx, tx_updateipstatus, tx_savearchives))
     ceph.RenameBlock(delimgid, uuid)
     return err
   }
 
   tx_updatevdisk, err := vdisk.Updatevdiskbydelvm(vminfo.Datacenter, vminfo.Storage, vminfo.Ip)
   if err != nil {
-    tx.Rollback()
-    tx_updateipstatus.Rollback()
-    tx_savearchives.Rollback()
+    db.Tx_rollback(append(dblist, tx, tx_updateipstatus, tx_savearchives, tx_freecpumem))
     ceph.RenameBlock(delimgid, uuid)
-    tx_freecpumem.Rollback()
     return err
   }
 
   err = libvirtd.Undefine(host, uuid)
   if err != nil {
-    tx.Rollback()
-    tx_updateipstatus.Rollback()
-    tx_savearchives.Rollback()
+    db.Tx_rollback(append(dblist, tx, tx_updateipstatus, tx_savearchives, tx_freecpumem, tx_updatevdisk))
     ceph.RenameBlock(delimgid, uuid)
-    tx_freecpumem.Rollback()
-    tx_updatevdisk.Rollback()
     return err
   }
 
-
-  tx.Commit()
-  tx_updateipstatus.Commit()
-  tx_savearchives.Commit()
-  tx_freecpumem.Commit()
-  tx_updatevdisk.Commit()
+  db.Tx_commot(append(dblist, tx,tx_updateipstatus, tx_savearchives, tx_freecpumem,tx_updatevdisk))
 	return nil
 }
 
@@ -653,33 +640,33 @@ func (v Vms)Create (datacenter string,  storage string, vlan string, cpu int, me
 	  return err
   }
 
-  updatehost_tx, err := h.Updatehost(host, cpu, mem)
+  dblist := []*gorm.DB{}
+
+  tx_updatehost, err := h.Updatehost(host, cpu, mem)
   if  err != nil {
     c.Rm_image(u, storageinfo.Pool)
     libvirtd.Undefine(host, u)
     return err
   }
 
-	savevm_tx, err := savevm(datacenter, storage, u, cpu, mem, f, ip, host, osid, owner, comment)
+  tx_savevm, err := savevm(datacenter, storage, u, cpu, mem, f, ip, host, osid, owner, comment)
 	if err != nil {
     c.Rm_image(u, storageinfo.Pool)
     libvirtd.Undefine(host, u)
-    updatehost_tx.Rollback()
+    db.Tx_rollback(append(dblist, tx_savevm))
 	  return err
   }
 
-  updateipstatus_tx, err := networks.Updateipstatus(ip, 1)
+  tx_updateipstatus, err := networks.Updateipstatus(ip, 1)
   if err != nil {
     c.Rm_image(u, storageinfo.Pool)
     libvirtd.Undefine(host, u)
-    savevm_tx.Rollback()
-    updatehost_tx.Rollback()
+    db.Tx_rollback(append(dblist, tx_savevm, tx_updatehost))
     return  err
   }
 
-  updateipstatus_tx.Commit()
-  savevm_tx.Commit()
-  updatehost_tx.Commit()
+  db.Tx_commot(append(dblist, tx_updatehost, tx_savevm, tx_updateipstatus))
+
 	return nil
 }
 
