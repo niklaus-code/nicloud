@@ -230,19 +230,27 @@ func (h Vm_hosts)downcpumem (ip string, cpu int, mem int) (int, int, error) {
   return c, m, nil
 }
 
-func (h Vm_hosts)freecpumem (ip string, cpu int, mem int) error {
+func (h Vm_hosts)freecpumem (ip string, cpu int, mem int) (*gorm.DB, error) {
   c, m, err := h.downcpumem(ip, cpu, mem)
   db, err := db.NicloudDb()
   if err != nil {
-    return err
+    return nil, err
   }
 
   var v Vm_hosts
-  db.Where("ipv4 = ?", ip).Find(&v)
+  tx := db.Begin()
+  err = db.Where("ipv4 = ?", ip).Find(&v).Error
+  if err != nil {
+    return nil, err
+  }
 
-  db.Model(&Vm_hosts{}).Where("ipv4=?", v.Ipv4).Update("usedcpu", c)
-  db.Model(&Vm_hosts{}).Where("ipv4=?", v.Ipv4).Update("usedmem", m)
-  return nil
+  err = tx.Model(&Vm_hosts{}).Where("ipv4=?", v.Ipv4).Update("usedcpu", c).Update("usedmem", m).Error
+  if err != nil {
+    tx.Rollback()
+    return nil, err
+  }
+
+  return tx, nil
 }
 
 func GetHostVmNumber(ip string) (int, int, error) {

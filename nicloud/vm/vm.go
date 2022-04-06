@@ -170,6 +170,33 @@ type Vms_archives struct {
   Storage string
 }
 
+func (a Vms_archives)savevmarchives(uuid string, archive_time time.Time, owner int, comment string, vmxml string, ip string, host string, os int, datacenter string, storage string) (*gorm.DB, error) {
+  archives := Vms_archives{
+    Uuid: uuid,
+    Create_time: time.Now(),
+    Archive_time: archive_time,
+    Owner: owner,
+    Comment: comment,
+    Vmxml: vmxml,
+    Ip: ip,
+    Host: host,
+    Os: os,
+    Datacenter: datacenter,
+    Storage: storage,
+  }
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+  tx := dbs.Begin()
+  err = tx.Create(&archives).Error
+  if err != nil {
+    tx.Rollback()
+    return nil, err
+  }
+  return tx, nil
+}
+
 func Getvmarchivepagenumber(userid int) (int, int, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
@@ -201,8 +228,6 @@ func Getvmarchivepagenumber(userid int) (int, int, error) {
   }
   return pagenumber, len(v), nil
 }
-
-
 
 func Mapvmarchive(obj []Vms_archives) []map[string]interface{}  {
   var mapc []map[string]interface{}
@@ -298,49 +323,66 @@ func Delete(uuid string, storage string) (error) {
     return vmerror.Error{"删除块设备错误"}
   }
 
-	dbs.Model(&Vms{}).Where("uuid=?", uuid).Delete(&Vms{})
-	updateipstatus_tx, err := networks.Updateipstatus(vminfo.Ip, 0)
+  tx := dbs.Begin()
+	tx_delvm := dbs.Model(&Vms{}).Where("uuid=?", uuid).Delete(&Vms{}).Error
+	if tx_delvm != nil {
+	  tx.Rollback()
+	  c.RenameBlock(delimgid, uuid)
+  }
+
+  tx_updateipstatus, err := networks.Updateipstatus(vminfo.Ip, 0)
 	if err != nil {
+	  tx.Rollback()
+    c.RenameBlock(delimgid, uuid)
 	  return err
   }
 
-	v := &Vms_archives{
-	  Uuid: delimgid,
-	  Owner: vminfo.Owner,
-	  Comment: vminfo.Comment,
-	  Ip: vminfo.Ip,
-	  Host: vminfo.Host,
-	  Os: vminfo.Os,
-	  Vmxml: vminfo.Vmxml,
-	  Datacenter: vminfo.Datacenter,
-	  Storage: vminfo.Storage,
-	  Create_time: vminfo.Create_time,
-    Archive_time: time.Now(),
-  }
-  err2 := dbs.Create(*v)
-  if err2.Error != nil {
-    updateipstatus_tx.Rollback()
-    return err2.Error
-  }
-
-  h := Vm_hosts{}
-  err = h.freecpumem(vminfo.Host, vminfo.Cpu, vminfo.Mem)
+  archives := Vms_archives{}
+  tx_savearchives, err := archives.savevmarchives(delimgid, vminfo.Create_time, vminfo.Owner, vminfo.Comment, vminfo.Vmxml, vminfo.Ip, vminfo.Host, vminfo.Os, vminfo.Datacenter, vminfo.Storage)
   if err != nil {
-    updateipstatus_tx.Rollback()
+    tx.Rollback()
+    tx_updateipstatus.Rollback()
+    c.RenameBlock(delimgid, uuid)
     return err
   }
 
-  updatevdisk := vdisk.Updatevdiskbydelvm(vminfo.Datacenter, vminfo.Storage, vminfo.Ip)
-  if updatevdisk != nil {
-    updateipstatus_tx.Rollback()
-    return updatevdisk
+  h := Vm_hosts{}
+  tx_freecpumem, err := h.freecpumem(vminfo.Host, vminfo.Cpu, vminfo.Mem)
+  if err != nil {
+    tx.Rollback()
+    tx_updateipstatus.Rollback()
+    tx_savearchives.Rollback()
+    ceph.RenameBlock(delimgid, uuid)
+    return err
+  }
+
+  tx_updatevdisk, err := vdisk.Updatevdiskbydelvm(vminfo.Datacenter, vminfo.Storage, vminfo.Ip)
+  if err != nil {
+    tx.Rollback()
+    tx_updateipstatus.Rollback()
+    tx_savearchives.Rollback()
+    ceph.RenameBlock(delimgid, uuid)
+    tx_freecpumem.Rollback()
+    return err
   }
 
   err = libvirtd.Undefine(host, uuid)
   if err != nil {
-    updateipstatus_tx.Rollback()
+    tx.Rollback()
+    tx_updateipstatus.Rollback()
+    tx_savearchives.Rollback()
+    ceph.RenameBlock(delimgid, uuid)
+    tx_freecpumem.Rollback()
+    tx_updatevdisk.Rollback()
     return err
   }
+
+
+  tx.Commit()
+  tx_updateipstatus.Commit()
+  tx_savearchives.Commit()
+  tx_freecpumem.Commit()
+  tx_updatevdisk.Commit()
 	return nil
 }
 
@@ -552,11 +594,13 @@ func MigrateVmlive(uuid string,  desthost string) error {
   }
 
   //update src host
-  err = h.freecpumem(vm.Host, vm.Cpu, vm.Mem)
+  tx_freecpumem, err := h.freecpumem(vm.Host, vm.Cpu, vm.Mem)
   if err != nil {
     updatehost_tx.Rollback()
     return err
   }
+
+  tx_freecpumem.Commit()
   updatehost_tx.Commit()
   return err
 }

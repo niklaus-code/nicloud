@@ -3,6 +3,7 @@ package vdisk
 import (
   "fmt"
   "github.com/beevik/etree"
+  "github.com/jinzhu/gorm"
   "nicloud/cephcommon"
   c "nicloud/config"
   db "nicloud/dbs"
@@ -65,16 +66,19 @@ func UpdateMountvmstatus(datacenter string, storage string, vdiskid string, vmip
   return nil
 }
 
-func Updatevdiskbydelvm(datacenter string, storage string, vmip string) error {
+func Updatevdiskbydelvm(datacenter string, storage string, vmip string) (*gorm.DB, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
-    return err
+    return nil, err
   }
-  errdb := dbs.Model(Vms_vdisks{}).Where("datacenter=? and storage=? and vm_ip=?", datacenter, storage, vmip).Update(map[string]interface{}{"vm_ip": "", "status": 1, "diskname": ""})
-  if errdb.Error != nil {
-    return errdb.Error
+
+  tx := dbs.Begin()
+  err = tx.Model(Vms_vdisks{}).Where("datacenter=? and storage=? and vm_ip=?", datacenter, storage, vmip).Update(map[string]interface{}{"vm_ip": "", "status": 1, "diskname": ""}).Error
+  if err != nil {
+    tx.Rollback()
+    return nil, err
   }
-  return nil
+  return tx, nil
 }
 
 

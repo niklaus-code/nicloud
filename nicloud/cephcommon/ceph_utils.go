@@ -147,8 +147,21 @@ func CephConn() (*rados.Conn, error) {
   return conn, nil
 }
 
-func rename(img  *rbd.Image, blockname string) error {
+func (c Vms_Ceph)rename(img  *rbd.Image, blockname string) error {
   err := img.Rename(blockname)
+  if err != nil {
+    return err
+  }
+  return nil
+}
+
+
+func (c Vms_Ceph)RenameBlock(uuid string, desname string) error {
+  img, err := c.Getimgbyname(uuid, c.Pool)
+  if err != nil {
+    return err
+  }
+  err = c.rename(img, desname)
   if err != nil {
     return err
   }
@@ -163,7 +176,7 @@ func (c Vms_Ceph)Rm_image(uuid string, pool string) (string, error) {
 
   img := rbd.GetImage(ioctx, uuid)
   Archive_img := "x_"+(time.Now().Format("20060102150405"))+uuid
-  err = rename(img, Archive_img)
+  err = c.rename(img, Archive_img)
   if err != nil {
     return "", err
   }
@@ -243,7 +256,7 @@ func (c Vms_Ceph)Changename (uuid string, cephblock string, snap string, pool st
   }
 
   fd := image_ctx(ioctx, img)
-  err = rename(fd, oldname)
+  err = c.rename(fd, oldname)
   if err != nil {
     return err
   }

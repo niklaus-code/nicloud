@@ -2,7 +2,6 @@
 package main
 
 import (
-  "fmt"
   "github.com/gin-gonic/gin"
   "nicloud/apis/cephapis"
   "nicloud/apis/datacenterapis"
@@ -13,8 +12,6 @@ import (
   "nicloud/apis/userapis"
   "nicloud/apis/vdisk"
   "nicloud/apis/vmapis"
-  "nicloud/cephcommon"
-
   //_ "nicloud/docs"
   "nicloud/utils"
 )
@@ -25,12 +22,6 @@ import (
 // @BasePath /api/vm
 
 func main() {
-  conn := cephcommon.Vms_Ceph{}
-  stat, _ := conn.Ceph_ioctx("vm")
-  fmt.Println(stat)
-
-
-
   r := gin.Default()
   //r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
   v1 := r.Group("/api/user")
