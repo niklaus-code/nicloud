@@ -54,16 +54,19 @@ func Getdiskbyvm(vmip string) ([]*Vms_vdisks, error) {
   return c, nil
 }
 
-func UpdateMountvmstatus(datacenter string, storage string, vdiskid string, vmip string, diskname string) error {
+func UpdateMountvmstatus(datacenter string, storage string, vdiskid string, vmip string, diskname string) (*gorm.DB, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
-    return err
+    return nil, err
   }
-  errdb := dbs.Model(Vms_vdisks{}).Where("datacenter=? and storage=? and vdiskid=?", datacenter, storage, vdiskid).Update(map[string]interface{}{"vm_ip": vmip, "status": 0, "diskname": diskname})
-  if errdb.Error != nil {
-    return errdb.Error
+
+  tx := dbs.Begin()
+  err = dbs.Model(Vms_vdisks{}).Where("datacenter=? and storage=? and vdiskid=?", datacenter, storage, vdiskid).Update(map[string]interface{}{"vm_ip": vmip, "status": 0, "diskname": diskname}).Error
+  if err != nil {
+    tx.Rollback()
+    return nil, err
   }
-  return nil
+  return tx, nil
 }
 
 func Updatevdiskbydelvm(datacenter string, storage string, vmip string) (*gorm.DB, error) {
@@ -99,24 +102,24 @@ func (d Vms_vdisks)Create(contain int, pool string, cephid string, datacenter st
     Createtime: time.Now(),
   }
 
-  err := ceph.Createcephblock(vdiskid, contain, pool)
-  if err != nil {
-    return err
-  }
-
   dbs, err := db.NicloudDb()
   if err != nil {
     return err
   }
-  errdb := dbs.Create(&c)
-  if errdb.Error != nil {
-    return vmerror.Error{Message: errdb.Error.Error()}
+
+  tx := dbs.Begin()
+  err = tx.Create(&c).Error
+  if err != nil {
+    tx.Rollback()
+    return err
   }
 
-  //increasecontain := ceph.IncreaseContain(cephid, contain)
-  //if increasecontain != nil {
-  //  return increasecontain
-  //}
+  err = ceph.Createcephblock(vdiskid, contain, pool)
+  if err != nil {
+    tx.Rollback()
+    return err
+  }
+  tx.Commit()
   return err
 }
 
@@ -131,10 +134,10 @@ type Vms_vdisks_archives struct {
   Archive_time time.Time
 }
 
-func addiskachives(uuid string, pool string, storage string, datacenter string, ownerid int, comment string, create_time time.Time) (string, error) {
+func addiskachives(uuid string, pool string, storage string, datacenter string, ownerid int, comment string, create_time time.Time) (string, *gorm.DB, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
-    return "", err
+    return "", nil ,err
   }
 
   diskachi := &Vms_vdisks_archives{
@@ -148,11 +151,13 @@ func addiskachives(uuid string, pool string, storage string, datacenter string, 
     Archive_time: time.Now(),
   }
 
-  errdb := dbs.Create(diskachi)
-  if errdb.Error != nil {
-    return "", errdb.Error
+  tx := dbs.Begin()
+  err = dbs.Create(diskachi).Error
+  if err != nil {
+    tx.Rollback()
+    return "", nil, err
   }
-  return diskachi.Vdiskid, nil
+  return diskachi.Vdiskid, tx, nil
 }
 
 func deletedisk(uuid string) error {
@@ -201,22 +206,24 @@ func Deletevdisk(uuid string, comment string) error {
     return err
   }
 
-  errdb := dbs.Where("vdiskid=?", uuid).Delete(Vms_vdisks{})
-  if errdb.Error != nil {
-    if err != nil {
-      return err
-    }
-    return vmerror.Error{Message: "删除硬盘失败"}
+  tx := dbs.Begin()
+  err = tx.Where("vdiskid=?", uuid).Delete(Vms_vdisks{}).Error
+  if err != nil {
+    tx.Rollback()
+    return err
   }
 
   c := cephcommon.Vms_Ceph{}
   delid, err := c.Rm_image(uuid, vdiskinfo.Pool)
   if err != nil {
-    return vmerror.Error{Message: "删除块设备失败"}
+    tx.Rollback()
+    return err
   }
 
-  _, err = addiskachives(delid, vdiskinfo.Pool, vdiskinfo.Storage, vdiskinfo.Datacenter, vdiskinfo.User, comment, vdiskinfo.Createtime)
+  _, _, err = addiskachives(delid, vdiskinfo.Pool, vdiskinfo.Storage, vdiskinfo.Datacenter, vdiskinfo.User, comment, vdiskinfo.Createtime)
   if err != nil {
+    tx.Rollback()
+    c.RenameBlock(delid, uuid)
     return err
   }
   return nil
@@ -248,26 +255,30 @@ func Umountdisk(vmip string, storage string, datacenter string, vdiskid string, 
       d.RemoveChild(v)
       var docstring string
       docstring, err = doc.WriteToString()
-      libvirtd.DefineVm(docstring, host)
 
-      err := Umountvmstatus(datacenter, storage, vdiskid)
+      tx_Umountvmstatus, err := Umountvmstatus(datacenter, storage, vdiskid)
       if err != nil {
         return err
       }
 
+      dblist := []*gorm.DB{}
       dbs, err := db.NicloudDb()
       if err != nil {
         return err
       }
-
-      errdb := dbs.Model(vms).Where("ip=?", vmip).Update("vmxml", docstring)
-      if errdb.Error != nil {
-        return vmerror.Error{Message: errdb.Error.Error()}
-      }
-
+      tx := dbs.Begin()
+      err = tx.Model(vms).Where("ip=?", vmip).Update("vmxml", docstring).Error
       if err != nil {
+        db.Tx_rollback(append(dblist, tx_Umountvmstatus, tx))
         return err
       }
+
+      err = libvirtd.DefineVm(docstring, host)
+      if err != nil {
+        db.Tx_rollback(append(dblist, tx_Umountvmstatus, tx))
+      }
+
+      db.Tx_commot(append(dblist, tx, tx_Umountvmstatus))
       return nil
     }
   }
@@ -342,16 +353,19 @@ func Getvdisk(userid int) ([]map[string]interface{}, error) {
   return mapvdisk, err
 }
 
-func Umountvmstatus(datacenter string, storage string, vdiskid string) error {
+func Umountvmstatus(datacenter string, storage string, vdiskid string) (*gorm.DB, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
-    return err
+    return nil, err
   }
-  errdb := dbs.Model(Vms_vdisks{}).Where("datacenter=? and storage=? and vdiskid=?", datacenter, storage, vdiskid).Update("vm_ip", "").Update("status", 1)
-  if errdb.Error != nil {
-    return errdb.Error
+
+  tx := dbs.Begin()
+  err = tx.Model(Vms_vdisks{}).Where("datacenter=? and storage=? and vdiskid=?", datacenter, storage, vdiskid).Update("vm_ip", "").Update("status", 1).Error
+  if err != nil {
+    tx.Rollback()
+    return nil, err
   }
-  return nil
+  return tx, nil
 }
 
 var Disknametype = []string{"vdb", "vdc", "vdd", "vde", "vdf"}
@@ -471,48 +485,44 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
   var docstring string
   docstring, err = doc.WriteToString()
 
-  updatexml := updatexmlbyip(docstring, ip, vms)
-  if updatexml != nil {
-    return updatexml
+  tx_updatexml, err := updatexmlbyip(docstring, ip, vms)
+  if tx_updatexml != nil {
+    return err
   }
 
-  updatevm := UpdateMountvmstatus(datacenter, storage, vdiskid, ip, diskname)
-  if updatevm != nil {
-    updatexml := updatexmlbyip(xml, ip, vms)
-    if updatexml != nil {
-      return updatexml
-    }
-    return updatevm
+  dblist := []*gorm.DB{}
+  tx_updatevm, err := UpdateMountvmstatus(datacenter, storage, vdiskid, ip, diskname)
+  if err != nil {
+    db.Tx_rollback(append(dblist, tx_updatexml))
+    return err
   }
 
   err = libvirtd.DefineVm(docstring, vmhost)
   if err != nil {
-    updatexml := updatexmlbyip(xml, ip, vms)
-    if updatexml != nil {
-      return updatexml
-    }
-    updatevm := UpdateMountvmstatus(datacenter, storage, vdiskid, "", "")
-    if updatevm != nil {
-      return updatevm
-    }
+    db.Tx_rollback(append(dblist, tx_updatexml, tx_updatevm))
+    tx_updatexml.Rollback()
+    tx_updatevm.Rollback()
     return err
   }
 
+  db.Tx_commot(append(dblist, tx_updatevm, tx_updatexml))
   return nil
 }
 
-func updatexmlbyip(xml string, ip string, vms interface{}) error {
+func updatexmlbyip(xml string, ip string, vms interface{}) (*gorm.DB, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
-    return err
+    return nil, err
   }
 
-  errdb:= dbs.Model(vms).Where("ip=?", ip).Update("vmxml", xml)
-  if errdb.Error != nil {
-    return vmerror.Error{Message: errdb.Error.Error()}
+  tx := dbs.Begin()
+  err = tx.Model(vms).Where("ip=?", ip).Update("vmxml", xml).Error
+  if err != nil {
+    tx.Rollback()
+    return nil, err
   }
 
-  return nil
+  return tx, nil
 }
 
 var (
