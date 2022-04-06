@@ -519,16 +519,21 @@ func MigrateVm(uuid string, migrate_host string) error {
   if err != nil {
     return err
   }
-  err1 := dbs.Model(&Vms{}).Where("uuid=?", uuid).Update("host", migrate_host)
-  if err1.Error != nil {
-      return err1.Error
+  tx := dbs.Begin()
+  err = tx.Model(&Vms{}).Where("uuid=?", uuid).Update("host", migrate_host).Error
+  if err != nil {
+    libvirtd.Undefine(migrate_host, uuid)
+    tx.Rollback()
+    return err
   }
 
   err = libvirtd.Undefine(vm.Host, vm.Uuid)
   if err != nil {
+    tx.Rollback()
+    libvirtd.Undefine(migrate_host, uuid)
     return err
   }
-
+  tx.Commit()
   return err
 }
 
@@ -549,14 +554,10 @@ func MigrateVmlive(uuid string,  desthost string) error {
     return vmerror.Error{Message: "云主机需要开机或者暂停状态"}
   }
 
+  //动态迁移生存在内存里面,重启之后消失
   migratelive := libvirtd.Migratevmlive(uuid, vm.Host, desthost)
   if migratelive != nil {
     return migratelive
-  }
-
-  err = libvirtd.DefineVm(vm.Vmxml, desthost)
-  if err != nil {
-    return err
   }
 
   dbs, err := db.NicloudDb()
@@ -564,31 +565,43 @@ func MigrateVmlive(uuid string,  desthost string) error {
     return err
   }
 
-  errdb := dbs.Model(&Vms{}).Where("uuid=?", uuid).Update("host", desthost)
-  if errdb.Error != nil {
-    return errdb.Error
-  }
-
-  err = libvirtd.Undefine(vm.Host, uuid)
+  dblist := []*gorm.DB{}
+  tx := dbs.Begin()
+  err = dbs.Model(&Vms{}).Where("uuid=?", uuid).Update("host", desthost).Error
   if err != nil {
+    db.Tx_rollback(append(dblist, tx))
     return err
   }
 
   //update desination  host
-  updatehost_tx, err := h.Updatehost(desthost, vm.Cpu, vm.Mem)
+  tx_updatehost, err := h.Updatehost(desthost, vm.Cpu, vm.Mem)
   if err != nil {
+    db.Tx_rollback(append(dblist, tx_updatehost))
     return err
   }
 
   //update src host
   tx_freecpumem, err := h.freecpumem(vm.Host, vm.Cpu, vm.Mem)
   if err != nil {
-    updatehost_tx.Rollback()
+    db.Tx_rollback(append(dblist, tx, tx_updatehost))
     return err
   }
 
-  tx_freecpumem.Commit()
-  updatehost_tx.Commit()
+  err = libvirtd.Undefine(vm.Host, uuid)
+  if err != nil {
+    db.Tx_rollback(append(dblist, tx, tx_updatehost, tx_freecpumem))
+    return err
+  }
+
+  //防止重启之后消失，新建
+  err = libvirtd.DefineVm(vm.Vmxml, desthost)
+  if err != nil {
+    db.Tx_rollback(append(dblist, tx, tx_updatehost, tx_freecpumem))
+    libvirtd.DefineVm(vm.Vmxml, vm.Host)
+    return err
+  }
+
+  db.Tx_commot(append(dblist, tx, tx_updatehost, tx_freecpumem))
   return err
 }
 
