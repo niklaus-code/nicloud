@@ -506,6 +506,12 @@ func MigrateVm(uuid string, migrate_host string) error {
     return err
   }
 
+  h := Vm_hosts{}
+  check := h.checkcpumem(migrate_host, vm.Cpu, vm.Mem)
+  if check != nil {
+    return check
+  }
+
   s, err := VmStatus(uuid, vm.Host)
   if s == "开机" {
     return vmerror.Error{Message: "云主机需要关机状态"}
@@ -519,6 +525,8 @@ func MigrateVm(uuid string, migrate_host string) error {
   if err != nil {
     return err
   }
+
+  dblist := []*gorm.DB{}
   tx := dbs.Begin()
   err = tx.Model(&Vms{}).Where("uuid=?", uuid).Update("host", migrate_host).Error
   if err != nil {
@@ -527,24 +535,28 @@ func MigrateVm(uuid string, migrate_host string) error {
     return err
   }
 
-  h := Vm_hosts{}
-  tx_updatehost, err := h.Updatehost(migrate_host, vm.Cpu, vm.Mem)
-  if  err != nil {
+  tx_freecpumem, err := h.freecpumem(vm.Host, vm.Cpu, vm.Mem)
+  if err != nil {
     libvirtd.Undefine(migrate_host, uuid)
     tx.Rollback()
     return err
   }
 
+  tx_updatehost, err := h.Updatehost(migrate_host, vm.Cpu, vm.Mem)
+  if  err != nil {
+    libvirtd.Undefine(migrate_host, uuid)
+    db.Tx_rollback(append(dblist, tx, tx_freecpumem))
+    return err
+  }
+
   err = libvirtd.Undefine(vm.Host, vm.Uuid)
   if err != nil {
-    tx.Rollback()
-    tx_updatehost.Rollback()
+    db.Tx_rollback(append(dblist, tx, tx_updatehost, tx_freecpumem))
     libvirtd.Undefine(migrate_host, uuid)
     return err
   }
-  
-  tx_updatehost.Commit()
-  tx.Commit()
+
+  db.Tx_commot(append(dblist, tx, tx_freecpumem, tx_updatehost))
   return err
 }
 
