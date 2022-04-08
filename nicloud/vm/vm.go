@@ -24,8 +24,8 @@ var ceph cephcommon.Vms_Ceph
 type Vms struct {
 	Uuid        string `gorm:"primary_key;"`
 	Name        string
-	Cpu         int `json:"cpu" validate:"gt=0"`
-	Mem         int `json:"mem" validate:"gt=0"`
+	Cpu         uint `json:"cpu" validate:"gt=0"`
+	Mem         uint `json:"mem" validate:"gt=0"`
 	Create_time time.Time `json:"Create_time"`
 	Owner       int  `json:"Owner" validate:"required"`
 	Comment     string
@@ -39,7 +39,7 @@ type Vms struct {
 	Storage     string  `json:"storage" validate:"required"`
 }
 
-func updatexmlbyuuid(xml string, uuid string, vcpu int, vmem int) error {
+func updatexmlbyuuid(xml string, uuid string, vcpu uint, vmem uint) error {
   dbs, err := db.NicloudDb()
   if err != nil {
     return err
@@ -53,7 +53,7 @@ func updatexmlbyuuid(xml string, uuid string, vcpu int, vmem int) error {
   return nil
 }
 
-func Changeconfig(uuid string, host string, vcpu int, oldcpu int,  vmem int, oldmem int,  vmhost string) error {
+func Changeconfig(uuid string, host string, vcpu uint, oldcpu uint,  vmem uint, oldmem uint,  vmhost string) error {
   m := vmem * 1024 * 1024
   s, err := VmStatus(uuid, host)
   if s != "关机" {
@@ -61,7 +61,7 @@ func Changeconfig(uuid string, host string, vcpu int, oldcpu int,  vmem int, old
   }
 
   h := Vm_hosts{}
-  updatehost := h.Updatehostcpumem(host, vcpu-oldcpu, vmem-oldmem)
+  updatehost := h.Increasecpumem(host, vcpu-oldcpu, vmem-oldmem)
   if updatehost != nil {
     return updatehost
   }
@@ -467,7 +467,7 @@ func Start(uuid string, host string) error {
 	return nil
 }
 
-func savevm(datacenter string, cephname string, uuid string, cpu int, mem int, vmxml string, ip string, host string, image int, owner int, comment string) (*gorm.DB, error) {
+func savevm(datacenter string, cephname string, uuid string, cpu uint, mem uint, vmxml string, ip string, host string, image int, owner int, comment string) (*gorm.DB, error) {
   /*save config to db*/
   dbs, err := db.NicloudDb()
   if err != nil {
@@ -542,7 +542,7 @@ func MigrateVm(uuid string, migrate_host string) error {
     return err
   }
 
-  tx_updatehost, err := h.Updatehost(migrate_host, vm.Cpu, vm.Mem)
+  tx_updatehost, err := h.Createvmonhost(migrate_host, vm.Cpu, vm.Mem)
   if  err != nil {
     libvirtd.Undefine(migrate_host, uuid)
     db.Tx_rollback(append(dblist, tx, tx_freecpumem))
@@ -597,7 +597,7 @@ func MigrateVmlive(uuid string,  desthost string) error {
   }
 
   //update desination  host
-  tx_updatehost, err := h.Updatehost(desthost, vm.Cpu, vm.Mem)
+  tx_updatehost, err := h.Createvmonhost(desthost, vm.Cpu, vm.Mem)
   if err != nil {
     db.Tx_rollback(append(dblist, tx_updatehost))
     return err
@@ -628,7 +628,7 @@ func MigrateVmlive(uuid string,  desthost string) error {
   return err
 }
 
-func (v Vms)Create (datacenter string,  storage string, vlan string, cpu int, mem int, ip string, host string, osid int, owner int, comment string) (error) {
+func (v Vms)Create (datacenter string,  storage string, vlan string, cpu uint, mem uint, ip string, host string, osid int, owner int, comment string) (error) {
   h := Vm_hosts{}
   checkresoures := h.checkcpumem(host, cpu, mem)
   if checkresoures != nil {
@@ -664,7 +664,7 @@ func (v Vms)Create (datacenter string,  storage string, vlan string, cpu int, me
 	 return err
   }
 
-	f, err := osimage.Xml(datacenter, storage, vlan,  vcpu, vmem, u, mac, imge_name, osid, storageinfo.Pool)
+	f, err := libvirtd.CreateVmXml(datacenter, storage, vlan, vcpu, vmem, u, mac, imge_name, osid, storageinfo.Pool)
 	if err != nil {
 	  c.Rm_image(u, storageinfo.Pool)
 	  return err
@@ -678,7 +678,7 @@ func (v Vms)Create (datacenter string,  storage string, vlan string, cpu int, me
 
   dblist := []*gorm.DB{}
 
-  tx_updatehost, err := h.Updatehost(host, cpu, mem)
+  tx_updatehost, err := h.Createvmonhost(host, cpu, mem)
   if  err != nil {
     c.Rm_image(u, storageinfo.Pool)
     libvirtd.Undefine(host, u)

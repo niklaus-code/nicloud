@@ -67,10 +67,10 @@ func Createhost(c *gin.Context) {
   vlan, _ := c.GetPostForm("vlan")
   datacenter := c.PostForm("datacenter")
   h := vm.Vm_hosts{
-    Cpu: cpu,
-    Mem: mem,
+    Cpu: uint(cpu),
+    Mem: uint(mem),
     Ipv4: ipv4,
-    Max_vms: max_vms,
+    Max_vms: uint(max_vms),
     Datacenter: datacenter,
   }
   validate := validator.New()
@@ -89,7 +89,7 @@ func Createhost(c *gin.Context) {
     return
   }
 
-  err = h.Createhost(datacenter, cpu, mem, ipv4, max_vms, ss)
+  err = h.Createhost(datacenter, uint(cpu), uint(mem), ipv4, uint(max_vms), ss)
   res["err"] = err
   c.JSON(200, res)
 }

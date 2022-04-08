@@ -12,12 +12,12 @@ import (
 
 type Vm_hosts struct {
   Ipv4        string `gorm:"primary_key" json:"ipv4" validate:"min=8,max=15"`
-  Mem         int `json:"mem" validate:"gt=0"`
-  Cpu         int `json:"cpu" validate:"gt=0"`
-  Max_vms     int `gorm:"unique" json:"max_vms" validate:"gt=0"`
-  Created_vms int
-  Usedmem     int
-  Usedcpu     int
+  Mem         uint `json:"mem" validate:"gt=0"`
+  Cpu         uint `json:"cpu" validate:"gt=0"`
+  Max_vms     uint `gorm:"unique" json:"max_vms" validate:"gt=0"`
+  Created_vms uint
+  Usedmem     uint
+  Usedcpu     uint
   Datacenter  string `json:"datacenter" validate:"required"`
   Status      int8
   Comment     string
@@ -102,7 +102,7 @@ func CountHosts(ip string) int {
   return c
 }
 
-func (h Vm_hosts)Createhost(datacenter string, cpu int, mem int, ip string, num int, vlan []string) error {
+func (h Vm_hosts)Createhost(datacenter string, cpu uint, mem uint, ip string, num uint, vlan []string) error {
   db, err := db.NicloudDb()
   if err != nil {
    return err
@@ -189,7 +189,7 @@ func (vh Vms_vlan_map_hosts)Delhostmapvlan (hostip string) (error) {
   return err
 }
 
-func (h Vm_hosts)checkcpumem(ip string, cpu int, mem int) error {
+func (h Vm_hosts)checkcpumem(ip string, cpu uint, mem uint) error {
   db, err := db.NicloudDb()
   if err != nil {
     return err
@@ -211,7 +211,7 @@ func (h Vm_hosts)checkcpumem(ip string, cpu int, mem int) error {
   return nil
 }
 
-func (h Vm_hosts)downcpumem (ip string, cpu int, mem int) (int, int, error) {
+func (h Vm_hosts)downcpumem (ip string, cpu uint, mem uint) (uint, uint, error) {
   host, err := h.Gethostsbyip(ip)
   if err != nil {
     return 0, 0, err
@@ -230,7 +230,7 @@ func (h Vm_hosts)downcpumem (ip string, cpu int, mem int) (int, int, error) {
   return c, m, nil
 }
 
-func (h Vm_hosts)freecpumem (ip string, cpu int, mem int) (*gorm.DB, error) {
+func (h Vm_hosts)freecpumem (ip string, cpu uint, mem uint) (*gorm.DB, error) {
   c, m, err := h.downcpumem(ip, cpu, mem)
   db, err := db.NicloudDb()
   if err != nil {
@@ -253,7 +253,7 @@ func (h Vm_hosts)freecpumem (ip string, cpu int, mem int) (*gorm.DB, error) {
   return tx, nil
 }
 
-func GetHostVmNumber(ip string) (int, int, error) {
+func GetHostVmNumber(ip string) (uint, uint, error) {
   db, err := db.NicloudDb()
   if err != nil {
     return 0,0, err
@@ -266,7 +266,7 @@ func GetHostVmNumber(ip string) (int, int, error) {
   return h.Created_vms, h.Max_vms, err
 }
 
-func (h Vm_hosts)Updatehostcpumem (ip string, cpu int, mem int) error {
+func (h Vm_hosts)Increasecpumem (ip string, cpu uint, mem uint) error {
   c, m, err := h.Addcpumem(ip, cpu, mem)
   if err != nil {
     return err
@@ -284,7 +284,7 @@ func (h Vm_hosts)Updatehostcpumem (ip string, cpu int, mem int) error {
   return nil
 }
 
-func (h Vm_hosts)Updatehost(ip string, cpu int, mem int) (*gorm.DB, error) {
+func (h Vm_hosts)Createvmonhost(ip string, cpu uint, mem uint) (*gorm.DB, error) {
   c, m, err := h.Addcpumem(ip, cpu, mem)
   if err != nil {
     return nil, err
@@ -314,7 +314,7 @@ func (h Vm_hosts)Updatehost(ip string, cpu int, mem int) (*gorm.DB, error) {
   return tx, nil
 }
 
-func (h Vm_hosts)Addcpumem (ip string, cpu int, mem int) (int, int, error) {
+func (h Vm_hosts)Addcpumem (ip string, cpu uint, mem uint) (uint, uint, error) {
   host, err := h.Gethostsbyip(ip)
   if err != nil {
     return 0, 0, err
@@ -429,7 +429,6 @@ type counthosts struct {
   Mem_percent string
   Datacenter string
 }
-
 
 func CountHost() (*counthosts, error) {
   dbs, err := db.NicloudDb()

@@ -25,11 +25,12 @@ func Vnc(c *gin.Context)  {
   //c.Header("Content-Disposition", "attachment; filename="+"Workbook.xlsx")
   //c.Header("Content-Transfer-Encoding", "binary")
   //_ = xlsx.Write(c.Writer)
+var res = make(map[string]interface{})
 
 func Search(c *gin.Context)  {
   ct := c.Query("content")
   vms, err := vm.SearchVm(ct)
-  res := make(map[string]interface{})
+
   if err != nil {
     c.JSON(200, res)
   }
@@ -39,7 +40,6 @@ func Search(c *gin.Context)  {
 }
 
 func GetVminfo(c *gin.Context) {
-  res := make(map[string]interface{})
   uuid := c.Query("uuid")
   iplist, err := vm.GetVmByUuid(uuid)
 
@@ -58,7 +58,6 @@ func GetVmStatus(c *gin.Context) {
   host := c.Query("host")
   uuid := c.Query("uuid")
 
-  res := make(map[string]interface{})
   vmstate, err := vm.VmStatus(uuid, host)
 
   res["res"] = vmstate
@@ -67,7 +66,6 @@ func GetVmStatus(c *gin.Context) {
 }
 
 func Getvmlist(c *gin.Context) {
-  res := make(map[string]interface{})
   start, err := strconv.Atoi(c.Query("start"))
   item := c.Query("item")
   if err != nil {
@@ -107,7 +105,6 @@ func MigrateVmlive(c *gin.Context) {
   migratehost := c.Query("migratehost")
 
   vmlist := vm.MigrateVmlive(uuid, migratehost)
-  res := make(map[string]interface{})
   res["res"] = vmlist
 
   c.JSON(200, res)
@@ -118,14 +115,12 @@ func MigrateVm(c *gin.Context) {
   migratehost := c.Query("migratehost")
 
   vmlist := vm.MigrateVm(uuid, migratehost)
-  res := make(map[string]interface{})
   res["res"] = vmlist
 
   c.JSON(200, res)
 }
 
 func Createvm(c *gin.Context) {
-  res := make(map[string]interface{})
   ip := c.PostForm("ip")
   cpu, _ := strconv.Atoi(c.PostForm("cpu"))
   mem, _ := strconv.Atoi(c.PostForm("mem"))
@@ -147,8 +142,8 @@ func Createvm(c *gin.Context) {
 
   v := vm.Vms{
     Ip: ip,
-    Cpu: cpu,
-    Mem: mem,
+    Cpu: uint(cpu),
+    Mem: uint(mem),
     Host: host,
     Os: osid,
     Datacenter: datacenter,
@@ -165,7 +160,7 @@ func Createvm(c *gin.Context) {
   }
   var rwLock sync.RWMutex
   rwLock.Lock()
-  err = v.Create(datacenter, storage, vlan, cpu, mem, ip, host, osid, user, comment)
+  err = v.Create(datacenter, storage, vlan, uint(cpu), uint(mem), ip, host, osid, user, comment)
   rwLock.Unlock()
 
   res["err"] = nil
@@ -178,7 +173,6 @@ func Createvm(c *gin.Context) {
 func Addcomment(c *gin.Context) {
   uuid := c.Query("uuid")
   comment := c.Query("comment")
-  res := make(map[string]interface{})
   r, err := vm.Updatecomments(uuid, comment)
 
   res["res"] = r
@@ -187,7 +181,6 @@ func Addcomment(c *gin.Context) {
 }
 
 func GetFlavor(c *gin.Context) {
-	res := make(map[string]interface{})
 	s, err := vm.Flavor()
 	res["res"] = s
   res["err"] = nil
@@ -226,8 +219,7 @@ func Changeconfig(c *gin.Context) {
     c.JSON(400, vmerror.Error{Message: "参数错误"})
     return
   }
-  res := make(map[string]interface{})
-  err = vm.Changeconfig(id, host, cpu, oldcpu, mem, oldmem, vmhost)
+  err = vm.Changeconfig(id, host, uint(cpu), uint(oldcpu), uint(mem), uint(oldmem), vmhost)
 
   res["err"] = nil
   if err != nil {
@@ -237,12 +229,10 @@ func Changeconfig(c *gin.Context) {
 }
 
 func DeleteVM(c *gin.Context) {
-
 	uuid := c.Query("uuid")
   //datacenter := c.Query("datacenter")
   storage := c.Query("storage")
 
-	res := make(map[string]interface{})
   var rwLock sync.RWMutex
 	rwLock.Lock()
 	err := vm.Delete(uuid, storage)
@@ -258,7 +248,6 @@ func DeleteVM(c *gin.Context) {
 func Operation(c *gin.Context) {
 	uuid := c.Query("uuid")
 	host := c.Query("host")
-	res := make(map[string]interface{})
 
 	var err error
 
@@ -296,7 +285,6 @@ func Rebuild(c *gin.Context)  {
   osid, _ := strconv.Atoi(c.Query("osname"))
   host := c.Query("host")
 
-  res := make(map[string]interface{})
   v := vm.Vms{}
   err := v.Rebuildimg(osid, storage, datacenter, uuid, host)
 
@@ -309,8 +297,6 @@ func Rebuild(c *gin.Context)  {
 
 func Createsnap(c *gin.Context)  {
   var err error
-
-  res := make(map[string]interface{})
 
   token := c.Request.Header.Get("token")
   userid, err := utils.ParseToken(token)
@@ -355,7 +341,6 @@ func Getsnap(c *gin.Context)  {
   datacenter := c.Query("datacenter")
   storage := c.Query("storage")
 
-  res := make(map[string]interface{})
   s, err := vm.Getsnap(datacenter, storage, uuid)
   res["res"] = s
 
@@ -372,7 +357,6 @@ func Rollback(c *gin.Context)  {
   storage := c.Query("storage")
   snapname := c.Query("snapname")
 
-  res := make(map[string]interface{})
   err := vm.RollbackSnap(uuid, snapname,  datacenter, storage)
 
   res["err"] = nil
@@ -388,7 +372,6 @@ func DelSnap(c *gin.Context)  {
   storage := c.Query("storage")
   snapname := c.Query("snapname")
 
-  res := make(map[string]interface{})
   err := vm.DelSnap(uuid, snapname,  datacenter, storage)
 
   res["err"] = nil
@@ -439,7 +422,6 @@ func GetVmArchive(c *gin.Context)  {
 
 func Delvmpermanent(c *gin.Context) {
   //暂时不开放次接口
-  res := make(map[string]interface{})
   res["err"] = vmerror.Error{Message: "暂时不开放此接口"}
   c.JSON(200, res)
   return
@@ -462,7 +444,6 @@ func Delvmpermanent(c *gin.Context) {
 
 func SearchVMArchive(c *gin.Context) {
   content:= c.Query("content")
-  res := make(map[string]interface{})
 
   v := vm.Vms_archives{}
 
@@ -478,7 +459,6 @@ func SearchVMArchive(c *gin.Context) {
 }
 
 func CreateFlavor(c *gin.Context) {
-  res := make(map[string]interface{})
   cpu, _ := strconv.Atoi(c.Query("cpu"))
   mem, _ := strconv.Atoi(c.Query("mem"))
 

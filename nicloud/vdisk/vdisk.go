@@ -1,7 +1,6 @@
 package vdisk
 
 import (
-  "fmt"
   "github.com/beevik/etree"
   "github.com/jinzhu/gorm"
   "nicloud/cephcommon"
@@ -382,7 +381,6 @@ func next(items []*Vms_vdisks, item string) bool {
   return false
 }
 
-
 func namedisk(vmip string) (string, error) {
   disklist, err := Getdiskbyvm(vmip)
   if err != nil {
@@ -432,61 +430,20 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
     return err
   }
 
-  doc := etree.NewDocument()
-  err = doc.ReadFromString(xml)
-  if err != nil {
-    return err
-  }
-  device := doc.FindElement("./domain/devices")
-  disk := device.CreateElement("disk")
-  disk.CreateAttr("type", "network")
-  disk.CreateAttr("device", "disk")
-
-  driver := disk.CreateElement("driver")
-  driver.CreateAttr("name", "qemu")
-  driver.CreateAttr("type", "raw")
-
-  auth := disk.CreateElement("auth")
-  auth.CreateAttr("username", "admin")
-  secret := auth.CreateElement("secret")
-  secret.CreateAttr("type", "ceph")
-  secret.CreateAttr("uuid", storageinfo.Ceph_secret)
-
-  source := disk.CreateElement("source")
-  source.CreateAttr("protocol", "rbd")
-
-  source.CreateAttr("name", fmt.Sprintf("%s/%s",pool, vdiskid))
-  host := source.CreateElement("host")
-
-  var iplist []string
-  iplist = strings.Split(storageinfo.Ips, ",")
-  for _, v := range iplist {
-    host.CreateAttr("name", v)
-  }
-  host.CreateAttr("port", storageinfo.Port)
+  ips := strings.Split(storageinfo.Ips, ",")
 
   diskname, err := namedisk(ip)
   if err != nil {
     return err
   }
 
-  target := disk.CreateElement("target")
-  target.CreateAttr("dev", diskname)
-  target.CreateAttr("bus", "virtio")
-
-  address := disk.CreateElement("address")
-  address.CreateAttr("type", "pci")
-  address.CreateAttr("domain", "0x0000")
-  address.CreateAttr("bus", "0x00")
-  slot := fmt.Sprintf("0x%d", slot[diskname])
-  address.CreateAttr("slot", slot)
-  address.CreateAttr("function", "0x0")
-  doc.Indent(2)
-  var docstring string
-  docstring, err = doc.WriteToString()
+  docstring, err := libvirtd.CreateDiskXml(xml, vdiskid, ips, storageinfo.Port, pool, len(disknum), diskname, storageinfo.Ceph_secret)
+  if err != nil {
+    return err
+  }
 
   tx_updatexml, err := updatexmlbyip(docstring, ip, vms)
-  if tx_updatexml != nil {
+  if err != nil {
     return err
   }
 
