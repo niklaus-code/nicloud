@@ -239,3 +239,28 @@ func CreateDiskXml(xml string, ceph_block string, ips []string, port string, poo
 
   return xmlstr, nil
 }
+
+func RemoveDiskXml(xml string, ceph_block string, pool string) (string, error) {
+  domcfg := &goxml.Domain{}
+  err := domcfg.Unmarshal(xml)
+  if err != nil {
+    return "", err
+  }
+
+  disklist := domcfg.Devices.Disks
+  for index, disk := range disklist {
+    if disk.Source.Network.Name == fmt.Sprintf("%s/%s", pool, ceph_block) {
+      disklist = append(disklist[:index], disklist[index+1:]...)
+    }
+  }
+
+  domcfg.Devices.Disks = disklist
+
+  xmlstr, err := domcfg.Marshal()
+  if err != nil {
+    return "", err
+  }
+
+  return xmlstr, nil
+}
+

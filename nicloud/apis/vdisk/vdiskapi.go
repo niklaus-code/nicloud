@@ -144,9 +144,10 @@ func Umountdisk(c *gin.Context) {
   }
 
   v := vm.Vms{}
+  d := vdisk.Vms_vdisks{}
   var rwLock sync.RWMutex
   rwLock.Lock()
-  err = vdisk.Umountdisk(vmip, vminfo.Storage, vminfo.Datacenter, vdiskid, xml, vminfo.Host, v)
+  err = d.Umountdisk(vmip, vminfo.Storage, vminfo.Datacenter, vdiskid, xml, vminfo.Host, v)
   rwLock.Unlock()
 
   res["err"] = nil

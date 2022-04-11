@@ -1,7 +1,6 @@
 package vdisk
 
 import (
-  "github.com/beevik/etree"
   "github.com/jinzhu/gorm"
   "nicloud/cephcommon"
   c "nicloud/config"
@@ -228,7 +227,7 @@ func Deletevdisk(uuid string, comment string) error {
   return nil
 }
 
-func Umountdisk(vmip string, storage string, datacenter string, vdiskid string, xml string, host string, vms interface{}) error {
+func (d Vms_vdisks)Umountdisk(vmip string, storage string, datacenter string, vdiskid string, xml string, host string, vms interface{}) error {
   checkmount, err := checkmount(vdiskid)
   if err != nil {
     return err
@@ -237,53 +236,41 @@ func Umountdisk(vmip string, storage string, datacenter string, vdiskid string, 
     return vmerror.Error{Message: "vdisk has been mouunted"}
   }
 
-
-  doc := etree.NewDocument()
-  err = doc.ReadFromString(xml)
+  c := cephcommon.Vms_Ceph{}
+  storageinfo, err := c.Cephinfobyuuid(storage)
   if err != nil {
     return err
   }
-  device := doc.FindElements("./domain/devices/disk")
-  d:= doc.FindElement("./domain/devices/")
-  for _, v := range device {
-    source := v.FindElement("./source")
-    vmdisk := source.SelectAttr("name").Value
-    uuid := strings.Split(vmdisk, "/")
 
-    if len(uuid)> 1 && uuid[1] == vdiskid {
-      d.RemoveChild(v)
-      var docstring string
-      docstring, err = doc.WriteToString()
-
-      tx_Umountvmstatus, err := Umountvmstatus(datacenter, storage, vdiskid)
-      if err != nil {
-        return err
-      }
-
-      dblist := []*gorm.DB{}
-      dbs, err := db.NicloudDb()
-      if err != nil {
-        return err
-      }
-      tx := dbs.Begin()
-      err = tx.Model(vms).Where("ip=?", vmip).Update("vmxml", docstring).Error
-      if err != nil {
-        db.Tx_rollback(append(dblist, tx_Umountvmstatus, tx))
-        return err
-      }
-
-      err = libvirtd.DefineVm(docstring, host)
-      if err != nil {
-        db.Tx_rollback(append(dblist, tx_Umountvmstatus, tx))
-      }
-
-      db.Tx_commot(append(dblist, tx, tx_Umountvmstatus))
-      return nil
-    }
+  updatexml, err := libvirtd.RemoveDiskXml(xml, vdiskid, storageinfo.Pool)
+  if err != nil {
+    return err
   }
-  return vmerror.Error{
-    Message: "disk not found",
+
+  tx_Umountvmstatus, err := Umountvmstatus(datacenter, storage, vdiskid)
+  if err != nil {
+    return err
   }
+
+  dblist := []*gorm.DB{}
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+  tx := dbs.Begin()
+  err = tx.Model(vms).Where("ip=?", vmip).Update("vmxml", updatexml).Error
+  if err != nil {
+    db.Tx_rollback(append(dblist, tx_Umountvmstatus, tx))
+    return err
+  }
+
+  err = libvirtd.DefineVm(updatexml, host)
+  if err != nil {
+    db.Tx_rollback(append(dblist, tx_Umountvmstatus, tx))
+  }
+
+  db.Tx_commot(append(dblist, tx, tx_Umountvmstatus))
+  return nil
 }
 
 func Getdiskstatus(uuid string) (int, error) {
