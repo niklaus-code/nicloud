@@ -219,13 +219,13 @@ func CreateVmXml(datacenter string, storage string, vlan string,  vcpu uint, vme
   if err != nil {
     return "", err
   }
-  domcfg.Devices.Disks[0] = disk
+  domcfg.Devices.Disks = append(domcfg.Devices.Disks, disk)
   domcfg.VCPU = xml_DomainVCPU(vcpu)
   domcfg.UUID = uuid
   domcfg.Name = uuid
   domcfg.Memory = xml_DomainMemory(vmem)
   domcfg.CurrentMemory = xml_DomainCurrentMemory(vmem)
-  domcfg.Devices.Interfaces[0] = xml_bridge(bridge, mac)
+  domcfg.Devices.Interfaces = append(domcfg.Devices.Interfaces, xml_bridge(bridge, mac))
 
   xmlstr, err := domcfg.Marshal()
   if err != nil {
