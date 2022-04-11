@@ -248,9 +248,9 @@ func RemoveDiskXml(xml string, ceph_block string, pool string) (string, error) {
   }
 
   disklist := domcfg.Devices.Disks
-  for index, disk := range disklist {
-    if disk.Source.Network.Name == fmt.Sprintf("%s/%s", pool, ceph_block) {
-      disklist = append(disklist[:index], disklist[index+1:]...)
+  for i :=0; i <= len(disklist); i++ {
+    if disklist[i].Source.Network.Name == fmt.Sprintf("%s/%s", pool, ceph_block) {
+      disklist = append(disklist[:i ], disklist[i+1:]...)
     }
   }
 
