@@ -158,19 +158,6 @@ func addiskachives(uuid string, pool string, storage string, datacenter string, 
   return diskachi.Vdiskid, tx, nil
 }
 
-func deletedisk(uuid string) error {
-  dbs, err := db.NicloudDb()
-  if err != nil {
-    return err
-  }
-
-  errdb := dbs.Where("uuid=?").Delete(&Vms_vdisks_archives{})
-  if errdb.Error != nil {
-    return errdb.Error
-  }
-  return nil
-}
-
 func getdiskinfobyid(uuid string) (*Vms_vdisks, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
@@ -355,7 +342,7 @@ func Umountvmstatus(datacenter string, storage string, vdiskid string) (*gorm.DB
 }
 
 var Disknametype = []string{"vdb", "vdc", "vdd", "vde", "vdf"}
-var slot = map[string] int {"vdb": 11, "vdc": 12, "vdd": 13, "vde": 14, "vdf": 15}
+//var slot = map[string] int {"vdb": 11, "vdc": 12, "vdd": 13, "vde": 14, "vdf": 15}
 
 func next(items []*Vms_vdisks, item string) bool {
   for _, i := range items {

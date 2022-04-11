@@ -32,7 +32,7 @@ const(
 )
 var Slotlist = map[string] uint {"vda": 10, "vdb": 11, "vdc": 12, "vdd": 13, "vde": 14, "vdf": 15, "bridge": 16}
 
-func XML_Pci(slot uint) *goxml.DomainAddressPCI {
+func xml_Pci(slot uint) *goxml.DomainAddressPCI {
   var Domain uint = 00
   var Bus uint = 00
   var Function uint = 0
@@ -45,7 +45,7 @@ func XML_Pci(slot uint) *goxml.DomainAddressPCI {
   return PCI
 }
 
-func XML_Driver() *goxml.DomainDiskDriver {
+func xml_DomainDiskDriver() *goxml.DomainDiskDriver {
   driver := goxml.DomainDiskDriver{
     Name: Name,
     Type: Type,
@@ -53,7 +53,7 @@ func XML_Driver() *goxml.DomainDiskDriver {
   return &driver
 }
 
-func XML_Secret(s string) goxml.DomainDiskSecret {
+func xml_DomainDiskSecret(s string) goxml.DomainDiskSecret {
   secret := goxml.DomainDiskSecret{
     Type: Secret_type,
     UUID: s,
@@ -61,7 +61,7 @@ func XML_Secret(s string) goxml.DomainDiskSecret {
   return secret
 }
 
-func XML_Auth(s goxml.DomainDiskSecret) *goxml.DomainDiskAuth {
+func xml_DomainDiskAuth(s goxml.DomainDiskSecret) *goxml.DomainDiskAuth {
   auth := goxml.DomainDiskAuth{
     Username: Username,
     Secret: &s,
@@ -69,7 +69,7 @@ func XML_Auth(s goxml.DomainDiskSecret) *goxml.DomainDiskAuth {
   return &auth
 }
 
-func XML_Host(h []string, port string) []goxml.DomainDiskSourceHost {
+func xml_DomainDiskSourceHost(h []string, port string) []goxml.DomainDiskSourceHost {
   host := []goxml.DomainDiskSourceHost{}
   for _, v := range h {
     hostobj := goxml.DomainDiskSourceHost{
@@ -82,7 +82,7 @@ func XML_Host(h []string, port string) []goxml.DomainDiskSourceHost {
   return host
 }
 
-func XML_Network(h []goxml.DomainDiskSourceHost, pool string, uuid string) *goxml.DomainDiskSourceNetwork {
+func xml_DomainDiskSourceNetwork(h []goxml.DomainDiskSourceHost, pool string, uuid string) *goxml.DomainDiskSourceNetwork {
   Network := &goxml.DomainDiskSourceNetwork{
     Protocol: Protocol,
     Name: fmt.Sprintf("%s/%s", pool, uuid),
@@ -91,16 +91,16 @@ func XML_Network(h []goxml.DomainDiskSourceHost, pool string, uuid string) *goxm
   return Network
 }
 
-func XML_Source(h *goxml.DomainDiskSourceNetwork) *goxml.DomainDiskSource {
+func xml_DomainDiskSource(h *goxml.DomainDiskSourceNetwork) *goxml.DomainDiskSource {
   source := goxml.DomainDiskSource{
     Network: h,
   }
   return &source
 }
 
-func xml_order() *goxml.DomainDeviceBoot {
+func xml_DomainDeviceBoot(o uint) *goxml.DomainDeviceBoot {
   order := &goxml.DomainDeviceBoot{
-    Order: 1,
+    Order: 0,
   }
   return order
 }
@@ -108,24 +108,24 @@ func xml_order() *goxml.DomainDeviceBoot {
 func diskxml(iplist[]string, port string, poolname string, uuid string, secret string, diskname string, order_check bool) (goxml.DomainDisk, error) {
   disk := goxml.DomainDisk{}
   disk.Device = Device
-  disk.Driver = XML_Driver()
-  disk.Auth = XML_Auth(XML_Secret(secret))
-  disk.Source = XML_Source(XML_Network(XML_Host(iplist, port), poolname, uuid))
+  disk.Driver = xml_DomainDiskDriver()
+  disk.Auth = xml_DomainDiskAuth(xml_DomainDiskSecret(secret))
+  disk.Source = xml_DomainDiskSource(xml_DomainDiskSourceNetwork(xml_DomainDiskSourceHost(iplist, port), poolname, uuid))
   disk.Target = &goxml.DomainDiskTarget{
       Dev: diskname,
       Bus: "virtio",
     }
   disk.Address = &goxml.DomainAddress{
-      PCI: XML_Pci(Slotlist[diskname]),
+      PCI: xml_Pci(Slotlist[diskname]),
     }
   if order_check {
-    disk.Boot = xml_order()
+    disk.Boot = xml_DomainDeviceBoot(1)
   }
 
   return disk, nil
 }
 
-func xml_cpu(cpu uint) *goxml.DomainVCPU {
+func xml_DomainVCPU(cpu uint) *goxml.DomainVCPU {
   c := goxml.DomainVCPU{
     Placement: "static",
     Value: cpu,
@@ -133,7 +133,7 @@ func xml_cpu(cpu uint) *goxml.DomainVCPU {
   return &c
 }
 
-func xml_mem(mem uint) *goxml.DomainMemory {
+func xml_DomainMemory(mem uint) *goxml.DomainMemory {
   m := goxml.DomainMemory{
     Unit: "KiB",
     Value: mem,
@@ -141,7 +141,7 @@ func xml_mem(mem uint) *goxml.DomainMemory {
   return &m
 }
 
-func xml_currentmem(cmem uint) *goxml.DomainCurrentMemory {
+func xml_DomainCurrentMemory(cmem uint) *goxml.DomainCurrentMemory {
   m := goxml.DomainCurrentMemory{
     Unit: "KiB",
     Value: cmem,
@@ -149,26 +149,43 @@ func xml_currentmem(cmem uint) *goxml.DomainCurrentMemory {
   return &m
 }
 
-func xml_bridge(bridge string, mac string) goxml.DomainInterface {
-  m := goxml.DomainInterface{
-    Model: &goxml.DomainInterfaceModel{
-      Type: "virtio",
-    },
-    Boot: &goxml.DomainDeviceBoot{
-      Order: 2,
-    },
-    MAC: &goxml.DomainInterfaceMAC{
-      Address: mac,
-    },
-    Source: &goxml.DomainInterfaceSource{
-      Bridge: &goxml.DomainInterfaceSourceBridge{
-        Bridge: bridge,
-      },
-    },
-    Address: &goxml.DomainAddress{
-      PCI: XML_Pci(Slotlist["bridge"]),
+func xml_DomainInterfaceMAC(mac string) *goxml.DomainInterfaceMAC {
+  m := &goxml.DomainInterfaceMAC{
+    Address: mac,
+  }
+  return m
+}
+
+func xml_DomainInterfaceModel() *goxml.DomainInterfaceModel {
+  i := &goxml.DomainInterfaceModel{
+    Type: "virtio",
+  }
+  return i
+}
+
+func xml_DomainInterfaceSource(bridge string) *goxml.DomainInterfaceSource {
+  b := &goxml.DomainInterfaceSource{
+    Bridge: &goxml.DomainInterfaceSourceBridge{
+      Bridge: bridge,
     },
   }
+  return b
+}
+
+func xml_DomainAddress(adderss uint) *goxml.DomainAddress {
+  a := &goxml.DomainAddress{
+    PCI: xml_Pci(adderss),
+  }
+  return a
+}
+
+func xml_bridge(bridge string, mac string) goxml.DomainInterface {
+  m := goxml.DomainInterface{}
+  m.Model = xml_DomainInterfaceModel()
+  m.Boot = xml_DomainDeviceBoot(2)
+  m.MAC = xml_DomainInterfaceMAC(mac)
+  m.Source = xml_DomainInterfaceSource(bridge)
+  m.Address = xml_DomainAddress(Slotlist["bridge"])
   return m
 }
 
@@ -203,11 +220,11 @@ func CreateVmXml(datacenter string, storage string, vlan string,  vcpu uint, vme
     return "", err
   }
   domcfg.Devices.Disks[0] = disk
-  domcfg.VCPU = xml_cpu(vcpu)
+  domcfg.VCPU = xml_DomainVCPU(vcpu)
   domcfg.UUID = uuid
   domcfg.Name = uuid
-  domcfg.Memory = xml_mem(vmem)
-  domcfg.CurrentMemory = xml_currentmem(vmem)
+  domcfg.Memory = xml_DomainMemory(vmem)
+  domcfg.CurrentMemory = xml_DomainCurrentMemory(vmem)
   domcfg.Devices.Interfaces[0] = xml_bridge(bridge, mac)
 
   xmlstr, err := domcfg.Marshal()
@@ -263,4 +280,3 @@ func RemoveDiskXml(xml string, ceph_block string, pool string) (string, error) {
 
   return xmlstr, nil
 }
-
