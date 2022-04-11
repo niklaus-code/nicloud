@@ -4,7 +4,6 @@ import (
   "encoding/base64"
   "errors"
   "fmt"
-  "github.com/beevik/etree"
   "github.com/jinzhu/gorm"
   _ "github.com/jinzhu/gorm/dialects/mysql" //这个一定要引入哦！！
   "nicloud/cephcommon"
@@ -39,31 +38,27 @@ type Vms struct {
 	Storage     string  `json:"storage" validate:"required"`
 }
 
-func updatexmlbyuuid(xml string, uuid string, vcpu uint, vmem uint) error {
+func updatexmlbyuuid(xml string, uuid string, vcpu uint, vmem uint) (*gorm.DB, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
-    return err
+    return nil, err
   }
 
-  errdb:= dbs.Model(&Vms{}).Where("uuid=?", uuid).Update("vmxml", xml).Update("cpu", vcpu).Update("mem", vmem)
-  if errdb.Error != nil {
-    return vmerror.Error{Message: errdb.Error.Error()}
+  tx := dbs.Begin()
+  err = tx.Model(&Vms{}).Where("uuid=?", uuid).Update("vmxml", xml).Update("cpu", vcpu).Update("mem", vmem).Error
+  if err != nil {
+    tx.Rollback()
+    return nil, err
   }
 
-  return nil
+  return tx, nil
 }
 
 func Changeconfig(uuid string, host string, vcpu uint, oldcpu uint,  vmem uint, oldmem uint,  vmhost string) error {
-  m := vmem * 1024 * 1024
+  mem_kb := vmem * 1024 * 1024
   s, err := VmStatus(uuid, host)
   if s != "关机" {
     return vmerror.Error{Message: "云主机需要关机状态"}
-  }
-
-  h := Vm_hosts{}
-  updatehost := h.Increasecpumem(host, vcpu-oldcpu, vmem-oldmem)
-  if updatehost != nil {
-    return updatehost
   }
 
   dbs, err := db.NicloudDb()
@@ -77,35 +72,32 @@ func Changeconfig(uuid string, host string, vcpu uint, oldcpu uint,  vmem uint, 
     return vmerror.Error{Message: "未发现云主机"}
   }
 
-  xml := v.Vmxml
-  doc := etree.NewDocument()
-  err = doc.ReadFromString(xml)
+  h := Vm_hosts{}
+
+  tx_updatehost, err := h.UpdateCpuMem(host, int(vcpu-oldcpu), int(vmem-oldmem))
   if err != nil {
     return err
   }
 
-  cpu := doc.FindElement("./domain/vcpu")
-  cpu.SetText(fmt.Sprintf("%d", vcpu))
-
-  mem := doc.FindElement("./domain/memory")
-  mem.SetText(fmt.Sprintf("%d", m))
-
-  currentMemory := doc.FindElement("./domain/currentMemory")
-  currentMemory.SetText(fmt.Sprintf("%d", m))
-
-  doc.Indent(2)
-  var docstring string
-  docstring, err = doc.WriteToString()
-
-  updatexml := updatexmlbyuuid(docstring, uuid, vcpu, vmem)
-  if updatexml != nil {
-    return updatexml
+  xmlstr, err := libvirtd.UpdateCpuMem(v.Vmxml, vcpu, mem_kb)
+  if err != nil {
+    tx_updatehost.Rollback()
+    return err
   }
 
-  err = libvirtd.DefineVm(docstring, vmhost)
+  tx_updatexml, err := updatexmlbyuuid(xmlstr, uuid, vcpu, vmem)
   if err != nil {
     return err
   }
+
+  err = libvirtd.DefineVm(xmlstr, vmhost)
+  if err != nil {
+    tx_updatehost.Rollback()
+    tx_updatexml.Rollback()
+    return err
+  }
+  tx_updatexml.Commit()
+  tx_updatehost.Commit()
   return nil
 }
 
@@ -348,7 +340,7 @@ func Delete(uuid string, storage string) (error) {
   }
 
   h := Vm_hosts{}
-  tx_freecpumem, err := h.freecpumem(vminfo.Host, vminfo.Cpu, vminfo.Mem)
+  tx_UpdateCpuMem, err := h.UpdateCpuMem(vminfo.Host, int(0-vminfo.Cpu), int(0-vminfo.Mem))
   if err != nil {
     db.Tx_rollback(append(dblist, tx, tx_updateipstatus, tx_savearchives))
     ceph.RenameBlock(delimgid, uuid)
@@ -357,19 +349,19 @@ func Delete(uuid string, storage string) (error) {
 
   tx_updatevdisk, err := vdisk.Updatevdiskbydelvm(vminfo.Datacenter, vminfo.Storage, vminfo.Ip)
   if err != nil {
-    db.Tx_rollback(append(dblist, tx, tx_updateipstatus, tx_savearchives, tx_freecpumem))
+    db.Tx_rollback(append(dblist, tx, tx_updateipstatus, tx_savearchives, tx_UpdateCpuMem))
     ceph.RenameBlock(delimgid, uuid)
     return err
   }
 
   err = libvirtd.Undefine(host, uuid)
   if err != nil {
-    db.Tx_rollback(append(dblist, tx, tx_updateipstatus, tx_savearchives, tx_freecpumem, tx_updatevdisk))
+    db.Tx_rollback(append(dblist, tx, tx_updateipstatus, tx_savearchives, tx_UpdateCpuMem, tx_updatevdisk))
     ceph.RenameBlock(delimgid, uuid)
     return err
   }
 
-  db.Tx_commot(append(dblist, tx,tx_updateipstatus, tx_savearchives, tx_freecpumem,tx_updatevdisk))
+  db.Tx_commot(append(dblist, tx,tx_updateipstatus, tx_savearchives, tx_UpdateCpuMem,tx_updatevdisk))
 	return nil
 }
 
@@ -535,7 +527,7 @@ func MigrateVm(uuid string, migrate_host string) error {
     return err
   }
 
-  tx_freecpumem, err := h.freecpumem(vm.Host, vm.Cpu, vm.Mem)
+  tx_freecpumem, err := h.UpdateCpuMem(vm.Host, int(0-vm.Cpu), int(0-vm.Mem))
   if err != nil {
     libvirtd.Undefine(migrate_host, uuid)
     tx.Rollback()
@@ -604,7 +596,7 @@ func MigrateVmlive(uuid string,  desthost string) error {
   }
 
   //update src host
-  tx_freecpumem, err := h.freecpumem(vm.Host, vm.Cpu, vm.Mem)
+  tx_freecpumem, err := h.UpdateCpuMem(vm.Host, int(0-vm.Cpu), int(0-vm.Mem))
   if err != nil {
     db.Tx_rollback(append(dblist, tx, tx_updatehost))
     return err

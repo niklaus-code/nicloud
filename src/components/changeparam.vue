@@ -22,7 +22,7 @@
                 <div class="col-sm-9" style="padding-left:0">
                      <select class="col-sm-3" v-model="configvalue">
                         <option  v-for="c in config" :value="c">
-                         {{c.cpu}}核&nbsp/&nbsp{{c.mem}}G
+                         {{c.Cpu}}核&nbsp/&nbsp{{c.Mem}}G
                          </option>
                      </select>
                 <button @click="changeconfig" style="margin-left:40px;margin-top:1px" type="button" class="btn btn-success btn-xs">提交</button>
@@ -51,6 +51,7 @@ export default {
 	
     created: function () {
         this.vminfo()
+        this.getflavor () 
     },
 
 
@@ -64,7 +65,7 @@ export default {
 
         changeconfig: function () {
             var apiurl = `/api/vm/changeconfig`
-            this.$http.get(apiurl, { params: {uuid: this.uuid, host: this.host, cpu: this.configvalue.cpu, oldcpu: this.cpu, oldmem: this.mem,  mem: this.configvalue.mem, vmhost: this.host} }).then(response => {
+            this.$http.get(apiurl, { params: {uuid: this.uuid, host: this.host, cpu: this.configvalue.Cpu, oldcpu: this.cpu, oldmem: this.mem,  mem: this.configvalue.Mem, vmhost: this.host} }).then(response => {
 				if (response.data.err === null) {
 					alert("修改成功")
 					} else {

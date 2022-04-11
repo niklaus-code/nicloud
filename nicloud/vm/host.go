@@ -14,7 +14,7 @@ type Vm_hosts struct {
   Ipv4        string `gorm:"primary_key" json:"ipv4" validate:"min=8,max=15"`
   Mem         uint `json:"mem" validate:"gt=0"`
   Cpu         uint `json:"cpu" validate:"gt=0"`
-  Max_vms     uint `gorm:"unique" json:"max_vms" validate:"gt=0"`
+  Max_vms     uint `json:"max_vms" validate:"gt=0"`
   Created_vms uint
   Usedmem     uint
   Usedcpu     uint
@@ -211,48 +211,6 @@ func (h Vm_hosts)checkcpumem(ip string, cpu uint, mem uint) error {
   return nil
 }
 
-func (h Vm_hosts)downcpumem (ip string, cpu uint, mem uint) (uint, uint, error) {
-  host, err := h.Gethostsbyip(ip)
-  if err != nil {
-    return 0, 0, err
-  }
-
-  c := host.Usedcpu - cpu
-  m := host.Usedmem - mem
-
-  if c < 0 {
-    c = 0
-  }
-
-  if m < 0 {
-    m = 0
-  }
-  return c, m, nil
-}
-
-func (h Vm_hosts)freecpumem (ip string, cpu uint, mem uint) (*gorm.DB, error) {
-  c, m, err := h.downcpumem(ip, cpu, mem)
-  db, err := db.NicloudDb()
-  if err != nil {
-    return nil, err
-  }
-
-  var v Vm_hosts
-  tx := db.Begin()
-  err = db.Where("ipv4 = ?", ip).Find(&v).Error
-  if err != nil {
-    return nil, err
-  }
-
-  err = tx.Model(&Vm_hosts{}).Where("ipv4=?", v.Ipv4).Update("usedcpu", c).Update("usedmem", m).Error
-  if err != nil {
-    tx.Rollback()
-    return nil, err
-  }
-
-  return tx, nil
-}
-
 func GetHostVmNumber(ip string) (uint, uint, error) {
   db, err := db.NicloudDb()
   if err != nil {
@@ -266,26 +224,28 @@ func GetHostVmNumber(ip string) (uint, uint, error) {
   return h.Created_vms, h.Max_vms, err
 }
 
-func (h Vm_hosts)Increasecpumem (ip string, cpu uint, mem uint) error {
-  c, m, err := h.Addcpumem(ip, cpu, mem)
+func (h Vm_hosts)UpdateCpuMem (ip string, cpu int, mem int) (*gorm.DB, error) {
+  c, m, err := h.UpdateCpuMem_(ip, cpu, mem)
   if err != nil {
-    return err
+    return nil, err
   }
 
   db, err := db.NicloudDb()
   if err != nil {
-    return err
+    return nil, err
   }
 
-  errdb := db.Model(&Vm_hosts{}).Where("ipv4=?", ip).Update("usedcpu", c).Update("usedmem", m)
-  if errdb.Error != nil {
-    return errdb.Error
+  tx := db.Begin()
+  err = tx.Model(&Vm_hosts{}).Where("ipv4=?", ip).Update("usedcpu", c).Update("usedmem", m).Error
+  if err!= nil {
+    tx.Rollback()
+    return nil, err
   }
-  return nil
+  return tx, nil
 }
 
 func (h Vm_hosts)Createvmonhost(ip string, cpu uint, mem uint) (*gorm.DB, error) {
-  c, m, err := h.Addcpumem(ip, cpu, mem)
+  c, m, err := h.UpdateCpuMem_(ip, int(cpu), int(mem))
   if err != nil {
     return nil, err
   }
@@ -314,15 +274,22 @@ func (h Vm_hosts)Createvmonhost(ip string, cpu uint, mem uint) (*gorm.DB, error)
   return tx, nil
 }
 
-func (h Vm_hosts)Addcpumem (ip string, cpu uint, mem uint) (uint, uint, error) {
+func (h Vm_hosts)UpdateCpuMem_ (ip string, cpu int, mem int) (uint, uint, error) {
   host, err := h.Gethostsbyip(ip)
   if err != nil {
     return 0, 0, err
   }
-  c := host.Usedcpu + cpu
-  m := host.Usedmem + mem
+  c := int(host.Usedcpu) + cpu
+  m := int(host.Usedmem) + mem
 
-  return c, m, nil
+  if c < 0 {
+    c =0
+  }
+  if m < 0 {
+    m= 0
+  }
+
+  return uint(c), uint(m), nil
 }
 
 func (h Vm_hosts)Deletehost (ip string) error {

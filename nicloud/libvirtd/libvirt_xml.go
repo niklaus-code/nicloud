@@ -100,7 +100,7 @@ func xml_DomainDiskSource(h *goxml.DomainDiskSourceNetwork) *goxml.DomainDiskSou
 
 func xml_DomainDeviceBoot(o uint) *goxml.DomainDeviceBoot {
   order := &goxml.DomainDeviceBoot{
-    Order: 0,
+    Order: o,
   }
   return order
 }
@@ -278,5 +278,23 @@ func RemoveDiskXml(xml string, ceph_block string, pool string) (string, error) {
     return "", err
   }
 
+  return xmlstr, nil
+}
+
+func UpdateCpuMem(xml string, vcpu uint, vmem uint) (string, error) {
+  domcfg := &goxml.Domain{}
+  err := domcfg.Unmarshal(xml)
+  if err != nil {
+    return "", err
+  }
+
+  domcfg.VCPU = xml_DomainVCPU(vcpu)
+  domcfg.Memory = xml_DomainMemory(vmem)
+  domcfg.CurrentMemory = xml_DomainCurrentMemory(vmem)
+
+  xmlstr, err := domcfg.Marshal()
+  if err != nil {
+    return "", err
+  }
   return xmlstr, nil
 }
