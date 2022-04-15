@@ -162,11 +162,11 @@ type Vms_archives struct {
   Storage string
 }
 
-func (a Vms_archives)savevmarchives(uuid string, archive_time time.Time, owner int, comment string, vmxml string, ip string, host string, os int, datacenter string, storage string) (*gorm.DB, error) {
+func (a Vms_archives)savevmarchives(uuid string, create_time time.Time, owner int, comment string, vmxml string, ip string, host string, os int, datacenter string, storage string) (*gorm.DB, error) {
   archives := Vms_archives{
     Uuid: uuid,
-    Create_time: time.Now(),
-    Archive_time: archive_time,
+    Create_time: create_time,
+    Archive_time: time.Now(),
     Owner: owner,
     Comment: comment,
     Vmxml: vmxml,
