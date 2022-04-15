@@ -1,20 +1,16 @@
 package osimage
 
 import (
-  "fmt"
-  "github.com/beevik/etree"
   "nicloud/cephcommon"
   db "nicloud/dbs"
-  "nicloud/networks"
   "nicloud/users"
   "reflect"
-  "strings"
 )
 
 
 type Vms_os struct {
   Id int `gorm:"primary_key;AUTO_INCREMENT"`
-  Sort int
+  Sort int `json:"Sort" validate:"required"`
   Owner int
   Osname string `gorm:"unique" json:"Osname" validate:"required"`
   Datacenter string `json:"Datacenter" validate:"required"`
@@ -22,6 +18,7 @@ type Vms_os struct {
   Cephblockdevice string  `json:"Cephblockdevice" validate:"required"`
   Snapimage string
   Xml string  `gorm:"size:65535" json:"Xml" validate:"required"`
+  Tag int `json:"Tag" validate:"required"`
   Status int8
 }
 
@@ -30,15 +27,49 @@ type Vms_osimage_sort struct {
   Sort string
 }
 
+type Vms_os_tags struct {
+  Id int `gorm:"primary_key;AUTO_INCREMENT"`
+  Tag string
+}
+
+func (t Vms_os_tags)Getostags() ([]*Vms_os_tags, error){
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+
+  var tags []*Vms_os_tags
+  err = dbs.Find(&tags).Error
+  if err != nil {
+    return nil, err
+  }
+
+  return tags, nil
+}
+
+func (t Vms_os_tags)GetostagByid(id int) (*Vms_os_tags, error){
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+
+  err = dbs.Where("id=?", id).First(&t).Error
+  if err != nil {
+    return nil, err
+  }
+
+  return &t, nil
+}
+
 func get_osimage_sortbyid(id int) (*Vms_osimage_sort, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
   var o Vms_osimage_sort
-  data := dbs.Where("id=?", id).First(&o)
-  if data.Error != nil {
-    return nil, data.Error
+  err = dbs.Where("id=?", id).First(&o).Error
+  if err != nil {
+    return nil, err
   }
   return &o, nil
 }
@@ -92,7 +123,7 @@ func Update(id int, datacenter string, storage string, osname string,  snapimage
   return nil
 }
 
-func (vmsos *Vms_os) Add(datacenter string, storage string, osname string, cephblockdevice string, xml string, sort int, owner int, snap string) error {
+func (vmsos *Vms_os)Add (datacenter string, storage string, osname string, cephblockdevice string, xml string, sort int, owner int, snap string, tag int) error {
   os := Vms_os{
     Datacenter: datacenter,
     Storage: storage,
@@ -103,15 +134,16 @@ func (vmsos *Vms_os) Add(datacenter string, storage string, osname string, cephb
     Status: 1,
     Sort: sort,
     Owner: owner,
+    Tag: tag,
   }
   dbs, err := db.NicloudDb()
   if err != nil {
     return err
   }
 
-  errdb := dbs.Create(&os)
-  if errdb.Error != nil {
-    return errdb.Error
+  err = dbs.Create(&os).Error
+  if err != nil {
+    return err
   }
 
   return nil
@@ -146,6 +178,15 @@ func Maposimage(user int, sort int) ([]map[string]interface{}, error)  {
       c["sort"] = nil
     } else {
       c["sort"] = sort.Sort
+    }
+
+    os_tag := Vms_os_tags{}
+    tag, err := os_tag.GetostagByid(v.Tag)
+
+    if err != nil {
+      c["Tag"] = ""
+    } else {
+      c["Tag"] = tag.Tag
     }
 
     ceph := cephcommon.Vms_Ceph{}
@@ -196,95 +237,11 @@ func Getimageby(datacenter string, storage string) ([]*Vms_os, error) {
     return nil, err
   }
   var v []*Vms_os
-  dbs.Where("datacenter=? and storage=?", datacenter, storage).Find(&v)
+  err = dbs.Where("datacenter=? and storage=?", datacenter, storage).Find(&v).Error
+  if err != nil {
+    return nil, err
+  }
   return v, nil
-}
-
-func getxml(osname string) (string, error) {
-  db, err := db.NicloudDb()
-  if err != nil {
-    return "", err
-  }
-
-  var v []*Vms_os
-  db.Where("osname=?", osname).Find(&v)
-  return v[0].Xml, nil
-}
-
-func Xml(datacenter string, storage string, vlan string,  vcpu int, vmem int, uuid string, mac string, image_name string, osid int, pool string) (string, error) {
-  ceph := cephcommon.Vms_Ceph{}
-  storagename, err := ceph.Cephinfobyuuid(storage)
-  if err != nil {
-    return "", err
-  }
-
-  var ceph_secret = storagename.Ceph_secret
-  ips := strings.Split(storagename.Ips, ",")
-  port := storagename.Port
-
-  br, err := networks.Getbridge(datacenter, vlan)
-  if err != nil {
-    return "", err
-  }
-
-  osinfo, err := GetOsInfoById(storage, osid)
-  if err != nil {
-    return "", err
-  }
-
-  doc := etree.NewDocument()
-  err = doc.ReadFromString(osinfo.Xml)
-  if err != nil {
-    return "", err
-  }
-
-  cephsecret := doc.FindElement("./domain/devices/disk/auth/secret")
-  cephsecret.CreateAttr("uuid", ceph_secret)
-
-  cpu := doc.FindElement("./domain/vcpu")
-  cpu.CreateText(fmt.Sprintf("%d", vcpu))
-
-  id := doc.FindElement("./domain/uuid")
-  id.CreateText(uuid)
-
-  name := doc.FindElement("./domain/name")
-  name.CreateText(uuid)
-
-  mem := doc.FindElement("./domain/memory")
-  mem.CreateText(fmt.Sprintf("%d", vmem))
-
-  currentMemory := doc.FindElement("./domain/currentMemory")
-  currentMemory.CreateText(fmt.Sprintf("%d", vmem))
-
-  bridge := doc.FindElement("./domain/devices/interface/source")
-  bridge.CreateAttr("bridge", fmt.Sprintf("%s", br))
-
-  macaddr := doc.FindElement("./domain/devices/interface/mac")
-  macaddr.CreateAttr("address", fmt.Sprintf("%s", mac))
-
-  for _, e := range doc.FindElements("./domain/devices[1]/*") {
-    if e.Tag == "disk" {
-      for _, v := range e.ChildElements() {
-        if v.Tag == "source" {
-          v.CreateAttr("name", fmt.Sprintf("%s/%s", pool, image_name))
-
-          for ip_k, ip := range ips {
-            v.CreateElement("host")
-            v.ChildElements()[ip_k].CreateAttr("name", string(ip))
-            v.ChildElements()[ip_k].CreateAttr("port", port)
-          }
-        }
-      }
-    }
-  }
-  doc.Indent(2)
-  var docstring string
-  docstring, err = doc.WriteToString()
-  if err != nil {
-    return "", err
-  }
-
-  return docstring, nil
 }
 
 func GetOsInfoById(storage string, id int) (*Vms_os, error) {
@@ -294,7 +251,10 @@ func GetOsInfoById(storage string, id int) (*Vms_os, error) {
   }
 
   o := &Vms_os{}
-  dbs.Where("id=? and storage=?", id, storage).First(o)
+  err = dbs.Where("id=? and storage=?", id, storage).First(o).Error
+  if err != nil {
+    return nil, err
+  }
   return o, nil
 }
 
@@ -306,9 +266,9 @@ func (o Vms_os)CheckOsbyUuid(uuid string) (bool, error) {
   }
 
   os := []*Vms_os{}
-  dberr := dbs.Where("Cephblockdevice=?", uuid).First(&os)
-  if dberr.Error != nil {
-    return false, dberr.Error
+  err = dbs.Where("Cephblockdevice=?", uuid).First(&os).Error
+  if err != nil {
+    return false, err
   }
   if len(os) > 0 {
     return true, err

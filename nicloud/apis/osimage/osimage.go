@@ -113,6 +113,20 @@ func GetImageSort(c *gin.Context) {
   c.JSON(200, res)
 }
 
+func GetOsTag(c *gin.Context) {
+  t := osimage.Vms_os_tags{}
+
+  res := make(map[string]interface{})
+  r, err := t.Getostags()
+
+  res["res"] = r
+  res["err"] = nil
+  if err != nil {
+    res["err"] = vmerror.Error{Message: err.Error()}
+  }
+  c.JSON(200, res)
+}
+
 func GetImageby(c *gin.Context) {
   datacenter := c.Query("datacenter")
   storage := c.Query("storage")
@@ -131,6 +145,7 @@ func AddImage(c *gin.Context) {
   datacenter := c.PostForm("datacenter")
   storage := c.PostForm("storage")
   osname := c.PostForm("osname")
+  tag, _ := strconv.Atoi(c.PostForm("tag"))
   createsnap, err := strconv.ParseBool(c.PostForm("createsnap"))
   if err != nil {
     res["err"] = vmerror.Error{Message: "参数错误"}
@@ -140,7 +155,7 @@ func AddImage(c *gin.Context) {
 
   cephblockdevice := c.PostForm("cephblockdevice")
   xml :=c.PostForm("xml")
-  sort,_ := strconv.Atoi(c.PostForm("sort"))
+  sort,_ := strconv.Atoi(c.PostForm("ossort"))
 
   token := c.Request.Header.Get("token")
   user, err := utils.ParseToken(token)
@@ -159,11 +174,13 @@ func AddImage(c *gin.Context) {
     Osname: osname,
     Cephblockdevice: cephblockdevice,
     Xml: xml,
+    Tag: tag,
   }
 
   validate := validator.New()
   err = validate.Struct(o)
   if err != nil {
+    fmt.Println(err)
     res["err"] = vmerror.Error{Message: "参数错误"}
     c.JSON(400, res)
     return
@@ -182,13 +199,12 @@ func AddImage(c *gin.Context) {
     snap, err = ceph.CreateSnapAndProtect(storageinfo.Pool, cephblockdevice)
     if err != nil {
       res["err"] = vmerror.Error{Message: err.Error()}
-      fmt.Println(err)
       c.JSON(200, res)
       return
     }
   }
 
-  err = o.Add(datacenter, storage, osname, cephblockdevice,  xml, sort , user, snap)
+  err = o.Add(datacenter, storage, osname, cephblockdevice,  xml, sort , user, snap, tag)
 
   res["err"] = nil
   if err != nil {

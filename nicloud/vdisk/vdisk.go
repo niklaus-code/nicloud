@@ -411,7 +411,7 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
     return err
   }
 
-  docstring, err := libvirtd.CreateDiskXml(xml, vdiskid, ips, storageinfo.Port, pool, len(disknum), diskname, storageinfo.Ceph_secret)
+  docstring, err := libvirtd.CreateDiskXml(xml, vdiskid, ips, storageinfo.Port, pool, len(disknum), diskname, storageinfo.Ceph_secret, "linux")
   if err != nil {
     return err
   }

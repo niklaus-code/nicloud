@@ -40,11 +40,22 @@
 					<div class="col-sm-2 col-sm-offset-2">
         				<label>镜像类别</label>
 					</div>
-					<div class="col-sm-8">
+					<div class="col-sm-3">
 				    	<select class="col-sm-12" v-model="sortvalue">
 							<option value="">--请选择--</option>
                         	<option v-for="s in sort" :value="s">
-                            	{{ s.sort }}
+                            	{{ s.Sort }}
+                        	</option>
+                    	</select>
+					</div>
+					<div class="col-sm-2">
+        				<label>系统标签</label>
+					</div>
+					<div class="col-sm-3">
+				    	<select class="col-sm-12" v-model="tagvalue">
+							<option value="">--请选择--</option>
+                        	<option v-for="s in ostags" :value="s">
+                            	{{ s.Tag }}
                         	</option>
                     	</select>
 					</div>
@@ -124,10 +135,9 @@ export default {
         return {
             size: "",
             sortvalue: "",
-            sort: [
-                {id: 1, sort: "基础镜像"},
-                {id: 2, sort: "用户镜像"},
-                ],
+            sort: [],
+            ostags: [],
+            tagvalue: "",
 
            	centervalue: "",
             datacenter: [],
@@ -144,8 +154,10 @@ export default {
     },
 
     created: function () {
-        this.vlaninfo()
+        this.osimageinfo()
 		this.getdatacenter()
+        this.getimagesort()
+        this.getostag()
     },
 
     methods: {
@@ -159,6 +171,30 @@ export default {
                 }
             },
 
+        getostag: function () {
+            var apiurl = `/api/osimage/getiostags`
+
+            this.$http.get(apiurl).then(response => {
+                if (response.data.err === null) {
+                    this.ostags = response.data.res
+                } else {
+                    alert(response.data.err.Message)
+                    }
+                })
+            },
+
+        getimagesort: function () {
+            var apiurl = `/api/osimage/getimagesort`
+
+            this.$http.get(apiurl).then(response => {
+                if (response.data.err === null) {
+                    this.sort = response.data.res
+                } else {
+                    alert(response.data.err.Message)
+                    }
+                })
+            },
+
         getdatacenter: function () {
             var apiurl = `/api/datacenter/getdatacenter`
 
@@ -166,7 +202,7 @@ export default {
                 if (response.data.err === null) {
                     this.datacenter = response.data.res
                 } else {
-                    alert("获取数据失败(" + response.data.err.Message+ ")" )
+                    alert(response.data.err.Message)
                     }
             })
             },
@@ -184,7 +220,7 @@ export default {
         },
 
 
-		vlaninfo: function () {
+		osimageinfo: function () {
             this.osimage = this.$route.query.osimage
             this.cephblockdevice = this.$route.query.cephblockdevice
             this.xml = this.$route.query.xml
@@ -203,11 +239,10 @@ export default {
 			if (this.check(this.osimage, this.cephblockdevice, this.xml)) {
 				return 
 				}
-		
 
             var apiurl = `/api/osimage/createimage`
 
-            this.$http.post(apiurl, this.$qs.stringify({size: this.size, osname: this.osimage, datacenter: this.centervalue, storage: this.storagevalue, cephblockdevice: this.cephblockdevice, createsnap: this.checkboxobj, xml: this.xml, sort: this.sortvalue.id})).then(response => {
+            this.$http.post(apiurl, this.$qs.stringify({size: this.size, osname: this.osimage, datacenter: this.centervalue, storage: this.storagevalue, cephblockdevice: this.cephblockdevice, createsnap: this.checkboxobj, xml: this.xml, ossort: this.sortvalue.Id, tag: this.tagvalue.Id})).then(response => {
 				if (response.data.err === null) {
 					alert("创建成功!")
                 	this.$emit("toParent", "osimage");

@@ -118,6 +118,7 @@ func main() {
     v6.GET("getimageby", osimage.GetImageby)
     v6.GET("getimage", osimage.GetImage)
     v6.GET("getimagesort", osimage.GetImageSort)
+    v6.GET("getiostags", osimage.GetOsTag)
 
     v6.Use(utils.RoleAuth())
     v6.POST("updateimage", osimage.UpdateImage)

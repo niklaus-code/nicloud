@@ -656,7 +656,7 @@ func (v Vms)Create (datacenter string,  storage string, vlan string, cpu uint, m
 	 return err
   }
 
-	f, err := libvirtd.CreateVmXml(datacenter, storage, vlan, vcpu, vmem, u, mac, imge_name, osid, storageinfo.Pool)
+	f, err := libvirtd.CreateVmXml(datacenter, storage, vlan, vcpu, vmem, u, mac, imge_name, osid, storageinfo.Pool, "linux")
 	if err != nil {
 	  c.Rm_image(u, storageinfo.Pool)
 	  return err
@@ -971,7 +971,7 @@ func SaveSnapToImg(vmid string, datacenter string, storage string, snapname stri
   }
 
   os := osimage.Vms_os{}
-  err = os.Add(datacenter, storage, snapname+"_"+osinfo.Osname, vmid, osinfo.Xml, 2, userid, snapname)
+  err = os.Add(datacenter, storage, snapname+"_"+osinfo.Osname, vmid, osinfo.Xml, 2, userid, snapname, osinfo.Tag)
   if err != nil {
     return err
   }

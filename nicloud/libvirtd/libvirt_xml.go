@@ -31,6 +31,7 @@ const(
   Secret_type = "ceph"
 )
 var Slotlist = map[string] uint {"vda": 10, "vdb": 11, "vdc": 12, "vdd": 13, "vde": 14, "vdf": 15, "bridge": 16}
+var Win_Slotlist = map[string] uint {"sda": 10, "sdb": 11, "sdc": 12, "sdd": 13, "sde": 14, "sdf": 15, "bridge": 16}
 
 func xml_Pci(slot uint) *goxml.DomainAddressPCI {
   var Domain uint = 00
@@ -105,21 +106,28 @@ func xml_DomainDeviceBoot(o uint) *goxml.DomainDeviceBoot {
   return order
 }
 
-func diskxml(iplist[]string, port string, poolname string, uuid string, secret string, diskname string, order_check bool) (goxml.DomainDisk, error) {
+func diskxml(iplist[]string, port string, poolname string, uuid string, secret string, diskname string, order_check bool, os string) (goxml.DomainDisk, error) {
   disk := goxml.DomainDisk{}
   disk.Device = Device
   disk.Driver = xml_DomainDiskDriver()
   disk.Auth = xml_DomainDiskAuth(xml_DomainDiskSecret(secret))
   disk.Source = xml_DomainDiskSource(xml_DomainDiskSourceNetwork(xml_DomainDiskSourceHost(iplist, port), poolname, uuid))
-  disk.Target = &goxml.DomainDiskTarget{
-      Dev: diskname,
-      Bus: "virtio",
-    }
   disk.Address = &goxml.DomainAddress{
       PCI: xml_Pci(Slotlist[diskname]),
     }
-  if order_check {
-    disk.Boot = xml_DomainDeviceBoot(1)
+  if os == "linux" {
+    if order_check {
+      disk.Boot = xml_DomainDeviceBoot(1)
+    }
+    disk.Target = &goxml.DomainDiskTarget{
+      Dev: diskname,
+      Bus: "virtio",
+    }
+  } else {
+    disk.Target = &goxml.DomainDiskTarget{
+      Dev: diskname,
+      Bus: "sata",
+    }
   }
 
   return disk, nil
@@ -189,7 +197,7 @@ func xml_bridge(bridge string, mac string) goxml.DomainInterface {
   return m
 }
 
-func CreateVmXml(datacenter string, storage string, vlan string,  vcpu uint, vmem uint, uuid string, mac string, image_name string, osid int, pool string) (string, error) {
+func CreateVmXml(datacenter string, storage string, vlan string,  vcpu uint, vmem uint, uuid string, mac string, image_name string, osid int, pool string, os string) (string, error) {
   ceph := cephcommon.Vms_Ceph{}
   storagename, err := ceph.Cephinfobyuuid(storage)
   if err != nil {
@@ -215,7 +223,7 @@ func CreateVmXml(datacenter string, storage string, vlan string,  vcpu uint, vme
     return "", err
   }
 
-  disk, err := diskxml(ips, port, pool, image_name, storagename.Ceph_secret, "vda", true)
+  disk, err := diskxml(ips, port, pool, image_name, storagename.Ceph_secret, "vda", true, os)
   if err != nil {
     return "", err
   }
@@ -235,14 +243,14 @@ func CreateVmXml(datacenter string, storage string, vlan string,  vcpu uint, vme
   return xmlstr, nil
 }
 
-func CreateDiskXml(xml string, ceph_block string, ips []string, port string, pool string, disknum int, diskname string, secret string) (string, error) {
+func CreateDiskXml(xml string, ceph_block string, ips []string, port string, pool string, disknum int, diskname string, secret string, os string) (string, error) {
   domcfg := &goxml.Domain{}
   err := domcfg.Unmarshal(xml)
   if err != nil {
     return "", err
   }
 
-  disk, err := diskxml(ips, port, pool, ceph_block, secret, diskname, false)
+  disk, err := diskxml(ips, port, pool, ceph_block, secret, diskname, false, os)
   if err != nil {
     return "", err
   }

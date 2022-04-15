@@ -19,6 +19,7 @@
         				</th>
         				<th style="min-width: 75px">镜像名称</th>
         				<th style="min-width:72px">镜像类别</th>
+        				<th style="min-width:72px">系统标签</th>
         				<th>块设备</th>
         				<th>快照名称</th>
         				<th>XML</th>
@@ -37,6 +38,7 @@
         				</label>
         				<td style="min-width: 100px">{{item.Osname}}</td>
         				<td>{{item.sort}}</td>
+        				<td>{{item.Tag}}</td>
         				<td>{{item.Cephblockdevice}}</td>
         				<td>{{item.Snapimage}}</td>
         				<td class="tdxml" width="30%">{{item.Xml}}</td>
