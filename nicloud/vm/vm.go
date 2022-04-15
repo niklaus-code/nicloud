@@ -643,6 +643,11 @@ func (v Vms)Create (datacenter string,  storage string, vlan string, cpu uint, m
 	if err != nil {
 	  return err
   }
+  t := osimage.Vms_os_tags{}
+  ostag, err := t.GetostagByid(osinfo.Tag)
+  if err != nil {
+    return err
+  }
 
   storageinfo, err := ceph.Cephinfobyuuid(storage)
   if err != nil {
@@ -656,7 +661,7 @@ func (v Vms)Create (datacenter string,  storage string, vlan string, cpu uint, m
 	 return err
   }
 
-	f, err := libvirtd.CreateVmXml(datacenter, storage, vlan, vcpu, vmem, u, mac, imge_name, osid, storageinfo.Pool, "linux")
+	f, err := libvirtd.CreateVmXml(datacenter, storage, vlan, vcpu, vmem, u, mac, imge_name, osid, storageinfo.Pool, ostag.Tag)
 	if err != nil {
 	  c.Rm_image(u, storageinfo.Pool)
 	  return err

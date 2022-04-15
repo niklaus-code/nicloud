@@ -115,7 +115,7 @@ func diskxml(iplist[]string, port string, poolname string, uuid string, secret s
   disk.Address = &goxml.DomainAddress{
       PCI: xml_Pci(Slotlist[diskname]),
     }
-  if os == "linux" {
+  if os == "LINUX" {
     if order_check {
       disk.Boot = xml_DomainDeviceBoot(1)
     }
@@ -187,10 +187,12 @@ func xml_DomainAddress(adderss uint) *goxml.DomainAddress {
   return a
 }
 
-func xml_bridge(bridge string, mac string) goxml.DomainInterface {
+func xml_bridge(bridge string, mac string, os string) goxml.DomainInterface {
   m := goxml.DomainInterface{}
   m.Model = xml_DomainInterfaceModel()
-  m.Boot = xml_DomainDeviceBoot(2)
+  if os == "LINUX" {
+    m.Boot = xml_DomainDeviceBoot(2)
+  }
   m.MAC = xml_DomainInterfaceMAC(mac)
   m.Source = xml_DomainInterfaceSource(bridge)
   m.Address = xml_DomainAddress(Slotlist["bridge"])
@@ -233,7 +235,7 @@ func CreateVmXml(datacenter string, storage string, vlan string,  vcpu uint, vme
   domcfg.Name = uuid
   domcfg.Memory = xml_DomainMemory(vmem)
   domcfg.CurrentMemory = xml_DomainCurrentMemory(vmem)
-  domcfg.Devices.Interfaces = append(domcfg.Devices.Interfaces, xml_bridge(bridge, mac))
+  domcfg.Devices.Interfaces = append(domcfg.Devices.Interfaces, xml_bridge(bridge, mac, os))
 
   xmlstr, err := domcfg.Marshal()
   if err != nil {
