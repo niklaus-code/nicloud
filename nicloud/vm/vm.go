@@ -233,9 +233,11 @@ func Mapvmarchive(obj []Vms_archives) []map[string]interface{}  {
     }
 
     osinfo, err := osimage.GetOsInfoById(v.Storage, v.Os)
-    c["osname"] = osinfo.Osname
+
     if err != nil {
       c["osname"] = nil
+    } else {
+      c["osname"] = osinfo.Osname
     }
 
     owner, err := users.GetUserByUserID(v.Owner)
