@@ -175,9 +175,9 @@ func Maposimage(user int, sort int) ([]map[string]interface{}, error)  {
 
     sort, err := get_osimage_sortbyid(v.Sort)
     if err != nil {
-      c["sort"] = nil
+      c["Sort"] = nil
     } else {
-      c["sort"] = sort.Sort
+      c["Sort"] = sort
     }
 
     os_tag := Vms_os_tags{}
@@ -186,7 +186,7 @@ func Maposimage(user int, sort int) ([]map[string]interface{}, error)  {
     if err != nil {
       c["Tag"] = ""
     } else {
-      c["Tag"] = tag.Tag
+      c["Tag"] = tag
     }
 
     ceph := cephcommon.Vms_Ceph{}

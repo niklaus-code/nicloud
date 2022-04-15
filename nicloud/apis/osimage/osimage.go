@@ -56,6 +56,8 @@ func UpdateImage(c *gin.Context) {
   snapname := c.PostForm("snapimage")
   cephblockdevice := c.PostForm("cephblockdevice")
   xml := c.PostForm("xml")
+  tag, _ := strconv.Atoi(c.PostForm("tag"))
+  sort, _ := strconv.Atoi(c.PostForm("sort"))
 
   o := osimage.Vms_os{
     Id: id,
@@ -65,10 +67,13 @@ func UpdateImage(c *gin.Context) {
     Snapimage: snapname,
     Cephblockdevice: cephblockdevice,
     Xml: xml,
+    Tag: tag,
+    Sort: sort,
   }
 
   validate := validator.New()
   err := validate.Struct(o)
+
   if err != nil {
     res["err"] = vmerror.Error{Message: "参数错误"}
     c.JSON(400, res)
@@ -93,12 +98,14 @@ func GetImage(c *gin.Context) {
   }
 
   sort,_ := strconv.Atoi(c.Query("sort"))
+  r, err := osimage.Maposimage(user, sort)
 
-  var r []map[string]interface{}
-
-  r, err = osimage.Maposimage(user, sort)
   res["res"] = r
-  res["err"] = err
+  res["err"] = nil
+  if err != nil {
+    res["err"] = vmerror.Error{Message: err.Error()}
+  }
+
   c.JSON(200, res)
 }
 

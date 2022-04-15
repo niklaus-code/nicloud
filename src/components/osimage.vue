@@ -37,8 +37,8 @@
             				<input type="checkbox" v-model="item.Checkout">
         				</label>
         				<td style="min-width: 100px">{{item.Osname}}</td>
-        				<td>{{item.sort}}</td>
-        				<td>{{item.Tag}}</td>
+        				<td>{{item.Sort.Sort}}</td>
+        				<td>{{item.Tag.Tag}}</td>
         				<td>{{item.Cephblockdevice}}</td>
         				<td>{{item.Snapimage}}</td>
         				<td class="tdxml" width="30%">{{item.Xml}}</td>
@@ -50,7 +50,7 @@
                             <span v-else class="glyphicon glyphicon-remove"></span>
 		    			</td>
 		    			<td style="min-width: 125px">
-							<button class="btn btn-info btn-xs" type="button" @click="editosimage(item.Id, item.Osname, item.Cephblockdevice, item.Snapimage, item.Xml)">
+							<button class="btn btn-info btn-xs" type="button" @click="editosimage(item.Id, item.Osname, item.Cephblockdevice, item.Snapimage, item.Xml, item.Tag, item.Sort)">
                                 <span class="glyphicon glyphicon-edit"></span>
                 				编辑
             				</button>
@@ -87,12 +87,14 @@ export default {
             this.$emit("toParent", "createosimage");
             },
 
-		editosimage: function (id, osname, cephblockdevice, snapimage, xml) {
+		editosimage: function (id, osname, cephblockdevice, snapimage, xml, tag, sort) {
 			this.$store.state.osimage.id = id
             this.$store.state.osimage.osname = osname
             this.$store.state.osimage.cephblockdevice = cephblockdevice
             this.$store.state.osimage.snap = snapimage
             this.$store.state.osimage.xml = xml
+            this.$store.state.osimage.tag = tag
+            this.$store.state.osimage.sort = sort
 			this.$emit("toParent", "updateosimage");
             },
 

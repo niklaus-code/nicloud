@@ -225,7 +225,13 @@ func CreateVmXml(datacenter string, storage string, vlan string,  vcpu uint, vme
     return "", err
   }
 
-  disk, err := diskxml(ips, port, pool, image_name, storagename.Ceph_secret, "vda", true, os)
+  var diskname = ""
+  if os == "LINUX" {
+    diskname = "vda"
+  } else {
+    diskname = "vda"
+  }
+  disk, err := diskxml(ips, port, pool, image_name, storagename.Ceph_secret, diskname, true, os)
   if err != nil {
     return "", err
   }
@@ -241,6 +247,7 @@ func CreateVmXml(datacenter string, storage string, vlan string,  vcpu uint, vme
   if err != nil {
     return "", err
   }
+
 
   return xmlstr, nil
 }

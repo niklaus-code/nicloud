@@ -50,6 +50,8 @@ const store = new Vuex.Store({
 		cephblockdevice: "",
 		snap: "",
 		xml: "",
+        tag: "",
+        sort: "",
 		},
   },
   mutations: {
