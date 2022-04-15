@@ -33,6 +33,7 @@ const(
 var Slotlist = map[string] uint {"vda": 10, "vdb": 11, "vdc": 12, "vdd": 13, "vde": 14, "vdf": 15, "bridge": 16}
 var Win_Slotlist = map[string] uint {"sda": 10, "sdb": 11, "sdc": 12, "sdd": 13, "sde": 14, "sdf": 15, "bridge": 16}
 
+
 func xml_Pci(slot uint) *goxml.DomainAddressPCI {
   var Domain uint = 00
   var Bus uint = 00
@@ -112,21 +113,20 @@ func diskxml(iplist[]string, port string, poolname string, uuid string, secret s
   disk.Driver = xml_DomainDiskDriver()
   disk.Auth = xml_DomainDiskAuth(xml_DomainDiskSecret(secret))
   disk.Source = xml_DomainDiskSource(xml_DomainDiskSourceNetwork(xml_DomainDiskSourceHost(iplist, port), poolname, uuid))
-  disk.Address = &goxml.DomainAddress{
-      PCI: xml_Pci(Slotlist[diskname]),
-    }
+  disk.Target = &goxml.DomainDiskTarget{
+    Dev: diskname,
+    Bus: "virtio",
+  }
   if os == "LINUX" {
     if order_check {
       disk.Boot = xml_DomainDeviceBoot(1)
     }
-    disk.Target = &goxml.DomainDiskTarget{
-      Dev: diskname,
-      Bus: "virtio",
+    disk.Address = &goxml.DomainAddress{
+      PCI: xml_Pci(Slotlist[diskname]),
     }
   } else {
-    disk.Target = &goxml.DomainDiskTarget{
-      Dev: diskname,
-      Bus: "sata",
+    disk.Address = &goxml.DomainAddress{
+      PCI: xml_Pci(Slotlist[diskname]),
     }
   }
 
@@ -225,13 +225,7 @@ func CreateVmXml(datacenter string, storage string, vlan string,  vcpu uint, vme
     return "", err
   }
 
-  var diskname = ""
-  if os == "LINUX" {
-    diskname = "vda"
-  } else {
-    diskname = "sda"
-  }
-  disk, err := diskxml(ips, port, pool, image_name, storagename.Ceph_secret, diskname, true, os)
+  disk, err := diskxml(ips, port, pool, image_name, storagename.Ceph_secret, "vda", true, os)
   if err != nil {
     return "", err
   }
