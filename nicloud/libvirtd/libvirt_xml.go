@@ -229,7 +229,7 @@ func CreateVmXml(datacenter string, storage string, vlan string,  vcpu uint, vme
   if os == "LINUX" {
     diskname = "vda"
   } else {
-    diskname = "vda"
+    diskname = "sda"
   }
   disk, err := diskxml(ips, port, pool, image_name, storagename.Ceph_secret, diskname, true, os)
   if err != nil {
