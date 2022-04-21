@@ -250,7 +250,7 @@ func (o Vms_os)GetOsInfoById(storage string, id int) (*Vms_os, error) {
     return nil, err
   }
 
-  err = dbs.Where("id=? and storage=?", id, storage).First(o).Error
+  err = dbs.Where("id=? and storage=?", id, storage).First(&o).Error
   if err != nil {
     return nil, err
   }
