@@ -413,7 +413,7 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
   }
 
   os := osimage.Vms_os{}
-  osinfo, err := os.GetOsInfoById(storageinfo.Pool, osid)
+  osinfo, err := os.GetOsInfoById(storageinfo.Uuid, osid)
   if err != nil {
     return err
   }
