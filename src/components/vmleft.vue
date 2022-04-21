@@ -8,7 +8,7 @@
             <ul>
                 <li v-for="(item, index) in routelist">
                     <p :class=item.class> </p>
-                    <p @click="toParent(item.router)" @click="fun_downmenu(index)" style="margin-left: 2px;margin-top:12px;padding-right: 10px"><a href="javascript:void(0)">{{item.name}}</a></p>
+                    <p  class="leftitem" @click="toParent(item.router)" @click="fun_downmenu(routelist, index)" @mouseover="mouseOver(index)" @mouseLeave="mouseLeave(index)"><a :class = "isactive == index ? 'addclass' : '' " href="javascript:void(0)">{{item.name}}</a></p>
                     <span v-if="item.check_downmenu_icon" @click="fun_downmenu(index)"  style="top: 3px; height: 6px;width: 6px" class="glyphicon glyphicon-triangle-bottom"></span>
                     <ul v-if="item.check_downmenu">
                         <li v-for="(item, index) in item.downmenu">
@@ -31,10 +31,12 @@
 export default {
     data () {
         return {
+            isactive: -1,
             username: "",
 			selected: 0,
 			routelist: [
 				{
+                id: 0,
 				name: "云主机",
                 router: "none",
                 class: "glyphicon glyphicon-th-large",
@@ -56,6 +58,7 @@ export default {
                 check_downmenu_icon: true
 					},
 				{
+                id: 1,
 				name: "云盘",
                 router: "none",
                 class: "glyphicon glyphicon-hdd",
@@ -73,30 +76,35 @@ export default {
                 check_downmenu_icon: true
 					},
 				{
+                id: 2,
 				name: "系统镜像",
 				router: "osimage",
                 class: "glyphicon glyphicon-modal-window",
                 router: "osimage",
 					},
 				{
+                id: 3,
 				name: "网络",
 				router: "network",
                 class: "glyphicon glyphicon-plane",
                 downmenu: false,
 					},
 				{
+                id: 4,
 				name: "宿主机",
 				router: "hosts",
                 class: "glyphicon glyphicon-home",
                 downmenu: false,
 					},
 				{
+                id: 5,
 				name: "存储集群",
 				router: "storage",
                 class: "glyphicon glyphicon-list-alt",
                 downmenu: false,
 					},
 				{
+                id: 6,
 				name: "数据中心",
 				router: "datacenter",
                 class: "glyphicon glyphicon-globe",
@@ -111,6 +119,14 @@ export default {
         },
 
 	methods: {
+        mouseLeave(index) {
+            this.isactive = index
+        },
+
+        mouseOver(index) {
+            this.isactive = index
+        },
+
         fun_downmenu: function (index) {
             if (this.routelist[index].check_downmenu) {
                 this.routelist[index].check_downmenu = false
@@ -164,10 +180,6 @@ span {
 	font-weight: 600;
 }
 
-a{
-	color: white;
-}
-
 p {
   margin-bottom:6px;
   display:inline-block;
@@ -175,5 +187,17 @@ p {
 
 .glyphicon {
     top: 2px;
+}
+
+a {
+    color: white;
+}
+
+.addclass{
+ color : red;
+}
+
+.leftitem {
+    margin-left: 2px;margin-top:12px;padding-right: 10px
 }
 </style>
