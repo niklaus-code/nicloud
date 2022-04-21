@@ -49,7 +49,7 @@ func Mountdisk(c *gin.Context) {
 
   var rwLock sync.RWMutex
   rwLock.Lock()
-  err = vdisk.Mountdisk(vminfo.Ip, vminfo.Host, vminfo.Storage, storageinfo.Pool, vminfo.Datacenter, vdiskid, vms, vminfo.Vmxml)
+  err = vdisk.Mountdisk(vminfo.Ip, vminfo.Host, vminfo.Storage, storageinfo.Pool, vminfo.Datacenter, vdiskid, vms, vminfo.Vmxml, vminfo.Os)
   rwLock.Unlock()
   if err != nil {
     res["err"] = err
