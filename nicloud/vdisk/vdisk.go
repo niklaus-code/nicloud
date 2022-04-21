@@ -6,6 +6,7 @@ import (
   c "nicloud/config"
   db "nicloud/dbs"
   "nicloud/libvirtd"
+  "nicloud/osimage"
   "nicloud/users"
   "nicloud/utils"
   "nicloud/vmerror"
@@ -381,7 +382,7 @@ func checkmount(vdiskid string) (int, error) {
   return v.Status, nil
 }
 
-func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter string, vdiskid string, vms interface{}, xml string) error {
+func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter string, vdiskid string, vms interface{}, xml string, osid int) error {
   checkmount, err := checkmount(vdiskid)
   if err != nil {
     return err
@@ -411,7 +412,19 @@ func Mountdisk(ip string, vmhost string, storage string, pool string, datacenter
     return err
   }
 
-  docstring, err := libvirtd.CreateDiskXml(xml, vdiskid, ips, storageinfo.Port, pool, len(disknum), diskname, storageinfo.Ceph_secret, "linux")
+  os := osimage.Vms_os{}
+  osinfo, err := os.GetOsInfoById(storageinfo.Pool, osid)
+  if err != nil {
+    return err
+  }
+
+  ostag := osimage.Vms_os_tags{}
+  tag, err := ostag.GetostagByid(osinfo.Tag)
+  if err != nil {
+    return err
+  }
+
+  docstring, err := libvirtd.CreateDiskXml(xml, vdiskid, ips, storageinfo.Port, pool, len(disknum), diskname, storageinfo.Ceph_secret, tag.Tag)
   if err != nil {
     return err
   }

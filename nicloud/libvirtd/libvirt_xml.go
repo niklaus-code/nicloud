@@ -141,7 +141,7 @@ func diskxml(iplist[]string, port string, poolname string, uuid string, secret s
     }
   } else {
     disk.Address = &goxml.DomainAddress{
-      PCI: xml_Pci(Slotlist[diskname]),
+      PCI: xml_Pci(Win_Slotlist[diskname]),
     }
     disk.Target = &goxml.DomainDiskTarget{
       Dev: diskname,
@@ -236,6 +236,7 @@ func CreateVmXml(datacenter string, storage string, vlan string,  vcpu uint, vme
     return "", err
   }
 
+  osimage := osimage.Vms_os{}
   osinfo, err := osimage.GetOsInfoById(storage, osid)
   if err != nil {
     return "", err

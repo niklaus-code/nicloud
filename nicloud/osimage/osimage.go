@@ -244,18 +244,17 @@ func Getimageby(datacenter string, storage string) ([]*Vms_os, error) {
   return v, nil
 }
 
-func GetOsInfoById(storage string, id int) (*Vms_os, error) {
+func (o Vms_os)GetOsInfoById(storage string, id int) (*Vms_os, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return nil, err
   }
 
-  o := &Vms_os{}
   err = dbs.Where("id=? and storage=?", id, storage).First(o).Error
   if err != nil {
     return nil, err
   }
-  return o, nil
+  return &o, nil
 }
 
 

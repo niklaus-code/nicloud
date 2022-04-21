@@ -232,7 +232,8 @@ func Mapvmarchive(obj []Vms_archives) []map[string]interface{}  {
       c[m.Field(i).Name] = n.Field(i).Interface()
     }
 
-    osinfo, err := osimage.GetOsInfoById(v.Storage, v.Os)
+    o := osimage.Vms_os{}
+    osinfo, err := o.GetOsInfoById(v.Storage, v.Os)
 
     if err != nil {
       c["osname"] = nil
@@ -641,7 +642,8 @@ func (v Vms)Create (datacenter string,  storage string, vlan string, cpu uint, m
 	//create a uuid
 	u := utils.Createuuid()
 
-	osinfo, err := osimage.GetOsInfoById(storage, osid)
+	o := osimage.Vms_os{}
+	osinfo, err := o.GetOsInfoById(storage, osid)
 	if err != nil {
 	  return err
   }
@@ -741,7 +743,8 @@ func allvm(obj []Vms) []map[string]interface{}  {
     }
     c["disk"] = vdisk
 
-    osinfo, err := osimage.GetOsInfoById(v.Storage, v.Os)
+    o := osimage.Vms_os{}
+    osinfo, err := o.GetOsInfoById(v.Storage, v.Os)
     if err != nil {
       return nil
     }
@@ -901,7 +904,8 @@ func (v Vms)Rebuildimg(osid int, storage string, datacenter string, old_uuid str
     }
   }
 
-  osinfo, err := osimage.GetOsInfoById(storage, osid)
+  o := osimage.Vms_os{}
+  osinfo, err := o.GetOsInfoById(storage, osid)
   if err != nil {
     return err
   }
@@ -964,7 +968,8 @@ func SaveSnapToImg(vmid string, datacenter string, storage string, snapname stri
     return err
   }
 
-  osinfo, err := osimage.GetOsInfoById(storage, vminfo.Os)
+  o := osimage.Vms_os{}
+  osinfo, err := o.GetOsInfoById(storage, vminfo.Os)
 
   storageinfo, err := ceph.Cephinfobyuuid(storage)
   if err != nil {
