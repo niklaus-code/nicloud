@@ -218,6 +218,7 @@ a {
 }
 
 .bottom p {
+    color: #aebbcc;
     margin: 0;
 }
 </style>
