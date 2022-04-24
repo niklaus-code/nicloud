@@ -6,22 +6,22 @@
     <div style="width:140; text-align: center;margin-top: 50px; z-index: 2500">
         <div align="center" style="color: white; text-align: left; margin-left: 30px">
             <ul>
-                <li v-for="(item, index) in routelist">
+                <li v-for="(item, index) in routelist" @click="fun_downmenu(index)" @mouseover="mouseOver(index)" @mouseLeave="mouseLeave(index)" @click="toParent(item.router)">
                     <p :class=item.class> </p>
-                    <p  class="leftitem" @click="toParent(item.router)" @click="fun_downmenu(index)" @mouseover="mouseOver(index)" @mouseLeave="mouseLeave(index)"><a :class = "isactive == index ? 'addclass' : '' " href="javascript:void(0)">{{item.name}}</a></p>
-                    <span v-if="item.check_downmenu_icon" @click="fun_downmenu(index)"  style="top: 3px; height: 6px;width: 6px" class="glyphicon glyphicon-triangle-bottom"></span>
+                    <p  class="leftitem"><a :class = "isactive == index ? 'addclass' : '' " href="javascript:void(0)">{{item.name}}</a></p>
+                    <p style="padding-top: 12px; float: right; margin-right: 30px"><span v-if="item.check_downmenu_icon" style="top: 1px; height: 6px;width: 6px ;" class="glyphicon glyphicon-triangle-bottom"></span></p>
                     <ul v-if="item.check_downmenu">
                         <li v-for="(item, index) in item.downmenu">
-                            <p @click="toParent(item.router)" style="font-size: 12px; margin-left: 16px;"><a href="javascript:void(0)" style="color: rgb(74, 242, 147);">{{item.name}}</a><p>
+                            <p @click="toParent(item.router)" style="margin-left: 16px;"><a href="javascript:void(0)" style="color: rgb(74, 242, 147);">{{item.name}}</a><p>
                         </li>
                     </ul>
                 </li>
             </ul>
         </div>
     </div>
-    <div style="position: absolute; bottom: 5px; width:100%; color: white; text-align:center;font-size: 13px">
+    <div class="bottom" style="">
         <p>Copyright <span class="glyphicon glyphicon-copyright-mark" ></span> 2021</p>
-        <p>关于•联系•反馈<p>
+        <p>关于•联系•反馈</p>
     </div>
 </div>
 </template>
@@ -162,6 +162,12 @@ export default {
 </script>
 
 <style scoped>
+li {
+    font-size: 0.8125rem;
+    text-shadow: 1px 1px 0 rgb(0 0 0 / 10%);
+    border-bottom: 1px solid rgb(85 110 230 / 5%);
+    color: #c9d4f6;
+}
 
 td {
     float: left;
@@ -180,9 +186,11 @@ span {
 	font-weight: 600;
 }
 
-p {
-  margin-bottom:6px;
-  display:inline-block;
+li p {
+    color: #aebbcc;
+    font-size: 13px;
+    margin-bottom: 6px;
+    display:inline-block;
 }
 
 .glyphicon {
@@ -190,14 +198,26 @@ p {
 }
 
 a {
-    color: white;
+    color: #aebbcc;
 }
 
 .addclass{
- color : red;
+    color : red;
 }
 
 .leftitem {
-    margin-left: 2px;margin-top:12px;padding-right: 10px
+    margin-left: 6px;margin-top:12px;padding-right: 10px
+}
+
+.bottom {
+    position: absolute;
+    bottom: 5px;
+    width:100%;
+    color: white;
+    text-align:center;
+}
+
+.bottom p {
+    margin: 0;
 }
 </style>

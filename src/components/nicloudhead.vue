@@ -1,6 +1,6 @@
 <template>
 <div style="color:#FFA500; margin-top: 2px">
-    <div style="margin-left: 141px">
+    <div style="margin-left: 201px">
         <strong>
            <span class="glyphicon glyphicon-tasks"></span><span> Dashboard Overview </span>
         </strong>

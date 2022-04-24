@@ -140,6 +140,10 @@ export default {
 </script>
 
 <style scoped>
+body {
+    font-family: Arial, sans-serif !important;
+}
+
 .contain {
     height: 100%;
     margin: 0;
@@ -162,7 +166,7 @@ export default {
 }
 
 .mid {
-    margin-left:140px;
+    margin-left: 200px;
     padding-right:0;
     padding-left:0;
     padding-top:20px;
@@ -178,7 +182,7 @@ export default {
 }
 
 .foot {
-    margin-left:140px;
+    margin-left: 200px;
     position: relative;
     margin-top: -30px; /*等于footer的高度*/
     height: 30px;
@@ -202,11 +206,11 @@ export default {
     float: left;
     height: 100%;
 
-    width: 140px;
+    width: 200px;
 
     padding-left:0;
     padding-right:0;
-    background-color: #393f44;
+    background-color: #1e1e2d;
     bottom: 0;
     height: auto !important;
     height: 100%; /*IE6不识别min-height*/
