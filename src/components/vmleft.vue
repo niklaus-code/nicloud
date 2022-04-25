@@ -7,9 +7,11 @@
         <div align="center" style="color: white; text-align: left; margin-left: 30px">
             <ul>
                 <li v-for="(item, index) in routelist" @mouseover="mouseOver(index)" @mouseLeave="mouseLeave(index)" @click="toParent(item.router)">
-                    <p :class=item.class @click="fun_downmenu(index)" > </p>
-                    <p  class="leftitem" @click="fun_downmenu(index)" ><a :class = "isactive == index ? 'addclass' : '' " href="javascript:void(0)">{{item.name}}</a></p>
-                    <p @click="fun_downmenu(index)" style="padding-top: 12px; float: right; margin-right: 30px"><span v-if="item.check_downmenu_icon" style="top: 1px; height: 6px;width: 6px ;" class="glyphicon glyphicon-triangle-bottom"></span></p>
+                    <div @click="fun_downmenu(index)">
+                    <p :class=item.class> </p>
+                    <p class="leftitem"><a :class = "isactive == index ? 'addclass' : '' " href="javascript:void(0)">{{item.name}}</a></p>
+                    <p style="padding-top: 12px; float: right; margin-right: 30px"><span v-if="item.check_downmenu_icon" style="top: 1px; height: 6px;width: 6px ;" class="glyphicon glyphicon-triangle-bottom"></span></p>
+                    </div>
                     <ul v-if="item.check_downmenu">
                         <li v-for="(item, index) in item.downmenu">
                             <p @click="toParent(item.router)" style="margin-left: 16px;"><a href="javascript:void(0)" style="color: rgb(74, 242, 147);">{{item.name}}</a><p>
