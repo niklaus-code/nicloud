@@ -127,13 +127,16 @@ func createtoken(username string, userid string) (string, error) {
   return token, nil
 }
 
-func Login(username string, passwd string) (string, string, error) {
+func CheckPWD(username string, passwd string) (string, string, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
     return "", "", vmerror.Error{Message: "数据库连接错误"}
   }
   u := &Vms_users{}
-  dbs.Where("username=?", username).First(u)
+  dberr := dbs.Where("username=?", username).First(u).Error
+  if dberr != nil {
+    return "", "", dberr
+  }
   if u.Passwd == passwd {
     uid := strconv.Itoa(u.Id)
     token, err := createtoken(u.Username, uid)
@@ -142,7 +145,7 @@ func Login(username string, passwd string) (string, string, error) {
     }
     return token, username, err
   } else {
-    return "", "", vmerror.Error{Message: "登陆失败"}
+    return "", "", vmerror.Error{Message: "账号或者密码错误"}
   }
 }
 
@@ -193,4 +196,27 @@ func GetrAllRoles() ([]*Vms_roles,error) {
   }
 
   return r, nil
+}
+
+func ChangePasswd(username string, oldpasswd string, newpasswd string)  error {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  _, username, err = CheckPWD(username, oldpasswd)
+  if err != nil {
+    return err
+  }
+
+  if len(username) == 0 {
+    return vmerror.Error{Message: "修改密码失败"}
+  }
+
+  dberr := dbs.Model(&Vms_users{}).Where("username = ? or email = ?", username, username).Update("passwd", newpasswd).Error
+  if dberr != nil {
+    return dberr
+  }
+
+  return nil
 }

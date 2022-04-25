@@ -13,7 +13,7 @@
                 </button>
                 <ul class="dropdown-menu  pull-right" role="menu" aria-labelledby="dropdownMenu1">
                     <li role="presentation">
-                        <a role="menuitem" tabindex="-1" href="#">修改密码</a>
+                        <a role="menuitem" tabindex="-1" @click="changepwd">修改密码</a>
                     </li>
                     <li role="presentation">
                         <a @click="usermanage" role="menuitem" tabindex="-1">用户管理</a>
@@ -80,6 +80,7 @@ import user from '@/components/user'
 import createuser from '@/components/createuser'
 import vdisk_archive from '@/components/vdisk_archive'
 import vm_flavor from '@/components/vm_flavor'
+import changepasswd from '@/components/changepasswd'
 
 var initroute 
 if (sessionStorage.getItem('router')) {
@@ -98,7 +99,7 @@ export default {
     },
 
     components: {
-        vm_flavor, vdisk_archive, vm_archive, updatehost, createuser, user, migratevmlive, restorevm, snap, vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
+        changepasswd, vm_flavor, vdisk_archive, vm_archive, updatehost, createuser, user, migratevmlive, restorevm, snap, vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
     },
 
 
@@ -114,6 +115,10 @@ export default {
 
         mouseover: function () {
             this.active = "color: white";
+            },
+
+        changepwd: function () {
+            this.getMag("changepasswd");
             },
 
         logout: function () {

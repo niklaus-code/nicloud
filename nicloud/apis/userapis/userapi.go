@@ -10,6 +10,9 @@ import (
   "strconv"
 )
 
+type User struct {
+}
+
 func DelUser(c *gin.Context) {
   res := make(map[string]interface{})
   id, err := strconv.Atoi(c.Query("id"))
@@ -78,7 +81,6 @@ func Createuser(c *gin.Context) {
   c.JSON(200, res)
 }
 
-
 func GetUser(c *gin.Context) {
   res := make(map[string]interface{})
   users, err := users.GetUsers()
@@ -93,6 +95,43 @@ func GetUser(c *gin.Context) {
   c.JSON(200, res)
 }
 
+func Changepasswd(c *gin.Context) {
+  res := make(map[string]interface{})
+  username := c.PostForm("username")
+  oldpasswd := c.PostForm("oldpasswd")
+  newpasswd1 := c.PostForm("newpasswd1")
+  newpasswd2 := c.PostForm("newpasswd2")
+
+  if newpasswd1 != newpasswd2 {
+    res["err"] = vmerror.Error{Message: "2次输入的新密码不一致"}
+    c.JSON(200, res)
+    return
+  }
+
+  if len(newpasswd1) < 5 {
+    res["err"] = vmerror.Error{Message: "密码长度不能小于5"}
+    c.JSON(200, res)
+    return
+  }
+
+  err := users.ChangePasswd(username, utils.Encryption(oldpasswd), utils.Encryption(newpasswd1))
+  if err != nil {
+    res["err"] = vmerror.Error{Message: err.Error()}
+    c.JSON(200, res)
+    return
+  }
+
+  res["err"] = nil
+  c.JSON(200, res)
+}
+
+// @Summary 用户登录接口
+// @Accept application/json
+// @Produce application/json
+// @Success 200 object  users.Vms_users
+// @Router /api/user/login [post]
+// @Param usernmae path string true "name"
+// @Param passwd path string true "name"
 func Login(c *gin.Context) {
   username := c.PostForm("username")
   passwd := c.PostForm("passwd")
@@ -100,7 +139,7 @@ func Login(c *gin.Context) {
 
   encryption := utils.Encryption(passwd)
 
-  t, u,  err := users.Login(username, encryption)
+  t, u,  err := users.CheckPWD(username, encryption)
   if err != nil {
     res["err"] = vmerror.Error{Message: "登陆失败"}
     c.JSON(200, res)

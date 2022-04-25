@@ -12,28 +12,37 @@ import (
   "nicloud/apis/userapis"
   "nicloud/apis/vdisk"
   "nicloud/apis/vmapis"
-  //_ "nicloud/docs"
   "nicloud/utils"
+
+  "github.com/swaggo/gin-swagger"
+  "github.com/swaggo/gin-swagger/swaggerFiles"
+  _ "nicloud/docs"
 )
 
-// @title Gin swagger
+// @title NILCOUD
 // @version 1.0
-// @description NICLOUD
-// @BasePath /api/vm
+// @description PRIVATE CLOUD PLATFORM
+// @termsOfService https://github.com/niklaus-code/nicloud
 
+// @contact.name NIKLAUS
+// @contact.url https://github.com/niklaus-code/nicloud
+// @contact.email 1309584951@qq.com
 func main() {
   r := gin.Default()
-  //r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+  //utils.Bind(r, userapis.User{})
+  r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
   v1 := r.Group("/api/user")
   {
     v1.POST("login", userapis.Login)
-
     v1.Use(utils.Tokenauth())
     v1.Use(utils.RoleAuth())
     v1.GET("getuser", userapis.GetUser)
     v1.POST("createuser", userapis.Createuser)
     v1.GET("getroles", userapis.GetAllRoles)
     v1.GET("deluser", userapis.DelUser)
+    v1.POST("changepasswd", userapis.Changepasswd)
   }
 	v2 := r.Group("/api/vm")
 	{

@@ -1,0 +1,58 @@
+definitions:
+  users.Vms_users:
+    properties:
+      Mobile:
+        type: string
+      Passwd:
+        type: string
+      Role:
+        enum:
+        - 1
+        - 2
+        type: integer
+      Username:
+        type: string
+      create_time:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+    required:
+    - Passwd
+    - Username
+    type: object
+info:
+  contact:
+    email: 1309584951@qq.com
+    name: NIKLAUS
+    url: https://github.com/niklaus-code/nicloud
+  description: PRIVATE CLOUD PLATFORM
+  termsOfService: https://github.com/niklaus-code/nicloud
+  title: NILCOUD
+  version: "1.0"
+paths:
+  /api/user/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: name
+        in: path
+        name: usernmae
+        required: true
+        type: string
+      - description: name
+        in: path
+        name: passwd
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/users.Vms_users'
+      summary: 用户登录接口1
+swagger: "2.0"
