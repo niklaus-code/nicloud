@@ -46,6 +46,17 @@ export default {
         	},
 		}	
     },
+
+    mounted: function () {
+        let self = this
+        document.onkeydown = function(e) {
+            let ev = document.all ? window.event : e
+            if (ev.keyCode === 13) {
+                self.loginfun()
+                }
+            }
+        },
+
     methods: {
 		loginfun: function () {
             var apiurl = `/api/user/login`
