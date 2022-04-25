@@ -97,7 +97,8 @@ export default {
             this.$http.post(apiurl,  this.$qs.stringify({username: this.username, oldpasswd: this.oldpasswd, newpasswd1: this.newpasswd1, newpasswd2: this.newpasswd2})).then(response => {
 				if (response.data.err === null) {
 					alert("修改成功")
-					this.$emit("toParent", "login");
+                    sessionStorage.removeItem("token");
+                    this.$router.push({name:"login"});
 				} else {
 					alert(response.data.err.Message)
 					}
