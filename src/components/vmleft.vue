@@ -4,7 +4,7 @@
          <img src="./logo.jpg" width="100%">
     </div>
     <div style="width:140; text-align: center;margin-top: 50px; z-index: 2500">
-        <div align="center" style="color: white; text-align: left; margin-left: 30px">
+        <div align="center" style="color: white; text-align: left;">
             <ul>
                 <li v-for="(item, index) in routelist" @mouseover="mouseOver(index)" @mouseLeave="mouseLeave(index)" @click="toParent(item.router)">
                     <div @click="fun_downmenu(index)">
@@ -189,6 +189,7 @@ span {
 }
 
 li p {
+    margin-left: 30px;
     color: #aebbcc;
     font-size: 13px;
     margin-bottom: 6px;
