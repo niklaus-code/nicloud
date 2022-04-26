@@ -12,9 +12,10 @@
                     <p class="leftitem"><a :class = "isactive == index ? 'addclass' : '' " href="javascript:void(0)">{{item.name}}</a></p>
                     <p style="padding-top: 12px; float: right; margin-right: 30px"><span v-if="item.check_downmenu_icon" style="top: 1px; height: 6px;width: 6px ;" class="glyphicon glyphicon-triangle-bottom"></span></p>
                     </div>
-                    <ul v-if="item.check_downmenu" style="background-color: #000c20; padding-top: 10px">
+                    <ul v-if="item.check_downmenu" style="background-color: #000c20;">
                         <li v-for="(item, index) in item.downmenu">
-                            <p @click="toParent(item.router)" style="margin-left: 46px;"><a href="javascript:void(0)" style="color: rgb(74, 242, 147);">{{item.name}}</a></p>
+                            <p v-if="index === 0" @click="toParent(item.router)" style="margin-left: 46px; padding-top: 10px"><a href="javascript:void(0)" style="color: rgb(74, 242, 147);">{{item.name}}</a></p>
+                            <p v-else @click="toParent(item.router)" style="margin-left: 46px;"><a href="javascript:void(0)" style="color: rgb(74, 242, 147);">{{item.name}}</a></p>
                         </li>
                     </ul>
                 </li>
@@ -83,6 +84,7 @@ export default {
 				router: "osimage",
                 class: "glyphicon glyphicon-modal-window",
                 router: "osimage",
+                check_downmenu: false,
 					},
 				{
                 id: 3,
@@ -90,6 +92,7 @@ export default {
 				router: "network",
                 class: "glyphicon glyphicon-plane",
                 downmenu: false,
+                check_downmenu: false,
 					},
 				{
                 id: 4,
@@ -97,6 +100,7 @@ export default {
 				router: "hosts",
                 class: "glyphicon glyphicon-home",
                 downmenu: false,
+                check_downmenu: false,
 					},
 				{
                 id: 5,
@@ -104,6 +108,7 @@ export default {
 				router: "storage",
                 class: "glyphicon glyphicon-list-alt",
                 downmenu: false,
+                check_downmenu: false,
 					},
 				{
                 id: 6,
@@ -111,6 +116,7 @@ export default {
 				router: "datacenter",
                 class: "glyphicon glyphicon-globe",
                 downmenu: false,
+                check_downmenu: false,
 					},
 				],
             }
