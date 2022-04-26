@@ -12,7 +12,7 @@
                     <p class="leftitem"><a :class = "isactive == index ? 'addclass' : '' " href="javascript:void(0)">{{item.name}}</a></p>
                     <p style="padding-top: 12px; float: right; margin-right: 30px"><span v-if="item.check_downmenu_icon" style="top: 1px; height: 6px;width: 6px ;" class="glyphicon glyphicon-triangle-bottom"></span></p>
                     </div>
-                    <ul v-if="item.check_downmenu">
+                    <ul v-if="item.check_downmenu" style="background-color: #000c20; padding-top: 10px">
                         <li v-for="(item, index) in item.downmenu">
                             <p @click="toParent(item.router)" style="margin-left: 46px;"><a href="javascript:void(0)" style="color: rgb(74, 242, 147);">{{item.name}}</a></p>
                         </li>
