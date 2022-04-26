@@ -14,7 +14,7 @@
                     </div>
                     <ul v-if="item.check_downmenu">
                         <li v-for="(item, index) in item.downmenu">
-                            <p @click="toParent(item.router)" style="margin-left: 16px;"><a href="javascript:void(0)" style="color: rgb(74, 242, 147);">{{item.name}}</a><p>
+                            <p @click="toParent(item.router)" style="margin-left: 46px;"><a href="javascript:void(0)" style="color: rgb(74, 242, 147);">{{item.name}}</a></p>
                         </li>
                     </ul>
                 </li>
