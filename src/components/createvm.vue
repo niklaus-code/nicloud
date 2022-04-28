@@ -249,7 +249,6 @@ export default {
             },
 
 		createvm: function () {
-            alert(this.memvalue)
             var apiurl = `/api/vm/create`
 
 			if (typeof this.ipvalue === 'undefined' || this.ipvalue == null || this.ipvalue === '') {
