@@ -124,6 +124,7 @@ func main() {
   v6 := r.Group("/api/osimage")
   {
     v6.Use(utils.Tokenauth())
+    v6.GET("getimagebytag", osimage.GetImagebytag)
     v6.GET("getimageby", osimage.GetImageby)
     v6.GET("getimage", osimage.GetImage)
     v6.GET("getimagesort", osimage.GetImageSort)

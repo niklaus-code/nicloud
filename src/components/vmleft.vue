@@ -88,7 +88,7 @@ export default {
 					},
 				{
                 id: 3,
-				name: "网络",
+				name: "VLAN子网",
 				router: "network",
                 class: "glyphicon glyphicon-plane",
                 downmenu: false,

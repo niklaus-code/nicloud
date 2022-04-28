@@ -1,7 +1,6 @@
 package osimage
 
 import (
-  "fmt"
   "github.com/gin-gonic/gin"
   "github.com/go-playground/validator/v10"
   "nicloud/cephcommon"
@@ -146,6 +145,19 @@ func GetImageby(c *gin.Context) {
   c.JSON(200, res)
 }
 
+func GetImagebytag(c *gin.Context) {
+  datacenter := c.Query("datacenter")
+  storage := c.Query("storage")
+  tag := c.Query("tag")
+
+  res := make(map[string]interface{})
+  r, err := osimage.Getimagebytag(datacenter, storage, tag)
+
+  res["res"] = r
+  res["err"] = err
+  c.JSON(200, res)
+}
+
 func AddImage(c *gin.Context) {
   res := make(map[string]interface{})
 
@@ -187,7 +199,6 @@ func AddImage(c *gin.Context) {
   validate := validator.New()
   err = validate.Struct(o)
   if err != nil {
-    fmt.Println(err)
     res["err"] = vmerror.Error{Message: "参数错误"}
     c.JSON(400, res)
     return
