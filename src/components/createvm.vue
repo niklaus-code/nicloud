@@ -4,7 +4,7 @@
             <h4>创建云主机
             </h4>
 	    </div>
-		<div  class="col-sm-8 col-sm-offset-1" style="margin-top:20px; margin-left: 20px; background-color: white; padding-top: 20px">
+		<div  class="col-sm-8 col-sm-offset-1" style="margin-top:20px; margin-left: 20px; background-color: #fff; padding-top: 20px; box-shadow: 0 0.75rem 1.5rem rgba(18, 38, 63, 0.03)">
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
         			<label>数据中心</label>
@@ -27,7 +27,7 @@
         			<label>VLAN子网 & IP</label>
 				</div>
 				<div class="col-sm-3">
-        			<select style="margin-left: 10px" class="col-sm-12" v-model="vlanvalue" @change="getip" @change="gethosts(centervalue)">
+        			<select style="margin-left: 5px" class="col-sm-12" v-model="vlanvalue" @change="getip" @change="gethosts(centervalue)">
 					  <option value="">--请选择--</option>
   						<option  v-for="v in vlanlist" :value="v.Vlan">
 							{{ v.Vlan }}
@@ -64,7 +64,7 @@
         			<label>镜像</label>
 				</div>
 				<div class="col-sm-3">
-        			<select style="margin-left: 10px" class="col-sm-12" v-model="tagvalue" @change="getimagebytag">
+        			<select style="margin-left: 5px" class="col-sm-12" v-model="tagvalue" @change="getimagebytag">
 					  <option value="">--请选择--</option>
   						<option  v-for="o in ostaglist" :value="o.Id">
 							{{ o.Tag }}
@@ -72,7 +72,7 @@
         			</select>
 				</div>
 				<div class="col-sm-4">
-        			<select style="margin-left: 10px" class="col-sm-12" v-model="imagevalue">
+        			<select style="margin-left: 5px" class="col-sm-12" v-model="imagevalue">
 					  <option value="">--请选择--</option>
   						<option  v-for="image in imagelist" :value="image.Id">
 							{{ image.Osname }}
@@ -85,7 +85,7 @@
         			<label>宿主机</label>
 				</div>
 				<div class="col-sm-3 title">
-        			<select class="col-sm-12" v-model="hostvalue" style="margin-left: 10px">
+        			<select class="col-sm-12" v-model="hostvalue" style="margin-left: 5px">
 					  	<option value="">--请选择--</option>
   						<option  v-for="host in hostlist" :value="host.Ipv4">
 							 {{ host.Ipv4 }} ({{host.Usedcpu}}/{{host.Cpu}}&nbsp核，{{host.Usedmem}}/{{host.Mem}}&nbspG ，{{host.count}}/{{host.Max_vms}}&nbsp个)
@@ -98,7 +98,7 @@
         			<label>备注</label>
 				</div>
 				<div class="col-sm-7">
-                    <form role="form" style="margin-left: 10px">
+                    <form role="form" style="margin-left: 5px">
                         <div class="form-group">
                             <input type="text" class="form-control" v-model="comment" placeholder="">
                         </div>
@@ -111,7 +111,7 @@
     		</div>
 	 		<div class="col-sm-12 form-group create">
 				<div class="col-sm-2 col-sm-offset-3">
-					<button class="btn btn-success btn-sm" style="margin-left: 10px"  @click="createvm()">创建</button>
+					<button class="btn btn-success btn-sm" style="margin-left: 5px"  @click="createvm()">创建</button>
 				</div>
     		</div>
 		</div>
@@ -328,7 +328,7 @@ export default {
 </script>
 <style scoped>
 .labelbackcolordefault {
-    padding-top: 5px;
+    padding-top: 6px;
     padding-bottom: 5px;
     padding-left: 10px;
     padding-right: 10px;
@@ -336,7 +336,8 @@ export default {
 }
 
 label {
-    margin-left: 10px;
+    border-radius: 4px;
+    margin-left: 5px;
     font-weight: 400;
     margin-top: 2px;
 }

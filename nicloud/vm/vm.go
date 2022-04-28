@@ -841,23 +841,19 @@ func VmList(userid int, start int, item string) ([]map[string]interface{}, error
 }
 
 type Vm_flavors struct {
-	Cpu int `gorm:"index;unique_index:name_d" json:"Cpu" validate:"gt=0"`
-	Mem int `gorm:"unique_index:name_d" json:"Mem" validate:"gt=0"`
+  Cpu int `gorm:"index;unique_index:name_d;unique" json:"Cpu" validate:"gt=0"`
+  Mem int `gorm:"unique_index:name_d;unique" json:"Mem" validate:"gt=0"`
 }
 
-func (f Vm_flavors)Createflavor(cpu int, mem int) error {
+func (f Vm_flavors)Createflavor(flavors *Vm_flavors) error {
   dbs, err := db.NicloudDb()
   if err != nil {
     return err
   }
-  flav := Vm_flavors{
-    Cpu: cpu,
-    Mem: mem,
-  }
 
-  dberr := dbs.Create(&flav)
-  if dberr.Error != nil {
-    return dberr.Error
+  err = dbs.Create(&flavors).Error
+  if err != nil {
+    return err
   }
   return nil
 }
@@ -988,10 +984,6 @@ func SaveSnapToImg(vmid string, datacenter string, storage string, snapname stri
     return err
   }
 
-  //increasecontain := ceph.IncreaseContain(storage, osinfo.Size)
-  //if increasecontain != nil {
-  //  return increasecontain
-  //}
   return nil
 }
 

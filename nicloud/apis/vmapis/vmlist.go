@@ -4,6 +4,7 @@ import (
   "fmt"
   "github.com/gin-gonic/gin"
   "github.com/go-playground/validator/v10"
+  "net/http"
   "nicloud/utils"
   "nicloud/vm"
   "nicloud/vmerror"
@@ -275,7 +276,7 @@ func Operation(c *gin.Context) {
 	if err != nil {
     res["err"] = vmerror.Error{Message: err.Error()}
   }
-	c.JSON(200, res)
+	c.JSON(http.StatusOK, res)
 }
 
 func Rebuild(c *gin.Context)  {
@@ -291,8 +292,9 @@ func Rebuild(c *gin.Context)  {
   res["err"] = nil
   if err != nil {
     res["err"] = vmerror.Error{Message: "重置失败: " + err.Error()}
+    c.JSON(http.StatusInternalServerError, res)
   }
-  c.JSON(200, res)
+  c.JSON(http.StatusOK, res)
 }
 
 func Createsnap(c *gin.Context)  {
@@ -302,14 +304,14 @@ func Createsnap(c *gin.Context)  {
   userid, err := utils.ParseToken(token)
   if err != nil {
     res["err"] = vmerror.Error{Message: "认证失败"}
-    c.JSON(200, res)
+    c.JSON(http.StatusOK, res)
     return
   }
 
   snapname := c.PostForm("snapname")
 
   if len(snapname) == 0 {
-    c.JSON(400, res)
+    c.JSON(http.StatusBadRequest, res)
     return
   }
 
@@ -318,7 +320,7 @@ func Createsnap(c *gin.Context)  {
   storage := c.PostForm("storage")
   protect, err := strconv.ParseBool(c.PostForm("protect"))
   if err != nil {
-    c.JSON(400, res)
+    c.JSON(http.StatusBadRequest, res)
     return
   }
 
@@ -333,7 +335,7 @@ func Createsnap(c *gin.Context)  {
     res["err"] = vmerror.Error{Message: "创建失败: " + err.Error()}
   }
 
-  c.JSON(200, res)
+  c.JSON(http.StatusOK, res)
 }
 
 func Getsnap(c *gin.Context)  {
@@ -348,7 +350,7 @@ func Getsnap(c *gin.Context)  {
   if err != nil {
     res["err"] = vmerror.Error{Message: err.Error()}
   }
-  c.JSON(200, res)
+  c.JSON(http.StatusOK, res)
 }
 
 func Rollback(c *gin.Context)  {
@@ -363,7 +365,7 @@ func Rollback(c *gin.Context)  {
   if err != nil {
     res["err"] = vmerror.Error{Message: err.Error()}
   }
-  c.JSON(200, res)
+  c.JSON(http.StatusOK, res)
 }
 
 func DelSnap(c *gin.Context)  {
@@ -379,7 +381,7 @@ func DelSnap(c *gin.Context)  {
     res["err"] = vmerror.Error{Message: "删除快照失败: " + err.Error()}
   }
 
-  c.JSON(200, res)
+  c.JSON(http.StatusOK, res)
 }
 
 func GetVmArchive(c *gin.Context)  {
@@ -387,7 +389,7 @@ func GetVmArchive(c *gin.Context)  {
   startpage, err := strconv.Atoi(c.Query("startpage"))
   if err != nil {
     res["err"] = vmerror.Error{Message: "认证失败"}
-    c.JSON(400, res)
+    c.JSON(http.StatusBadRequest, res)
     return
   }
   ar := vm.Vms_archives{}
@@ -396,14 +398,14 @@ func GetVmArchive(c *gin.Context)  {
   userid, err := utils.ParseToken(token)
   if err != nil {
     res["err"] = vmerror.Error{Message: "认证失败"}
-    c.JSON(200, res)
+    c.JSON(http.StatusOK, res)
     return
   }
   pagenumber, vmcount,  err := vm.Getvmarchivepagenumber(userid)
   if err != nil {
     res["res"] = nil
     res["err"] = err
-    c.JSON(200, res)
+    c.JSON(http.StatusInternalServerError, res)
     return
   }
 
@@ -415,15 +417,16 @@ func GetVmArchive(c *gin.Context)  {
   res["err"] = nil
   if err != nil {
     res["err"] = vmerror.Error{Message: err.Error()}
+    c.JSON(http.StatusInternalServerError, res)
   }
 
-  c.JSON(200, res)
+  c.JSON(http.StatusOK, res)
 }
 
 func Delvmpermanent(c *gin.Context) {
   //暂时不开放次接口
   res["err"] = vmerror.Error{Message: "暂时不开放此接口"}
-  c.JSON(200, res)
+  c.JSON(http.StatusOK, res)
   return
 
   uuid := c.Query("uuid")
@@ -436,10 +439,10 @@ func Delvmpermanent(c *gin.Context) {
   res["err"] = nil
   if del != nil {
     res["err"] = vmerror.Error{Message: del.Error()}
-    c.JSON(200, res)
+    c.JSON(http.StatusInternalServerError, res)
     return
   }
-  c.JSON(200, res)
+  c.JSON(http.StatusOK, res)
 }
 
 func SearchVMArchive(c *gin.Context) {
@@ -452,10 +455,10 @@ func SearchVMArchive(c *gin.Context) {
   res["res"] = s
   if err != nil {
     res["err"] = vmerror.Error{Message: err.Error()}
-    c.JSON(200, res)
+    c.JSON(http.StatusInternalServerError, res)
     return
   }
-  c.JSON(200, res)
+  c.JSON(http.StatusOK, res)
 }
 
 func CreateFlavor(c *gin.Context) {
@@ -471,16 +474,16 @@ func CreateFlavor(c *gin.Context) {
   err := validate.Struct(f)
   if err != nil {
     res["err"] = vmerror.Error{Message: "参数错误"}
-    c.JSON(400, res)
+    c.JSON(http.StatusBadRequest, res)
     return
   }
 
-  err = f.Createflavor(cpu, mem)
+  err = f.Createflavor(&f)
   res["err"] = nil
   if err != nil {
     res["err"] = vmerror.Error{Message: err.Error()}
-    c.JSON(200, res)
+    c.JSON(http.StatusInternalServerError, res)
     return
   }
-  c.JSON(200, res)
+  c.JSON(http.StatusOK, res)
 }
