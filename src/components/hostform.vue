@@ -1,12 +1,12 @@
 <template>
 <div>
-    <div class="col-sm-6 col-sm-offset-2" style="margin-top:20px">
+    <div class="col-sm-8 col-sm-offset-2" style="margin-top:20px">
 	    <div class="col-sm-12">
 	 		<div class="form-group">
 				<div class="col-sm-4">
         			<label>数据中心</label>
 				</div>
-				<div class="col-sm-6">
+				<div class="col-sm-4">
 				    <select class="col-sm-12" v-model="centervalue">
                         <option  v-for="c in datacenter" :value="c.Datacenter">
                             {{ c.Datacenter }}
@@ -20,7 +20,7 @@
 				<div class="col-sm-4">
         			<label>IP</label>
 				</div>
-				<div class="col-sm-6">
+				<div class="col-sm-4">
 					<form role="form">
   						<div class="form-group">
     						<input type="text" class="form-control" v-model="ip" placeholder="192.168.1.1">
@@ -34,7 +34,7 @@
 				<div class="col-sm-4">
         			<label>VLAN子网</label>
 				</div>
-                <div class="col-sm-8" style="float: left">
+                <div class="col-sm-8" style="float: left; max-width: 360px">
                     <div style="width: 45%; float: left ">
                         <div class="panel panel-success">
                             <div class="panel-heading">可选VLAN</div>
@@ -61,7 +61,7 @@
 		<div class="col-sm-12" style="margin-top:20px">
 	 		<div class="form-group">
 				<div class="col-sm-4" style="padding-right: 8px">
-        			<label>CPU（核）</label>
+        			<label>处理器核心（颗）</label>
 				</div>
 				<div class="col-sm-4">
 					<form role="form">
@@ -100,15 +100,10 @@
 				</div>
     		</div>
     	</div>
-        <div class="col-sm-12">
-            <div class="col-sm-9 col-md-offset-4" style="color: #C0C0C0">
-                *创建宿主机之前需要配置好免密登陆
-            </div>
-        </div>
-
+                
         <div class="col-sm-12">
 		    <div class="form-group">
-			    <div class="col-sm-3 col-md-offset-4" style="margin-top:20px" >
+			    <div class="col-sm-2 col-md-offset-4" style="margin-top:20px" >
   				    <button type="submit" @click="commit" class="btn btn-success btn-sm">提交</button>
 			    </div>
 		    </div>
