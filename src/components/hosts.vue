@@ -55,7 +55,7 @@
       				</tr>
     			</thead>
 
-				<tbody v-for="(item, index) in data">
+				<tbody v-for="(item, index) in data" >
       				<tr class="table-dark text-dark" :id="item.Uuid" v-if="item.Status">
         				<label class="checkbox-inline" style="width:10px">
             				<input type="checkbox" v-model="item.Checkout">
@@ -276,6 +276,7 @@ label {
 .table tbody tr td {
     vertical-align: "middle";
     border: none;
+    padding-bottom: 0;
 }
 
 .table1 th {
