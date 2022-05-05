@@ -241,6 +241,10 @@ export default {
     border-bottom: 2px solid #846d6d;
 }
 
+.table {
+    margin-bottom: 10px;
+}
+
 .col-md-12{
     padding-right: 0;
     padding-left: 0;
