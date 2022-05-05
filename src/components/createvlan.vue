@@ -5,14 +5,14 @@
             </div>
 
 		<div class="col-sm-6 col-sm-offset-2" style="margin-top:20px">
-		<div class="col-sm-10 col-sm-offset-2" style="margin-top:20px">
+		<div class="col-sm-12" style="margin-top:20px">
 
 				<div class="col-sm-12">
 	 		<div class="form-group">
-				<div class="col-sm-4">
+				<div class="col-sm-5">
         			<label>数据中心</label>
 				</div>
-				<div class="col-sm-8">
+				<div class="col-sm-7">
 				    <select class="col-sm-12" v-model="centervalue">
                         <option  v-for="c in datacenter" :value="c.Datacenter">
                             {{ c.Datacenter }}
@@ -23,10 +23,10 @@
 				</div>
 				<div class="col-sm-12" style="margin-top:20px">
 	 		<div class="form-group">
-				<div class="col-sm-4">
+				<div class="col-sm-5">
         			<label>VLAN子网</label>
 				</div>
-				<div class="col-sm-8">
+				<div class="col-sm-7">
 					<form role="form">
   						<div class="form-group">
     						<input type="text" class="form-control" v-model="vlan" placeholder="">
@@ -37,10 +37,10 @@
 				</div>
 				<div class="col-sm-12">
 	 		<div class="form-group">
-				<div class="col-sm-4">
+				<div class="col-sm-5">
         			<label>网桥</label>
 				</div>
-				<div class="col-sm-8">
+				<div class="col-sm-7">
 					<form role="form">
   						<div class="form-group">
     						<input type="text" class="form-control" v-model="bridge" placeholder="">
@@ -51,10 +51,10 @@
     		</div>
 				<div class="col-sm-12">
 	 		<div class="form-group">
-				<div class="col-sm-4">
+				<div class="col-sm-5">
         			<label>地址段</label>
 				</div>
-				<div class="col-sm-8">
+				<div class="col-sm-7">
 					<form role="form">
   						<div class="form-group">
     						<input type="text" class="form-control" v-model="network" placeholder="">
@@ -65,10 +65,10 @@
     		</div>
 				<div class="col-sm-12">
 	 		<div class="form-group">
-				<div class="col-sm-4">
+				<div class="col-sm-5">
         			<label>子网掩码</label>
 				</div>
-				<div class="col-sm-8">
+				<div class="col-sm-7">
 					<form role="form">
   						<div class="form-group">
     						<input type="text" class="form-control" v-model="prefix" placeholder="">
@@ -79,10 +79,10 @@
     		</div>
 				<div class="col-sm-12">
 	 		<div class="form-group">
-				<div class="col-sm-4">
+				<div class="col-sm-5">
         			<label>网关</label>
 				</div>
-				<div class="col-sm-8">
+				<div class="col-sm-7">
 					<form role="form">
   						<div class="form-group">
     						<input type="text" class="form-control" v-model="gateway" placeholder="">
@@ -93,7 +93,7 @@
     		</div>
 				<div class="col-sm-12">
 		<div class="form-group" style="margin-top:20px" >
-			<div class="col-sm-2 col-sm-offset-4">
+			<div class="col-sm-2 col-sm-offset-5">
   				<button type="submit" @click="createvlan" class="btn btn-success btn-sm">提交</button>
 			</div>
 		</div>
@@ -170,7 +170,7 @@ export default {
 	height:30px;
 }
 
-.col-sm-4 label{
+.col-sm-5 label{
 	float: right;
 }
 select{
