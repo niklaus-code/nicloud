@@ -1,10 +1,10 @@
 <template>
-    <div>
+    <div style="background-color: black">
 	 	<div class="col-sm-12 form-group" style="margin-top:30px; border-bottom: 1px green solid">
             <h4>创建云主机
             </h4>
 	    </div>
-		<div  class="col-sm-8 col-sm-offset-1" style="margin-top:20px; margin-left: 20px; background-color: #fff; padding-top: 20px; box-shadow: 0 0.75rem 1.5rem rgba(18, 38, 63, 0.03)">
+		<div  class="col-sm-8 col-sm-offset-1" style="margin-top:20px; margin-left: 20px; background-color: #f9e7ba; padding-top: 20px; box-shadow: 0 0.75rem 1.5rem rgba(18, 38, 63, 0.03)">
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
         			<label>数据中心</label>

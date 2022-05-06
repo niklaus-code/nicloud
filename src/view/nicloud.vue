@@ -171,7 +171,6 @@ body {
 }
 
 .mid {
-    background-color: #fffbfb;
     margin-left: 200px;
     padding-right:0;
     padding-left:0;
