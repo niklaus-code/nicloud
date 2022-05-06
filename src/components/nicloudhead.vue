@@ -1,7 +1,7 @@
 <template>
 <div style="color:#FFA500; margin-top: 2px">
     <div style="margin-left: 201px">
-        <strong>
+        <strong @click="vmlist">
            <span class="glyphicon glyphicon-tasks"></span><span> Dashboard Overview </span>
         </strong>
     </div>
@@ -26,9 +26,6 @@ export default {
 
             this.$router.push('serveroom')
             },
-        index: function () {
-            this.$emit("toParent", "vm");
-            },
 
         getuser: function () {
             var u = this.$store.state.username
@@ -42,6 +39,10 @@ export default {
 
         leave: function () {
             this.active = "color: #FFF";
+            },
+
+        vmlist: function () {
+            this.$emit("toParent", "vm");
             },
         
         mouseOver: function () {
