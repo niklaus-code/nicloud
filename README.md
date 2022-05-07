@@ -34,12 +34,14 @@
 `route add default gw 10.0.0.254`
 
 ### 云主机列表页面
-![avatar](./static/vm.png)
+![avatar](./static/vm.PNG)
 ### 云硬盘列表页面
-![avatar](./static/vdisk.png)
+![avatar](./static/vdisk.PNG)
 ### 镜像列表页面
-![avatar](./static/os.png)
+![avatar](./static/osimage.PNG)
 ### 快照详情页
-![avatar](./static/snap.png)
+![avatar](./static/snap.PNG)
 ### 网络列表页面
-![avatar](./static/network.png)
+![avatar](./static/vlan.PNG)
+### 宿主机列表页面
+![avatar](./static/host.PNG)
