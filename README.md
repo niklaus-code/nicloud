@@ -18,6 +18,9 @@
 
 `character-set-server=utf8`
 
+**启动novnc**
+
+`cd /home/nicloud/websockify && ./websockify.py --web=/root/noVNC  --token-plugin=vncid  8787`
 
 **创建网桥脚本：**
 
