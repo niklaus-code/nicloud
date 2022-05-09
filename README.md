@@ -20,7 +20,7 @@
 
 **启动novnc**
 
-`cd /home/nicloud/websockify && ./websockify.py --web=/root/noVNC  --token-plugin=vncid  8787`
+`cd /home/nicloud/websockify && ./websockify.py -D --web=/home/nicloud/noVNC  --token-plugin=vncid  8787`
 
 **创建网桥脚本：**
 
