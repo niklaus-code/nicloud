@@ -3,14 +3,14 @@ offset = 20
 
 [nicloudb]
 dbname = "nicloud"
-host = "127.0.0.1"
+host = "10.0.82.153"
 port = 3306
 user = "nicloud"
-passwd = "123456"
+passwd = "nicloud"
 
 [serveroomdb]
-dbname = "bigdata_machine"
-host = "127.0.0.1"
+dbname = "serveroom"
+host = "10.0.82.153"
 port = 3306
 user = "machine"
 passwd = "machine"
