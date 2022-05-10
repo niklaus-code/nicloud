@@ -17,16 +17,16 @@
             					<input type="checkbox" v-model="checkvalue" @click="checkbox()">
         					</label>
         				</th>
-        				<th style="min-width: 75px">镜像名称</th>
-        				<th style="min-width:72px">镜像类别</th>
-        				<th style="min-width:72px">系统标签</th>
+        				<th>镜像名称</th>
+        				<th>镜像类别</th>
+        				<th>系统标签</th>
         				<th>块设备</th>
         				<th>快照名称</th>
         				<th>XML</th>
-        				<th style="min-width:72px">所属用户</th>
-        				<th style="min-width: 75px">存储集群</th>
-        				<th style="min-width:72px">数据中心</th>
-						<th style="min-width:44px">状态</th>
+        				<th>所属用户</th>
+        				<th>存储集群</th>
+        				<th>数据中心</th>
+						<th>状态</th>
 						<th>操作</th>
       				</tr>
     			</thead>
@@ -41,7 +41,7 @@
         				<td>{{item.Tag.Tag}}</td>
         				<td>{{item.Cephblockdevice}}</td>
         				<td>{{item.Snapimage}}</td>
-        				<td class="tdxml" width="30%">{{item.Xml}}</td>
+        				<td>{{item.Xml}}</td>
         				<td>{{item.owner}}</td>
         				<td>{{item.storagename}}</td>
         				<td>{{item.Datacenter}}</td>
@@ -50,10 +50,12 @@
                             <span v-else class="glyphicon glyphicon-remove"></span>
 		    			</td>
 		    			<td style="min-width: 125px">
+                            <!-- 
 							<button class="btn btn-info btn-xs" type="button" @click="editosimage(item.Id, item.Osname, item.Cephblockdevice, item.Snapimage, item.Xml, item.Tag, item.Sort)">
                                 <span class="glyphicon glyphicon-edit"></span>
                 				编辑
             				</button>
+                                -->
 							<button class="btn btn-danger btn-xs" type="button" @click="delosimage(item.Id, index)">
                                 <span class="glyphicon glyphicon-trash"></span>
                 				删除
@@ -164,13 +166,6 @@ label {
 
 .table tbody tr td {
     vertical-align: "middle";
-}
-
-.tdxml {
-	max-width: 100px;
- 	overflow: hidden; 
-	text-overflow:ellipsis;
-	white-space: nowrap;
 }
 
 th {

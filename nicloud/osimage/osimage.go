@@ -17,7 +17,7 @@ type Vms_os struct {
   Storage string  `json:"Storage" validate:"required"`
   Cephblockdevice string  `json:"Cephblockdevice" validate:"required"`
   Snapimage string
-  Xml string  `gorm:"size:65535" json:"Xml" validate:"required"`
+  Xml int `json:"Xml" validate:"required"`
   Tag int `json:"Tag" validate:"required"`
   Status int8
 }
@@ -30,6 +30,98 @@ type Vms_osimage_sort struct {
 type Vms_os_tags struct {
   Id int `gorm:"primary_key;AUTO_INCREMENT"`
   Tag string
+}
+
+type Vms_osimage_xmls struct {
+  Id int `gorm:"primary_key;AUTO_INCREMENT"`
+  Sort int `json:"Sort" validate:"required"`
+  Xml string  `gorm:"size:65535" json:"Xml" validate:"required"`
+  Comment string
+}
+
+func (x Vms_osimage_xmls) Addxml(xml *Vms_osimage_xmls) error {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+
+  err = dbs.Create(xml).Error
+  if err != nil {
+    return err
+  }
+
+  return nil
+}
+
+func Maposimagexml() ([]map[string]interface{}, error)  {
+  var mapc []map[string]interface{}
+  x := Vms_osimage_xmls{}
+  obj, err := x.Getxml()
+  if err != nil {
+    return nil, err
+  }
+
+  for _, v := range obj {
+    c := make(map[string]interface{})
+    m := reflect.TypeOf(v)
+    n := reflect.ValueOf(v)
+    for i := 0; i < m.NumField(); i++ {
+      c[m.Field(i).Name] = n.Field(i).Interface()
+    }
+
+    t := Vms_os_tags{}
+    sort, err := t.GetostagByid(v.Sort)
+    if err != nil {
+      c["Sort"] = nil
+    } else {
+      c["Sort"] = sort
+    }
+
+    mapc = append(mapc, c)
+  }
+  return mapc, nil
+}
+
+func (x Vms_osimage_xmls) Getxml() ([]Vms_osimage_xmls, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+
+  var xml []Vms_osimage_xmls
+  err = dbs.Find(&xml).Error
+  if err != nil {
+    return nil, err
+  }
+
+  return xml, nil
+}
+
+func (x Vms_osimage_xmls) Getxmlbyid(id int) (*Vms_osimage_xmls, error) {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return nil, err
+  }
+
+  var xml Vms_osimage_xmls
+  err = dbs.Find(&xml).Where("id = ?", id).Error
+  if err != nil {
+    return nil, err
+  }
+
+  return &xml, nil
+}
+
+func (x Vms_osimage_xmls)Delxml(xmlid int) error {
+  dbs, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+  err = dbs.Where("id=?", xmlid).Delete(Vms_osimage_xmls{}).Error
+  if err != nil {
+    return err
+  }
+  return nil
 }
 
 func (t Vms_os_tags)Getostags() ([]*Vms_os_tags, error){
@@ -93,14 +185,14 @@ func Del(osid int) error {
   if err != nil {
     return err
   }
-  err1 := dbs.Where("id=?", osid).Delete(Vms_os{})
-  if err1.Error != nil {
-    return err1.Error
+  err = dbs.Where("id=?", osid).Delete(Vms_os{}).Error
+  if err != nil {
+    return err
   }
   return nil
 }
 
-func Update(id int, datacenter string, storage string, osname string,  snapimage string, cephblockdevice string, xml string) error {
+func Update(id int, datacenter string, storage string, osname string,  snapimage string, cephblockdevice string, xml int) error {
   os := &Vms_os{
     Id: id,
     Datacenter: datacenter,
@@ -123,7 +215,7 @@ func Update(id int, datacenter string, storage string, osname string,  snapimage
   return nil
 }
 
-func (vmsos *Vms_os)Add (datacenter string, storage string, osname string, cephblockdevice string, xml string, sort int, owner int, snap string, tag int) error {
+func (vmsos *Vms_os)Add (datacenter string, storage string, osname string, cephblockdevice string, xml int, sort int, owner int, snap string, tag int) error {
   os := Vms_os{
     Datacenter: datacenter,
     Storage: storage,
@@ -178,6 +270,14 @@ func Maposimage(user int, sort int) ([]map[string]interface{}, error)  {
       c["Sort"] = nil
     } else {
       c["Sort"] = sort
+    }
+
+    x := Vms_osimage_xmls{}
+    xml, err := x.Getxmlbyid(v.Xml)
+    if err != nil {
+      c["Xml"] = nil
+    } else {
+      c["Xml"] = xml.Comment
     }
 
     os_tag := Vms_os_tags{}
@@ -269,7 +369,6 @@ func (o Vms_os)GetOsInfoById(storage string, id int) (*Vms_os, error) {
   }
   return &o, nil
 }
-
 
 func (o Vms_os)CheckOsbyUuid(uuid string) (bool, error) {
   dbs, err := db.NicloudDb()

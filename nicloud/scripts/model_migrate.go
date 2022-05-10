@@ -30,6 +30,7 @@ func main()  {
 
   db, err := db.NicloudDb()
   if err != nil {
+    fmt.Println(err)
     return
   }
 
@@ -89,6 +90,12 @@ func main()  {
 
   vms_os := osimage.Vms_os{}
   err = db.Set("gorm:table_options", "CHARSET=utf8").AutoMigrate(&vms_os).Error
+  if err != nil {
+    return
+  }
+
+  vms_osimage_xml := osimage.Vms_osimage_xmls{}
+  err = db.Set("gorm:table_options", "CHARSET=utf8").AutoMigrate(&vms_osimage_xml).Error
   if err != nil {
     return
   }

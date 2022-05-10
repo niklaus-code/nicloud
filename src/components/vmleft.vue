@@ -81,11 +81,21 @@ export default {
 				{
                 id: 2,
 				name: "系统镜像",
-				router: "osimage",
                 class: "glyphicon glyphicon-modal-window",
-                router: "osimage",
+                router: "none",
                 check_downmenu: false,
-					},
+                check_downmenu_icon: true,
+                downmenu:[
+                    {
+                    "name": "镜像列表",
+                    "router": "osimage",
+                    },
+                    {
+                    "name": "镜像配置文件xml",
+                    "router": "xml",
+                    },
+                    ]
+				},
 				{
                 id: 3,
 				name: "VLAN子网",

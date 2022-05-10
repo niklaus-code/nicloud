@@ -129,11 +129,14 @@ func main() {
     v6.GET("getimage", osimage.GetImage)
     v6.GET("getimagesort", osimage.GetImageSort)
     v6.GET("getiostags", osimage.GetOsTag)
+    v6.GET("getosimagexml", osimage.Getosimagexml)
 
     v6.Use(utils.RoleAuth())
     v6.POST("updateimage", osimage.UpdateImage)
     v6.POST("createimage", osimage.AddImage)
     v6.GET("delimage", osimage.DelImage)
+    v6.POST("createxml", osimage.Addosimagexml)
+    v6.GET("delxml", osimage.Delosimagexml)
   }
 
   v7 := r.Group("/api/storage")

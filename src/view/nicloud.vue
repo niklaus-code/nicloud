@@ -81,6 +81,8 @@ import createuser from '@/components/createuser'
 import vdisk_archive from '@/components/vdisk_archive'
 import vm_flavor from '@/components/vm_flavor'
 import changepasswd from '@/components/changepasswd'
+import xml from '@/components/xml'
+import createxml from '@/components/createxml'
 
 var initroute 
 if (sessionStorage.getItem('router')) {
@@ -99,7 +101,7 @@ export default {
     },
 
     components: {
-        changepasswd, vm_flavor, vdisk_archive, vm_archive, updatehost, createuser, user, migratevmlive, restorevm, snap, vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
+        createxml, xml, changepasswd, vm_flavor, vdisk_archive, vm_archive, updatehost, createuser, user, migratevmlive, restorevm, snap, vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
     },
 
 

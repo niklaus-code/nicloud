@@ -54,7 +54,7 @@ func UpdateImage(c *gin.Context) {
   osname := c.PostForm("osname")
   snapname := c.PostForm("snapimage")
   cephblockdevice := c.PostForm("cephblockdevice")
-  xml := c.PostForm("xml")
+  xml, _ := strconv.Atoi(c.PostForm("xml"))
   tag, _ := strconv.Atoi(c.PostForm("tag"))
   sort, _ := strconv.Atoi(c.PostForm("sort"))
 
@@ -173,7 +173,7 @@ func AddImage(c *gin.Context) {
   }
 
   cephblockdevice := c.PostForm("cephblockdevice")
-  xml :=c.PostForm("xml")
+  xml, _ := strconv.Atoi(c.PostForm("xml"))
   sort,_ := strconv.Atoi(c.PostForm("ossort"))
 
   token := c.Request.Header.Get("token")
@@ -229,5 +229,58 @@ func AddImage(c *gin.Context) {
     res["err"] = vmerror.Error{Message: "创建失败: "+ err.Error()}
   }
 
+  c.JSON(200, res)
+}
+
+func Addosimagexml(c *gin.Context) {
+  res := make(map[string]interface{})
+
+  sort, _ := strconv.Atoi(c.PostForm("tag"))
+  xml := c.PostForm("xml")
+  comment := c.PostForm("comment")
+
+  x := osimage.Vms_osimage_xmls{
+    Sort: sort,
+    Xml: xml,
+    Comment: comment,
+  }
+  err := x.Addxml(&x)
+  if err != nil {
+    res["err"] = vmerror.Error{Message:  err.Error()}
+    c.JSON(200, res)
+    return
+  }
+
+  res["err"] = nil
+  c.JSON(200, res)
+}
+
+func Getosimagexml(c *gin.Context) {
+  res := make(map[string]interface{})
+
+  data, err := osimage.Maposimagexml()
+  if err != nil {
+    res["err"] = vmerror.Error{Message:  err.Error()}
+    c.JSON(200, res)
+    return
+  }
+
+  res["err"] = nil
+  res["res"] = data
+  c.JSON(200, res)
+}
+
+func Delosimagexml(c *gin.Context) {
+  res := make(map[string]interface{})
+  id, _ := strconv.Atoi(c.Query("id"))
+  x := osimage.Vms_osimage_xmls{}
+  err := x.Delxml(id)
+  if err != nil {
+    res["err"] = vmerror.Error{Message:  err.Error()}
+    c.JSON(200, res)
+    return
+  }
+
+  res["err"] = nil
   c.JSON(200, res)
 }

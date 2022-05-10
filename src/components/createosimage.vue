@@ -103,27 +103,24 @@
 				    </div>
 				</div>
     		</div>
-			<div class="col-sm-12" style="margin-top: 10px">
+			<div class="col-sm-12" style="margin-top:20px">
 	 			<div class="form-group">
 					<div class="col-sm-3 col-sm-offset-1">
-        				<label>镜像xml</label>
+        				<label>镜像XML</label>
 					</div>
-					<div class="col-sm-8">
-						<form role="form">
-  							<div class="form-group">
-    							<textarea class="form-control" v-model="xml" rows="16"></textarea>
-  							</div>
-						</form>
+					<div class="col-sm-3">
+				    	<select class="col-sm-12" v-model="xmlvalue">
+							<option value="">--请选择--</option>
+                        	<option v-for="x in xmllist" :value="x.Id">
+                            	{{ x.Comment }}
+                        	</option>
+                    	</select>
 					</div>
 				</div>
-    		</div>
-			<div class="col-sm-12" style=" margin-bottom:20px">
-				<div class="form-group" style="margin-top:20px;" >
-					<div class="col-sm-2 col-sm-offset-2">
-					</div>
-					<div class="col-sm-8" style="margin:0 auto; text-align: center;">
-  						<button type="submit" style="margin:0 auto" @click="createosimage" class="btn btn-success btn-sm">提交</button>
-					</div>
+			</div>
+			<div class="col-sm-12" style="margin-top: 20px">
+				<div class="col-sm-2 col-sm-offset-4">
+  					<button type="submit" style="margin:0 auto" @click="createosimage" class="btn btn-success btn-sm">提交</button>
 				</div>
 			</div>
 	</div>
@@ -133,6 +130,7 @@
 export default {
     data () {
         return {
+            xmllist: [],
             size: "",
             sortvalue: "",
             sort: [],
@@ -147,7 +145,7 @@ export default {
 
 			osimage: "",
 			cephblockdevice: "",
-			xml: "",
+			xmlvalue: "",
 
             checkboxobj: false,
         }
@@ -158,11 +156,25 @@ export default {
 		this.getdatacenter()
         this.getimagesort()
         this.getostag()
+        this.getosxml()
     },
 
     methods: {
+        getosxml: function () {
+            var apiurl = `/api/osimage/getosimagexml`
+
+            this.$http.get(apiurl).then(response => {
+                if (response.data.err === null) {
+                    this.xmllist = response.data.res
+                } else {
+                    alert(response.data.err.Message)
+                    }
+                })
+
+            },
+
         checkbox: function () {
-            if (this.checkboxobj == false ) {
+            if (this.checkboxobj == false) {
                 alert("已勾选")
                 this.checkboxobj = true
                 } else {
@@ -236,13 +248,13 @@ export default {
 			},
 
 		createosimage: function () {
-			if (this.check(this.osimage, this.cephblockdevice, this.xml)) {
+			if (this.check(this.osimage, this.cephblockdevice, this.xmlvalue)) {
 				return 
 				}
 
             var apiurl = `/api/osimage/createimage`
 
-            this.$http.post(apiurl, this.$qs.stringify({size: this.size, osname: this.osimage, datacenter: this.centervalue, storage: this.storagevalue, cephblockdevice: this.cephblockdevice, createsnap: this.checkboxobj, xml: this.xml, ossort: this.sortvalue.Id, tag: this.tagvalue.Id})).then(response => {
+            this.$http.post(apiurl, this.$qs.stringify({size: this.size, osname: this.osimage, datacenter: this.centervalue, storage: this.storagevalue, cephblockdevice: this.cephblockdevice, createsnap: this.checkboxobj, xml: this.xmlvalue, ossort: this.sortvalue.Id, tag: this.tagvalue.Id})).then(response => {
 				if (response.data.err === null) {
 					alert("创建成功!")
                 	this.$emit("toParent", "osimage");

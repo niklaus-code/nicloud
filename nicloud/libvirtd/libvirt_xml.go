@@ -236,16 +236,22 @@ func CreateVmXml(datacenter string, storage string, vlan string,  vcpu uint, vme
     return "", err
   }
 
-  osimage := osimage.Vms_os{}
-  osinfo, err := osimage.GetOsInfoById(storage, osid)
+  o := osimage.Vms_os{}
+  osinfo, err := o.GetOsInfoById(storage, osid)
+  if err != nil {
+    return "", err
+  }
+
+  xo := osimage.Vms_osimage_xmls{}
+  xml, err := xo.Getxmlbyid(osinfo.Xml)
   if err != nil {
     return "", err
   }
 
   domcfg := &goxml.Domain{}
-  err = domcfg.Unmarshal(osinfo.Xml)
+  err = domcfg.Unmarshal(xml.Xml)
   if err != nil {
-    return "", err
+   return "", err
   }
 
   var disk goxml.DomainDisk
