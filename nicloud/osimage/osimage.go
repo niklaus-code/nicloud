@@ -104,7 +104,7 @@ func (x Vms_osimage_xmls) Getxmlbyid(id int) (*Vms_osimage_xmls, error) {
   }
 
   var xml Vms_osimage_xmls
-  err = dbs.Find(&xml).Where("id = ?", id).Error
+  err = dbs.Where("id = ?", id).Find(&xml).Error
   if err != nil {
     return nil, err
   }
