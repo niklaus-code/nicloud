@@ -9,7 +9,7 @@
         				<th>ID</th>
         				<th>名称</th>
         				<th>配置文件类型</th>
-        				<th>XML</th>
+        				<th width="45%">XML</th>
 						<th>操作</th>
       				</tr>
     			</thead>
@@ -19,10 +19,15 @@
         				<td>{{item.Id}}</td>
         				<td>{{item.Comment}}</td>
         				<td>{{item.Sort.Tag}}</td>
-        				<td>
-                            <textarea class="form-control" rows="16" >{{item.Xml}}</textarea>
+        				<td class="checkxml" >
+                            <textarea v-if="item.checkxml" rows=20 width=30 class="form-control" > {{item.Xml}} </textarea>
+                            <p v-else>{{item.Xml}}</p>
                         </td>
 		    			<td style="min-width: 125px">
+							<button class="btn btn-success btn-xs" type="button" @click="xmlinfo(index)">
+                                <span class="glyphicon glyphicon-info-sign"></span>
+                				查看详情
+            				</button>
 							<button class="btn btn-danger btn-xs" type="button" @click="delxml(item.Id, index)">
                                 <span class="glyphicon glyphicon-trash"></span>
                 				删除
@@ -48,12 +53,23 @@ export default {
 		},
 
     methods: {
+        xmlinfo: function (index) {
+            if (this.xmllist[index].checkxml === false) {
+                this.xmllist[index].checkxml = true
+            } else {
+                this.xmllist[index].checkxml = false
+                }
+            },
+
         getosxml: function () {
             var apiurl = `/api/osimage/getosimagexml`
 
             this.$http.get(apiurl).then(response => {
                 if (response.data.err === null) {
-                    this.xmllist = response.data.res
+                    for (var i in response.data.res) {
+                        response.data.res[i]["checkxml"] = false
+                        this.xmllist.push(response.data.res[i])
+                        }
                 } else {
                     alert(response.data.err.Message)
                     }
@@ -79,6 +95,10 @@ export default {
   }
 </script>
 <style scoped>
+table {
+ table-layout:fixed;
+}
+
 .table  thead  tr  th {
     border-bottom: 2px solid #846d6d;
 }
@@ -127,5 +147,12 @@ th {
     background-color: #FFF;
     margin-bottom: 0;
     padding-left: 10px;
+}
+
+.checkxml {
+    word-break: keep-all;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
 }
 </style>
