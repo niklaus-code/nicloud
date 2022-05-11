@@ -105,7 +105,6 @@
 </div>
 </template>
 <script>
-
 export default {
     data () {
         return {
@@ -268,7 +267,8 @@ export default {
 
         vnc: function (vncid) {
             var apiurl = `/api/vm/vnc`
-			window.open("http://10.0.85.90:8787/vnc.html?path=websockify/?vncid="+vncid, '_blank');
+            var vncurl = `http://${window.server.vncserver}/vnc.html?path=websockify/?vncid="${vncid}`
+			window.open(vncurl, '_blank');
 		},
 
 		getvmstatus: function (uuid, host) {
