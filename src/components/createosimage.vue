@@ -4,69 +4,53 @@
                 <h4>创建镜像</h4>
             </div>
 
-		<div class="col-sm-8 col-sm-offset-1">
+		<div class="col-sm-8" style="background: rgb(249, 231, 186); padding: 10px">
 			<div class="col-sm-12">
 	 			<div class="form-group">
-					<div class="col-sm-3 col-sm-offset-1">
+					<div class="col-sm-4">
         				<label>数据中心</label>
 					</div>
-					<div class="col-sm-8">
-				    	<select class="col-sm-12" v-model="centervalue" @change="getstorage(centervalue)">
-							<option value="">--请选择--</option>
-                        	<option  v-for="c in datacenter" :value="c.Datacenter">
-                            	{{ c.Datacenter }}
-                        	</option>
-                    	</select>
+					<div class="col-sm-6">
+                        <label :class = "datacenterclick == index ? 'addclass' : 'labelbackcolordefault' " v-for="(x, index) in datacenter" @click="clickdatacenter(index)">{{x.Datacenter}}</label>
 					</div>
 				</div>
     		</div>
 			<div class="col-sm-12" style="margin-top:20px">
 	 			<div class="form-group">
-					<div class="col-sm-3 col-sm-offset-1">
+					<div class="col-sm-4">
         				<label>存储集群</label>
 					</div>
-					<div class="col-sm-8">
-				    	<select class="col-sm-12" v-model="storagevalue">
-							<option value="">--请选择--</option>
-                        	<option  v-for="c in storage" :value="c.Uuid">
-                            	{{ c.Name }}
-                        	</option>
-                    	</select>
+					<div class="col-sm-6">
+                        <label :class = "storageclick == index ? 'addclass' : 'labelbackcolordefault' " v-for="(x, index) in storage" @click="clickstorage(index)">{{x.Name}}</label>
 					</div>
 				</div>
     		</div>
 			<div class="col-sm-12" style="margin-top:20px">
 	 			<div class="form-group">
-					<div class="col-sm-3 col-sm-offset-1">
+					<div class="col-sm-4">
         				<label>镜像类别</label>
 					</div>
-					<div class="col-sm-3">
-				    	<select class="col-sm-12" v-model="sortvalue">
-							<option value="">--请选择--</option>
-                        	<option v-for="s in sort" :value="s">
-                            	{{ s.Sort }}
-                        	</option>
-                    	</select>
+					<div class="col-sm-6">
+                        <label :class = "sortclick == index ? 'addclass' : 'labelbackcolordefault' " v-for="(x, index) in sort" @click="clicksort(index)">{{x.Sort}}</label>
 					</div>
-					<div class="col-sm-2">
+				</div>
+			</div>
+			<div class="col-sm-12" style="margin-top:20px">
+	 			<div class="form-group">
+					<div class="col-sm-4">
         				<label>系统标签</label>
 					</div>
-					<div class="col-sm-3">
-				    	<select class="col-sm-12" v-model="tagvalue">
-							<option value="">--请选择--</option>
-                        	<option v-for="s in ostags" :value="s">
-                            	{{ s.Tag }}
-                        	</option>
-                    	</select>
+					<div class="col-sm-6">
+                        <label :class = "tagclick == index ? 'addclass' : 'labelbackcolordefault' " v-for="(x, index) in ostags" @click="clicktag(index)">{{x.Tag}}</label>
 					</div>
 				</div>
 			</div>
 			<div class="col-sm-12" style="margin-top:20px">
 	 	        <div class="form-group">
-			        <div class="col-sm-3 col-sm-offset-1">
+			        <div class="col-sm-4">
         		        <label>镜像名称</label>
 			        </div>
-			        <div class="col-sm-3">
+			        <div class="col-sm-6">
 				        <form role="form">
   					        <div class="form-group">
     					        <input type="text" class="form-control" v-model="osimage" placeholder="">
@@ -77,10 +61,10 @@
     		</div>
 			<div class="col-sm-12" style="margin-top:10px">
 	 	        <div class="form-group">
-			        <div class="col-sm-3 col-sm-offset-1">
+			        <div class="col-sm-4">
         		        <label>ceph块设备名称</label>
 			        </div>
-			        <div class="col-sm-3">
+			        <div class="col-sm-6">
 				        <form role="form">
   					        <div class="form-group">
     					        <input type="text" class="form-control" v-model="cephblockdevice" placeholder="">
@@ -91,10 +75,10 @@
     		</div>
 			<div class="col-sm-12" style="margin-top: 6px">
 	 		    <div class="form-group">
-				    <div class="col-sm-3 col-sm-offset-1">
+				    <div class="col-sm-4">
         			    <label>是否创建快照</label>
 				    </div>
-				    <div class="col-sm-8">
+				    <div class="col-sm-6">
                         <div class="checkbox" style="margin-top:0">
                             <label style="float: left">
                                 <input type="checkbox" @click="checkbox" style="margin-top: -6px"><span style="color: #999">勾选创建快照并以此为基础克隆镜像</span>
@@ -105,22 +89,17 @@
     		</div>
 			<div class="col-sm-12" style="margin-top:20px">
 	 			<div class="form-group">
-					<div class="col-sm-3 col-sm-offset-1">
+					<div class="col-sm-4">
         				<label>镜像XML</label>
 					</div>
-					<div class="col-sm-3">
-				    	<select class="col-sm-12" v-model="xmlvalue">
-							<option value="">--请选择--</option>
-                        	<option v-for="x in xmllist" :value="x.Id">
-                            	{{ x.Comment }}
-                        	</option>
-                    	</select>
+					<div class="col-sm-6">
+                        <label :class = "xmlclick == index ? 'addclass' : 'labelbackcolordefault' " v-for="(x, index) in xmllist" @click="clickxml(index)">{{x.Comment}}</label>
 					</div>
 				</div>
 			</div>
 			<div class="col-sm-12" style="margin-top: 20px">
 				<div class="col-sm-2 col-sm-offset-4">
-  					<button type="submit" style="margin:0 auto" @click="createosimage" class="btn btn-success btn-sm">提交</button>
+  					<button type="submit" style="margin-left: 5px" @click="createosimage" class="btn btn-success btn-sm">提交</button>
 				</div>
 			</div>
 	</div>
@@ -130,6 +109,11 @@
 export default {
     data () {
         return {
+            datacenterclick: -1,
+            storageclick: -1,
+            xmlclick: -1,
+            tagclick: -1,
+            sortclick: -1,
             xmllist: [],
             size: "",
             sortvalue: "",
@@ -160,6 +144,31 @@ export default {
     },
 
     methods: {
+        clickstorage: function (index) {
+            this.storageclick = index
+            this.storagevalue = this.storage[index].Uuid
+            },
+
+        clickdatacenter: function (index) {
+            this.datacenterclick = index
+            this.centervalue = this.datacenter[index].Datacenter
+            },
+
+        clicksort: function (index) {
+            this.sortclick = index
+            this.sortvalue = this.sort[index]
+            },
+
+        clicktag: function (index) {
+            this.tagclick = index
+            this.tagvalue = this.ostags[index]
+            },
+
+        clickxml: function (index) {
+            this.xmlclick = index
+            this.xmlvalue = this.xmllist[index].Id
+            },
+
         getosxml: function () {
             var apiurl = `/api/osimage/getosimagexml`
 
@@ -213,6 +222,8 @@ export default {
             this.$http.get(apiurl).then(response => {
                 if (response.data.err === null) {
                     this.datacenter = response.data.res
+                    this.getstorage(this.centervalue)
+                    this.centervalue = response.data.res[0].Datacenter
                 } else {
                     alert(response.data.err.Message)
                     }
@@ -254,7 +265,7 @@ export default {
 
             var apiurl = `/api/osimage/createimage`
 
-            this.$http.post(apiurl, this.$qs.stringify({size: this.size, osname: this.osimage, datacenter: this.centervalue, storage: this.storagevalue, cephblockdevice: this.cephblockdevice, createsnap: this.checkboxobj, xml: this.xmlvalue, ossort: this.sortvalue.Id, tag: this.tagvalue.Id})).then(response => {
+            this.$http.post(apiurl, this.$qs.stringify({osname: this.osimage, datacenter: this.centervalue, storage: this.storagevalue, cephblockdevice: this.cephblockdevice, createsnap: this.checkboxobj, xml: this.xmlvalue, ossort: this.sortvalue.Id, tag: this.tagvalue.Id})).then(response => {
 				if (response.data.err === null) {
 					alert("创建成功!")
                 	this.$emit("toParent", "osimage");
@@ -268,16 +279,38 @@ export default {
   }
 </script>
 <style scoped>
-select{
+label {
+    border-radius: 4px;
+    font-weight: 400;
+    margin-top: 2px;
+    margin-left: 5px;
+}
+
+.labelbackcolordefault {
+    padding-top: 6px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background: #eaeaea;
+}
+
+select {
+    margin-left: 5px;
 	height:30px;
     font-family: "微软雅黑";
     border: 1px #ccc solid;
     border-radius: 5px;
 }
 
-label {
-	float: right;
-	font-weight : 400;
-	margin-top: 5px;
+input {
+    margin-left: 5px;
+    }
+
+.addclass{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: green;
 }
 </style>
