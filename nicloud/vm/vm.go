@@ -134,18 +134,21 @@ type Vm_xmls struct {
 
 func VmStatus(uuid string, host string) (string, error) {
 	vm, err := libvirtd.GetDomain(host, uuid)
-	if err != nil {
-		return "未发现云主机", err
-	}
+	fmt.Println(vm, err)
+	//if err != nil {
+	//	return "未发现云主机", err
+	//}
+  //var rwLock sync.RWMutex
+  //rwLock.RLock()
+	//vm.GetState()
+	//rwLock.RUnlock()
 
-	state, _, err1 := vm.GetState()
+	//if err1 != nil {
+	//	return "未发现云主机", err1
+	//}
+    //vm.Free()
 
-	if err1 != nil {
-		return "未发现云主机", err1
-	}
-    vm.Free()
-
-	return libvirtd.Vmstate[state], nil
+	return "run", nil
 }
 
 type Vms_archives struct {

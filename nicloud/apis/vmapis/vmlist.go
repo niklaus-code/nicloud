@@ -56,13 +56,22 @@ func GetVminfo(c *gin.Context) {
 }
 
 func GetVmStatus(c *gin.Context) {
+  //并发访问大了， 甚至快点刷新浏览器， 会出现gorouteline泄漏，➕🔓好一点
+  //但是并发足够大的话还是会泄露导致， 整个程序崩溃
+  //底层函数是这里 libvirt.NewConnect(fmt.Sprintf("qemu+ssh://%s/system", host)) 
+  //待解决把～
+
+  var mux sync.Mutex
   host := c.Query("host")
   uuid := c.Query("uuid")
 
+  mux.Lock()
   vmstate, err := vm.VmStatus(uuid, host)
 
   res["res"] = vmstate
   res["err"] = err
+  mux.Unlock()
+
   c.JSON(200, res)
 }
 
