@@ -26,9 +26,10 @@ func Vnc(c *gin.Context)  {
   //c.Header("Content-Disposition", "attachment; filename="+"Workbook.xlsx")
   //c.Header("Content-Transfer-Encoding", "binary")
   //_ = xlsx.Write(c.Writer)
-var res = make(map[string]interface{})
+
 
 func Search(c *gin.Context)  {
+  var res = make(map[string]interface{})
   ct := c.Query("content")
   vms, err := vm.SearchVm(ct)
 
@@ -41,6 +42,7 @@ func Search(c *gin.Context)  {
 }
 
 func GetVminfo(c *gin.Context) {
+  var res = make(map[string]interface{})
   uuid := c.Query("uuid")
   iplist, err := vm.GetVmByUuid(uuid)
 
@@ -56,10 +58,13 @@ func GetVminfo(c *gin.Context) {
 }
 
 func GetVmStatus(c *gin.Context) {
+  var res = make(map[string]interface{})
   //并发访问大了， 甚至快点刷新浏览器， 会出现gorouteline泄漏，➕🔓好一点
   //但是并发足够大的话还是会泄露导致， 整个程序崩溃
-  //底层函数是这里 libvirt.NewConnect(fmt.Sprintf("qemu+ssh://%s/system", host)) 
+  //底层函数是这里 libvirt.NewConnect(fmt.Sprintf("qemu+ssh://%s/system", host))
   //待解决把～
+  //以解决。20220512
+  //之前把res（map） 放到了公共变量， 导致获取vmlist , 还有获取vm状态 都要使用这个res（map）， 并发访问就会 gouteline泄漏
 
   var mux sync.Mutex
   host := c.Query("host")
@@ -76,6 +81,7 @@ func GetVmStatus(c *gin.Context) {
 }
 
 func Getvmlist(c *gin.Context) {
+  var res = make(map[string]interface{})
   start, err := strconv.Atoi(c.Query("start"))
   item := c.Query("item")
   if err != nil {
@@ -111,6 +117,7 @@ func Getvmlist(c *gin.Context) {
 }
 
 func MigrateVmlive(c *gin.Context) {
+  var res = make(map[string]interface{})
   uuid := c.Query("uuid")
   migratehost := c.Query("migratehost")
 
@@ -121,6 +128,7 @@ func MigrateVmlive(c *gin.Context) {
 }
 
 func MigrateVm(c *gin.Context) {
+  var res = make(map[string]interface{})
   uuid := c.Query("uuid")
   migratehost := c.Query("migratehost")
 
@@ -131,6 +139,7 @@ func MigrateVm(c *gin.Context) {
 }
 
 func Createvm(c *gin.Context) {
+  var res = make(map[string]interface{})
   ip := c.PostForm("ip")
   cpu, _ := strconv.Atoi(c.PostForm("cpu"))
   mem, _ := strconv.Atoi(c.PostForm("mem"))
@@ -181,6 +190,7 @@ func Createvm(c *gin.Context) {
 }
 
 func Addcomment(c *gin.Context) {
+  var res = make(map[string]interface{})
   uuid := c.Query("uuid")
   comment := c.Query("comment")
   r, err := vm.Updatecomments(uuid, comment)
@@ -191,6 +201,7 @@ func Addcomment(c *gin.Context) {
 }
 
 func GetFlavor(c *gin.Context) {
+  var res = make(map[string]interface{})
 	s, err := vm.Flavor()
 	res["res"] = s
   res["err"] = nil
@@ -203,6 +214,7 @@ func GetFlavor(c *gin.Context) {
 }
 
 func Changeconfig(c *gin.Context) {
+  var res = make(map[string]interface{})
   id := c.Query("uuid")
   host := c.Query("host")
   vmhost := c.Query("vmhost")
@@ -239,6 +251,7 @@ func Changeconfig(c *gin.Context) {
 }
 
 func DeleteVM(c *gin.Context) {
+  var res = make(map[string]interface{})
 	uuid := c.Query("uuid")
   //datacenter := c.Query("datacenter")
   storage := c.Query("storage")
@@ -256,6 +269,7 @@ func DeleteVM(c *gin.Context) {
 }
 
 func Operation(c *gin.Context) {
+  var res = make(map[string]interface{})
 	uuid := c.Query("uuid")
 	host := c.Query("host")
 
@@ -289,6 +303,7 @@ func Operation(c *gin.Context) {
 }
 
 func Rebuild(c *gin.Context)  {
+  var res = make(map[string]interface{})
   uuid := c.Query("uuid")
   datacenter := c.Query("datacenter")
   storage := c.Query("storage")
@@ -307,6 +322,7 @@ func Rebuild(c *gin.Context)  {
 }
 
 func Createsnap(c *gin.Context)  {
+  var res = make(map[string]interface{})
   var err error
 
   token := c.Request.Header.Get("token")
@@ -348,6 +364,7 @@ func Createsnap(c *gin.Context)  {
 }
 
 func Getsnap(c *gin.Context)  {
+  var res = make(map[string]interface{})
   uuid := c.Query("uuid")
   datacenter := c.Query("datacenter")
   storage := c.Query("storage")
@@ -363,6 +380,7 @@ func Getsnap(c *gin.Context)  {
 }
 
 func Rollback(c *gin.Context)  {
+  var res = make(map[string]interface{})
   uuid := c.Query("uuid")
   datacenter := c.Query("datacenter")
   storage := c.Query("storage")
@@ -378,6 +396,7 @@ func Rollback(c *gin.Context)  {
 }
 
 func DelSnap(c *gin.Context)  {
+  var res = make(map[string]interface{})
   uuid := c.Query("uuid")
   datacenter := c.Query("datacenter")
   storage := c.Query("storage")
@@ -433,6 +452,7 @@ func GetVmArchive(c *gin.Context)  {
 }
 
 func Delvmpermanent(c *gin.Context) {
+  var res = make(map[string]interface{})
   //暂时不开放次接口
   res["err"] = vmerror.Error{Message: "暂时不开放此接口"}
   c.JSON(http.StatusOK, res)
@@ -455,6 +475,7 @@ func Delvmpermanent(c *gin.Context) {
 }
 
 func SearchVMArchive(c *gin.Context) {
+  var res = make(map[string]interface{})
   content:= c.Query("content")
 
   v := vm.Vms_archives{}
@@ -471,6 +492,7 @@ func SearchVMArchive(c *gin.Context) {
 }
 
 func CreateFlavor(c *gin.Context) {
+  var res = make(map[string]interface{})
   cpu, _ := strconv.Atoi(c.Query("cpu"))
   mem, _ := strconv.Atoi(c.Query("mem"))
 
