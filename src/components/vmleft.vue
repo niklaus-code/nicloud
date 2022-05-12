@@ -10,7 +10,7 @@
                     <div @click="fun_downmenu(index)">
                     <p :class=item.class> </p>
                     <p class="leftitem"><a :class = "isactive == index ? 'addclass' : '' " href="javascript:void(0)">{{item.name}}</a></p>
-                    <p style="padding-top: 12px; float: right; margin-right: 30px"><span v-if="item.check_downmenu_icon" style="top: 1px; height: 6px;width: 6px ;" class="glyphicon glyphicon-triangle-bottom"></span></p>
+                    <p style="padding-top: 12px; float: right; margin-right: 30px"><span v-if="item.check_downmenu_icon" style="top: 1px; height: 6px;width: 6px ;" :class="item.class_down"></span></p>
                     </div>
                     <ul v-if="item.check_downmenu" style="background-color: #000c20;">
                         <li v-for="(item, index) in item.downmenu">
@@ -34,6 +34,7 @@
 export default {
     data () {
         return {
+            class_down: "glyphicon glyphicon-chevron-down",
             isactive: -1,
             username: "",
 			selected: 0,
@@ -58,6 +59,7 @@ export default {
                     },
                     ],
                 check_downmenu: false,
+                class_down: "glyphicon glyphicon-chevron-down",
                 check_downmenu_icon: true
 					},
 				{
@@ -76,6 +78,7 @@ export default {
                     },
                     ],
                 check_downmenu: false,
+                class_down: "glyphicon glyphicon-chevron-down",
                 check_downmenu_icon: true
 					},
 				{
@@ -84,6 +87,7 @@ export default {
                 class: "glyphicon glyphicon-modal-window",
                 router: "none",
                 check_downmenu: false,
+                class_down: "glyphicon glyphicon-chevron-down",
                 check_downmenu_icon: true,
                 downmenu:[
                     {
@@ -146,6 +150,12 @@ export default {
         },
 
         fun_downmenu: function (index) {
+            if (this.routelist[index].class_down === "glyphicon glyphicon-chevron-down") {
+                this.routelist[index].class_down = "glyphicon glyphicon-chevron-up"
+                } else {
+                    this.routelist[index].class_down = "glyphicon glyphicon-chevron-down"
+                    }
+
             if (this.routelist[index].check_downmenu) {
                 this.routelist[index].check_downmenu = false
                 } else {
