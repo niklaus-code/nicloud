@@ -4,7 +4,7 @@
             <h4>创建云主机
             </h4>
 	    </div>
-		<div  class="col-sm-8 col-sm-offset-1" style="margin-top:20px; margin-left: 20px; background-color: #f9e7ba; padding-top: 20px; box-shadow: 0 0.75rem 1.5rem rgba(18, 38, 63, 0.03)">
+		<div  class="col-sm-12" style="margin-top:20px;background-color: #f9e7ba; padding-top: 20px; box-shadow: 0 0.75rem 1.5rem rgba(18, 38, 63, 0.03)">
 	 		<div class="col-sm-12 form-group">
 				<div class="col-sm-3">
         			<label>数据中心</label>
@@ -97,7 +97,7 @@
 				<div class="col-sm-3">
         			<label>备注</label>
 				</div>
-				<div class="col-sm-7">
+				<div class="col-sm-4">
                     <form role="form" style="margin-left: 5px">
                         <div class="form-group">
                             <input type="text" class="form-control" v-model="comment" placeholder="">
@@ -326,6 +326,10 @@ export default {
 }
 </script>
 <style scoped>
+.col-sm-3 label {
+    float: right;
+}
+
 .labelbackcolordefault {
     padding-top: 6px;
     padding-bottom: 5px;

@@ -4,10 +4,10 @@
                 <h4>创建镜像</h4>
             </div>
 
-		<div class="col-sm-8" style="background: rgb(249, 231, 186); padding: 10px">
+		<div class="col-sm-12" style="background: rgb(249, 231, 186); padding: 10px">
 			<div class="col-sm-12">
 	 			<div class="form-group">
-					<div class="col-sm-4">
+					<div class="col-sm-2 col-sm-offset-2">
         				<label>数据中心</label>
 					</div>
 					<div class="col-sm-6">
@@ -17,7 +17,7 @@
     		</div>
 			<div class="col-sm-12" style="margin-top:20px">
 	 			<div class="form-group">
-					<div class="col-sm-4">
+					<div class="col-sm-2 col-sm-offset-2">
         				<label>存储集群</label>
 					</div>
 					<div class="col-sm-6">
@@ -27,7 +27,7 @@
     		</div>
 			<div class="col-sm-12" style="margin-top:20px">
 	 			<div class="form-group">
-					<div class="col-sm-4">
+					<div class="col-sm-2 col-sm-offset-2">
         				<label>镜像类别</label>
 					</div>
 					<div class="col-sm-6">
@@ -37,7 +37,7 @@
 			</div>
 			<div class="col-sm-12" style="margin-top:20px">
 	 			<div class="form-group">
-					<div class="col-sm-4">
+					<div class="col-sm-2 col-sm-offset-2">
         				<label>系统标签</label>
 					</div>
 					<div class="col-sm-6">
@@ -47,7 +47,7 @@
 			</div>
 			<div class="col-sm-12" style="margin-top:20px">
 	 	        <div class="form-group">
-			        <div class="col-sm-4">
+			        <div class="col-sm-2 col-sm-offset-2">
         		        <label>镜像名称</label>
 			        </div>
 			        <div class="col-sm-6">
@@ -61,7 +61,7 @@
     		</div>
 			<div class="col-sm-12" style="margin-top:10px">
 	 	        <div class="form-group">
-			        <div class="col-sm-4">
+			        <div class="col-sm-2 col-sm-offset-2">
         		        <label>ceph块设备名称</label>
 			        </div>
 			        <div class="col-sm-6">
@@ -75,7 +75,7 @@
     		</div>
 			<div class="col-sm-12" style="margin-top: 6px">
 	 		    <div class="form-group">
-				    <div class="col-sm-4">
+				    <div class="col-sm-2 col-sm-offset-2">
         			    <label>是否创建快照</label>
 				    </div>
 				    <div class="col-sm-6">
@@ -89,7 +89,7 @@
     		</div>
 			<div class="col-sm-12" style="margin-top:20px">
 	 			<div class="form-group">
-					<div class="col-sm-4">
+					<div class="col-sm-2 col-sm-offset-2">
         				<label>镜像XML</label>
 					</div>
 					<div class="col-sm-6">
@@ -279,6 +279,10 @@ export default {
   }
 </script>
 <style scoped>
+.col-sm-2 label {
+    float: right;
+}
+
 label {
     border-radius: 4px;
     font-weight: 400;
