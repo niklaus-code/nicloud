@@ -279,6 +279,10 @@ export default {
   }
 </script>
 <style scoped>
+input {
+    max-width: 300px;
+    }
+
 .col-sm-2 label {
     float: right;
 }

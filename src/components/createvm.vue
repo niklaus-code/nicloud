@@ -105,12 +105,10 @@
                     </form>
 				</div>
     		</div>
-	 		<div class="col-sm-12 form-group">
-				<div class="col-sm-8 col-md-offset-4" style="color: #C0C0C0">
-    		    </div>
-    		</div>
 	 		<div class="col-sm-12 form-group create">
-				<div class="col-sm-2 col-sm-offset-3">
+				<div class="col-sm-3">
+				</div>
+				<div class="col-sm-2">
 					<button class="btn btn-success btn-sm" style="margin-left: 5px"  @click="createvm()">创建</button>
 				</div>
     		</div>
@@ -326,6 +324,10 @@ export default {
 }
 </script>
 <style scoped>
+.col-sm-3 { 
+    max-width: 350px;
+}
+
 .col-sm-3 label {
     float: right;
 }
@@ -345,7 +347,12 @@ label {
     margin-top: 2px;
 }
 
+input {
+    max-width: 300px;
+}
+
 select{
+    max-width: 300px;
 	height:30px;
     font-family: "微软雅黑";
     border: 1px #ccc solid;
