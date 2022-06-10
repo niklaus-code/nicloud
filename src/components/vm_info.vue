@@ -116,7 +116,7 @@ export default {
 	            },
 
             title: {
-                text: '硬盘IO'
+                text: '硬盘IO（KB）'
                 },
 
             yAxis: {
@@ -154,7 +154,7 @@ export default {
 	            },
 
             title: {
-                text: '网卡速率'
+                text: '网卡速率（KB）'
                 },
 
             yAxis: {
