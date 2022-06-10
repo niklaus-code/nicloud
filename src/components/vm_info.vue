@@ -127,11 +127,11 @@ export default {
 
                 series: [
                     {
-                        name: '读取速度',
+                        name: 'READ IO',
                         data: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
                     },
                     {
-                        name: '写速度',
+                        name: 'WRITE IO',
                         data: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
                     }
                 ]
@@ -165,11 +165,11 @@ export default {
 
                 series: [
                     {
-                        name: '接收速度',
+                        name: 'RX IO',
                         data: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
                     },
                     {
-                        name: '发送速度',
+                        name: 'TX IO',
                         data: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
                     }
                 ]
@@ -261,9 +261,9 @@ export default {
                     this.memchart.series[1].data.splice(0, 1)
                     }
 
-                 this.memchart.series[1].data.push(response.data.res["Mem_availabled"])
-                 if (this.memchart.series[1].data.length > 20 ) {
-                    this.memchart.series[1].data.splice(0, 1)
+                 this.memchart.series[2].data.push(response.data.res["Mem_availabled"])
+                 if (this.memchart.series[2].data.length > 20 ) {
+                    this.memchart.series[2].data.splice(0, 1)
                     }
                 }
             })
