@@ -161,7 +161,7 @@ func Cpuinfo(host string, uuid string) (*CpuLoad, error){
   if err != nil {
     return nil, err
   }
-  cpu_load, err := strconv.ParseFloat(fmt.Sprintf("%.2f", float64((cpu_after[0].CpuTime-cpu_before[0].CpuTime)*uint64(v.NrVirtCpu))/float64(1e9)*100), 64)
+  cpu_load, err := strconv.ParseFloat(fmt.Sprintf("%.2f", float64((cpu_after[0].CpuTime-cpu_before[0].CpuTime)*uint64(v.NrVirtCpu))/float64(1e9)), 64)
   if err != nil {
     return nil, err
   }
