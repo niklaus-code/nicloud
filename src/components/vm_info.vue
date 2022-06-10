@@ -21,6 +21,11 @@ import {Chart} from 'highcharts-vue'
 export default {
   data() {
     return {
+        cputime: "",
+        nettimer: "",
+        disktimer: "",
+        memtimer: "",
+
         uuid: "",
         host: "",
         cpuchart: {
@@ -187,25 +192,37 @@ export default {
 
   mounted(){
     this.getcpuChart();
-    this.times = setInterval(() => {
+    this.cputimer = setInterval(() => {
         this.getcpuChart();
         }, 1000);
 
     this.getmemChart();
-    this.times = setInterval(() => {
+    this.memtimer = setInterval(() => {
         this.getmemChart();
         }, 1000);
 
     this.getChart();
-    this.times = setInterval(() => {
+    this.nettimer = setInterval(() => {
         this.getChart();
         }, 1000);
 
     this.getdiskChart();
-    this.times = setInterval(() => {
+    this.disktimer = setInterval(() => {
         this.getdiskChart();
         }, 1000);
   },
+
+    beforeDestroy() {
+        clearInterval(this.nettimer);        
+        this.nettimer = null;
+        clearInterval(this.disktimer);        
+        this.nettimer = null;
+        clearInterval(this.memtimer);        
+        this.nettimer = null;
+        clearInterval(this.cputimer);        
+        this.nettimer = null;
+    },
+
 
   methods:{
     monitor() {

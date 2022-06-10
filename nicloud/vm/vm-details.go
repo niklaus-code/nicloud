@@ -95,7 +95,6 @@ func Meminfo(host string, uuid string) (*MemCount, error){
   }
 
   info, err := domain.MemoryStats(12, 0)
-  fmt.Println(info)
   //虚拟机分配的总内存
   mem_actual := info[0].Val
 
