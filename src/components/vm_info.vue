@@ -91,6 +91,10 @@ export default {
                     {
                         name: '已用内存',
                         data: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+                    },
+                    {
+                        name: '可用内存',
+                        data: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
                     }
                 ]
             },
@@ -247,12 +251,17 @@ export default {
                     this.memchart.xAxis.categories.splice(0, 1)
                     }
 
-                 this.memchart.series[0].data.push(response.data.res["Mem_available"])
+                 this.memchart.series[0].data.push(response.data.res["Mem_total"])
                  if (this.memchart.series[0].data.length > 20 ) {
                     this.memchart.series[0].data.splice(0, 1)
                     }
 
                  this.memchart.series[1].data.push(response.data.res["Mem_used"])
+                 if (this.memchart.series[1].data.length > 20 ) {
+                    this.memchart.series[1].data.splice(0, 1)
+                    }
+
+                 this.memchart.series[1].data.push(response.data.res["Mem_availabled"])
                  if (this.memchart.series[1].data.length > 20 ) {
                     this.memchart.series[1].data.splice(0, 1)
                     }

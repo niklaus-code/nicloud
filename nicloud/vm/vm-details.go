@@ -83,7 +83,8 @@ func Diskinfo(host string, uuid string, ostype string) (*DiskIO, error)  {
 
 type MemCount struct {
   Mem_used float64
-  Mem_available float64
+  Mem_total float64
+  Mem_availabled float64
   Ctime string
 }
 func Meminfo(host string, uuid string) (*MemCount, error){
@@ -94,30 +95,38 @@ func Meminfo(host string, uuid string) (*MemCount, error){
   }
 
   info, err := domain.MemoryStats(12, 0)
+  fmt.Println(info)
   //虚拟机分配的总内存
-  //mem_actual := info[0].Val
+  mem_actual := info[0].Val
 
   //虚拟机未使用的内存
-  mem_unused := info[7].Val
+  mem_unused := info[3].Val
 
-  //虚拟机识别到的总内存
+  //虚拟机可用内存内存
   mem_available := info[6].Val
 
   //占用宿主机内存
   //mem_rss := info[9].Val
 
-  mem_total, err := strconv.ParseFloat(fmt.Sprintf("%.2f", float64(mem_available)/float64(1024*1024)), 64)
+  mem_total, err := strconv.ParseFloat(fmt.Sprintf("%.4f", float64(mem_actual)/float64(1024*1024)), 64)
   if err != nil {
     return nil, err
   }
-  mem_used, err := strconv.ParseFloat(fmt.Sprintf("%.2f", float64(mem_available-mem_unused)/float64(1024*1024)), 64)
+
+  mem_used, err := strconv.ParseFloat(fmt.Sprintf("%.4f", float64(mem_actual-mem_unused)/float64(1024*1024)), 64)
+  if err != nil {
+    return nil, err
+  }
+
+  mem_availabled, err := strconv.ParseFloat(fmt.Sprintf("%.4f", float64(mem_available)/float64(1024*1024)), 64)
   if err != nil {
     return nil, err
   }
 
   m := &MemCount{
     Mem_used: mem_used,
-    Mem_available: mem_total,
+    Mem_total: mem_total,
+    Mem_availabled: mem_availabled,
     Ctime: Now.Format("15:04:05"),
   }
   return m, nil
