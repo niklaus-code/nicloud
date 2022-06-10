@@ -22,12 +22,12 @@
         		<th>UUID</th>
         		<th>IP地址</th>
         		<th>镜像</th>
-        		<th style="min-width: 60px">宿主机</th>
-        		<th style="min-width: 60px">所属者</th>
-        		<th style="min-width: 75px">存储集群</th>
-        		<th style="min-width: 75px">数据中心</th>
-        		<th style="min-width: 75px">创建时间</th>
-        		<th style="min-width: 75px">归档时间</th>
+        		<th>宿主机</th>
+        		<th>所属者</th>
+        		<th>存储集群</th>
+        		<th>数据中心</th>
+        		<th>创建时间</th>
+        		<th>归档时间</th>
         		<th>备注</th>
         		<th>操作</th>
       		</tr>

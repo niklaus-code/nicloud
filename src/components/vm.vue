@@ -39,8 +39,8 @@
 				<label class="checkbox-inline">
   					<input type="checkbox" v-model="item.Checkout"> 
 				</label>
-       		<!--	<td width="300px">{{item.Name}}</td> -->
-       			<td>{{item.Ip}}</td>
+       		    <!--<td width="300px">{{item.Name}}</td> -->
+       			<td @click="vminfo(item.Uuid, item.Host)"><a>{{item.Ip}}</a></td>
        			<td>{{item.osname}}</td>
        			<td>{{item.Host}}</td>
        			<td  style="min-width: 95px">{{item.Cpu}}核 / {{item.Mem}}G</td>
@@ -152,6 +152,12 @@ export default {
     },
 
     methods: {
+        vminfo: function (uuid, host) {
+            this.$emit("toParent", "vm_info");
+			this.$store.state.monitor.uuid = uuid
+			this.$store.state.monitor.host = host
+            },
+
         createsnap: function (uuid, ip, os, host,datacenter, storage , owner, comment) {
             this.$emit("toParent", "snap");
 			this.$store.state.changeparam.uuid = uuid

@@ -22,11 +22,13 @@ type Vms_os struct {
   Status int8
 }
 
+// 基础镜像 &用户镜像
 type Vms_osimage_sort struct {
   Id int `gorm:"primary_key;AUTO_INCREMENT"`
   Sort string
 }
 
+// LINUX & WINDOWS
 type Vms_os_tags struct {
   Id int `gorm:"primary_key;AUTO_INCREMENT"`
   Tag string
@@ -208,9 +210,9 @@ func Update(id int, datacenter string, storage string, osname string,  snapimage
     return err
   }
 
-  errdb := dbs.Model(&Vms_os{}).Where("id=?", id).Update(os)
-  if errdb.Error != nil {
-    return errdb.Error
+  errdb := dbs.Model(&Vms_os{}).Where("id=?", id).Update(os).Error
+  if errdb != nil {
+    return errdb
   }
   return nil
 }

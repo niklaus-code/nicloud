@@ -44,8 +44,16 @@ func main() {
     v1.GET("deluser", userapis.DelUser)
     v1.POST("changepasswd", userapis.Changepasswd)
   }
+
 	v2 := r.Group("/api/vm")
-	{
+	{  vmdetails := r.Group("/api/vm/details")
+    {
+      ////vmdetails.Use(utils.Tokenauth())
+      vmdetails.GET("cpuinfo", vmapis.Cpudetails)
+      vmdetails.GET("meminfo", vmapis.Memdetails)
+      vmdetails.GET("netinfo", vmapis.Netdetails)
+      vmdetails.GET("diskinfo", vmapis.Diskdetails)
+    }
 	  v2.Use(utils.Tokenauth())
 		v2.GET("getvm", vmapis.Getvmlist)
 		v2.POST("create", vmapis.Createvm)
