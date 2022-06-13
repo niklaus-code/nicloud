@@ -216,7 +216,7 @@ span {
 
 li p {
     margin-left: 30px;
-    color: #aebbcc;
+    color: #ffffff;
     font-size: 13px;
     margin-bottom: 6px;
     display:inline-block;
@@ -227,7 +227,7 @@ li p {
 }
 
 a {
-    color: #aebbcc;
+    color: #ffffff;
 }
 
 .addclass{
