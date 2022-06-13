@@ -37,6 +37,7 @@ func Diskinfo(host string, uuid string, ostype string) (*DiskIO, error)  {
   }
 
   domain, err := libvirtd.GetDomain(host, uuid)
+  defer domain.Free()
   if err != nil {
     return nil, err
   }
@@ -93,6 +94,7 @@ func Meminfo(host string, uuid string) (*MemCount, error){
   if err != nil {
     return nil, err
   }
+  defer domain.Free()
 
   info, err := domain.MemoryStats(12, 0)
   //虚拟机分配的总内存
@@ -141,6 +143,7 @@ func Cpuinfo(host string, uuid string) (*CpuLoad, error){
   if err != nil {
     return nil, err
   }
+  defer domain.Free()
 
   v, err := domain.GetInfo()
   if err != nil {
@@ -183,6 +186,7 @@ func Netinfo(host string, uuid string) (*NetSpeed, error){
   if err != nil {
     return nil, err
   }
+  defer domain.Free()
 
   xml, err := domain.GetXMLDesc(1)
   if err != nil {

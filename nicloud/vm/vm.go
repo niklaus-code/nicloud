@@ -133,17 +133,18 @@ type Vm_xmls struct {
 }
 
 func VmStatus(uuid string, host string) (string, error) {
-	vm, err := libvirtd.GetDomain(host, uuid)
+	dom, err := libvirtd.GetDomain(host, uuid)
+	if err != nil {
+		return "未发现云主机", err
+	}
+  defer  dom.Free()
+
+	state, _, err := dom.GetState()
+
 	if err != nil {
 		return "未发现云主机", err
 	}
 
-	state, _, err1 := vm.GetState()
-
-	if err1 != nil {
-		return "未发现云主机", err1
-	}
-    vm.Free()
 
 	return libvirtd.Vmstate[state], nil
 }
@@ -369,12 +370,13 @@ func Delete(uuid string, storage string) (error) {
 }
 
 func PauseVm(uuid string, host string) error {
-  vm, err := libvirtd.GetDomain(host, uuid)
+  dom, err := libvirtd.GetDomain(host, uuid)
   if err != nil {
     return err
   }
+  defer dom.Free()
 
-  err = vm.Suspend()
+  err = dom.Suspend()
   if err != nil {
     return err
   }
@@ -394,14 +396,15 @@ enum virDomainRebootFlagValues {
 
 func Reboot(uuid string, host string) error {
   /*start vm*/
-  vm, err4 := libvirtd.GetDomain(host, uuid)
-  if err4 != nil {
-    return err4
+  dom, err := libvirtd.GetDomain(host, uuid)
+  if err != nil {
+    return err
   }
+  defer dom.Free()
 
-  err1 := vm.Reboot(0)
-  if err1 != nil {
-    return err1
+  err = dom.Reboot(0)
+  if err != nil {
+    return err
   }
 
   return nil
@@ -409,14 +412,15 @@ func Reboot(uuid string, host string) error {
 
 func Shutdown(uuid string, host string) error {
   /*start vm*/
-  vm, err4 := libvirtd.GetDomain(host, uuid)
-  if err4 != nil {
-    return err4
+  dom, err := libvirtd.GetDomain(host, uuid)
+  if err != nil {
+    return err
   }
+  defer dom.Free()
 
-  err1 := vm.Shutdown()
-  if err1 != nil {
-    return err1
+  err = dom.Shutdown()
+  if err != nil {
+    return err
   }
 
   return nil
@@ -424,39 +428,41 @@ func Shutdown(uuid string, host string) error {
 
 func Destroy(uuid string, host string) error {
 	/*start vm*/
-	vm, err4 := libvirtd.GetDomain(host, uuid)
-	if err4 != nil {
-		return err4
+	dom, err := libvirtd.GetDomain(host, uuid)
+	if err != nil {
+		return err
 	}
-	err1 := vm.Destroy()
-	if err1 != nil {
-		return err1
+	defer dom.Free()
+
+	err = dom.Destroy()
+	if err != nil {
+		return err
 	}
 	return nil
 }
 
 func Start(uuid string, host string) error {
 	/*start vm*/
-	vm, err := libvirtd.GetDomain(host, uuid)
-
+	dom, err := libvirtd.GetDomain(host, uuid)
 	if err != nil {
 		return err
 	}
+	defer dom.Free()
 
-  vm1, err1 := VmStatus(uuid, host)
-	if err1 != nil {
-	  return err1
+  vm, err := VmStatus(uuid, host)
+	if err != nil {
+	  return err
   }
 
-  if vm1 == "暂停" {
-    eer := vm.Resume()
-    if eer != nil {
-      return  eer
+  if vm == "暂停" {
+    err = dom.Resume()
+    if err != nil {
+      return  err
     }
   } else {
-    err2 := vm.Create()
-    if err2 != nil {
-      return err2
+    err = dom.Create()
+    if err != nil {
+      return err
     }
   }
 	return nil
