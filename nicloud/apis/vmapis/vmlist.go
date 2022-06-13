@@ -59,11 +59,6 @@ func GetVminfo(c *gin.Context) {
 
 func GetVmStatus(c *gin.Context) {
   var res = make(map[string]interface{})
-  //并发访问大了， 甚至快点刷新浏览器， 会出现gorouteline泄漏，➕🔓好一点
-  //但是并发足够大的话还是会泄露导致， 整个程序崩溃
-  //底层函数是这里 libvirt.NewConnect(fmt.Sprintf("qemu+ssh://%s/system", host))
-  //待解决把～
-  //以解决。20220512
   //之前把res（map） 放到了公共变量， 导致获取vmlist , 还有获取vm状态 都要使用这个res（map）， 并发访问就会 gouteline泄漏
 
   var mux sync.Mutex

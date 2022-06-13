@@ -48,3 +48,5 @@
 ![avatar](./static/vlan.PNG)
 ### 宿主机列表页面
 ![avatar](./static/host.PNG)
+### 性能监控页面
+![avatar](./static/monitor.png)
