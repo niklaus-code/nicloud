@@ -308,6 +308,7 @@ func Createsnap(c *gin.Context)  {
 
   if len(snapname) == 0 {
     vmerror.REQUESTERROR(c, nil)
+    return
   }
 
   uuid := c.PostForm("uuid")

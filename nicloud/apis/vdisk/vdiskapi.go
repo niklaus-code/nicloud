@@ -1,7 +1,6 @@
 package vdisk
 
 import (
-  "fmt"
   "github.com/gin-gonic/gin"
   "github.com/go-playground/validator/v10"
   "nicloud/cephcommon"
@@ -159,7 +158,6 @@ func GetVdisk(c *gin.Context) {
 
   r, err := vdisk.Getvdisk(userid)
   if err != nil {
-    fmt.Println(err)
     vmerror.SERVERERROR(c, err)
     return
   }

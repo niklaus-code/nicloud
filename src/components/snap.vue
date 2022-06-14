@@ -70,8 +70,9 @@
                         <td>{{c.Snap}}</td>
                         <td>{{c.Create_time}}</td>
                         <td>
-                            <button type="button" class="btn btn-success btn-xs" @click="snaptoimage(c.Snap, true)">以此创建镜像</button>
-                            <button type="button" class="btn btn-primary btn-xs" @click="rollback(c.Snap)">以此快照恢复</button>
+                            <button type="button" class="btn btn-success btn-xs" @click="snaptoimage(c.Snap, true)">快速创建镜像</button>
+                            <button type="button" class="btn btn-success btn-xs" @click="flatten()">创建独立镜像</button>
+                            <button type="button" class="btn btn-primary btn-xs" @click="rollback()">恢复到快照</button>
                             <button type="button" class="btn btn-danger btn-xs" @click="rmsnap(c.Snap, index)">删除快照</button>
                         </td>
                     </tr>
@@ -134,8 +135,13 @@ export default {
         },
 
     methods: {
-        rollback: function (snapname) {
+        rollback: function () {
             alert("恢复快照，需要联系管理员操作 =^_^=")
+            return
+            },
+
+        flatten: function () {
+            alert("创建独立镜像，需要联系管理员操作 =^_^=")
             return
             },
 
