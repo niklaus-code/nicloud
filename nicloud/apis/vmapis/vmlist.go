@@ -29,112 +29,105 @@ func Vnc(c *gin.Context)  {
 
 
 func Search(c *gin.Context)  {
-  var res = make(map[string]interface{})
   ct := c.Query("content")
   vms, err := vm.SearchVm(ct)
 
   if err != nil {
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, err)
+    return
   }
 
-  res["res"] = vms
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, vms)
 }
 
 func GetVminfo(c *gin.Context) {
-  var res = make(map[string]interface{})
   uuid := c.Query("uuid")
   iplist, err := vm.GetVmByUuid(uuid)
 
-  res["res"] = iplist
-  res["err"] = nil
   if err != nil {
-    res["err"] = err
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, iplist)
 }
 
 func GetVmStatus(c *gin.Context) {
-  var res = make(map[string]interface{})
   //之前把res（map） 放到了公共变量， 导致获取vmlist , 还有获取vm状态 都要使用这个res（map）， 并发访问就会 gouteline泄漏
 
-  var mux sync.Mutex
   host := c.Query("host")
   uuid := c.Query("uuid")
 
-  mux.Lock()
   vmstate, err := vm.VmStatus(uuid, host)
-
-  res["res"] = vmstate
-  res["err"] = err
-  mux.Unlock()
-
-  c.JSON(200, res)
-}
-
-func Getvmlist(c *gin.Context) {
-  var res = make(map[string]interface{})
-  start, err := strconv.Atoi(c.Query("start"))
-  item := c.Query("item")
   if err != nil {
-    res["err"] = vmerror.Error{Message: "参数错误"}
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
+  vmerror.SUCCESS(c, vmstate)
+}
+
+func Getvmlist(c *gin.Context) {
+  start, err := strconv.Atoi(c.Query("start"))
+  item := c.Query("item")
+  if err != nil {
+    vmerror.REQUESTERROR(c, err)
+    return
+  }
   token := c.Request.Header.Get("token")
   userid, err := utils.ParseToken(token)
   if err != nil {
-    res["err"] = vmerror.Error{Message: "认证失败"}
-    c.JSON(200, res)
-    return
+   vmerror.SUCCESS(c, vmerror.Error{Message: "认证失败"})
+   return
   }
 
 	pagenumber, vmcount,  err := vm.Getpagenumber(userid)
 	if err != nil {
-    res["res"] = nil
-    res["err"] = err
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
   vmlist, err := vm.VmList(userid, start, item)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
 
+  var res = make(map[string]interface{})
 	res["res"] = vmlist
   res["pagenumber"] = pagenumber
   res["vmcount"] = vmcount
-  res["err"] = err
+  res["err"] = nil
 
-	c.JSON(200, res)
+	c.JSON(http.StatusOK, res)
 }
 
 func MigrateVmlive(c *gin.Context) {
-  var res = make(map[string]interface{})
   uuid := c.Query("uuid")
   migratehost := c.Query("migratehost")
 
-  vmlist := vm.MigrateVmlive(uuid, migratehost)
-  res["res"] = vmlist
-
-  c.JSON(200, res)
+  err := vm.MigrateVmlive(uuid, migratehost)
+  if err != nil {
+    vmerror.SUCCESS(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, nil)
 }
 
 func MigrateVm(c *gin.Context) {
-  var res = make(map[string]interface{})
   uuid := c.Query("uuid")
   migratehost := c.Query("migratehost")
 
-  vmlist := vm.MigrateVm(uuid, migratehost)
-  res["res"] = vmlist
+  err := vm.MigrateVm(uuid, migratehost)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
 
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, nil)
 }
 
 func Createvm(c *gin.Context) {
-  var res = make(map[string]interface{})
   ip := c.PostForm("ip")
   cpu, _ := strconv.Atoi(c.PostForm("cpu"))
   mem, _ := strconv.Atoi(c.PostForm("mem"))
@@ -149,8 +142,7 @@ func Createvm(c *gin.Context) {
   user, err := utils.ParseToken(token)
 
   if err != nil {
-    res["err"] = vmerror.Error{Message: "认证失败"}
-    c.JSON(200, res)
+    vmerror.SUCCESS(c, vmerror.Error{Message: "认证失败"})
     return
   }
 
@@ -168,8 +160,7 @@ func Createvm(c *gin.Context) {
   validate := validator.New()
   err = validate.Struct(v)
   if err != nil {
-    res["err"] = vmerror.Error{Message: "参数错误"}
-    c.JSON(400, res)
+    vmerror.REQUESTERROR(c, err)
     return
   }
   var rwLock sync.RWMutex
@@ -177,78 +168,71 @@ func Createvm(c *gin.Context) {
   err = v.Create(datacenter, storage, vlan, uint(cpu), uint(mem), ip, host, osid, user, comment)
   rwLock.Unlock()
 
-  res["err"] = nil
   if err != nil {
-    res["err"] = vmerror.Error{Message: "创建失败: " + err.Error()}
+    vmerror.SERVERERROR(c, err)
+    return
   }
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, nil)
 }
 
 func Addcomment(c *gin.Context) {
-  var res = make(map[string]interface{})
   uuid := c.Query("uuid")
   comment := c.Query("comment")
   r, err := vm.Updatecomments(uuid, comment)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
 
-  res["res"] = r
-  res["err"] = err
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, r)
 }
 
 func GetFlavor(c *gin.Context) {
-  var res = make(map[string]interface{})
 	s, err := vm.Flavor()
-	res["res"] = s
-  res["err"] = nil
-
-	if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
-		c.JSON(200, res)
-	}
-	c.JSON(200, res)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+	vmerror.SUCCESS(c, s)
 }
 
 func Changeconfig(c *gin.Context) {
-  var res = make(map[string]interface{})
   id := c.Query("uuid")
   host := c.Query("host")
   vmhost := c.Query("vmhost")
   cpu, err := strconv.Atoi(c.Query("cpu"))
   if err != nil {
-    c.JSON(400, vmerror.Error{Message: "参数错误"})
+    vmerror.REQUESTERROR(c, err)
     return
   }
 
   oldcpu, err := strconv.Atoi(c.Query("oldcpu"))
   if err != nil {
-    c.JSON(400, vmerror.Error{Message: "参数错误"})
+    vmerror.REQUESTERROR(c, err)
     return
   }
 
   oldmem, err := strconv.Atoi(c.Query("oldmem"))
   if err != nil {
-    c.JSON(400, vmerror.Error{Message: "参数错误"})
+    vmerror.REQUESTERROR(c, err)
     return
   }
 
   mem, err := strconv.Atoi(c.Query("mem"))
   if err != nil {
-    c.JSON(400, vmerror.Error{Message: "参数错误"})
+    vmerror.REQUESTERROR(c, err)
     return
   }
   err = vm.Changeconfig(id, host, uint(cpu), uint(oldcpu), uint(mem), uint(oldmem), vmhost)
-
-  res["err"] = nil
   if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
+    vmerror.SERVERERROR(c, err)
+    return
   }
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, nil)
 }
 
 func DeleteVM(c *gin.Context) {
-  var res = make(map[string]interface{})
 	uuid := c.Query("uuid")
-  //datacenter := c.Query("datacenter")
   storage := c.Query("storage")
 
   var rwLock sync.RWMutex
@@ -256,15 +240,14 @@ func DeleteVM(c *gin.Context) {
 	err := vm.Delete(uuid, storage)
 	rwLock.Unlock()
 
-	res["err"] = nil
 	if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
+    vmerror.SERVERERROR(c, err)
+    return
   }
-	c.JSON(200, res)
+	vmerror.SUCCESS(c, nil)
 }
 
 func Operation(c *gin.Context) {
-  var res = make(map[string]interface{})
 	uuid := c.Query("uuid")
 	host := c.Query("host")
 
@@ -272,7 +255,8 @@ func Operation(c *gin.Context) {
 
 	o, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(400, res)
+		vmerror.REQUESTERROR(c, err)
+    return
 	}
 
 	var s *vm.Vms
@@ -289,16 +273,14 @@ func Operation(c *gin.Context) {
     err = vm.Reboot(uuid, host)
 	}
 
-	res["res"] = s
-	res["err"] = nil
 	if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
+    vmerror.SERVERERROR(c, err)
+    return
   }
-	c.JSON(http.StatusOK, res)
+	vmerror.SUCCESS(c, s)
 }
 
 func Rebuild(c *gin.Context)  {
-  var res = make(map[string]interface{})
   uuid := c.Query("uuid")
   datacenter := c.Query("datacenter")
   storage := c.Query("storage")
@@ -307,32 +289,25 @@ func Rebuild(c *gin.Context)  {
 
   v := vm.Vms{}
   err := v.Rebuildimg(osid, storage, datacenter, uuid, host)
-
-  res["err"] = nil
   if err != nil {
-    res["err"] = vmerror.Error{Message: "重置失败: " + err.Error()}
-    c.JSON(http.StatusInternalServerError, res)
+    vmerror.SERVERERROR(c, err)
+    return
   }
-  c.JSON(http.StatusOK, res)
+  vmerror.SUCCESS(c, nil)
 }
 
 func Createsnap(c *gin.Context)  {
-  var res = make(map[string]interface{})
-  var err error
-
   token := c.Request.Header.Get("token")
   userid, err := utils.ParseToken(token)
   if err != nil {
-    res["err"] = vmerror.Error{Message: "认证失败"}
-    c.JSON(http.StatusOK, res)
+    vmerror.SUCCESS(c, vmerror.Error{Message: "认证失败"})
     return
   }
 
   snapname := c.PostForm("snapname")
 
   if len(snapname) == 0 {
-    c.JSON(http.StatusBadRequest, res)
-    return
+    vmerror.REQUESTERROR(c, nil)
   }
 
   uuid := c.PostForm("uuid")
@@ -340,7 +315,7 @@ func Createsnap(c *gin.Context)  {
   storage := c.PostForm("storage")
   protect, err := strconv.ParseBool(c.PostForm("protect"))
   if err != nil {
-    c.JSON(http.StatusBadRequest, res)
+    vmerror.REQUESTERROR(c, err)
     return
   }
 
@@ -350,69 +325,62 @@ func Createsnap(c *gin.Context)  {
     err = vm.SaveSnapToImg(uuid, datacenter, storage, snapname, userid)
   }
 
-  res["err"] = nil
   if err != nil {
-    res["err"] = vmerror.Error{Message: "创建失败: " + err.Error()}
+    vmerror.SERVERERROR(c, err)
+    return
   }
 
-  c.JSON(http.StatusOK, res)
+  vmerror.SUCCESS(c, nil)
 }
 
 func Getsnap(c *gin.Context)  {
-  var res = make(map[string]interface{})
   uuid := c.Query("uuid")
   datacenter := c.Query("datacenter")
   storage := c.Query("storage")
 
   s, err := vm.Getsnap(datacenter, storage, uuid)
-  res["res"] = s
-
-  res["err"] = nil
   if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
+    vmerror.SERVERERROR(c, err)
+    return
   }
-  c.JSON(http.StatusOK, res)
+
+  vmerror.SUCCESS(c, s)
 }
 
 func Rollback(c *gin.Context)  {
-  var res = make(map[string]interface{})
   uuid := c.Query("uuid")
   datacenter := c.Query("datacenter")
   storage := c.Query("storage")
   snapname := c.Query("snapname")
 
   err := vm.RollbackSnap(uuid, snapname,  datacenter, storage)
-
-  res["err"] = nil
   if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
+    vmerror.SERVERERROR(c, err)
+    return
   }
-  c.JSON(http.StatusOK, res)
+  vmerror.SUCCESS(c, nil)
 }
 
 func DelSnap(c *gin.Context)  {
-  var res = make(map[string]interface{})
+
   uuid := c.Query("uuid")
   datacenter := c.Query("datacenter")
   storage := c.Query("storage")
   snapname := c.Query("snapname")
 
   err := vm.DelSnap(uuid, snapname,  datacenter, storage)
-
-  res["err"] = nil
   if err != nil {
-    res["err"] = vmerror.Error{Message: "删除快照失败: " + err.Error()}
+    vmerror.SERVERERROR(c, err)
+    return
   }
 
-  c.JSON(http.StatusOK, res)
+  vmerror.SUCCESS(c, nil)
 }
 
 func GetVmArchive(c *gin.Context)  {
-  res := make(map[string]interface{})
   startpage, err := strconv.Atoi(c.Query("startpage"))
   if err != nil {
-    res["err"] = vmerror.Error{Message: "认证失败"}
-    c.JSON(http.StatusBadRequest, res)
+    vmerror.REQUESTERROR(c, err)
     return
   }
   ar := vm.Vms_archives{}
@@ -420,28 +388,27 @@ func GetVmArchive(c *gin.Context)  {
   token := c.Request.Header.Get("token")
   userid, err := utils.ParseToken(token)
   if err != nil {
-    res["err"] = vmerror.Error{Message: "认证失败"}
-    c.JSON(http.StatusOK, res)
+    vmerror.SUCCESS(c, vmerror.Error{Message: "认证失败"})
     return
   }
   pagenumber, vmcount,  err := vm.Getvmarchivepagenumber(userid)
   if err != nil {
-    res["res"] = nil
-    res["err"] = err
-    c.JSON(http.StatusInternalServerError, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
   r, err := ar.GetVmArchive(startpage)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
 
+  var res = make(map[string]interface{})
   res["res"] = r
   res["pagenumber"] = pagenumber
   res["vmcount"] = vmcount
   res["err"] = nil
-  if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
-    c.JSON(http.StatusInternalServerError, res)
-  }
+
 
   c.JSON(http.StatusOK, res)
 }
@@ -470,24 +437,18 @@ func Delvmpermanent(c *gin.Context) {
 }
 
 func SearchVMArchive(c *gin.Context) {
-  var res = make(map[string]interface{})
   content:= c.Query("content")
-
   v := vm.Vms_archives{}
 
   s, err := v.SearchVMArchives(content)
-  res["err"] = nil
-  res["res"] = s
   if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
-    c.JSON(http.StatusInternalServerError, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
-  c.JSON(http.StatusOK, res)
+  vmerror.SUCCESS(c, s)
 }
 
 func CreateFlavor(c *gin.Context) {
-  var res = make(map[string]interface{})
   cpu, _ := strconv.Atoi(c.Query("cpu"))
   mem, _ := strconv.Atoi(c.Query("mem"))
 
@@ -499,17 +460,14 @@ func CreateFlavor(c *gin.Context) {
   validate := validator.New()
   err := validate.Struct(f)
   if err != nil {
-    res["err"] = vmerror.Error{Message: "参数错误"}
-    c.JSON(http.StatusBadRequest, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
   err = f.Createflavor(&f)
-  res["err"] = nil
   if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
-    c.JSON(http.StatusInternalServerError, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
-  c.JSON(http.StatusOK, res)
+  vmerror.SUCCESS(c, nil)
 }

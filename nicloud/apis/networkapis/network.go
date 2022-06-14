@@ -30,66 +30,68 @@ func Add(c *gin.Context) {
     Datacenter: datacenter,
   }
 
-  res := make(map[string]interface{})
   validate := validator.New()
   err := validate.Struct(v)
   if err != nil {
-    res["err"] = vmerror.Error{Message: "参数错误"}
-    c.JSON(400, res)
+    vmerror.SUCCESS(c, err)
     return
   }
 
   err = networks.AddVlan(datacenter, vlan, bridge, network, prefix, gateway)
   if err != nil {
-    res["err"] = err
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
-  res["err"] = nil
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, nil)
 }
 
 func Get(c *gin.Context) {
-  res := make(map[string]interface{})
-
   vlans, err := networks.Getvlan()
-  res["res"] = vlans
-  res["err"] = err
-  c.JSON(200, res)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, vlans)
 }
 
 func Getvlanbydatacenter(c *gin.Context) {
   datacenter := c.Query("datacenter")
-  res := make(map[string]interface{})
+
   vlans, err := networks.Getvlanbydatacenter(datacenter)
-  res["res"] = vlans
-  res["err"] = err
-  c.JSON(200, res)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, vlans)
 }
 
 func Delete(c *gin.Context) {
   vlan := c.Query("vlan")
 
-  res := make(map[string]interface{})
-
   err := networks.DeleteVlan(vlan)
-  res["err"] = err
-  c.JSON(200, res)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, nil)
 }
 
 
 func Deleteip(c *gin.Context) {
- vlan := c.Query("vlan")
- ip := c.Query("ip")
- res := make(map[string]interface{})
- ipcheck := vm.GetVmByIp(ip)
+  vlan := c.Query("vlan")
+  ip := c.Query("ip")
+  ipcheck := vm.GetVmByIp(ip)
 
- if ipcheck.Ip != "" {
-   res["err"] = vmerror.Error{Message: "ip已被占用"}
- } else {
-   res["err"] = networks.Deleteip(ip, vlan)
- }
- c.JSON(200, res)
+  if ipcheck.Ip != "" {
+    vmerror.SUCCESS(c, vmerror.Error{Message: "ip已被占用"})
+    return
+  }
+  err := networks.Deleteip(ip, vlan)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, nil)
 }
 
 func CreateIp(c *gin.Context) {
@@ -99,59 +101,67 @@ func CreateIp(c *gin.Context) {
   prefix, err := strconv.Atoi(c.Query("prefix"))
   gateway := c.Query("gateway")
 
-  res := make(map[string]interface{})
   if err != nil {
-    res["err"] = err
-    c.JSON(400, res)
+    vmerror.REQUESTERROR(c, err)
+    return
   }
 
   if prefix >= 32 || prefix < 8 {
-    res["err"] = err
-    c.JSON(400, vmerror.Error{"参数错误"})
+    vmerror.REQUESTERROR(c, vmerror.Error{"参数格式错误"})
+    return
   }
 
   err = networks.Createip(startip, endip, vlan, prefix, gateway)
-  res["err"] = err
-  c.JSON(200, res)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, nil)
 }
 
 func UpIp(c *gin.Context) {
   ipv4 := c.Query("ipv4")
   vlan := c.Query("vlan")
-  res := make(map[string]interface{})
 
   err := networks.OpIP(ipv4, vlan, 0)
-  res["err"] = err
-  c.JSON(200, res)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, nil)
 }
 
 func DownIp(c *gin.Context) {
   ipv4 := c.Query("ipv4")
   vlan := c.Query("vlan")
-  res := make(map[string]interface{})
 
   err := networks.OpIP(ipv4, vlan, 1)
-  res["err"] = err
-  c.JSON(200, res)
+  if err != nil {
+    vmerror.SUCCESS(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, nil)
 }
 
 func GetIplist(c *gin.Context) {
   vlan := c.Query("vlan")
-  iplist := networks.IPlist(vlan)
-  res := make(map[string]interface{})
-  res["res"] = iplist
-
-  c.JSON(200, res)
+  iplist, err:= networks.IPlist(vlan)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, iplist)
 }
 
 func GetallIp(c *gin.Context) {
   vlan := c.Query("vlan")
   iplist, err := networks.AllIP(vlan)
-  res := make(map[string]interface{})
-  res["res"] = iplist
-  res["err"] = err
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
 
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, iplist)
 }
 
 func DownloadExcel(c *gin.Context) {

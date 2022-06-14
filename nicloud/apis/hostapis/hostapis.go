@@ -12,20 +12,21 @@ import (
 func ListDomains(c *gin.Context) {
   host := c.Query("host")
   countvm, err := vm.ListDomains(host)
-  res := make(map[string]interface{})
-  res["res"] = countvm
-  res["err"] = err
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
 
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, countvm)
 }
 
 func GetHosts(c *gin.Context) {
   hostlist, err := vm.Hosts()
-  res := make(map[string]interface{})
-  res["res"] = hostlist
-  res["err"] = err
-
-  c.JSON(200, res)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, hostlist)
 }
 
 func Addcomment(c *gin.Context) {
@@ -33,10 +34,11 @@ func Addcomment(c *gin.Context) {
   comment := c.Query("comment")
 
   err := vm.Addcomment(ip, comment)
-  res := make(map[string]interface{})
-  res["err"] = err
-
-  c.JSON(200, res)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, nil)
 }
 
 func GetHostsbyvlan(c *gin.Context) {
@@ -45,21 +47,15 @@ func GetHostsbyvlan(c *gin.Context) {
 
   h := vm.Vm_hosts{}
   hostlist, err := h.GetHostsbyVlan(datacenter, vlan)
-  res := make(map[string]interface{})
-
-  res["err"] = nil
-  res["res"] = hostlist
   if err != nil {
-    res["err"] = err.Error()
+    vmerror.SERVERERROR(c, err)
+    return
   }
-
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, hostlist)
 }
 
 
 func Createhost(c *gin.Context) {
-  res := make(map[string]interface{})
-
   cpu, _ := strconv.Atoi(c.PostForm("cpu"))
   mem, _ := strconv.Atoi(c.PostForm("mem"))
   ipv4 := c.PostForm("ipv4")
@@ -73,72 +69,68 @@ func Createhost(c *gin.Context) {
     Max_vms: uint(max_vms),
     Datacenter: datacenter,
   }
+
   validate := validator.New()
   err := validate.Struct(h)
   if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
-    c.JSON(400, res)
+    vmerror.REQUESTERROR(c, err)
     return
   }
 
   var ss []string
   err = json.Unmarshal([]byte(vlan), &ss)
   if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
-    c.JSON(400, res)
+    vmerror.SERVERERROR(c ,err)
     return
   }
 
   err = h.Createhost(datacenter, uint(cpu), uint(mem), ipv4, uint(max_vms), ss)
-  res["err"] = err
-  c.JSON(200, res)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, nil)
 }
 
 func Delhost(c *gin.Context) {
-  res := make(map[string]interface{})
   ip := c.Query("ip")
   h := vm.Vm_hosts{}
 
   err := h.Deletehost(ip)
-  res["err"] = nil
   if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
+    vmerror.SUCCESS(c, err)
+    return
   }
-
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, nil)
 }
 
 func Gethostinfo(c *gin.Context) {
   ip := c.Query("ip")
-  r := vm.Gethostinfo(ip)
-  res := make(map[string]interface{})
-  res["res"] = r
-
-  c.JSON(200, res)
+  r, err := vm.Gethostinfo(ip)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, r)
 }
 
 func Counthost(c *gin.Context) {
-  res := make(map[string]interface{})
   r, err := vm.CountHost()
-  res["res"] = r
-  res["err"] = nil
   if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
+    vmerror.SERVERERROR(c, err)
+    return
   }
-
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, r)
 }
 
 func Gethostbyip(c *gin.Context) {
   ip := c.Query("ip")
   r, err := vm.Maphost(ip)
-  res := make(map[string]interface{})
-  res["err"] = nil
   if err != nil {
-    res["err"] = err.Error()
+    vmerror.SERVERERROR(c, err)
+    return
   }
-  res["res"] = r
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, r)
 }
 
 func Updatehostinfo(c *gin.Context) {
@@ -148,22 +140,18 @@ func Updatehostinfo(c *gin.Context) {
   mem, _ := strconv.Atoi(c.PostForm("mem"))
   num, _ := strconv.Atoi(c.PostForm("num"))
   vlanlist := c.PostForm("vlan")
-  res := make(map[string]interface{})
 
   var ss []string
   err := json.Unmarshal([]byte(vlanlist), &ss)
   if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
-    c.JSON(400, res)
+    vmerror.REQUESTERROR(c, err)
     return
   }
 
   err = h.Updatehostinfo(ip, cpu, mem, num, ss)
-
-  res["err"] = nil
   if err != nil {
-    res["err"] = err.Error()
+    vmerror.SERVERERROR(c, err)
+    return
   }
-
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, nil)
 }

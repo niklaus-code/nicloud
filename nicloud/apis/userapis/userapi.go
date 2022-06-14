@@ -10,37 +10,35 @@ import (
   "strconv"
 )
 
-type User struct {
-}
-
 func DelUser(c *gin.Context) {
-  res := make(map[string]interface{})
   id, err := strconv.Atoi(c.Query("id"))
 
   if err != nil {
-    res["err"] = err
-    c.JSON(400, res)
+    vmerror.REQUESTERROR(c, err)
     return
   }
 
   checkuser := vm2.Checkuser(id)
   if checkuser != nil {
-    res["err"] = checkuser
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, checkuser)
     return
   }
 
   err = users.DelUser(id)
-  res["err"] = err
-  c.JSON(200, res)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, nil)
 }
 
 func GetAllRoles(c *gin.Context) {
-  res := make(map[string]interface{})
   r, err := users.GetrAllRoles()
-  res["res"] = r
-  res["err"] = err
-  c.JSON(200, res)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, r)
 }
 
 func Createuser(c *gin.Context) {
@@ -50,11 +48,9 @@ func Createuser(c *gin.Context) {
   mobile := c.PostForm("mobile")
   role := c.PostForm("role")
 
-  res := make(map[string]interface{})
   roleobj, err := users.Getrolebyrolename(role)
   if err != nil {
-    res["err"] = err
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
@@ -69,60 +65,53 @@ func Createuser(c *gin.Context) {
   validate := validator.New()
   err = validate.Struct(r)
   if err != nil {
-    res["err"] = vmerror.Error{Message: "参数错误"}
-    c.JSON(400, res)
+    vmerror.REQUESTERROR(c, err)
     return
   }
 
   encryption := utils.Encryption(passwd)
 
   err = users.Createuser(username, encryption, email, roleobj.Id, mobile)
-  res["err"] = err
-  c.JSON(200, res)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, nil)
 }
 
 func GetUser(c *gin.Context) {
-  res := make(map[string]interface{})
   users, err := users.GetUsers()
   if err != nil {
-    res["err"] = err
-    c.JSON(400, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
-  res["res"] = users
-  res["err"] = nil
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, users)
 }
 
 func Changepasswd(c *gin.Context) {
-  res := make(map[string]interface{})
   username := c.PostForm("username")
   oldpasswd := c.PostForm("oldpasswd")
   newpasswd1 := c.PostForm("newpasswd1")
   newpasswd2 := c.PostForm("newpasswd2")
 
   if newpasswd1 != newpasswd2 {
-    res["err"] = vmerror.Error{Message: "2次输入的新密码不一致"}
-    c.JSON(200, res)
+    vmerror.SUCCESS(c, vmerror.Error{Message: "2次输入的新密码不一致"})
     return
   }
 
   if len(newpasswd1) < 5 {
-    res["err"] = vmerror.Error{Message: "密码长度不能小于5"}
-    c.JSON(200, res)
+    vmerror.SUCCESS(c, vmerror.Error{Message: "密码长度不能小于5"})
     return
   }
 
   err := users.ChangePasswd(username, utils.Encryption(oldpasswd), utils.Encryption(newpasswd1))
   if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, vmerror.Error{Message: err.Error()})
     return
   }
 
-  res["err"] = nil
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, nil)
 }
 
 // @Summary 用户登录接口
@@ -141,8 +130,7 @@ func Login(c *gin.Context) {
 
   t, u,  err := users.CheckPWD(username, encryption)
   if err != nil {
-    res["err"] = vmerror.Error{Message: "登陆失败"}
-    c.JSON(200, res)
+    vmerror.SUCCESS(c, vmerror.Error{Message: "登陆失败"})
     return
   }
 

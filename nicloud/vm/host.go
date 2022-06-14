@@ -312,15 +312,18 @@ func (h Vm_hosts)Deletehost (ip string) error {
   return nil
 }
 
-func Gethostinfo(ip string) []map[string]interface{} {
+func Gethostinfo(ip string) ([]map[string]interface{}, error) {
   db, err := db.NicloudDb()
   if err != nil {
-    return nil
+    return nil, err
   }
   var v []Vm_hosts
-  db.Where("status=1 and ipv4 != ?", ip).Find(&v)
+  err = db.Where("status=1 and ipv4 != ?", ip).Find(&v).Error
+  if err != nil {
+    return nil, err
+  }
   res := Allhosts(v)
-  return res
+  return res, nil
 }
 
 func Hosts() ([]map[string]interface{}, error) {

@@ -1,6 +1,7 @@
 package vdisk
 
 import (
+  "fmt"
   "github.com/gin-gonic/gin"
   "github.com/go-playground/validator/v10"
   "nicloud/cephcommon"
@@ -18,32 +19,27 @@ func Mountdisk(c *gin.Context) {
   vdiskid := c.Query("vdiskid")
 
   vms := vm.Vms{}
-  res := make(map[string]interface{})
 
   vminfo, err := vm.GetVmByUuid(vmid)
   if err != nil {
-    res["err"] = vmerror.Error{Message: "获取云主机信息失败"}
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
   s, err := vm.VmStatus(vmid, vminfo.Host)
   if err != nil {
-    res["err"] = err
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
   if s != "关机" {
-    res["err"] = vmerror.Error{Message: "cont mount disk, vm is " + s}
-    c.JSON(200, res)
+    vmerror.SUCCESS(c, vmerror.Error{Message: "cont mount disk, vm is " + s})
     return
   }
 
   storageinfo, err := ceph.Cephinfobyuuid(vminfo.Storage)
   if err != nil {
-    res["err"] = vmerror.Error{Message: "获取云主机信息失败"}
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, vmerror.Error{Message: "获取云主机信息失败"})
     return
   }
 
@@ -52,15 +48,11 @@ func Mountdisk(c *gin.Context) {
   err = vdisk.Mountdisk(vminfo.Ip, vminfo.Host, vminfo.Storage, storageinfo.Pool, vminfo.Datacenter, vdiskid, vms, vminfo.Vmxml, vminfo.Os)
   rwLock.Unlock()
   if err != nil {
-    res["err"] = err
-    c.Abort()
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
-  res["err"] = nil
-  c.JSON(200, res)
-
+  vmerror.SUCCESS(c, nil)
 }
 
 func Deletevdisk(c *gin.Context)  {
@@ -72,13 +64,15 @@ func Deletevdisk(c *gin.Context)  {
   err := vdisk.Deletevdisk(uuid, comment)
   rwLock.Unlock()
   res := make(map[string]interface{})
-  res["err"] = err
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
 
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, res)
 }
 
 func Createvdisk(c *gin.Context) {
-  res := make(map[string]interface{})
   contain, _ := strconv.Atoi(c.PostForm("contain"))
   pool := c.PostForm("pool")
   cephid := c.PostForm("storage")
@@ -88,8 +82,7 @@ func Createvdisk(c *gin.Context) {
   token := c.Request.Header.Get("token")
   userid, err := utils.ParseToken(token)
   if err != nil {
-    res["err"] = vmerror.Error{Message: "认证失败"}
-    c.JSON(200, res)
+    vmerror.SUCCESS(c, vmerror.Error{Message: "认证失败"})
     return
   }
 
@@ -103,8 +96,7 @@ func Createvdisk(c *gin.Context) {
   validate := validator.New()
   err = validate.Struct(d)
   if err != nil {
-    res["err"] = vmerror.Error{Message: "参数错误"}
-    c.JSON(400, res)
+    vmerror.REQUESTERROR(c, err)
     return
   }
 
@@ -112,34 +104,33 @@ func Createvdisk(c *gin.Context) {
   rwLock.Lock()
   err = d.Create(contain, pool, cephid, datacenter, userid, comment)
   rwLock.Unlock()
-  res["err"] = err
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
 
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, nil)
 }
 
 func Umountdisk(c *gin.Context) {
   vmip := c.Query("vmip")
   vdiskid := c.Query("vdiskid")
-  res := make(map[string]interface{})
   vminfo := vm.GetVmByIp(vmip)
 
   s, err := vm.VmStatus(vminfo.Uuid, vminfo.Host)
   if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
   if s != "关机" {
-    res["err"] = vmerror.Error{Message: "卸载云盘，需要云主机处于关机状态"}
-    c.JSON(200, res)
+    vmerror.SUCCESS(c, vmerror.Error{Message: "卸载云盘，需要云主机处于关机状态"})
     return
   }
 
   xml, err := vm.Getvmxmlby(vmip, vminfo.Storage, vminfo.Datacenter)
   if err != nil {
-    res["err"] =vmerror.Error{Message: err.Error()}
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
@@ -150,35 +141,30 @@ func Umountdisk(c *gin.Context) {
   err = d.Umountdisk(vmip, vminfo.Storage, vminfo.Datacenter, vdiskid, xml, vminfo.Host, v)
   rwLock.Unlock()
 
-  res["err"] = nil
   if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, nil)
 }
 
 func GetVdisk(c *gin.Context) {
-  res := make(map[string]interface{})
-
   token := c.Request.Header.Get("token")
   userid, err := utils.ParseToken(token)
   if err != nil {
-    res["err"] = vmerror.Error{Message: "认证失败"}
-    c.JSON(200, res)
+    vmerror.SUCCESS(c, vmerror.Error{Message: "认证失败"})
     return
   }
 
   r, err := vdisk.Getvdisk(userid)
-  res["res"] = r
-  res["err"] = nil
   if err != nil {
-    res["err"] = err.Error()
+    fmt.Println(err)
+    vmerror.SERVERERROR(c, err)
+    return
   }
 
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, r)
 }
 
 func AddComment(c *gin.Context)  {
@@ -187,24 +173,21 @@ func AddComment(c *gin.Context)  {
   comment := c.PostForm("comment")
   v := vdisk.Vms_vdisks{}
   err := v.Addcomment(uuid, comment)
-  res["err"] = nil
   if err != nil {
-    res["err"] = err
+    vmerror.SERVERERROR(c, err)
+    return
   }
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, res)
 }
 
 func GetVdiskArchive(c *gin.Context)  {
-  res := make(map[string]interface{})
   vd := vdisk.Vms_vdisks_archives{}
 
   r, err := vd.GetVmArchive()
-
-  res["res"] = r
-  res["err"] = nil
   if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
+    vmerror.SERVERERROR(c, err)
+    return
   }
 
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, r)
 }

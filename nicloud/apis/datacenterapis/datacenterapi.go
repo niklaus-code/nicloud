@@ -3,35 +3,37 @@ package datacenterapis
 import (
   "github.com/gin-gonic/gin"
   "nicloud/datacenter"
+  "nicloud/vmerror"
 )
 
 func GetDatacenter(c *gin.Context) {
-
-  res := make(map[string]interface{})
   r, err := datacenter.Get()
-
-  res["res"] = r
-  res["err"] = err
-  c.JSON(200, res)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, r)
 }
 
 func AddDatacenter(c *gin.Context) {
   d := c.PostForm("datacenter")
   comment := c.PostForm("comment")
 
-  res := make(map[string]interface{})
   err := datacenter.Add(d, comment)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
 
-  res["err"] = err
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, nil)
 }
 
 func DelDatacenter(c *gin.Context) {
   d := c.Query("datacenter")
-
-  res := make(map[string]interface{})
   err := datacenter.Del(d)
-
-  res["err"] = err
-  c.JSON(200, res)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, nil)
 }

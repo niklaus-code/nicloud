@@ -331,7 +331,6 @@ export default {
                 this.comment(response.data.res)
 				} else {
 					alert(response.data.err.Message)
-					this.$router.push({name:"login"})
 					} 
                 })   
             },

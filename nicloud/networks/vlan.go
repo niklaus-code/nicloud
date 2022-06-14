@@ -22,7 +22,10 @@ type Vms_vlans struct {
 }
 
 func DeleteVlan(vlan string) error {
-  existips := IPlist(vlan)
+  existips, err := IPlist(vlan)
+  if err != nil {
+    return err
+  }
   if len(existips) > 0 {
     return vmerror.Error{Message: "存在vlan相关IP 无法删除"}
   }
@@ -159,15 +162,15 @@ func Downloadips(vlan string) (string, error) {
   return ipliststr, nil
 }
 
-func IPlist(vlan string) []*Vms_ips {
+func IPlist(vlan string) ([]*Vms_ips, error) {
   dbs, err := db.NicloudDb()
   if err != nil {
-    return nil
+    return nil, err
   }
   var ips []*Vms_ips
   dbs.Where("vlan=? and status=0", vlan).Order("length(ipv4)").Order("ipv4").Find(&ips)
 
-  return ips
+  return ips, nil
 }
 
 func Ipresource(ip string) (string, error) {

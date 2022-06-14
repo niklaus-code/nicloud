@@ -14,32 +14,29 @@ import (
 var ceph cephcommon.Vms_Ceph
 
 func DelImage(c *gin.Context) {
-  res := make(map[string]interface{})
   osid, err := strconv.Atoi(c.Query("osid"))
   if err != nil {
-    res["err"] = nil
-    c.JSON(400, res)
+    vmerror.REQUESTERROR(c, err)
     return
   }
 
   checkvmsandos, err := vm.GetVmbyOsId(osid)
   if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
   if checkvmsandos {
     err := osimage.Del(osid)
     if err != nil {
-      res["err"] = vmerror.Error{Message: err.Error()}
+      vmerror.SERVERERROR(c, err)
+      return
     }
-    res["err"] = nil
-  } else {
-    res["err"] = vmerror.Error{Message: "有关联云主机，无法删除"}
+    vmerror.SUCCESS(c, nil)
+    return
   }
 
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, vmerror.Error{Message: "有关联云主机，无法删除"})
 }
 
 func UpdateImage(c *gin.Context) {
