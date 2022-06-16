@@ -36,15 +36,14 @@ func DelImage(c *gin.Context) {
     return
   }
 
-  vmerror.SUCCESS(c, vmerror.Error{Message: "有关联云主机，无法删除"})
+  vmerror.SERVERERROR(c, vmerror.Error{Message: "有关联云主机，无法删除"})
 }
 
 func UpdateImage(c *gin.Context) {
-  res := make(map[string]interface{})
   id, errparam := strconv.Atoi(c.PostForm("id"))
   if errparam != nil {
-    res["res"] = vmerror.Error{Message: "param err"}
-    c.JSON(400, res)
+    vmerror.REQUESTERROR(c, errparam)
+    return
   }
   datacenter := c.PostForm("datacenter")
   storage := c.PostForm("storage")
@@ -71,75 +70,71 @@ func UpdateImage(c *gin.Context) {
   err := validate.Struct(o)
 
   if err != nil {
-    res["err"] = vmerror.Error{Message: "参数错误"}
-    c.JSON(400, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
   err = osimage.Update(id, datacenter, storage, osname, snapname, cephblockdevice, xml)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
 
-  res["err"] = err
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, nil)
 }
 
 func GetImage(c *gin.Context) {
-  res := make(map[string]interface{})
   token := c.Request.Header.Get("token")
   user, err := utils.ParseToken(token)
 
   if err != nil {
-    res["err"] = vmerror.Error{Message: "认证失败"}
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
-  sort,_ := strconv.Atoi(c.Query("sort"))
-  r, err := osimage.Maposimage(user, sort)
-
-  res["res"] = r
-  res["err"] = nil
+  sort,err := strconv.Atoi(c.Query("sort"))
   if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
+    vmerror.REQUESTERROR(c, err)
+    return
   }
-
-  c.JSON(200, res)
+  r, err := osimage.Maposimage(user, sort)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, r)
 }
 
 
 func GetImageSort(c *gin.Context) {
-
-  res := make(map[string]interface{})
   r, err := osimage.Get_osimage_sort()
-
-  res["res"] = r
-  res["err"] = err
-  c.JSON(200, res)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, r)
 }
 
 func GetOsTag(c *gin.Context) {
   t := osimage.Vms_os_tags{}
-
-  res := make(map[string]interface{})
   r, err := t.Getostags()
-
-  res["res"] = r
-  res["err"] = nil
   if err != nil {
-    res["err"] = vmerror.Error{Message: err.Error()}
+    vmerror.SERVERERROR(c, err)
+    return
   }
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, r)
 }
 
 func GetImageby(c *gin.Context) {
   datacenter := c.Query("datacenter")
   storage := c.Query("storage")
 
-  res := make(map[string]interface{})
   r, err := osimage.Getimageby(datacenter, storage)
-
-  res["res"] = r
-  res["err"] = err
-  c.JSON(200, res)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, r)
 }
 
 func GetImagebytag(c *gin.Context) {
@@ -147,27 +142,20 @@ func GetImagebytag(c *gin.Context) {
   storage := c.Query("storage")
   tag := c.Query("tag")
 
-  res := make(map[string]interface{})
   r, err := osimage.Getimagebytag(datacenter, storage, tag)
-
-  res["res"] = r
-  res["err"] = err
-  c.JSON(200, res)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+  vmerror.SUCCESS(c, r)
 }
 
 func AddImage(c *gin.Context) {
-  res := make(map[string]interface{})
-
   datacenter := c.PostForm("datacenter")
   storage := c.PostForm("storage")
   osname := c.PostForm("osname")
   tag, _ := strconv.Atoi(c.PostForm("tag"))
-  createsnap, err := strconv.ParseBool(c.PostForm("createsnap"))
-  if err != nil {
-    res["err"] = vmerror.Error{Message: "参数错误"}
-    c.JSON(200, res)
-    return
-  }
+  createsnap, _ := strconv.ParseBool(c.PostForm("createsnap"))
 
   cephblockdevice := c.PostForm("cephblockdevice")
   xml, _ := strconv.Atoi(c.PostForm("xml"))
@@ -177,8 +165,7 @@ func AddImage(c *gin.Context) {
   user, err := utils.ParseToken(token)
 
   if err != nil {
-    res["err"] = vmerror.Error{Message: "认证失败"}
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
@@ -196,8 +183,7 @@ func AddImage(c *gin.Context) {
   validate := validator.New()
   err = validate.Struct(o)
   if err != nil {
-    res["err"] = vmerror.Error{Message: "参数错误"}
-    c.JSON(400, res)
+    vmerror.REQUESTERROR(c, err)
     return
   }
 
@@ -205,33 +191,28 @@ func AddImage(c *gin.Context) {
   if createsnap {
     storageinfo, err := ceph.Cephinfobyuuid(storage)
     if err != nil {
-      res["err"] = vmerror.Error{Message: err.Error()}
-      c.JSON(200, res)
+      vmerror.SERVERERROR(c, err)
       return
     }
 
     ceph := cephcommon.Vms_Ceph{}
     snap, err = ceph.CreateSnapAndProtect(storageinfo.Pool, cephblockdevice)
     if err != nil {
-      res["err"] = vmerror.Error{Message: err.Error()}
-      c.JSON(200, res)
+      vmerror.SERVERERROR(c, err)
       return
     }
   }
 
   err = o.Add(datacenter, storage, osname, cephblockdevice,  xml, sort , user, snap, tag)
-
-  res["err"] = nil
   if err != nil {
-    res["err"] = vmerror.Error{Message: "创建失败: "+ err.Error()}
+    vmerror.SERVERERROR(c, err)
+    return
   }
 
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, nil)
 }
 
 func Addosimagexml(c *gin.Context) {
-  res := make(map[string]interface{})
-
   sort, _ := strconv.Atoi(c.PostForm("tag"))
   xml := c.PostForm("xml")
   comment := c.PostForm("comment")
@@ -243,41 +224,30 @@ func Addosimagexml(c *gin.Context) {
   }
   err := x.Addxml(&x)
   if err != nil {
-    res["err"] = vmerror.Error{Message:  err.Error()}
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
-  res["err"] = nil
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, nil)
 }
 
 func Getosimagexml(c *gin.Context) {
-  res := make(map[string]interface{})
-
   data, err := osimage.Maposimagexml()
   if err != nil {
-    res["err"] = vmerror.Error{Message:  err.Error()}
-    c.JSON(200, res)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
-  res["err"] = nil
-  res["res"] = data
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, data)
 }
 
 func Delosimagexml(c *gin.Context) {
-  res := make(map[string]interface{})
   id, _ := strconv.Atoi(c.Query("id"))
   x := osimage.Vms_osimage_xmls{}
   err := x.Delxml(id)
   if err != nil {
-    res["err"] = vmerror.Error{Message:  err.Error()}
-    c.JSON(200, res)
-    return
+    vmerror.SERVERERROR(c, err)
   }
 
-  res["err"] = nil
-  c.JSON(200, res)
+  vmerror.SUCCESS(c, nil)
 }

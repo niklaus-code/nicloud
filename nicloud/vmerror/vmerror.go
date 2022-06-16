@@ -20,9 +20,11 @@ func REQUESTERROR(ctx * gin.Context, err error)  {
 }
 
 func SERVERERROR(ctx * gin.Context, err error)  {
-  ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
-    "err": Error{Message: err.Error()},
-  })
+  if err != nil {
+    ctx.JSON(http.StatusOK, map[string]interface{}{
+      "err": Error{Message: err.Error()},
+    })
+  }
 }
 
 func SUCCESS(ctx * gin.Context, data interface{})  {

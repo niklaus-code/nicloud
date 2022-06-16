@@ -98,7 +98,7 @@ func Delhost(c *gin.Context) {
 
   err := h.Deletehost(ip)
   if err != nil {
-    vmerror.SUCCESS(c, err)
+    vmerror.SERVERERROR(c, err)
     return
   }
   vmerror.SUCCESS(c, nil)

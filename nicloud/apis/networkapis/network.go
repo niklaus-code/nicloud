@@ -33,7 +33,7 @@ func Add(c *gin.Context) {
   validate := validator.New()
   err := validate.Struct(v)
   if err != nil {
-    vmerror.SUCCESS(c, err)
+    vmerror.SERVERERROR(c, err)
     return
   }
 
@@ -83,7 +83,7 @@ func Deleteip(c *gin.Context) {
   ipcheck := vm.GetVmByIp(ip)
 
   if ipcheck.Ip != "" {
-    vmerror.SUCCESS(c, vmerror.Error{Message: "ip已被占用"})
+    vmerror.SERVERERROR(c, vmerror.Error{Message: "ip已被占用"})
     return
   }
   err := networks.Deleteip(ip, vlan)
@@ -137,7 +137,7 @@ func DownIp(c *gin.Context) {
 
   err := networks.OpIP(ipv4, vlan, 1)
   if err != nil {
-    vmerror.SUCCESS(c, err)
+    vmerror.SERVERERROR(c, err)
     return
   }
   vmerror.SUCCESS(c, nil)

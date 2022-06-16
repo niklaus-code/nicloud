@@ -27,7 +27,6 @@ func Vnc(c *gin.Context)  {
   //c.Header("Content-Transfer-Encoding", "binary")
   //_ = xlsx.Write(c.Writer)
 
-
 func Search(c *gin.Context)  {
   ct := c.Query("content")
   vms, err := vm.SearchVm(ct)
@@ -77,7 +76,7 @@ func Getvmlist(c *gin.Context) {
   token := c.Request.Header.Get("token")
   userid, err := utils.ParseToken(token)
   if err != nil {
-   vmerror.SUCCESS(c, vmerror.Error{Message: "认证失败"})
+   vmerror.SERVERERROR(c, vmerror.Error{Message: "认证失败"})
    return
   }
 
@@ -108,7 +107,7 @@ func MigrateVmlive(c *gin.Context) {
 
   err := vm.MigrateVmlive(uuid, migratehost)
   if err != nil {
-    vmerror.SUCCESS(c, err)
+    vmerror.SERVERERROR(c, err)
     return
   }
   vmerror.SUCCESS(c, nil)
@@ -142,7 +141,7 @@ func Createvm(c *gin.Context) {
   user, err := utils.ParseToken(token)
 
   if err != nil {
-    vmerror.SUCCESS(c, vmerror.Error{Message: "认证失败"})
+    vmerror.SERVERERROR(c, vmerror.Error{Message: "认证失败"})
     return
   }
 
@@ -300,7 +299,7 @@ func Createsnap(c *gin.Context)  {
   token := c.Request.Header.Get("token")
   userid, err := utils.ParseToken(token)
   if err != nil {
-    vmerror.SUCCESS(c, vmerror.Error{Message: "认证失败"})
+    vmerror.SERVERERROR(c, vmerror.Error{Message: "认证失败"})
     return
   }
 
@@ -389,7 +388,7 @@ func GetVmArchive(c *gin.Context)  {
   token := c.Request.Header.Get("token")
   userid, err := utils.ParseToken(token)
   if err != nil {
-    vmerror.SUCCESS(c, vmerror.Error{Message: "认证失败"})
+    vmerror.SERVERERROR(c, vmerror.Error{Message: "认证失败"})
     return
   }
   pagenumber, vmcount,  err := vm.Getvmarchivepagenumber(userid)

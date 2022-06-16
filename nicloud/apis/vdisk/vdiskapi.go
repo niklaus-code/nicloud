@@ -32,7 +32,7 @@ func Mountdisk(c *gin.Context) {
   }
 
   if s != "关机" {
-    vmerror.SUCCESS(c, vmerror.Error{Message: "cont mount disk, vm is " + s})
+    vmerror.SERVERERROR(c, vmerror.Error{Message: "cont mount disk, vm is " + s})
     return
   }
 
@@ -81,7 +81,7 @@ func Createvdisk(c *gin.Context) {
   token := c.Request.Header.Get("token")
   userid, err := utils.ParseToken(token)
   if err != nil {
-    vmerror.SUCCESS(c, vmerror.Error{Message: "认证失败"})
+    vmerror.SERVERERROR(c, vmerror.Error{Message: "认证失败"})
     return
   }
 
@@ -123,7 +123,7 @@ func Umountdisk(c *gin.Context) {
   }
 
   if s != "关机" {
-    vmerror.SUCCESS(c, vmerror.Error{Message: "卸载云盘，需要云主机处于关机状态"})
+    vmerror.SERVERERROR(c, vmerror.Error{Message: "卸载云盘，需要云主机处于关机状态"})
     return
   }
 
@@ -152,7 +152,7 @@ func GetVdisk(c *gin.Context) {
   token := c.Request.Header.Get("token")
   userid, err := utils.ParseToken(token)
   if err != nil {
-    vmerror.SUCCESS(c, vmerror.Error{Message: "认证失败"})
+    vmerror.SERVERERROR(c, vmerror.Error{Message: "认证失败"})
     return
   }
 

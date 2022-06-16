@@ -130,7 +130,7 @@ func Login(c *gin.Context) {
 
   t, u,  err := users.CheckPWD(username, encryption)
   if err != nil {
-    vmerror.SUCCESS(c, vmerror.Error{Message: "登陆失败"})
+    vmerror.SERVERERROR(c, vmerror.Error{Message: "登陆失败"})
     return
   }
 
