@@ -15,11 +15,29 @@ Vue.prototype.cookie = cookie;
 
 Vue.config.productionTip = false
 
+axios.interceptors.response.use(function (response) {
+
+if (response.data.err != null) {
+        if (response.data.err.Message === "认证过期，请重新登陆") {
+            router.push('/login')
+        }
+    }
+
+    return response
+
+}, function (error) {
+    return Promise.reject(error)
+});
+
 axios.interceptors.request.use(function (config) {
 	let token = sessionStorage.getItem('token')
 		config.headers.token = token;
 		return config
 		}
+        , function (error) {
+            router.push('/login')
+            return Promise.reject(error)
+        }
 );
 
 

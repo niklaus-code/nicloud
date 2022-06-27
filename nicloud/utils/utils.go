@@ -7,6 +7,7 @@ import (
   "github.com/dgrijalva/jwt-go"
   "github.com/gin-gonic/gin"
   uuid "github.com/satori/go.uuid"
+  "net/http"
   "nicloud/users"
   "nicloud/vmerror"
   "strconv"
@@ -43,7 +44,7 @@ func Tokenauth() gin.HandlerFunc {
     if len(token) == 0 {
       res["err"] = vmerror.Error{Message: "认证失败，请重新登陆"}
       c.Abort()
-      c.JSON(400, res)
+      c.JSON(http.StatusBadRequest, res)
       return
     }
 
@@ -51,7 +52,7 @@ func Tokenauth() gin.HandlerFunc {
     if err != nil {
       res["err"] = vmerror.Error{Message: "认证过期，请重新登陆"}
       c.Abort()
-      c.JSON(200, res)
+      c.JSON(http.StatusOK, res)
       return
     }
   }
@@ -65,7 +66,7 @@ func RoleAuth() gin.HandlerFunc {
     if err != nil {
       res["err"] = vmerror.Error{Message: "认证过期，请重新登陆"}
       c.Abort()
-      c.JSON(200, res)
+      c.JSON(http.StatusOK, res)
       return
       }
 
@@ -73,7 +74,7 @@ func RoleAuth() gin.HandlerFunc {
     if err != nil {
       res["err"] = vmerror.Error{Message: "认证失败"}
       c.Abort()
-      c.JSON(200, res)
+      c.JSON(http.StatusOK, res)
       return
     }
 
@@ -81,14 +82,14 @@ func RoleAuth() gin.HandlerFunc {
     if err != nil {
       res["err"] = vmerror.Error{Message: "没有权限，请联系管理员"}
       c.Abort()
-      c.JSON(200, res)
+      c.JSON(http.StatusOK, res)
       return
     }
 
     if role.Rolename != "admin" {
       res["err"] = vmerror.Error{Message: "没有权限，请联系管理员"}
       c.Abort()
-      c.JSON(200, res)
+      c.JSON(http.StatusOK, res)
       return
     }
   }
