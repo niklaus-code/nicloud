@@ -47,7 +47,7 @@
        			<td>{{item.Create_time}}</td>
        			<td>{{item.Archive_time}}</td>
 				<td>{{item.Comment}}</td>
-       			<td :class="[{'dropup': (index > 10)}, {'dropdown': (index <= 10)}]" style="min-width:90px">
+       			<td :class="[{'dropup': (index > 10)}, {'dropdown': (index <= 10)}]" >
 					<button @click="delvmpermanent(item.Uuid, item.Storage)" class="btn btn-danger btn-xs dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
 					<span class="glyphicon glyphicon-trash"></span> 永久删除  
 					</button>
@@ -155,7 +155,6 @@ export default {
     margin-bottom: 0;
     left: -60px;
     right:0;
-    min-width: 140px;
 }
 
 .col-md-5 {
