@@ -37,7 +37,6 @@
         				<th><span class="glyphicon glyphicon-edit"> </span>
 							<span>&nbsp操作</span>
 						</th>
-        				<th><span class="glyphicon glyphicon-edit"> </span>&nbsp状态</th>
       				</tr>
     			</thead>
 				<tbody v-for="(item, index) in data">
@@ -72,10 +71,6 @@
 						<td>
 							<button  v-if="item.cm" type="button" class="btn btn-primary btn-xs" @click="save(item.Id, index)">保存</button>
 							<button v-else type="button" @click="delmachine(item.Id, index)" class="btn btn-primary btn-xs">删除</button>
-						</td>
-						<td>
-							<button  v-if="item.Status === '运行'" type="button" class="btn btn-success btn-xs">{{item.Status}}</button>
-							<button v-else type="button" class="btn btn-warning btn-xs">{{item.Status}}</button>
 						</td>
 					</tr>
 				</tbody>
