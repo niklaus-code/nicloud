@@ -7,6 +7,7 @@ import (
   "net/http"
   "nicloud/utils"
   "nicloud/vm"
+  "nicloud/vdisk"
   "nicloud/vmerror"
   "strconv"
   "sync"
@@ -471,3 +472,27 @@ func CreateFlavor(c *gin.Context) {
   }
   vmerror.SUCCESS(c, nil)
 }
+
+func Vmchangeowner(c *gin.Context) {
+  uuid := c.PostForm("uuid")
+  vmip:= c.PostForm("ip")
+  userid, err := strconv.Atoi(c.PostForm("userid"))
+  if err != nil {
+    vmerror.REQUESTERROR(c, err)
+  }
+
+  v := vm.Vms{}
+  err = v.ChanegOwner(userid, uuid)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+  }
+
+  vd := vdisk.Vms_vdisks{}
+  err = vd.ChanegOwner(userid, vmip)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+  }
+
+  vmerror.SUCCESS(c, nil)
+}
+

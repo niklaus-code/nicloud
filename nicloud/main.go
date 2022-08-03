@@ -78,6 +78,7 @@ func main() {
     v.GET("delvmpermanent", vmapis.Delvmpermanent)
     v.GET("createflavor", vmapis.CreateFlavor)
     v.GET("searchvmachives", vmapis.SearchVMArchive)
+    v.POST("vmchangeowner", vmapis.Vmchangeowner)
 	}
 
   m := r.Group("/api/machine")

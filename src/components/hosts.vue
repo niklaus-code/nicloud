@@ -80,7 +80,7 @@
                         <li v-if='item.flag'><span class="glyphicon glyphicon-calendar" @click="edit(index)"></span></li>
                             <div v-if='item.flag1'>
                                 <div><input type="text" v-model="comments"></div>
-                                <div><span  @click="input(index, item.Ipv4)" class="glyphicon glyphicon-calendar"></span></div>
+                                <div><span @click="input(index, item.Ipv4)" class="glyphicon glyphicon-calendar"></span></div>
                             </div>
                         </td>
 

@@ -115,7 +115,7 @@ export default {
             },
 
 		vminfo: function () {
-			var v = this.$store.state.changeparam.uuid
+			var v = this.$store.state.editsetting.uuid
 			if (v === null || typeof v === 'undefined' || v === '' || v === "undefined") {
 			 	this.uuid = sessionStorage.getItem('uuid')
 			 	this.ip = sessionStorage.getItem('ip')
@@ -126,22 +126,22 @@ export default {
 			 	this.owner = sessionStorage.getItem('owner')
 			 	this.comment = sessionStorage.getItem('comment')
 				} else {
-				    this.uuid = this.$store.state.changeparam.uuid
-				    this.ip = this.$store.state.changeparam.ip
-				    this.os = this.$store.state.changeparam.os
-				    this.host = this.$store.state.changeparam.host
-			 	    this.datacenter = this.$store.state.changeparam.datacenter
-			 	    this.storage = this.$store.state.changeparam.storage
-				    this.owner = this.$store.state.changeparam.owner
-				    this.comment = this.$store.state.changeparam.comment
-			 	    sessionStorage.setItem('uuid', this.$store.state.changeparam.uuid)
-			 	    sessionStorage.setItem('ip', this.$store.state.changeparam.ip)
-			 	    sessionStorage.setItem('os', this.$store.state.changeparam.os)
-			 	    sessionStorage.setItem('host', this.$store.state.changeparam.host)
-			 	    sessionStorage.setItem('datacenter', this.$store.state.changeparam.datacenter)
-			 	    sessionStorage.setItem('storage', this.$store.state.changeparam.storage)
-			 	    sessionStorage.setItem('owner', this.$store.state.changeparam.owner)
-			 	    sessionStorage.setItem('comment', this.$store.state.changeparam.comment)
+				    this.uuid = this.$store.state.editsetting.uuid
+				    this.ip = this.$store.state.editsetting.ip
+				    this.os = this.$store.state.editsetting.os
+				    this.host = this.$store.state.editsetting.host
+			 	    this.datacenter = this.$store.state.editsetting.datacenter
+			 	    this.storage = this.$store.state.editsetting.storage
+				    this.owner = this.$store.state.editsetting.owner
+				    this.comment = this.$store.state.editsetting.comment
+			 	    sessionStorage.setItem('uuid', this.$store.state.editsetting.uuid)
+			 	    sessionStorage.setItem('ip', this.$store.state.editsetting.ip)
+			 	    sessionStorage.setItem('os', this.$store.state.editsetting.os)
+			 	    sessionStorage.setItem('host', this.$store.state.editsetting.host)
+			 	    sessionStorage.setItem('datacenter', this.$store.state.editsetting.datacenter)
+			 	    sessionStorage.setItem('storage', this.$store.state.editsetting.storage)
+			 	    sessionStorage.setItem('owner', this.$store.state.editsetting.owner)
+			 	    sessionStorage.setItem('comment', this.$store.state.editsetting.comment)
 				}
 			},
         }

@@ -6,7 +6,7 @@
 
 		<div class="col-sm-10 col-sm-offset-1" style="margin-top:30px;" >
 			<div class="col-sm-12">
-			<span class="vlaninfo">vlan信息</span>
+			<span class="vlaninfo"><strong>vlan信息</strong></span>
 			</div>
 			<div class="col-sm-3">
 				vlan名称：{{vlan}}
@@ -23,7 +23,7 @@
 		</div>
 		<div class="col-sm-10 col-sm-offset-1"  style="margin-top:30px; margin-bottom:30px" >
 			<div class="col-sm-12">
-				<span class="createip">生成IP & MAC</span>
+				<span class="createip"><strong>生成IP & MAC</strong></span>
 			</div>
 			<div class="col-sm-4 startip">
 				<form class="form-inline" style="width:100%" >

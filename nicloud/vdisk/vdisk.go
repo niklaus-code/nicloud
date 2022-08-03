@@ -511,3 +511,15 @@ func (vd Vms_vdisks_archives)GetVmArchive() ([]map[string]interface{}, error) {
   return Mapvdiskarchive(d), nil
 }
 
+func (v Vms_vdisks)ChanegOwner(userid int, vmip string) error {
+  db, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+  err = db.Model(&Vms_vdisks{}).Where("vm_ip=?", vmip).Update("user", userid).Error
+  if err != nil {
+    return err
+  }
+
+  return nil
+}

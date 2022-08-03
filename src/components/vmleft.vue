@@ -24,7 +24,7 @@
     </div>
     <div class="bottom" style="">
         <p>Copyright <span class="glyphicon glyphicon-copyright-mark" ></span> 2021</p>
-        <p>关于•联系•反馈</p>
+        <p>联系•反馈</p>
     </div>
 </div>
 </template>

@@ -1145,3 +1145,16 @@ func (v Vms_archives)SearchVMArchives(content string) ([]*Vms_archives, error) {
   }
   return vmarchives, nil
 }
+
+func (v Vms)ChanegOwner(userid int, uuid string) error {
+  db, err := db.NicloudDb()
+  if err != nil {
+    return err
+  }
+  err = db.Model(&Vms{}).Where("uuid=?", uuid).Update("owner", userid).Error
+  if err != nil {
+    return err
+  }
+
+  return nil
+}

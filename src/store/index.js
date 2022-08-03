@@ -14,7 +14,7 @@ const store = new Vuex.Store({
     host: {
         ip: "",
         },
-    changeparam: {
+    editsetting: {
 		uuid: "",
 		host: "",
 		cpu: "",

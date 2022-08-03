@@ -84,7 +84,10 @@
 							<a @click="migratelive(item.Uuid, item.Host, item.Cpu, item.Mem, item.Os, item.Owner, item.Ip, item.Comment)" style="border-bottom: 1px white solid" role="menuitem" tabindex="-1">热迁移</a>
 						</li>
                         <li style="background-color: #C0C0C0;"  role="presentation">
-                            <a @click="changeparam(item.Uuid, item.Ip, item.Os, item.Host, item.Cpu, item.Mem, item.Owner, item.Comment)" role="menuitem" tabindex="-1">修改配置</a>
+                            <a @click="editsetting(item.Uuid, item.Ip, item.Os, item.Host, item.Cpu, item.Mem, item.Owner, item.Comment)" role="menuitem" tabindex="-1">修改配置</a>
+                        </li>
+                        <li style="background-color: #C0C0C0;"  role="presentation">
+                            <a @click="vmchangeowner(item.Uuid, item.Ip, item.Os, item.Host, item.Cpu, item.Mem, item.Owner, item.Comment)" role="menuitem" tabindex="-1">修改所属用户</a>
                         </li>
       					<li @click="createsnap(item.Uuid, item.Ip,  item.Os, item.Host, item.Datacenter, item.Storage, item.Owner, item.Comment)" style="background-color: #C0C0C0; border-bottom: 1px white solid" role="presentation"><a role="menuitem" tabindex="-1">创建 & 管理快照</a></li>
       					<li @click="restore(item.Uuid, item.Ip,  item.Os, item.Host, item.Datacenter, item.Storage, item.Owner, item.Comment)" style="background-color: #CD5C5C" role="presentation"><a role="menuitem" tabindex="-1">重置镜像</a></li>
@@ -152,6 +155,18 @@ export default {
     },
 
     methods: {
+        vmchangeowner: function (uuid, ip, os, host, cpu, mem, owner, comment) {
+            this.$emit("toParent", "vmchangeowner");
+			this.$store.state.editsetting.uuid = uuid
+			this.$store.state.editsetting.ip = ip
+			this.$store.state.editsetting.os = os
+			this.$store.state.editsetting.host = host
+			this.$store.state.editsetting.cpu = cpu
+			this.$store.state.editsetting.mem = mem
+			this.$store.state.editsetting.owner = owner
+			this.$store.state.editsetting.comment = comment
+            },
+
         vminfo: function (uuid, host) {
             this.$emit("toParent", "vm_info");
 			this.$store.state.monitor.uuid = uuid
@@ -160,38 +175,38 @@ export default {
 
         createsnap: function (uuid, ip, os, host,datacenter, storage , owner, comment) {
             this.$emit("toParent", "snap");
-			this.$store.state.changeparam.uuid = uuid
-			this.$store.state.changeparam.ip = ip
-			this.$store.state.changeparam.os = os
-			this.$store.state.changeparam.datacenter = datacenter
-			this.$store.state.changeparam.storage = storage
-			this.$store.state.changeparam.host = host
-			this.$store.state.changeparam.owner = owner
-			this.$store.state.changeparam.comment = comment
+			this.$store.state.editsetting.uuid = uuid
+			this.$store.state.editsetting.ip = ip
+			this.$store.state.editsetting.os = os
+			this.$store.state.editsetting.datacenter = datacenter
+			this.$store.state.editsetting.storage = storage
+			this.$store.state.editsetting.host = host
+			this.$store.state.editsetting.owner = owner
+			this.$store.state.editsetting.comment = comment
             },
 
         snap: function (uuid, ip, os, host,datacenter, storage , owner, comment) {
             this.$emit("toParent", "snap");
-			this.$store.state.changeparam.uuid = uuid
-			this.$store.state.changeparam.ip = ip
-			this.$store.state.changeparam.os = os
-			this.$store.state.changeparam.datacenter = datacenter
-			this.$store.state.changeparam.storage = storage
-			this.$store.state.changeparam.host = host
-			this.$store.state.changeparam.owner = owner
-			this.$store.state.changeparam.comment = comment
+			this.$store.state.editsetting.uuid = uuid
+			this.$store.state.editsetting.ip = ip
+			this.$store.state.editsetting.os = os
+			this.$store.state.editsetting.datacenter = datacenter
+			this.$store.state.editsetting.storage = storage
+			this.$store.state.editsetting.host = host
+			this.$store.state.editsetting.owner = owner
+			this.$store.state.editsetting.comment = comment
             },
 
-        changeparam: function (uuid, ip, os, host, cpu, mem, owner, comment) {
-            this.$emit("toParent", "changeparam");
-			this.$store.state.changeparam.uuid = uuid
-			this.$store.state.changeparam.ip = ip
-			this.$store.state.changeparam.os = os
-			this.$store.state.changeparam.host = host
-			this.$store.state.changeparam.cpu = cpu
-			this.$store.state.changeparam.mem = mem
-			this.$store.state.changeparam.owner = owner
-			this.$store.state.changeparam.comment = comment
+        editsetting: function (uuid, ip, os, host, cpu, mem, owner, comment) {
+            this.$emit("toParent", "editsetting");
+			this.$store.state.editsetting.uuid = uuid
+			this.$store.state.editsetting.ip = ip
+			this.$store.state.editsetting.os = os
+			this.$store.state.editsetting.host = host
+			this.$store.state.editsetting.cpu = cpu
+			this.$store.state.editsetting.mem = mem
+			this.$store.state.editsetting.owner = owner
+			this.$store.state.editsetting.comment = comment
             },
 
         migratelive: function (uuid, host, cpu, mem, os, owner, ip, comment) {
@@ -349,14 +364,14 @@ export default {
     
         restore: function (uuid, ip, os, host,datacenter, storage , owner, comment) {
             this.$emit("toParent", "restorevm");
-			this.$store.state.changeparam.uuid = uuid
-			this.$store.state.changeparam.ip = ip
-			this.$store.state.changeparam.os = os
-			this.$store.state.changeparam.datacenter = datacenter
-			this.$store.state.changeparam.storage = storage
-			this.$store.state.changeparam.host = host
-			this.$store.state.changeparam.owner = owner
-			this.$store.state.changeparam.comment = comment
+			this.$store.state.editsetting.uuid = uuid
+			this.$store.state.editsetting.ip = ip
+			this.$store.state.editsetting.os = os
+			this.$store.state.editsetting.datacenter = datacenter
+			this.$store.state.editsetting.storage = storage
+			this.$store.state.editsetting.host = host
+			this.$store.state.editsetting.owner = owner
+			this.$store.state.editsetting.comment = comment
             },
 
         shutdown: function (uuid, index, host) {

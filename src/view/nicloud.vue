@@ -70,7 +70,7 @@ import updatehost from '@/components/updatehost'
 import createceph from '@/components/createceph'
 import migratevm from '@/components/migratevm'
 import migratevmlive from '@/components/migratevmlive'
-import changeparam from '@/components/changeparam'
+import editsetting from '@/components/editsetting'
 import createdatacenter from '@/components/createdatacenter'
 import datacenter from '@/components/datacenter'
 import vmbottom from '@/components/vmbottom'
@@ -84,6 +84,7 @@ import changepasswd from '@/components/changepasswd'
 import xml from '@/components/xml'
 import createxml from '@/components/createxml'
 import vm_info from '@/components/vm_info'
+import vmchangeowner from '@/components/vmchangeowner'
 
 var initroute 
 if (sessionStorage.getItem('router')) {
@@ -102,7 +103,7 @@ export default {
     },
 
     components: {
-        vm_info, createxml, xml, changepasswd, vm_flavor, vdisk_archive, vm_archive, updatehost, createuser, user, migratevmlive, restorevm, snap, vmbottom, datacenter, createdatacenter, changeparam, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
+        vmchangeowner, vm_info, createxml, xml, changepasswd, vm_flavor, vdisk_archive, vm_archive, updatehost, createuser, user, migratevmlive, restorevm, snap, vmbottom, datacenter, createdatacenter, editsetting, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
     },
 
 
