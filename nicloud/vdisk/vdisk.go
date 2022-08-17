@@ -212,6 +212,7 @@ func Deletevdisk(uuid string, comment string) error {
     c.RenameBlock(delid, uuid)
     return err
   }
+  tx.Commit()
   return nil
 }
 
