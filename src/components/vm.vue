@@ -169,8 +169,14 @@ export default {
 
         vminfo: function (uuid, host) {
             this.$emit("toParent", "vm_info");
-			this.$store.state.monitor.uuid = uuid
-			this.$store.state.monitor.host = host
+			this.$store.state.editsetting.uuid = uuid
+			this.$store.state.editsetting.ip = ip
+			this.$store.state.editsetting.os = os
+			this.$store.state.editsetting.host = host
+			this.$store.state.editsetting.cpu = cpu
+			this.$store.state.editsetting.mem = mem
+			this.$store.state.editsetting.owner = owner
+			this.$store.state.editsetting.comment = comment
             },
 
         createsnap: function (uuid, ip, os, host,datacenter, storage , owner, comment) {
