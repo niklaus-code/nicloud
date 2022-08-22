@@ -1,16 +1,75 @@
 <template>
-<div class="col-sm-12">
-    <div class="col-sm-6">
-        <highcharts :options="cpuchart"></highcharts>
+<div>
+    <div class="col-sm-12 form-group" style="border-bottom: 1px green solid; margin-top: 20px">
+        <div style="width: 200px; float: left;">
+            <h3>云主机 & 详情</h3>
+        </div>
     </div>
-    <div class="col-sm-6">
-        <highcharts :options="memchart"></highcharts>
+    
+    <div class="col-sm-12 choose" >
+        <div class="col-sm-12" >
+            <div class="col-sm-2" >
+                <label>UUID :</label>
+            </div>
+            <div class="col-sm-10" >
+                {{uuid}}
+            </div>
+        </div>
+        <div class="col-sm-12" >
+            <div class="col-sm-2" >
+                <label>IP :</label>
+            </div>
+            <div class="col-sm-10" >
+               {{ip}}
+            </div>
+        </div>
+        <div class="col-sm-12" >
+            <div class="col-sm-2" >
+                <label>宿主机 :</label>
+            </div>
+            <div class="col-sm-10" >
+               {{host}}
+            </div>
+        </div>
+        <div class="col-sm-12" >
+            <div class="col-sm-2" >
+                <label>存储集群 :</label>
+            </div>
+            <div class="col-sm-10" >
+                {{storage}}
+            </div>
+        </div>
+        <div class="col-sm-12" >
+            <div class="col-sm-2" >
+                <label>数据中心 :</label>
+            </div>
+            <div class="col-sm-10" >
+                {{datacenter}}
+            </div>
+        </div>
+        <div class="col-sm-12" >
+            <div class="col-sm-2" >
+                <label>备注 :</label>
+            </div>
+            <div class="col-sm-10" >
+                {{comment}}
+            </div>
+        </div>
     </div>
-    <div class="col-sm-6">
-        <highcharts :options="netchart"></highcharts>
-    </div>
-    <div class="col-sm-6">
-        <highcharts :options="diskchart"></highcharts>
+
+    <div class="col-sm-12" style="margin-top: 50px">
+        <div class="col-sm-6">
+            <highcharts :options="cpuchart"></highcharts>
+        </div>
+        <div class="col-sm-6">
+            <highcharts :options="memchart"></highcharts>
+        </div>
+        <div class="col-sm-6">
+            <highcharts :options="netchart"></highcharts>
+        </div>
+        <div class="col-sm-6">
+            <highcharts :options="diskchart"></highcharts>
+        </div>
     </div>
 </div>
 </template>
@@ -28,6 +87,10 @@ export default {
 
         uuid: "",
         host: "",
+        ip: "",
+        datacenter: "",
+        storage: "",
+        comment: "",
         cpuchart: {
             chart: {
                 type: 'areaspline'
@@ -212,6 +275,7 @@ export default {
         }, 2000);
   },
 
+    //离开当前路由, 停止请求
     beforeDestroy() {
         clearInterval(this.nettimer);        
         this.nettimer = null;
@@ -230,9 +294,28 @@ export default {
         if (v === null || typeof v === 'undefined' || v === '' || v === "undefined") {
             this.uuid = sessionStorage.getItem('uuid')
             this.host = sessionStorage.getItem('host')
+            this.ip = sessionStorage.getItem('ip')
+            this.os = sessionStorage.getItem('os')
+            this.datacenter = sessionStorage.getItem('datacenter')
+            this.storage = sessionStorage.getItem('storage')
+            this.owner = sessionStorage.getItem('owner')
+            this.comment = sessionStorage.getItem('comment')
+
             } else {
                 this.uuid = this.$store.state.monitor.uuid
                 this.host = this.$store.state.monitor.host
+                this.ip = this.$store.state.editsetting.ip
+                this.os = this.$store.state.editsetting.os
+                this.datacenter = this.$store.state.editsetting.datacenter
+                this.storage = this.$store.state.editsetting.storage
+                this.owner = this.$store.state.editsetting.owner
+                sessionStorage.setItem('uuid', this.$store.state.editsetting.uuid)
+                sessionStorage.setItem('ip', this.$store.state.editsetting.ip)
+                sessionStorage.setItem('os', this.$store.state.editsetting.os)
+                sessionStorage.setItem('datacenter', this.$store.state.editsetting.datacenter)
+                sessionStorage.setItem('storage', this.$store.state.editsetting.storage)
+                sessionStorage.setItem('owner', this.$store.state.editsetting.owner)
+                sessionStorage.setItem('comment', this.$store.state.editsetting.comment)
                 sessionStorage.setItem('uuid', this.$store.state.monitor.uuid)
                 sessionStorage.setItem('host', this.$store.state.monitor.host)
                 }
@@ -242,7 +325,7 @@ export default {
         var apiurl = `/api/vm/details/cpuinfo`
         this.$http.get(apiurl, { params: {uuid: this.uuid, host: this.host} }).then(response => {
              if (response.data.err != null) {
-                 alert(response.data.err.Message)
+                 console.log(response.data.err.Message)
              } else {
                  this.cpuchart.xAxis.categories.push(response.data.res["Ctime"])
                  if (this.cpuchart.xAxis.categories.length > 60 ) {
@@ -261,7 +344,7 @@ export default {
         var apiurl = `/api/vm/details/meminfo`
         this.$http.get(apiurl, { params: {uuid: this.uuid, host: this.host} }).then(response => {
              if (response.data.err != null) {
-                 alert(response.data.err.Message)
+                 console.log(response.data.err.Message)
              } else {
                  this.memchart.xAxis.categories.push(response.data.res["Ctime"])
                  if (this.memchart.xAxis.categories.length > 60 ) {
@@ -290,7 +373,7 @@ export default {
         var apiurl = `/api/vm/details/diskinfo`
         this.$http.get(apiurl, { params: {uuid: this.uuid, host: this.host} }).then(response => {
              if (response.data.err != null) {
-                 alert(response.data.err.Message)
+                 console.log(response.data.err.Message)
              } else {
                  this.diskchart.xAxis.categories.push(response.data.res["Ctime"])
                  if (this.diskchart.xAxis.categories.length > 60 ) {
@@ -314,7 +397,7 @@ export default {
         var apiurl = `/api/vm/details/netinfo`
         this.$http.get(apiurl, { params: {uuid: this.uuid, host: this.host} }).then(response => {
              if (response.data.err != null) {
-                 alert(response.data.err.Message)
+                 console.log(response.data.err.Message)
              } else {
                  this.netchart.xAxis.categories.push(response.data.res["Ctime"])
                  if (this.netchart.xAxis.categories.length > 60 ) {
@@ -336,3 +419,16 @@ export default {
     }
  }
 </script>
+
+<style>
+.col-sm-2 label {
+    float: right
+}
+
+.choose {
+    margin-top: 30px;
+    padding-bottom: 30px;
+    border-bottom: solid #ddd 1px;
+    border-radius: 4px 4px 0 0;
+}
+</style>
