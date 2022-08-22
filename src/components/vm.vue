@@ -40,7 +40,7 @@
   					<input type="checkbox" v-model="item.Checkout"> 
 				</label>
        		    <!--<td width="300px">{{item.Name}}</td> -->
-       			<td @click="vminfo(item.Uuid, item.Host)"><a>{{item.Ip}}</a></td>
+       			<td @click="vminfo(item.Uuid, item.Host, item.Cpu, item.Mem, item.Os, item.Owner, item.Ip, item.Comment, item.Storage, item.Datacenter)"><a>{{item.Ip}}</a></td>
        			<td>{{item.osname}}</td>
        			<td>{{item.Host}}</td>
        			<td  style="min-width: 95px">{{item.Cpu}}核 / {{item.Mem}}G</td>
@@ -167,16 +167,18 @@ export default {
 			this.$store.state.editsetting.comment = comment
             },
 
-        vminfo: function (uuid, host) {
+        vminfo: function (uuid, host, cpu, mem, os, owner, ip, comment, storage, datacenter) {
             this.$emit("toParent", "vm_info");
-			this.$store.state.editsetting.uuid = uuid
-			this.$store.state.editsetting.ip = ip
-			this.$store.state.editsetting.os = os
-			this.$store.state.editsetting.host = host
-			this.$store.state.editsetting.cpu = cpu
-			this.$store.state.editsetting.mem = mem
-			this.$store.state.editsetting.owner = owner
-			this.$store.state.editsetting.comment = comment
+			this.$store.state.vm.uuid = uuid
+			this.$store.state.vm.host = host
+			this.$store.state.vm.cpu = cpu
+			this.$store.state.vm.mem = mem
+			this.$store.state.vm.os = os
+			this.$store.state.vm.owner = owner
+			this.$store.state.vm.ip = ip
+			this.$store.state.vm.comment = comment
+			this.$store.state.vm.storage = storage
+			this.$store.state.vm.datacenter = datacenter
             },
 
         createsnap: function (uuid, ip, os, host,datacenter, storage , owner, comment) {

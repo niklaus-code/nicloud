@@ -7,10 +7,6 @@ const store = new Vuex.Store({
   state: {
     username: "",
 	token: "",
-    monitor: {
-        uuid: "",
-        host: "",
-        },
     host: {
         ip: "",
         },
@@ -34,7 +30,9 @@ const store = new Vuex.Store({
 		owner: "",
 		os: "",
 		comment: "",
-		ip: ""
+		ip: "",
+        storage:"",
+        datacenter: "",
 		},
 	network: {
 		vlan: "",
