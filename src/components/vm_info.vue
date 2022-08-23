@@ -25,6 +25,14 @@
         </div>
         <div class="col-sm-12" >
             <div class="col-sm-2" >
+                <label>镜像 :</label>
+            </div>
+            <div class="col-sm-10" >
+               {{os}}
+            </div>
+        </div>
+        <div class="col-sm-12" >
+            <div class="col-sm-2" >
                 <label>所属者 :</label>
             </div>
             <div class="col-sm-10" >
@@ -93,6 +101,7 @@ export default {
         disktimer: "",
         memtimer: "",
 
+        os: "",
         uuid: "",
         host: "",
         ip: "",

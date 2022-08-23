@@ -40,7 +40,7 @@
   					<input type="checkbox" v-model="item.Checkout"> 
 				</label>
        		    <!--<td width="300px">{{item.Name}}</td> -->
-       			<td @click="vminfo(item.Uuid, item.Host, item.Cpu, item.Mem, item.Os, item.Owner, item.Ip, item.Comment, item.Storage, item.Datacenter)"><a>{{item.Ip}}</a></td>
+       			<td @click="vminfo(item.Uuid, item.Host, item.Cpu, item.Mem, item.osname, item.Owner, item.Ip, item.Comment, item.Storage, item.Datacenter)"><a>{{item.Ip}}</a></td>
        			<td>{{item.osname}}</td>
        			<td>{{item.Host}}</td>
        			<td  style="min-width: 95px">{{item.Cpu}}核 / {{item.Mem}}G</td>
