@@ -318,6 +318,7 @@ export default {
                 this.datacenter = this.$store.state.vm.datacenter
                 this.storage = this.$store.state.vm.storage
                 this.owner = this.$store.state.vm.owner
+                this.comment = this.$store.state.vm.comment
                 sessionStorage.setItem('uuid', this.$store.state.vm.uuid)
                 sessionStorage.setItem('ip', this.$store.state.vm.ip)
                 sessionStorage.setItem('os', this.$store.state.vm.os)
