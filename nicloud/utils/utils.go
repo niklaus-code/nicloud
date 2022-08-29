@@ -7,12 +7,22 @@ import (
   "github.com/dgrijalva/jwt-go"
   "github.com/gin-gonic/gin"
   uuid "github.com/satori/go.uuid"
+  "net"
   "net/http"
   "nicloud/users"
   "nicloud/vmerror"
   "strconv"
   "strings"
+  "errors"
 )
+
+func CheckIPFormat(ipaddr string) error {
+  addr := net.ParseIP(ipaddr)
+  if addr == nil {
+    return errors.New("Invalid ipaddress")
+  }
+  return nil
+}
 
 func Createuuid() string {
   /*create uuid*/

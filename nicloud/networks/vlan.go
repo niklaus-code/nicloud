@@ -110,14 +110,10 @@ func Getbridge(datacenter string, vlan string) (string, error) {
 }
 
 
-func split(item string) (bool, []string) {
+func split(item string) []string {
   start := item
   l := strings.Split(start, ".")
-
-  if len(l) != 4 {
-    return  false, nil
-  }
-  return true, l
+  return l
 }
 
 type Vms_ips struct {
@@ -243,14 +239,9 @@ func OpIP(ipv4 string, vlan string, op int) error {
 }
 
 func Createip(startip string, endip string, vlan string, prefix int, gateway string) error {
-  b, l := split(startip)
-  e, f := split(gateway)
+  l := split(startip)
+  f := split(gateway)
 
-  if b == false || e == false {
-    return vmerror.Error{
-      Message: "数据格式错误",
-    }
-  }
 
   if prefix >= 8 && prefix < 16 {
     if l[0] != f[0] {
@@ -285,12 +276,7 @@ func Createip(startip string, endip string, vlan string, prefix int, gateway str
     }
   }
 
-  c, d := split(endip)
-  if c == false {
-    return vmerror.Error{
-      Message: "数据格式错误",
-    }
-  }
+  d := split(endip)
 
   for _,v := range d {
     _, err := strconv.Atoi(v)

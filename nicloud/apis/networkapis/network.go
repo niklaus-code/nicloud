@@ -6,6 +6,7 @@ import (
   "github.com/go-playground/validator/v10"
   "net/http"
   "nicloud/networks"
+  "nicloud/utils"
   "nicloud/vm"
   "nicloud/vmerror"
   "os"
@@ -100,6 +101,24 @@ func CreateIp(c *gin.Context) {
   vlan := c.Query("vlan")
   prefix, err := strconv.Atoi(c.Query("prefix"))
   gateway := c.Query("gateway")
+
+  err = utils.CheckIPFormat(startip)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+
+  err = utils.CheckIPFormat(endip)
+  if err != nil {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
+
+  err = utils.CheckIPFormat(gateway)
+  if err != nil  {
+    vmerror.SERVERERROR(c, err)
+    return
+  }
 
   if err != nil {
     vmerror.REQUESTERROR(c, err)
