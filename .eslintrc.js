@@ -18,6 +18,7 @@ module.exports = {
   // add your custom rules here
   rules: {
     camelcase: 0,
+    'vue/no-use-v-if-with-v-for': 0,
     'space-before-function-paren': 0,
     // allow async-await
     'generator-star-spacing': 'off',
