@@ -5,11 +5,10 @@ import serveroom from '@/view/serveroom'
 import nicloud from '@/view/nicloud'
 import store from '../store'
 
-
 Vue.use(Router)
 
 if (sessionStorage.getItem('token')) {
-	store.commit('set_token', sessionStorage.getItem('token'))
+  store.commit('set_token', sessionStorage.getItem('token'))
 }
 
 const router = new Router({
@@ -33,19 +32,18 @@ const router = new Router({
       path: '/login',
       name: 'login',
       component: login
-    },
+    }
   ]
 })
 
-
-router.beforeEach(function(to, from, next) {
-	var token = store.state.token
-    if (!token) {
-        if (to.path !== '/login') {
-            return next('/login')
-        }
+router.beforeEach(function (to, from, next) {
+  var token = store.state.token
+  if (!token) {
+    if (to.path !== '/login') {
+      return next('/login')
     }
-    next()
+  }
+  next()
 })
 
 export default router

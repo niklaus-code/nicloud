@@ -1,23 +1,22 @@
 <template>
-<div>
+  <div>
     <updatehosthead></updatehosthead>
     <updatehostform></updatehostform>
-</div>
+  </div>
 </template>
 <script>
 import updatehosthead from './updatehosthead'
 import updatehostform from './updatehostform'
 export default {
-    data () {
-        return {
-        }
-    },
+  data() {
+    return {}
+  },
 
-    components: {
-        updatehosthead, updatehostform
-        },
+  components: {
+    updatehosthead,
+    updatehostform
   }
+}
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
