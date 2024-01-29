@@ -1,23 +1,22 @@
 <template>
-<div>
+  <div>
     <hosthead></hosthead>
     <hostform></hostform>
-</div>
+  </div>
 </template>
 <script>
 import hosthead from './hosthead'
 import hostform from './hostform'
 export default {
-    data () {
-        return {
-        }
-    },
+  data() {
+    return {}
+  },
 
-    components: {
-        hosthead, hostform
-        },
+  components: {
+    hosthead,
+    hostform
   }
+}
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

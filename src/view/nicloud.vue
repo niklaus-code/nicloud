@@ -1,52 +1,51 @@
 <template>
-<div class="contain col-md-12">
+  <div class="contain col-md-12">
     <div class="head col-md-12" style="z-index: 100">
-        <div class="col-md-5" style="float:left; padding-left:10px">
-            <nicloudhead @toParent="getMag"></nicloudhead>
+      <div class="col-md-5" style="float:left; padding-left:10px">
+        <nicloudhead @toParent="getMag"></nicloudhead>
+      </div>
+      <div class="col-md-2" style="float:right; padding-right:0;margin-right:10px; text-align:right">
+        <div class="dropdown">
+          <button type="button" @mouseover="mouseover" :style="active" class="btn dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown">
+            <span class="glyphicon glyphicon-user"></span>
+            {{ username }}
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu  pull-right" role="menu" aria-labelledby="dropdownMenu1">
+            <li role="presentation">
+              <a role="menuitem" tabindex="-1" @click="changepwd">修改密码</a>
+            </li>
+            <li role="presentation">
+              <a @click="usermanage" role="menuitem" tabindex="-1">用户管理</a>
+            </li>
+            <li role="presentation">
+              <a @click="logout" role="menuitem" tabindex="-1" href="#"><span class="glyphicon glyphicon-log-out"></span>Logout</a>
+            </li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation">
+              <a role="menuitem" tabindex="-1" href="#" style="color: blue">关于NICLOUD</a>
+            </li>
+          </ul>
         </div>
-        <div class="col-md-2" style="float:right; padding-right:0;margin-right:10px; text-align:right">
-            <div class="dropdown">
-                <button type="button" @mouseover="mouseover" :style="active" class="btn dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown">
-                     <span class="glyphicon glyphicon-user"></span>
-                        {{username}}
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu  pull-right" role="menu" aria-labelledby="dropdownMenu1">
-                    <li role="presentation">
-                        <a role="menuitem" tabindex="-1" @click="changepwd">修改密码</a>
-                    </li>
-                    <li role="presentation">
-                        <a @click="usermanage" role="menuitem" tabindex="-1">用户管理</a>
-                    </li>
-                    <li role="presentation">
-                        <a @click="logout" role="menuitem" tabindex="-1" href="#"><span class="glyphicon glyphicon-log-out"></span>&nbspLogout</a>
-                    </li>
-                    <li role="presentation" class="divider"></li>
-                    <li role="presentation">
-                        <a role="menuitem" tabindex="-1" href="#" style="color: blue">关于NICLOUD</a>
-                    </li>
-                </ul>
-               </div>
-           </div>
+      </div>
     </div>
 
     <div class="left">
-        <vmleft @toParent="getMag"></vmleft>
+      <vmleft @toParent="getMag"></vmleft>
     </div>
 
-	<div  class="mid" >
-        <div class="mm">
-            <component @toParent="getMag" v-bind:is="router"></component>
-	    </div>
-	</div>
-    <div class="foot">
-         <vmbottom></vmbottom>
+    <div class="mid">
+      <div class="mm">
+        <component @toParent="getMag" v-bind:is="router"></component>
+      </div>
     </div>
-</div>
+    <div class="foot">
+      <vmbottom></vmbottom>
+    </div>
+  </div>
 </template>
 
 <script>
-
 import foot from '@/components/footer'
 import vm_archive from '@/components/vm_archive'
 import nicloudhead from '@/components/nicloudhead'
@@ -86,162 +85,197 @@ import createxml from '@/components/createxml'
 import vm_info from '@/components/vm_info'
 import vmchangeowner from '@/components/vmchangeowner'
 
-var initroute 
 if (sessionStorage.getItem('router')) {
-	
-	} else {
-		sessionStorage.setItem('router', "vm");
-		}
+} else {
+  sessionStorage.setItem('router', 'vm')
+}
 
 export default {
-    data () {
-        return {
-            active: "",
-            username: "",
-			router: sessionStorage.getItem('router'),
-        }
+  data() {
+    return {
+      active: '',
+      username: '',
+      router: sessionStorage.getItem('router')
+    }
+  },
+
+  components: {
+    vmchangeowner,
+    vm_info,
+    createxml,
+    xml,
+    changepasswd,
+    vm_flavor,
+    vdisk_archive,
+    vm_archive,
+    updatehost,
+    createuser,
+    user,
+    migratevmlive,
+    restorevm,
+    snap,
+    vmbottom,
+    datacenter,
+    createdatacenter,
+    editsetting,
+    foot,
+    nicloudhead,
+    vmleft,
+    vm,
+    disk,
+    osimage,
+    network,
+    hosts,
+    storage,
+    createvm,
+    updateosimage,
+    createvdisk,
+    mountvdisk,
+    createosimage,
+    createvlan,
+    ips,
+    createip,
+    createhost,
+    createceph,
+    migratevm
+  },
+
+  mounted: function() {
+    this.getuser()
+  },
+
+  methods: {
+    usermanage: function() {
+      this.getMag('user')
     },
 
-    components: {
-        vmchangeowner, vm_info, createxml, xml, changepasswd, vm_flavor, vdisk_archive, vm_archive, updatehost, createuser, user, migratevmlive, restorevm, snap, vmbottom, datacenter, createdatacenter, editsetting, foot, nicloudhead, vmleft, vm, disk, osimage, network, hosts, storage, createvm, updateosimage, createvdisk, mountvdisk, createosimage, createvlan, ips, createip, createhost, createceph, migratevm
+    mouseover: function() {
+      this.active = 'color: white'
     },
 
+    changepwd: function() {
+      this.getMag('changepasswd')
+    },
 
-	mounted: function () {
-        this.getuser()
-		
-		},
+    logout: function() {
+      sessionStorage.removeItem('token')
+      this.$router.push({ name: 'login' })
+    },
 
-	methods: {
-        usermanage: function () {
-    	    this.getMag("user");
-            },
+    getuser: function() {
+      var u = this.$store.state.username
+      if (u === null || typeof u === 'undefined' || u === '' || u === 'undefined') {
+        this.username = sessionStorage.getItem('username')
+      } else {
+        sessionStorage.setItem('username', this.$store.state.username)
+        this.username = this.$store.state.username
+      }
+    },
 
-        mouseover: function () {
-            this.active = "color: white";
-            },
-
-        changepwd: function () {
-            this.getMag("changepasswd");
-            },
-
-        logout: function () {
-            sessionStorage.removeItem("token");
-            this.$router.push({name:"login"});
-            },
-
-        getuser: function () {
-            var u = this.$store.state.username
-            if (u === null || typeof u === 'undefined' || u === '' || u === "undefined") {
-                this.username = sessionStorage.getItem('username')
-                } else {
-                sessionStorage.setItem('username', this.$store.state.username)
-                this.username =  this.$store.state.username
-                }
-                },
-
-    	getMag(router) {
-			sessionStorage.setItem('router', router);
-      		this.router = router;
-    		},
-  		},
+    getMag(router) {
+      sessionStorage.setItem('router', router)
+      this.router = router
+    }
   }
+}
 </script>
 
 <style scoped>
 body {
-    font-family: Arial, sans-serif !important;
+  font-family: Arial, sans-serif !important;
 }
 
 .contain {
-    height: 100%;
-    margin: 0;
-    padding: 0;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .head {
-    height: 35px;
-    border-bottom: 1px solid #a49595;
-    border-top-right-radius: 2px;
-    border-bottom-right-radius: 2px;
-    border-bottom-left-radius: 2px;
-    font-size: 15px;
+  height: 35px;
+  border-bottom: 1px solid #a49595;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+  font-size: 15px;
 
-    color: #FFF;
-    padding-top:5px;
-    padding-bottom:5px;
-    padding-right:3px;
-    padding-left:3px;
+  color: #fff;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 3px;
+  padding-left: 3px;
 }
 
 .mid {
-    margin-left: 200px;
-    padding-right:0;
-    padding-left:0;
-    padding-top:20px;
-    padding-bottom: 50px;
-    min-height: 100%;
-    height: auto !important;
-    height: 100%;
+  margin-left: 200px;
+  padding-right: 0;
+  padding-left: 0;
+  padding-top: 20px;
+  padding-bottom: 50px;
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
 }
 
 .mm {
-    padding-top:30px;
-    padding-bottom: 60px;
+  padding-top: 30px;
+  padding-bottom: 60px;
 }
 
 .foot {
-    margin-left: 200px;
-    position: relative;
-    margin-top: -30px; /*等于footer的高度*/
-    height: 30px;
-    clear:both;
-    #background: #e3e3e3;
+  margin-left: 200px;
+  position: relative;
+  margin-top: -30px; /*等于footer的高度*/
+  height: 30px;
+  clear: both;
+  #background: #e3e3e3;
 }
 
-.dropdown-menu  li  a {
-    padding-right: 13px;
-    padding-left: 13px;
-    }
+.dropdown-menu li a {
+  padding-right: 13px;
+  padding-left: 13px;
+}
 
 .col-md-12 {
-    padding-left:0;
-    padding-right:0;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .left {
-    z-index: 2500;
-    position: fixed;
-    float: left;
-    height: 100%;
+  z-index: 2500;
+  position: fixed;
+  float: left;
+  height: 100%;
 
-    width: 200px;
+  width: 200px;
 
-    padding-left:0;
-    padding-right:0;
-    background-color: #1e1e2d;
-    bottom: 0;
-    height: auto !important;
-    height: 100%; /*IE6不识别min-height*/
-    min-height:100%;
+  padding-left: 0;
+  padding-right: 0;
+  background-color: #1e1e2d;
+  bottom: 0;
+  height: auto !important;
+  height: 100%; /*IE6不识别min-height*/
+  min-height: 100%;
 }
 
-.col-md-11, .col-md-1, .col-md-12 {
-    display:inline-block;
+.col-md-11,
+.col-md-1,
+.col-md-12 {
+  display: inline-block;
 }
 p {
-    margin-bottom:0
+  margin-bottom: 0;
 }
 
 #dropdownMenu1 {
-    background-color: #5b5b5b;
+  background-color: #5b5b5b;
 }
 
 .btn {
-    padding:0;
+  padding: 0;
 }
 
 ul {
-    min-width:0;
+  min-width: 0;
 }
 </style>
